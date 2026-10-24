@@ -2204,7 +2204,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 57,
+        "line": 49,
         "kind": "literal"
       }
     ]
@@ -5140,7 +5140,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 73,
+        "line": 65,
         "kind": "literal"
       }
     ]
@@ -5464,7 +5464,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 164,
+        "line": 171,
         "kind": "literal"
       }
     ]
@@ -6319,7 +6319,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 38,
+        "line": 45,
         "kind": "literal"
       }
     ]
@@ -6523,12 +6523,12 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 26,
+        "line": 33,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 47,
+        "line": 54,
         "kind": "literal"
       }
     ]
@@ -6955,7 +6955,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 194,
+        "line": 201,
         "kind": "literal"
       }
     ]
@@ -7529,7 +7529,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 227,
+        "line": 234,
         "kind": "literal"
       }
     ]
@@ -8110,7 +8110,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 25,
+        "line": 32,
         "kind": "literal"
       }
     ]
@@ -8350,7 +8350,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 137,
+        "line": 144,
         "kind": "literal"
       }
     ]
@@ -9740,7 +9740,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 192,
+        "line": 199,
         "kind": "literal"
       }
     ]
@@ -10946,7 +10946,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 249,
+        "line": 256,
         "kind": "literal"
       }
     ]
@@ -11660,7 +11660,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 215,
+        "line": 222,
         "kind": "literal"
       }
     ]
@@ -12002,7 +12002,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 23,
+        "line": 30,
         "kind": "literal",
         "purpose": "display"
       }
@@ -12509,12 +12509,12 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 57,
+        "line": 49,
         "kind": "literal"
       },
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 93,
+        "line": 85,
         "kind": "literal"
       },
       {
@@ -13564,7 +13564,7 @@
       },
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 64,
+        "line": 56,
         "kind": "jsx"
       }
     ]
@@ -16127,7 +16127,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 83,
+        "line": 75,
         "kind": "literal"
       }
     ]
@@ -16359,7 +16359,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 136,
+        "line": 143,
         "kind": "literal"
       }
     ]
@@ -16553,7 +16553,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 152,
+        "line": 159,
         "kind": "literal"
       }
     ]
@@ -17291,7 +17291,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 205,
+        "line": 212,
         "kind": "literal",
         "purpose": "display"
       }
@@ -18259,7 +18259,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 53,
+        "line": 45,
         "kind": "literal"
       }
     ]
@@ -18963,7 +18963,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 65,
+        "line": 72,
         "kind": "literal",
         "purpose": "display"
       }
@@ -18977,6 +18977,18 @@
         "file": "web/lib/dna/layout.ts",
         "line": 40,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_273189a11d6fcbf0": {
+    "source": "המטרה, המדידה והפעולה בתמונה אחת",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 9,
+        "kind": "literal",
+        "purpose": "display"
       }
     ]
   },
@@ -19246,7 +19258,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 233,
+        "line": 240,
         "kind": "literal",
         "purpose": "display"
       }
@@ -19455,7 +19467,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 67,
+        "line": 74,
         "kind": "literal"
       }
     ]
@@ -19676,7 +19688,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 106,
+        "line": 113,
         "kind": "literal"
       }
     ]
@@ -20267,12 +20279,12 @@
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 33,
+        "line": 40,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 75,
+        "line": 82,
         "kind": "literal"
       }
     ]
@@ -21217,7 +21229,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 121,
+        "line": 128,
         "kind": "literal",
         "purpose": "display"
       }
@@ -21532,7 +21544,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 248,
+        "line": 255,
         "kind": "literal"
       }
     ]
@@ -22733,17 +22745,17 @@
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 159,
+        "line": 166,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 187,
+        "line": 194,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 229,
+        "line": 236,
         "kind": "literal"
       }
     ]
@@ -27425,7 +27437,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 151,
+        "line": 158,
         "kind": "literal"
       }
     ]
@@ -28569,7 +28581,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 130,
+        "line": 137,
         "kind": "literal"
       }
     ]
@@ -30257,7 +30269,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 66,
+        "line": 58,
         "kind": "literal"
       }
     ]
@@ -30497,7 +30509,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 163,
+        "line": 170,
         "kind": "literal",
         "purpose": "display"
       }
@@ -30750,7 +30762,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 45,
+        "line": 52,
         "kind": "literal"
       }
     ]
@@ -31595,7 +31607,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 150,
+        "line": 157,
         "kind": "literal"
       }
     ]
@@ -32003,7 +32015,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 11,
+        "line": 18,
         "kind": "literal"
       }
     ]
@@ -33598,7 +33610,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 208,
+        "line": 215,
         "kind": "literal"
       }
     ]
@@ -33732,7 +33744,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 94,
+        "line": 86,
         "kind": "literal"
       }
     ]
@@ -34162,7 +34174,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 144,
+        "line": 151,
         "kind": "literal"
       }
     ]
@@ -34798,7 +34810,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 185,
+        "line": 192,
         "kind": "literal"
       }
     ]
@@ -35108,17 +35120,12 @@
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 61,
-        "kind": "literal"
-      },
-      {
-        "file": "web/lib/releases.ts",
         "line": 68,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 117,
+        "line": 75,
         "kind": "literal"
       },
       {
@@ -35129,6 +35136,11 @@
       {
         "file": "web/lib/releases.ts",
         "line": 131,
+        "kind": "literal"
+      },
+      {
+        "file": "web/lib/releases.ts",
+        "line": 138,
         "kind": "literal"
       },
       {
@@ -35307,17 +35319,17 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 54,
+        "line": 61,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 82,
+        "line": 89,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 108,
+        "line": 115,
         "kind": "literal"
       }
     ]
@@ -36686,7 +36698,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 107,
+        "line": 114,
         "kind": "literal"
       }
     ]
@@ -38544,7 +38556,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 53,
+        "line": 45,
         "kind": "literal"
       }
     ]
@@ -38555,7 +38567,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 247,
+        "line": 254,
         "kind": "literal",
         "purpose": "display"
       }
@@ -38955,7 +38967,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 90,
+        "line": 97,
         "kind": "literal"
       }
     ]
@@ -39213,7 +39225,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 171,
+        "line": 178,
         "kind": "literal"
       }
     ]
@@ -39380,7 +39392,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 219,
+        "line": 226,
         "kind": "literal",
         "purpose": "display"
       }
@@ -39522,7 +39534,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 53,
+        "line": 45,
         "kind": "literal"
       }
     ]
@@ -41698,7 +41710,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 241,
+        "line": 248,
         "kind": "literal"
       }
     ]
@@ -42184,7 +42196,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 10,
+        "line": 17,
         "kind": "literal"
       }
     ]
@@ -42391,7 +42403,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 46,
+        "line": 53,
         "kind": "literal"
       }
     ]
@@ -43348,6 +43360,17 @@
       }
     ]
   },
+  "m_5aebe5e3ac8aa796": {
+    "source": "רואים יחד מה רוצים להשיג, איך מודדים את ההתקדמות ובאיזה פוסט מתחילים.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 11,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_5afbb19cc41799fd": {
     "source": "לא רואים אתר? לחשבון הזה אין גישה. ייתכן שהנתונים בחשבון גוגל אחר, או אצל מי שבנה את האתר.",
     "language": "he",
@@ -43686,7 +43709,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 115,
+        "line": 122,
         "kind": "literal"
       }
     ]
@@ -44424,7 +44447,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 242,
+        "line": 249,
         "kind": "literal"
       }
     ]
@@ -44470,7 +44493,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 89,
+        "line": 96,
         "kind": "literal"
       }
     ]
@@ -46339,7 +46362,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 52,
+        "line": 59,
         "kind": "literal"
       }
     ]
@@ -46747,7 +46770,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 57,
+        "line": 49,
         "kind": "literal"
       }
     ]
@@ -46899,7 +46922,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 220,
+        "line": 227,
         "kind": "literal"
       }
     ]
@@ -47329,7 +47352,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 222,
+        "line": 229,
         "kind": "literal"
       }
     ]
@@ -47753,7 +47776,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 173,
+        "line": 180,
         "kind": "literal"
       }
     ]
@@ -47828,7 +47851,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 66,
+        "line": 58,
         "kind": "literal"
       }
     ]
@@ -48454,7 +48477,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 17,
+        "line": 24,
         "kind": "literal"
       }
     ]
@@ -48499,7 +48522,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 9,
+        "line": 16,
         "kind": "literal",
         "purpose": "display"
       }
@@ -51093,7 +51116,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 156,
+        "line": 163,
         "kind": "literal",
         "purpose": "display"
       }
@@ -51169,7 +51192,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 88,
+        "line": 80,
         "kind": "literal"
       }
     ]
@@ -51237,7 +51260,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 235,
+        "line": 242,
         "kind": "literal"
       }
     ]
@@ -51292,7 +51315,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 234,
+        "line": 241,
         "kind": "literal"
       }
     ]
@@ -51438,7 +51461,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 240,
+        "line": 247,
         "kind": "literal",
         "purpose": "display"
       }
@@ -51707,7 +51730,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 73,
+        "line": 65,
         "kind": "literal"
       }
     ]
@@ -51754,6 +51777,17 @@
         "line": 186,
         "kind": "literal",
         "purpose": "validation"
+      }
+    ]
+  },
+  "m_6c61d176edf8d607": {
+    "source": "הדגמת המטרות בעמוד הבית מוצגת ברצף אחד, בלי לשוניות ובלי מעבר אוטומטי בין דוגמאות.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 10,
+        "kind": "literal"
       }
     ]
   },
@@ -53280,17 +53314,6 @@
       }
     ]
   },
-  "m_6f2506d2b082a410": {
-    "source": "המטרות לחודש הקרוב",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 31,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_6f27d06b67356143": {
     "source": "היעד שלכם.",
     "language": "he",
@@ -53663,7 +53686,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 226,
+        "line": 233,
         "kind": "literal",
         "purpose": "display"
       }
@@ -53989,7 +54012,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 37,
+        "line": 44,
         "kind": "literal",
         "purpose": "display"
       }
@@ -54270,12 +54293,12 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 99,
+        "line": 106,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 145,
+        "line": 152,
         "kind": "literal"
       }
     ]
@@ -54286,7 +54309,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 79,
+        "line": 86,
         "kind": "literal",
         "purpose": "display"
       }
@@ -54331,7 +54354,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 179,
+        "line": 186,
         "kind": "literal"
       }
     ]
@@ -54784,7 +54807,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 88,
+        "line": 95,
         "kind": "literal",
         "purpose": "display"
       }
@@ -57021,7 +57044,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 31,
+        "line": 38,
         "kind": "literal"
       }
     ]
@@ -57917,7 +57940,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 198,
+        "line": 205,
         "kind": "literal",
         "purpose": "display"
       }
@@ -58700,7 +58723,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 178,
+        "line": 185,
         "kind": "literal"
       }
     ]
@@ -61254,7 +61277,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 193,
+        "line": 200,
         "kind": "literal"
       }
     ]
@@ -62701,7 +62724,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 186,
+        "line": 193,
         "kind": "literal"
       }
     ]
@@ -64619,7 +64642,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 12,
+        "line": 19,
         "kind": "literal"
       }
     ]
@@ -64919,7 +64942,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 142,
+        "line": 149,
         "kind": "literal",
         "purpose": "display"
       }
@@ -65388,7 +65411,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 53,
+        "line": 45,
         "kind": "literal"
       }
     ]
@@ -66248,7 +66271,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 72,
+        "line": 79,
         "kind": "literal",
         "purpose": "display"
       }
@@ -68393,7 +68416,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 184,
+        "line": 191,
         "kind": "literal",
         "purpose": "display"
       }
@@ -68757,7 +68780,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 177,
+        "line": 184,
         "kind": "literal",
         "purpose": "display"
       }
@@ -72507,7 +72530,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 122,
+        "line": 129,
         "kind": "literal"
       }
     ]
@@ -73377,7 +73400,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 64,
+        "line": 56,
         "kind": "jsx"
       }
     ]
@@ -74059,7 +74082,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 228,
+        "line": 235,
         "kind": "literal"
       }
     ]
@@ -74266,7 +74289,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 243,
+        "line": 250,
         "kind": "literal"
       }
     ]
@@ -74546,7 +74569,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 92,
+        "line": 84,
         "kind": "literal"
       }
     ]
@@ -76663,7 +76686,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 143,
+        "line": 150,
         "kind": "literal"
       }
     ]
@@ -77571,7 +77594,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 59,
+        "line": 66,
         "kind": "literal"
       }
     ]
@@ -77995,7 +78018,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 250,
+        "line": 257,
         "kind": "literal"
       }
     ]
@@ -78914,7 +78937,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 44,
+        "line": 36,
         "kind": "literal"
       }
     ]
@@ -79373,7 +79396,7 @@
       },
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 64,
+        "line": 56,
         "kind": "jsx"
       }
     ]
@@ -81680,7 +81703,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 212,
+        "line": 219,
         "kind": "literal",
         "purpose": "display"
       }
@@ -82229,7 +82252,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 53,
+        "line": 60,
         "kind": "literal"
       }
     ]
@@ -82684,7 +82707,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 129,
+        "line": 136,
         "kind": "literal"
       }
     ]
@@ -83906,7 +83929,7 @@
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 236,
+        "line": 243,
         "kind": "literal"
       }
     ]
@@ -84080,7 +84103,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 116,
+        "line": 123,
         "kind": "literal"
       }
     ]
@@ -84944,7 +84967,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 128,
+        "line": 135,
         "kind": "literal",
         "purpose": "display"
       }
@@ -85549,7 +85572,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 105,
+        "line": 112,
         "kind": "literal",
         "purpose": "display"
       }
@@ -87442,7 +87465,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 73,
+        "line": 65,
         "kind": "literal"
       }
     ]
@@ -88044,7 +88067,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 58,
+        "line": 50,
         "kind": "literal"
       },
       {
@@ -88877,7 +88900,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 80,
+        "line": 87,
         "kind": "literal"
       }
     ]
@@ -89855,7 +89878,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 135,
+        "line": 142,
         "kind": "literal",
         "purpose": "display"
       }
@@ -90918,7 +90941,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 213,
+        "line": 220,
         "kind": "literal"
       }
     ]
@@ -91060,7 +91083,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 200,
+        "line": 207,
         "kind": "literal"
       }
     ]
@@ -91962,7 +91985,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 30,
+        "line": 37,
         "kind": "literal",
         "purpose": "display"
       }
@@ -92237,6 +92260,17 @@
         "line": 1156,
         "kind": "template",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_c206a1610b70b36d": {
+    "source": "לראות את ההדגמה",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 12,
+        "kind": "literal"
       }
     ]
   },
@@ -93873,7 +93907,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 39,
+        "line": 31,
         "kind": "literal"
       }
     ]
@@ -95783,7 +95817,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 60,
+        "line": 67,
         "kind": "literal"
       }
     ]
@@ -95957,7 +95991,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 16,
+        "line": 23,
         "kind": "literal",
         "purpose": "display"
       }
@@ -96060,7 +96094,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 40,
+        "line": 47,
         "kind": "literal"
       }
     ]
@@ -96551,7 +96585,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 199,
+        "line": 206,
         "kind": "literal"
       }
     ]
@@ -96678,7 +96712,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 51,
+        "line": 58,
         "kind": "literal",
         "purpose": "display"
       }
@@ -97244,7 +97278,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 180,
+        "line": 187,
         "kind": "literal"
       }
     ]
@@ -97299,7 +97333,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 73,
+        "line": 80,
         "kind": "literal"
       }
     ]
@@ -97760,7 +97794,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 24,
+        "line": 31,
         "kind": "literal"
       }
     ]
@@ -99976,7 +100010,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 55,
+        "line": 47,
         "kind": "literal"
       },
       {
@@ -100004,7 +100038,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 73,
+        "line": 65,
         "kind": "literal"
       },
       {
@@ -100066,7 +100100,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 214,
+        "line": 221,
         "kind": "literal"
       }
     ]
@@ -100663,7 +100697,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 58,
+        "line": 65,
         "kind": "literal",
         "purpose": "display"
       }
@@ -100869,7 +100903,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 39,
+        "line": 46,
         "kind": "literal"
       }
     ]
@@ -101577,7 +101611,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 165,
+        "line": 172,
         "kind": "literal"
       }
     ]
@@ -102318,7 +102352,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 149,
+        "line": 156,
         "kind": "literal",
         "purpose": "display"
       }
@@ -104088,7 +104122,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 91,
+        "line": 98,
         "kind": "literal"
       }
     ]
@@ -105536,7 +105570,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 66,
+        "line": 58,
         "kind": "literal"
       }
     ]
@@ -105685,7 +105719,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 114,
+        "line": 121,
         "kind": "literal",
         "purpose": "display"
       }
@@ -105719,7 +105753,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 172,
+        "line": 179,
         "kind": "literal"
       }
     ]
@@ -106001,7 +106035,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 157,
+        "line": 164,
         "kind": "literal"
       }
     ]
@@ -106743,7 +106777,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 221,
+        "line": 228,
         "kind": "literal"
       }
     ]
@@ -107697,7 +107731,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 97,
+        "line": 104,
         "kind": "literal"
       }
     ]
@@ -108204,7 +108238,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 57,
+        "line": 49,
         "kind": "literal"
       }
     ]
@@ -108528,7 +108562,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 74,
+        "line": 81,
         "kind": "literal"
       }
     ]
@@ -109513,7 +109547,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 32,
+        "line": 39,
         "kind": "literal"
       }
     ]
@@ -109949,7 +109983,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 123,
+        "line": 130,
         "kind": "literal"
       }
     ]
@@ -109971,12 +110005,12 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 19,
+        "line": 26,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 166,
+        "line": 173,
         "kind": "literal"
       }
     ]
@@ -110021,7 +110055,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 18,
+        "line": 25,
         "kind": "literal"
       }
     ]
@@ -110938,7 +110972,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 96,
+        "line": 103,
         "kind": "literal",
         "purpose": "display"
       }
@@ -111467,7 +111501,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 58,
+        "line": 50,
         "kind": "literal"
       }
     ]
@@ -112415,7 +112449,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 207,
+        "line": 214,
         "kind": "literal"
       }
     ]
@@ -112681,7 +112715,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 66,
+        "line": 73,
         "kind": "literal"
       }
     ]
@@ -113489,7 +113523,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 81,
+        "line": 88,
         "kind": "literal"
       }
     ]
@@ -114584,7 +114618,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 73,
+        "line": 65,
         "kind": "literal"
       }
     ]
@@ -116535,7 +116569,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 66,
+        "line": 58,
         "kind": "literal"
       }
     ]
@@ -117890,7 +117924,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 206,
+        "line": 213,
         "kind": "literal"
       }
     ]
@@ -118433,7 +118467,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 170,
+        "line": 177,
         "kind": "literal",
         "purpose": "display"
       }
@@ -120392,7 +120426,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 201,
+        "line": 208,
         "kind": "literal"
       }
     ]
@@ -120929,7 +120963,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 158,
+        "line": 165,
         "kind": "literal"
       }
     ]
@@ -121225,7 +121259,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 44,
+        "line": 51,
         "kind": "literal",
         "purpose": "display"
       }
@@ -121609,7 +121643,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 191,
+        "line": 198,
         "kind": "literal",
         "purpose": "display"
       }
@@ -121937,7 +121971,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 138,
+        "line": 145,
         "kind": "literal"
       }
     ]
