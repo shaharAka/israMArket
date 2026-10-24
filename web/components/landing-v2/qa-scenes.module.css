@@ -69,3 +69,8 @@
 .briefInputs,.briefConnector{flex-shrink:0}
 .briefResult>div{height:100px;flex-shrink:0}
 @media(max-width:700px){.brief{height:auto;min-height:0}.briefResult>div{height:74px}}
+
+/* The reveal layer is local to the artwork grid; headings and social captions stay live. */
+.posts{position:relative;--ascii-accent:#b44328;--ascii-surface:#fff9f3;--ascii-glyph:#20221c}
+
+@container(max-width:360px){.materials:not(.compact) .post:nth-child(2){order:-1}}
