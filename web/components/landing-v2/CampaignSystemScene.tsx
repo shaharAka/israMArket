@@ -8,11 +8,10 @@ import { PROCESS_CAMPAIGNS } from "./processCampaigns";
 import { PROCESS_GOALS } from "./processScenarios";
 import { CampaignArtwork } from "./ProcessCampaignArtwork";
 import { ProcessSocialPost } from "./ProcessSocialPost";
-import { useProcessSequence } from "./useProcessSequence";
 import styles from "./campaign-system.module.css";
 
-const DURATIONS = [2800, 4500, 4000, 4200] as const;
-const STAGES = ["התוכנית", "החומרים", "המדידה", "הצעד הבא"];
+export const CAMPAIGN_DURATIONS = [2800, 4500, 4000, 4200] as const;
+export const CAMPAIGN_STAGES = ["התוכנית", "החומרים", "המדידה", "הצעד הבא"] as const;
 const METRICS: Record<ProcessRole, readonly string[]> = {
   online_shop: ["כניסות לעמוד המוצר", "הוספות לסל", "הזמנות שהושלמו"],
   services: ["כניסות לעמוד השירות", "פניות חדשות", "שיחות שנקבעו"],
@@ -41,18 +40,15 @@ function CampaignFilm({ role, playing }: { role: ProcessRole; playing: boolean }
 /** Public campaign walkthrough: one goal, a monthly plan, coordinated channels and feedback.
  * No provider calls or invented performance figures. Measurements describe what to track.
  */
-export function CampaignSystemScene({ role: requestedRole, playing }: { role: ProcessRole | null; playing: boolean }) {
+export function CampaignSystemScene({ role: requestedRole, playing, index, revision }: { role: ProcessRole | null; playing: boolean; index: number; revision: number }) {
   const role = requestedRole ?? "online_shop";
   const example = PROCESS_EXAMPLES[role];
   const creatives = PROCESS_CAMPAIGNS[role];
-  const { index, select, revision } = useProcessSequence(DURATIONS, playing);
-  const t = useCopy();
   const networks = role === "software" ? [0, 2, 3] : [0, 2, 1];
   const measurements = METRICS[role];
-  return <div className={styles.board} data-campaign-stage={index} data-moving={playing} style={{ "--campaign-color": example.color, "--campaign-soft": example.soft, "--stage-duration": `${DURATIONS[index]}ms` } as CSSProperties}>
+  return <div className={styles.board} data-campaign-stage={index} data-moving={playing} style={{ "--campaign-color": example.color, "--campaign-soft": example.soft } as CSSProperties}>
     <header className={styles.heading}><div><span><Copy text="הקמפיין של החודש" /></span><strong><Copy text={example.name} /></strong></div><span className={styles.connected}><i /><Copy text="מהמטרה ועד לתוצאה" /></span></header>
     <div className={styles.goal}><span><Copy text="המטרה" /></span><strong><Copy text={PROCESS_GOALS[role][0]} /></strong><p><Copy text={example.audienceSummary} /></p></div>
-    <nav className={styles.stages} aria-label={t("שלבי הקמפיין")}>{STAGES.map((label, i) => <button key={label} type="button" aria-pressed={index === i} onClick={() => select(i)}><Copy text={label} /><i key={`${index}-${revision}`} aria-hidden="true" /></button>)}</nav>
     <div className={styles.surface} key={`${index}-${revision}`}>
       {index === 0 && <div className={styles.plan}><div className={styles.sceneTitle}><h3><Copy text="מטרה אחת. תוכנית לכל החודש." /></h3></div><div className={styles.weeks}>{example.weeks.map((week, i) => <section key={week} style={{ "--item": i } as CSSProperties}><span className={styles.weekNumber}><Copy text="שבוע {arg_0}" args={{arg_0: i + 1}} /></span><div className={styles.weekImage}><Image src={creatives[i].image ?? example.image} fill sizes="90px" alt="" /></div><div className={styles.weekContent}><h4><Copy text={week} /></h4><div>{[i % 2 ? "instagram" : "facebook",role === "software" ? "linkedin" : "tiktok"].map(channel=><Image key={channel} src={`/connectors/${channel}.svg`} width={17} height={17} alt={channel} />)}</div></div></section>)}</div><div className={styles.continuous}><span /><Copy text="המעקב ממשיך לאורך כל הקמפיין" /><span /></div></div>}
       {index === 1 && <div className={styles.materials}><div className={styles.sceneTitle}><h3><Copy text="אותו מסר. מותאם לכל ערוץ." /></h3><p><Copy text="הטקסט, העיצוב והסרטון עובדים יחד, לפי התוכנית והסגנון שלך." /></p></div><div className={styles.channels}>{networks.map((network, i) => <div key={network} className={styles.channel} style={{ "--item": i } as CSSProperties}><ProcessSocialPost index={network} name={example.name} caption={creatives[0].subline} video={network === 1 || role === "software" && network === 3} material="campaign"><div className={styles.artwork} data-software={role === "software"}>{network === 1 || role === "software" && network === 3 ? <CampaignFilm role={role} playing={playing} /> : <CampaignArtwork role={role} index={0} support={network === 3} ratio="1:1" />}</div></ProcessSocialPost></div>)}</div><p className={styles.approval}><Check /><Copy text="בודקים ומאשרים את החומרים לפני הפרסום" /></p></div>}

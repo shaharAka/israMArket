@@ -10,7 +10,6 @@ import type { ProcessStep } from "./processStory";
 import { PROCESS_EXAMPLES, type ProcessRole } from "./processExamples";
 import styles from "./process-story.module.css";
 import { GoalsScene, PlanScene, LearningScene, DataScene, PhoneScene, TrialScene } from "./ProcessScenes";
-import { CampaignSystemScene } from "./CampaignSystemScene";
 
 function Check() {
   return <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true"><path d="m5 12 4 4L19 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>;
@@ -59,11 +58,11 @@ function Connections({ role }: RoleProps) {
 }
 
 /** Each section owns its scenario; the frame owns visibility, reduced motion and pause. */
-export function ProcessAnimation({ step, role }: { step: ProcessStep; role: ProcessRole | null }) {
+export function ProcessAnimation({ step, role }: { step: Exclude<ProcessStep, "campaign">; role: ProcessRole | null }) {
   const { ref, playing, reduced, setFocused } = useFeatureCycle(1);
   return <div ref={ref} className={styles.visual} data-playing={playing} data-reduced={reduced} data-process-visual={step}>
     <div className={styles.visualContent} onFocusCapture={event => setFocused(event.target.matches(":focus-visible"))} onBlurCapture={event => { if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setFocused(false); }}>
-      {step === "research" ? <Research role={role} /> : step === "connections" ? <Connections role={role} /> : step === "plan" ? <PlanScene role={role} /> : step === "goals" ? <GoalsScene role={role} playing={playing} /> : step === "campaign" ? <CampaignSystemScene role={role} playing={playing} /> : step === "learning" ? <LearningScene playing={playing} reduced={reduced} /> : step === "data" ? <DataScene /> : step === "trial" ? <TrialScene playing={playing} reduced={reduced} /> : <PhoneScene role={role} playing={playing} />}
+      {step === "research" ? <Research role={role} /> : step === "connections" ? <Connections role={role} /> : step === "plan" ? <PlanScene role={role} /> : step === "goals" ? <GoalsScene role={role} playing={playing} /> : step === "learning" ? <LearningScene playing={playing} reduced={reduced} /> : step === "data" ? <DataScene /> : step === "trial" ? <TrialScene playing={playing} reduced={reduced} /> : <PhoneScene role={role} playing={playing} />}
     </div>
   </div>;
 }
