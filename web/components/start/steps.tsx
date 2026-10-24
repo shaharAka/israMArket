@@ -197,7 +197,7 @@ export function StepDifferent(props: StepProps) {
     <StepShell
       {...props}
       title="מה מבדיל אתכם מאחרים?"
-      why="זה מה שנשים בחזית. לקוחות צריכים סיבה לבחור דווקא בכם."
+      why=""
       primary="להמשיך ללקוחות"
       reassure={CHANGE_LATER}
       onPrimary={next}
@@ -208,13 +208,13 @@ export function StepDifferent(props: StepProps) {
         label="במשפט אחד"
         value={text}
         onChange={(value) => setDraft({ differentiator: value })}
-        placeholder={modelOf(flow) === "saas" ? "למשל: מתחילים בלי הטמעה ארוכה, והכלי נבנה במיוחד לסטודיואים" : "למשל: הכול נעשה אצלנו, בעבודת יד"}
+        placeholder={d.research_journey?.segment === "fundraising" ? "למשל: ליווי אישי למשפחות לאורך זמן" : modelOf(flow) === "saas" ? "למשל: מתחילים בלי הטמעה ארוכה, והכלי נבנה במיוחד לסטודיואים" : "למשל: הכול נעשה אצלנו, בעבודת יד"}
         maxLength={200}
       />
       <div>
         <p className="mb-2.5 text-[13px] text-[color:var(--ink-muted)]"><Copy text="אפשר להתחיל מאחד מאלה:" /></p>
         <div className="flex flex-wrap gap-2">
-          {(modelOf(flow) === "saas" ? ["קל להתחיל", "חוסך עבודה ידנית", "מתחבר לכלים שכבר יש", "נבנה לתחום שלנו"] : kit.differentiators).map((example) => (
+          {(d.research_journey?.segment === "fundraising" ? ["שקיפות בשימוש בתרומות", "היכרות אישית עם הקהילה", "ליווי לאורך זמן", "התמחות בצורך מסוים"] : modelOf(flow) === "saas" ? ["קל להתחיל", "חוסך עבודה ידנית", "מתחבר לכלים שכבר יש", "נבנה לתחום שלנו"] : kit.differentiators).map((example) => (
             <Chip
               key={example}
               label={example}
@@ -230,7 +230,6 @@ export function StepDifferent(props: StepProps) {
 
 /* -------------------------------- הלקוחות -------------------------------- */
 
-const MAX_AUDIENCES = 3;
 
 export function StepAudiences(props: StepProps) {
   const t = useCopy();
@@ -240,7 +239,6 @@ export function StepAudiences(props: StepProps) {
   const want = signature([d.business_name, d.business_type, d.offerings, d.differentiator ?? ""]);
   const loading = flow.suggestionsFor !== want && !flow.suggestionsFailed;
   const [editing, setEditing] = useState<number | null>(null);
-  const [, setAdding] = useState(false);
   const [newName, setNewName] = useState("");
   const [newDesc, setNewDesc] = useState("");
 
@@ -276,16 +274,13 @@ export function StepAudiences(props: StepProps) {
   const kept = d.audiences;
   const whyFor = (name: string) => suggestions?.find((s) => s.name === name)?.why_he;
   const removed = (suggestions ?? []).filter((s) => !kept.some((k) => k.name === s.name));
-  const full = kept.length >= MAX_AUDIENCES;
-  const showAdd = !full;
 
   function saveNew() {
     const name = newName.trim();
-    if (!name || full) return;
+    if (!name) return;
     setDraft({ audiences: [...kept, { name, description: newDesc.trim() }] });
     setNewName("");
     setNewDesc("");
-    setAdding(false);
   }
 
   return (
@@ -303,7 +298,7 @@ export function StepAudiences(props: StepProps) {
     >
       {loading ? (
         <div className="space-y-2" role="status" aria-live="polite">
-          <p className="text-sm text-[color:var(--ink-muted)]"><Copy text="מחפשים את הלקוחות שלכם…" /></p>
+          <p className="text-sm text-[color:var(--ink-muted)]"><Copy text="מכינים הצעות לקהלים שלכם…" /></p>
           <div className={form.list}>
             {[0, 1].map((i) => (
               <div key={i} className="space-y-2 border-t border-[var(--rule)] px-4 py-4 first:border-t-0">
@@ -384,7 +379,6 @@ export function StepAudiences(props: StepProps) {
                 <button
                   key={s.name}
                   type="button"
-                  disabled={full}
                   onClick={() => setDraft({ audiences: [...kept, { name: s.name, description: s.description }] })}
                   className={`${form.chip} ${form.chipAdd}`}
                 >
@@ -395,7 +389,7 @@ export function StepAudiences(props: StepProps) {
             </div>
           ) : null}
 
-          {showAdd && !full ? (
+          {
             <div className={`${form.panel} space-y-3`}>
               <TextInput
                 id="aud-new-name"
@@ -416,15 +410,7 @@ export function StepAudiences(props: StepProps) {
                 <Copy text="להוסיף את הקהל" />
               </UIAction>
             </div>
-          ) : !full ? (
-            <div>
-              <QuietLink tone="action" onClick={() => setAdding(true)}>
-                <Copy text="להוסיף קהל משלכם" />
-              </QuietLink>
-            </div>
-          ) : (
-            <p className="text-[13px] text-[color:var(--ink-muted)]"><Copy text="עד 3 קהלים. כדי להוסיף, הסירו אחד." /></p>
-          )}
+          }
         </>
       )}
     </StepShell>

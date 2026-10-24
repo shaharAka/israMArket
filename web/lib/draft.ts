@@ -618,6 +618,10 @@ export async function suggestAudiences(draft: OnboardingDraft): Promise<Suggeste
     async () => (await endpoints.publicAudiences(draft)).audiences,
     async () => {
       await wait(1300);
+      if (draft.research_journey?.segment === "fundraising") return [
+        { name: "תומכים בקהילה", description: "רוצים לעזור לאנשים שסביבם.", why_he: "אפשר להראות להם איך התמיכה מקדמת את העשייה." },
+        { name: "תורמים שמכירים את הפעילות", description: "כבר מכירים אתכם ורוצים להמשיך לעזור.", why_he: "אפשר לשתף אותם במה שהתרומה מאפשרת." },
+      ];
       if (draft.business_model === "saas") return [{ name: draft.software?.buyer || "מי שהבעיה הזו מפריעה לו", description: `לפי הבעיה שסיפרתם: ${draft.software?.problem || draft.offerings}`, why_he: "לפי המשתמש ומקבל החלטת הרכישה שסיפרתם עליהם; זו הצעה להדגמה." }];
       return kitFor(draft.business_type).audiences.map((a) => ({ ...a }));
     },

@@ -232,7 +232,6 @@ class DraftValidationTest(unittest.TestCase):
             {"business_name": "!!!!"},
             {"business_name": "אאאאאאאא"},
             {"offerings": "12345"},
-            {"audiences": [{"name": f"קהל {i}"} for i in range(4)]},
             {"goal": "leads"},  # a shop has no inquiry goal
             {"style_preset": "neon"},
             {"seasons": {"busy": [13]}},

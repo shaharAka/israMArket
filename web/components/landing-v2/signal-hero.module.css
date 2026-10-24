@@ -68,3 +68,13 @@
 
 .plan h2{font-size:clamp(24px,2.4vw,34px)}.learning h2{font-size:clamp(24px,2.5vw,36px)}
 @media(max-width:700px){.plan h2{font-size:24px}.learning h2{font-size:25px}}
+/* The panorama now shows actual brief, campaign formats and visible results. */
+.campaign{background:#e3e9dd;color:#20221c;padding:24px 18px}.campaign::after{display:none}.campaign h2{position:static;max-width:none;font-size:clamp(23px,2.3vw,34px)}.goal h2{font-size:clamp(24px,2.4vw,34px)}.learning h2{font-size:clamp(24px,2.4vw,34px)}.goal:hover{background:var(--hero-graphic,#20221c);color:var(--hero-panel-accent,#ff7957)}.learning:hover{background:var(--hero-panel-soft,#ffb89b);color:var(--hero-ink,#20221c)}.start{max-width:100%;gap:18px}.start svg{flex-shrink:0}.start:hover{gap:24px}@media(max-width:700px){.panel{height:390px}.campaign h2,.goal h2,.learning h2{font-size:24px}.campaign{padding-inline:12px}.start{font-size:15px;gap:16px}.start:hover{gap:20px}}
+/* A film is contained in its social post, never spread behind the whole panel. */
+.campaign video,.campaign:hover video{position:static;inset:auto;z-index:auto;transform:none}
+@media(max-width:700px){.learning{padding-inline:14px}.learning h2{font-size:22px}}
+@media(min-width:701px){.panorama{height:390px}}
+@media(max-width:700px){.panel{height:350px}}
+
+.goal>h2,.learning>h2{max-width:none}.goal>h2{font-size:clamp(24px,2.15vw,31px)}.learning>h2{font-size:clamp(24px,2.15vw,31px)}
+@media(max-width:700px){.goal>h2,.learning>h2{font-size:22px}.campaign>h2{font-size:21px}}

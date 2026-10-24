@@ -17,7 +17,9 @@ export type Observation = {
 };
 export type ResearchJourney = {
   version: 1; segment: Segment; phase: "before" | "after"; step: string;
-  replies: { question: string; answer: string }[];
+  replies: { question: string; answer: string; source_url?: string }[];
+  corrections?: { source_url: string; original: string; corrected: string }[];
+  excluded_sources?: string[];
   metric?: "purchases" | "store_sales" | "qualified_inquiries" | "booked_work" | "paid_accounts" | "demos" | "trials" | "donations" | "recurring_donors";
   observations: Observation[];
 };
