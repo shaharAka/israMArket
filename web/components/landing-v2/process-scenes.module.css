@@ -232,94 +232,74 @@
 .approvalState {padding-top:10px;min-height:69px;gap:6px}.approvalState button{width:100%;border-radius:8px;font-size:12px;background:var(--action,var(--ink));min-height:40px}.approvalState small{font-size:10px}
 .phoneHome{height:4px;bottom:7px;background:#20221c;left:34%;width:32%}.approvalCursor{bottom:30px;inset-inline-end:28px}
 :global([data-palette=punch-jade]) .learningRule{background:#bdf5d4}
-/* The sentence is the bullseye. The dial moves between three directly selectable goals. */
+/* A campaign brief demonstrates the consequence of choosing a business goal. */
 .goals,
 :global([data-design=signal-punch]) .goals {
-  align-items: center;
   justify-content: center;
-  padding: 16px 4% 20px;
-  gap: 12px;
+  padding: 22px 5%;
+  gap: 0;
 }
-.goalDial {
+.goalBrief {
+  width: 100%;
+  padding: 6px 24px 24px;
+  background: var(--paper);
+  border-radius: 12px;
+  box-shadow: 0 2px 5px color-mix(in srgb, var(--ink) 4%, transparent), 0 14px 36px color-mix(in srgb, var(--ink) 7%, transparent);
+}
+.goalBriefChoices { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); border-bottom: 1px solid var(--rule); }
+.goalBriefChoices button {
   position: relative;
-  width: min(100%, 380px);
-  aspect-ratio: 1;
-  flex-shrink: 1;
-  min-height: 0;
-}
-.goalDialDrawing { display: block; width: 100%; height: 100%; overflow: visible; }
-.goalDialTrack { stroke: var(--scene-peach); stroke-width: 18; opacity: .6; }
-.goalDialInner { stroke: var(--primary); stroke-width: 1; opacity: .4; }
-.goalDialTicks { stroke: var(--primary); stroke-width: 1.5; }
-.goalDialIndicator {
-  stroke: var(--primary);
-  stroke-width: 18;
-  stroke-dasharray: 88 949;
-  stroke-linecap: butt;
-  transform-origin: 200px 200px;
-  transform: rotate(120deg);
-  transition: transform 850ms cubic-bezier(.16,1,.3,1);
-}
-.goals[data-goal-active="1"] .goalDialIndicator { transform: rotate(75deg); }
-.goals[data-goal-active="2"] .goalDialIndicator { transform: rotate(30deg); }
-.goalFocusCopy {
-  position: absolute;
-  inset: 22% 15% 27%;
-  display: grid;
-  place-items: center;
-  text-align: center;
-}
-.goalFocusCopy strong {
-  font-size: 26px;
-  font-weight: 500;
-  line-height: 1.4;
-  letter-spacing: -.025em;
-  text-wrap: balance;
-  overflow-wrap: anywhere;
-}
-.goalDialChoice {
-  position: absolute;
-  z-index: 2;
-  width: 44px;
-  height: 44px;
-  display: grid;
-  place-items: center;
-  padding: 4px;
+  min-width: 0;
+  min-height: 52px;
+  padding: 8px 4px;
   border: 0;
-  border-radius: 50%;
   background: transparent;
-  color: var(--primary);
-  transform: translate(-50%, -50%);
+  color: var(--ink-soft);
+  font: inherit;
+  font-size: 12px;
+  line-height: 1.35;
+  font-weight: 500;
+  text-align: center;
   cursor: pointer;
 }
-.goalDialChoice[data-goal="0"] { left: 20.83%; top: 79.17%; }
-.goalDialChoice[data-goal="1"] { left: 50%; top: 91.25%; }
-.goalDialChoice[data-goal="2"] { left: 79.17%; top: 79.17%; }
-.goalDialChoice svg { width: 36px; height: 36px; overflow: visible; }
-.goalDialChoice circle:first-child { stroke: currentColor; stroke-width: 1.3; fill: var(--paper); }
-.goalDialChoice circle:last-child { fill: currentColor; transform-origin: 18px 18px; transform: scale(.55); transition: transform 180ms ease; }
-.goalDialChoice[aria-pressed="true"] circle:last-child,
-.goalDialChoice:hover circle:last-child { transform: scale(1); }
-.goalDialChoice:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
-.goalMeaning { font-size: 12px; line-height: 1.5; color: var(--ink-soft); text-align: center; flex-shrink: 0; }
-:global([data-playing="true"]) .goalFocusCopy { animation: goalComeIntoFocus 550ms cubic-bezier(.16,1,.3,1) both; }
-@keyframes goalComeIntoFocus { from { opacity: .35; filter: blur(3px); } to { opacity: 1; filter: blur(0); } }
+.goalBriefChoices button::after { content: ""; position: absolute; bottom: -1px; inset-inline: 8px; height: 3px; background: var(--primary); transform: scaleX(0); transition: transform 200ms ease; }
+.goalBriefChoices button[aria-pressed="true"] { color: var(--primary); }
+.goalBriefChoices button[aria-pressed="true"]::after { transform: scaleX(1); }
+.goalBriefChoices button:hover { color: var(--primary); }
+.goalBriefChoices button:focus-visible { outline: 2px solid var(--primary); outline-offset: -3px; border-radius: 5px; }
+.goalBriefContent { display: flex; flex-direction: column; padding-top: 22px; gap: 20px; }
+.goalBriefStatement { display: flex; align-items: center; min-height: 108px; font-size: 25px; font-weight: 500; line-height: 1.4; letter-spacing: -.025em; text-wrap: balance; }
+.goalBriefMeasure { display: flex; flex-direction: column; gap: 5px; }
+.goalBriefMeasure > span,.goalBriefPost span { display: block; font-size: 11px; line-height: 1.4; color: var(--ink-soft); font-weight: 400; }
+.goalBriefMeasure > strong { font-size: 16px; font-weight: 500; line-height: 1.5; }
+.goalBriefPost { display: flex; align-items: center; gap: 16px; padding: 16px; margin-inline: -8px; background: var(--primary-soft); border-radius: 8px; }
+.goalBriefPost > svg { flex-shrink: 0; width: 28px; height: 36px; color: var(--primary); }
+.goalBriefPost > div { min-width: 0; }
+.goalBriefPost strong { display: block; font-size: 18px; font-weight: 500; line-height: 1.4; margin-top: 5px; text-wrap: pretty; }
+:global([data-playing="true"]) .goalBriefStatement { animation: goalDecision 350ms ease-out both; }
+:global([data-playing="true"]) .goalBriefMeasure { animation: goalConsequence 450ms 300ms cubic-bezier(.16,1,.3,1) both; }
+:global([data-playing="true"]) .goalBriefPost { animation: goalConsequence 550ms 650ms cubic-bezier(.16,1,.3,1) both; }
+@keyframes goalDecision { from { opacity: .45; } to { opacity: 1; } }
+@keyframes goalConsequence { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 @container(max-width:420px) {
-  .goals,:global([data-design=signal-punch]) .goals { padding: 16px 3% 20px; gap: 20px; }
-  .goalDial { width: min(100%, 340px); }
-  .goalFocusCopy { inset-inline: 14%; }
-  .goalFocusCopy strong { font-size: 21px; line-height: 1.4; }
-  .goalMeaning { font-size: 11px; }
+  .goals,:global([data-design=signal-punch]) .goals { padding: 18px 4%; }
+  .goalBrief { padding: 3px 18px 14px; }
+  .goalBriefChoices button { font-size: 11px; min-height: 48px; }
+  .goalBriefContent { gap: 12px; padding-top: 12px; }
+  .goalBriefStatement { min-height: 88px; font-size: 21px; line-height: 1.4; }
+  .goalBriefMeasure > strong { font-size: 14px; line-height: 1.4; }
+  .goalBriefPost { padding: 10px 12px; gap: 12px; }
+  .goalBriefPost strong { font-size: 15px; }
+  .goalBriefPost > svg { width: 23px; height: 30px; }
 }
-:global([lang="ru"]) .goalFocusCopy strong,
-:global([lang="ar"]) .goalFocusCopy strong { font-size: 22px; }
+:global([lang="ru"]) .goalBriefStatement,
+:global([lang="ar"]) .goalBriefStatement { font-size: 22px; }
 @container(max-width:420px) {
-  :global([lang="ru"]) .goalFocusCopy strong,
-  :global([lang="ar"]) .goalFocusCopy strong { font-size: 18px; line-height: 1.45; }
+  :global([lang="ru"]) .goalBriefStatement,
+  :global([lang="ar"]) .goalBriefStatement { font-size: 18px; }
 }
 @media(prefers-reduced-motion:reduce) {
-  .goalFocusCopy,.goalDialIndicator,.goalDialChoice circle { animation: none !important; transition: none !important; }
+  .goalBriefContent > *,.goalBriefChoices button::after { animation: none !important; transition: none !important; }
 }
-:global([data-reduced="true"]) .goalFocusCopy,
-:global([data-reduced="true"]) .goalDialIndicator,
-:global([data-reduced="true"]) .goalDialChoice circle { animation: none !important; transition: none !important; }
+:global([data-reduced="true"]) .goalBriefContent > *,
+:global([data-reduced="true"]) .goalBriefChoices button::after { animation: none !important; transition: none !important; }
