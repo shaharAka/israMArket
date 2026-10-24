@@ -12,30 +12,34 @@ import { TargetIcon } from "./LandingQaScenes";
 import scene from "./process-scenes.module.css";
 
 type RoleProps = { role: ProcessRole | null };
-const GOAL_TIMES = [2600,2600,2600] as const;
+const GOAL_TIMES = [4200,4200,4200] as const;
 const PHONE_TIMES = [4200,3200] as const;
 const TRIAL_TIMES = [2800,4200] as const;
 function Tick() { return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6" /></svg>; }
 function Cursor({ className = "" }: { className?: string }) { return <svg className={`${scene.cursor} ${className}`} viewBox="0 0 32 38" fill="none" aria-hidden="true"><path d="M4 3v27l7-7 6 11 6-3-6-11h10L4 3Z" fill="var(--paper)" stroke="var(--ink)" strokeWidth="2" strokeLinejoin="round" /></svg>; }
 function Loop() { return <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M25 11a10 10 0 0 0-17-2L5 12m0-7v7h7M7 21a10 10 0 0 0 17 2l3-3m0 7v-7h-7" /></svg>; }
 
-/** One target lands as each goal takes focus; the three examples remain directly selectable. */
+/** The goal itself sits at the centre of the target; its rim selects the next example. */
 export function GoalsScene({ role, playing }: RoleProps & { playing: boolean }) {
   const { index, revision, select } = useProcessSequence(GOAL_TIMES, playing);
   const goals = role ? PROCESS_GOALS[role] : GENERAL_GOALS;
   const t = useCopy();
   return <div className={`${scene.scene} ${scene.goals}`} data-goal-active={index}>
-    <div className={scene.goalFocus} key={`${role}-${index}-${revision}`}>
-      <svg className={scene.goalTarget} viewBox="0 0 240 200" fill="none" aria-hidden="true">
-        <g stroke="currentColor" strokeWidth="1.5"><circle cx="100" cy="112" r="72"/><circle cx="100" cy="112" r="48"/><circle cx="100" cy="112" r="24"/></g>
-        <circle className={scene.targetResponse} cx="100" cy="112" r="24" fill="currentColor"/>
-        <circle cx="100" cy="112" r="5" fill="currentColor"/>
-        <g className={scene.targetArrow} stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m100 112 82-82m-15-4v19h19"/></g>
+    <div className={scene.goalDial}>
+      <svg className={scene.goalDialDrawing} viewBox="0 0 400 400" fill="none" aria-hidden="true">
+        <circle className={scene.goalDialTrack} cx="200" cy="200" r="165" />
+        <path className={scene.goalDialInner} d="M108 92a142 142 0 0 1 184 0" />
+        <path className={scene.goalDialTicks} d="M200 24v22M24 200h22M354 200h22" />
+        <circle className={scene.goalDialIndicator} cx="200" cy="200" r="165" />
       </svg>
-      <strong><Copy text={goals[index]}/></strong>
-    </div>
-    <div className={scene.goalChoices} role="group" aria-label={t("המטרות לחודש הקרוב")}>
-      {goals.map((goal,i)=><button type="button" key={goal} aria-label={t(goal)} aria-pressed={i===index} onMouseEnter={()=>select(i)} onFocus={()=>select(i)} onClick={()=>select(i)}><span aria-hidden="true">{String(i+1).padStart(2,"0")}</span><i aria-hidden="true"/></button>)}
+      <div className={scene.goalFocusCopy} key={`${role}-${index}-${revision}`}>
+        <strong><Copy text={goals[index]} /></strong>
+      </div>
+      <div className={scene.goalDialChoices} role="group" aria-label={t("המטרות לחודש הקרוב")}>
+        {goals.map((goal, i) => <button type="button" key={i} className={scene.goalDialChoice} data-goal={i} aria-label={t(goal)} title={t(goal)} aria-pressed={i === index} onFocus={() => select(i)} onClick={() => select(i)}>
+          <svg viewBox="0 0 36 36" fill="none" aria-hidden="true"><circle cx="18" cy="18" r="12" /><circle cx="18" cy="18" r="4" /></svg>
+        </button>)}
+      </div>
     </div>
     <p className={scene.goalMeaning}><Copy text="בודקים התקדמות לפי המטרות שבחרת"/></p>
   </div>;

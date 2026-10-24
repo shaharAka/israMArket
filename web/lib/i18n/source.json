@@ -2188,7 +2188,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 50,
+        "line": 54,
         "kind": "literal"
       }
     ]
@@ -5113,7 +5113,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 66,
+        "line": 70,
         "kind": "literal"
       }
     ]
@@ -12454,12 +12454,12 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 50,
+        "line": 54,
         "kind": "literal"
       },
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 86,
+        "line": 90,
         "kind": "literal"
       },
       {
@@ -13509,7 +13509,7 @@
       },
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 57,
+        "line": 61,
         "kind": "jsx"
       }
     ]
@@ -16055,7 +16055,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 76,
+        "line": 80,
         "kind": "literal"
       }
     ]
@@ -18187,7 +18187,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 46,
+        "line": 50,
         "kind": "literal"
       }
     ]
@@ -30119,7 +30119,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 59,
+        "line": 63,
         "kind": "literal"
       }
     ]
@@ -33561,7 +33561,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 87,
+        "line": 91,
         "kind": "literal"
       }
     ]
@@ -38350,7 +38350,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 46,
+        "line": 50,
         "kind": "literal"
       }
     ]
@@ -39316,7 +39316,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 46,
+        "line": 50,
         "kind": "literal"
       }
     ]
@@ -41968,6 +41968,17 @@
       {
         "file": "web/lib/admin.ts",
         "line": 124,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_5817f5c7a6a28f6d": {
+    "source": "הפוסטים והתוצאות מקבלים יותר מקום בעמוד הבית, ואפשר לבחור מטרה מתוך ההדגמה.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 10,
         "kind": "literal"
       }
     ]
@@ -46518,7 +46529,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 50,
+        "line": 54,
         "kind": "literal"
       }
     ]
@@ -47588,7 +47599,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 59,
+        "line": 63,
         "kind": "literal"
       }
     ]
@@ -50066,17 +50077,6 @@
       }
     ]
   },
-  "m_68db2b494d9743db": {
-    "source": "הפוסטים והתוצאות מקבלים יותר מקום בעמוד הבית, והמטרות מוצגות אחת בכל פעם עם אפשרות לעבור ביניהן.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/lib/releases.ts",
-        "line": 10,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_68e0dcf84ee46f22": {
     "source": "פרסום ממומן ברשתות",
     "language": "he",
@@ -50929,7 +50929,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 81,
+        "line": 85,
         "kind": "literal"
       }
     ]
@@ -51467,7 +51467,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 66,
+        "line": 70,
         "kind": "literal"
       }
     ]
@@ -53046,7 +53046,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 37,
+        "line": 38,
         "kind": "literal"
       }
     ]
@@ -65087,7 +65087,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 46,
+        "line": 50,
         "kind": "literal"
       }
     ]
@@ -73058,7 +73058,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 57,
+        "line": 61,
         "kind": "jsx"
       }
     ]
@@ -74203,7 +74203,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 85,
+        "line": 89,
         "kind": "literal"
       }
     ]
@@ -78985,7 +78985,7 @@
       },
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 57,
+        "line": 61,
         "kind": "jsx"
       }
     ]
@@ -87031,7 +87031,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 66,
+        "line": 70,
         "kind": "literal"
       }
     ]
@@ -87622,7 +87622,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 51,
+        "line": 55,
         "kind": "literal"
       },
       {
@@ -99497,7 +99497,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 48,
+        "line": 52,
         "kind": "literal"
       },
       {
@@ -99525,7 +99525,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 66,
+        "line": 70,
         "kind": "literal"
       },
       {
@@ -103931,7 +103931,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 40,
+        "line": 44,
         "kind": "literal"
       }
     ]
@@ -105068,7 +105068,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 59,
+        "line": 63,
         "kind": "literal"
       }
     ]
@@ -107724,7 +107724,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 50,
+        "line": 54,
         "kind": "literal"
       }
     ]
@@ -110954,7 +110954,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 51,
+        "line": 55,
         "kind": "literal"
       }
     ]
@@ -114071,7 +114071,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 66,
+        "line": 70,
         "kind": "literal"
       }
     ]
@@ -116022,7 +116022,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 59,
+        "line": 63,
         "kind": "literal"
       }
     ]
