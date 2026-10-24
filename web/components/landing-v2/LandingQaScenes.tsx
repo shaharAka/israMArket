@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { Copy, useCopy, useLanguage } from "@/components/language/LanguageProvider";
 import { PROCESS_EXAMPLES, type ProcessRole } from "./processExamples";
 import { PROCESS_CAMPAIGNS } from "./processCampaigns";
@@ -10,7 +10,6 @@ import { useProcessSequence } from "./useProcessSequence";
 import { useCampaignReveal } from "./useCampaignReveal";
 import styles from "./qa-scenes.module.css";
 
-const FORM_TIMES=[2200,2400,2400,1700] as const;
 const BRIEF_TIMES=[900,4200] as const;
 const GROWTH_TIMES=[2400,2600,3000] as const;
 const CLIPS={services:["designer-human-motion-ai.mp4","designer-human-motion-poster.jpg"],online_shop:["kefel-fitting-room-campaign.mp4","kefel-fitting-room-poster.jpg"],physical_shop:["bakery-human-motion-ai.mp4","bakery-human-motion-poster.jpg"],fundraising:["community-human-motion-ai.mp4","community-human-motion-poster.jpg"]} as const;
@@ -23,19 +22,7 @@ export function CampaignClip({role,playing,detail=false}:{role:ProcessRole;playi
   useEffect(()=>{const v=ref.current;if(!v)return;if(playing)void v.play().catch(()=>{});else v.pause();},[path,playing]);
   return <video ref={ref} src={`/showcase/${path}`} poster={`/showcase/${poster}`} muted loop playsInline preload="metadata" data-software={role==="software"}/>;
 }
-/** A read-only interview example: answers remain visible as the demonstration progresses. */
-export function QuestionnaireScene({role,playing,reduced=false}:{role:ProcessRole|null;playing:boolean;reduced?:boolean}){
-  const titleId=useId();const {index}=useProcessSequence(FORM_TIMES,playing);const active=reduced?3:index;const example=PROCESS_EXAMPLES[role??"services"];
-  const questions=[{q:"מה אתם מציעים?",a:example.kind},{q:role==="fundraising"?"מי האנשים שתרצו לצרף לעשייה?":"למי זה מתאים?",a:example.audienceSummary},{q:"מה מייחד אתכם?",a:example.answer}];
-  return <figure className={styles.questionnaire} aria-labelledby={titleId} data-form-stage={active}>
-    <header><strong id={titleId}><Copy text="היכרות לדוגמה"/></strong><span><Copy text={example.name}/></span></header>
-    <div className={styles.formFields}>{questions.map((item,i)=><div key={item.q} data-active={active===i}>
-      <p className={styles.question}><Copy text={item.q}/></p>
-      <div className={styles.answer}><span><Copy text={item.a}/></span><span className={styles.answerMark} data-complete={active>i}><Check/></span></div>
-    </div>)}</div>
-    <footer><Check/><Copy text="הפעילות, הקהל ומה שמייחד אתכם — הבסיס לתוכנית שלכם."/></footer>
-  </figure>;
-}
+export { QuestionnaireScene } from "./QuestionnaireDemo";
 /** Three inputs converge into coordinated campaign material; the layout never changes height. */
 export function HeroBriefScene({role,playing,reduced=false}:{role:ProcessRole;playing:boolean;reduced?:boolean}){
   const {index}=useProcessSequence(BRIEF_TIMES,playing);const active=reduced?1:index;

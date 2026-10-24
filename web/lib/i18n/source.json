@@ -638,7 +638,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 59,
+        "line": 46,
         "kind": "literal"
       },
       {
@@ -5099,18 +5099,6 @@
       }
     ]
   },
-  "m_0a448dbf5c47dd99": {
-    "source": "ברור שזו הדגמה",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/lib/releases.ts",
-        "line": 9,
-        "kind": "literal",
-        "purpose": "display"
-      }
-    ]
-  },
   "m_0a46c7b1ef460256": {
     "source": "כתבו במשפט אחד מה מייחד אתכם.",
     "language": "he",
@@ -5145,7 +5133,7 @@
       },
       {
         "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 43,
+        "line": 30,
         "kind": "literal"
       },
       {
@@ -11260,7 +11248,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 61,
+        "line": 48,
         "kind": "literal"
       }
     ]
@@ -16359,7 +16347,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 59,
+        "line": 46,
         "kind": "literal"
       }
     ]
@@ -22757,6 +22745,17 @@
       }
     ]
   },
+  "m_2e96bc5b7c151f75": {
+    "source": "הדגמה אוטומטית של שאלות ההיכרות",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/QuestionnaireDemo.tsx",
+        "line": 77,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_2ea2c363d8d06274": {
     "source": "לשמור את הרשימה",
     "language": "he",
@@ -23225,7 +23224,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 61,
+        "line": 48,
         "kind": "literal"
       }
     ]
@@ -25054,6 +25053,11 @@
       {
         "file": "web/components/landing-v2/ProductWordmark.tsx",
         "line": 5,
+        "kind": "jsx"
+      },
+      {
+        "file": "web/components/landing-v2/QuestionnaireDemo.tsx",
+        "line": 78,
         "kind": "jsx"
       },
       {
@@ -27194,7 +27198,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 51,
+        "line": 38,
         "kind": "literal"
       }
     ]
@@ -35392,7 +35396,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 60,
+        "line": 47,
         "kind": "literal"
       }
     ]
@@ -39098,6 +39102,17 @@
       }
     ]
   },
+  "m_510fb41bb5adaebc": {
+    "source": "סמן עם דמות קטנה עובר בין השדות, לוחץ ומקליד את התשובות לדוגמה.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 10,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_512ce8dd3acff535": {
     "source": "סקירה ושיפורים לנותני שירותים · #67",
     "language": "he",
@@ -40228,7 +40243,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 61,
+        "line": 48,
         "kind": "literal"
       }
     ]
@@ -42506,7 +42521,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 60,
+        "line": 47,
         "kind": "literal"
       }
     ]
@@ -44678,7 +44693,7 @@
       },
       {
         "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 45,
+        "line": 32,
         "kind": "literal"
       },
       {
@@ -48090,6 +48105,18 @@
       }
     ]
   },
+  "m_644d57a8ea30f762": {
+    "source": "צופים בהיכרות בפעולה",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 9,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
   "m_64548d9861ca40ae": {
     "source": "בדקו שהמותג אושר לפרסום ושהמדינות שאליהן תרצו להגיע זמינות בחשבון. עדיין לא אימתנו זמינות לפרסום בישראל.",
     "language": "he",
@@ -50020,7 +50047,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 60,
+        "line": 47,
         "kind": "literal"
       }
     ]
@@ -51474,7 +51501,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 43,
+        "line": 30,
         "kind": "literal"
       },
       {
@@ -53870,17 +53897,6 @@
       }
     ]
   },
-  "m_703326cf544ee233": {
-    "source": "שאלות ההיכרות בעמוד הבית מוצגות עכשיו כדוגמה עם תשובות מוכנות, בלי שדות שנראים פתוחים למילוי.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/lib/releases.ts",
-        "line": 10,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_7040870a52799a09": {
     "source": "לחצו בעכבר ימני על מקום ריק בעמוד ובחרו את האפשרות להצגת קוד המקור (**View page source**). הכי פשוט: Ctrl+U, ובמק Cmd+Option+U.",
     "language": "he",
@@ -56044,7 +56060,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 60,
+        "line": 47,
         "kind": "literal"
       }
     ]
@@ -60661,17 +60677,6 @@
       }
     ]
   },
-  "m_7e74c34457f06b43": {
-    "source": "אפשר לצפות בהיכרות עם העסק לדוגמה ולבחור סוג פעילות. את הפרטים שלכם ממלאים כשלוחצים להתחיל.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/lib/releases.ts",
-        "line": 11,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_7e7533b7801a0da4": {
     "source": "פורסם",
     "language": "he",
@@ -64571,17 +64576,6 @@
       {
         "file": "web/lib/uxFlows.ts",
         "line": 66,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_8664adbba6e3203d": {
-    "source": "היכרות לדוגמה",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 31,
         "kind": "literal"
       }
     ]
@@ -75712,8 +75706,8 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 29,
+        "file": "web/components/landing-v2/QuestionnaireDemo.tsx",
+        "line": 52,
         "kind": "literal"
       },
       {
@@ -82036,8 +82030,8 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 36,
+        "file": "web/components/landing-v2/QuestionnaireDemo.tsx",
+        "line": 89,
         "kind": "literal"
       }
     ]
@@ -83145,6 +83139,17 @@
         "line": 114,
         "kind": "literal",
         "purpose": "display"
+      }
+    ]
+  },
+  "m_ae6a851bd10807e7": {
+    "source": "כך אפשר לראות איך ההיכרות עובדת לפני שמתחילים למלא את הפרטים שלכם.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 11,
+        "kind": "literal"
       }
     ]
   },
@@ -89395,7 +89400,7 @@
       },
       {
         "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 59,
+        "line": 46,
         "kind": "literal"
       },
       {
@@ -90896,7 +90901,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 60,
+        "line": 47,
         "kind": "literal"
       }
     ]
@@ -91426,8 +91431,8 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 29,
+        "file": "web/components/landing-v2/QuestionnaireDemo.tsx",
+        "line": 54,
         "kind": "literal"
       },
       {
@@ -98003,8 +98008,8 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 29,
+        "file": "web/components/landing-v2/QuestionnaireDemo.tsx",
+        "line": 53,
         "kind": "literal"
       }
     ]
@@ -103286,7 +103291,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 61,
+        "line": 48,
         "kind": "literal"
       }
     ]
@@ -113704,7 +113709,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 59,
+        "line": 46,
         "kind": "literal"
       }
     ]
@@ -113821,7 +113826,7 @@
       },
       {
         "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 43,
+        "line": 30,
         "kind": "literal"
       },
       {
@@ -114188,8 +114193,8 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 29,
+        "file": "web/components/landing-v2/QuestionnaireDemo.tsx",
+        "line": 53,
         "kind": "literal"
       }
     ]
@@ -114756,7 +114761,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 59,
+        "line": 46,
         "kind": "literal"
       }
     ]
@@ -117202,7 +117207,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 61,
+        "line": 48,
         "kind": "literal"
       }
     ]
@@ -120602,6 +120607,17 @@
         "line": 593,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_fb71125e705f8fc2": {
+    "source": "קודם מכירים אתכם",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/QuestionnaireDemo.tsx",
+        "line": 78,
+        "kind": "literal"
       }
     ]
   },
