@@ -78,3 +78,9 @@
 
 .goal>h2,.learning>h2{max-width:none}.goal>h2{font-size:clamp(24px,2.15vw,31px)}.learning>h2{font-size:clamp(24px,2.15vw,31px)}
 @media(max-width:700px){.goal>h2,.learning>h2{font-size:22px}.campaign>h2{font-size:21px}}
+
+.campaign,.learning{display:flex;flex-direction:column}
+.campaign>h2,.learning>h2{flex-shrink:0}
+
+.goal{display:flex;flex-direction:column}
+.goal>h2{flex-shrink:0}

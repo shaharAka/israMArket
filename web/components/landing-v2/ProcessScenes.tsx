@@ -19,14 +19,25 @@ function Tick() { return <svg viewBox="0 0 24 24" fill="none" stroke="currentCol
 function Cursor({ className = "" }: { className?: string }) { return <svg className={`${scene.cursor} ${className}`} viewBox="0 0 32 38" fill="none" aria-hidden="true"><path d="M4 3v27l7-7 6 11 6-3-6-11h10L4 3Z" fill="var(--paper)" stroke="var(--ink)" strokeWidth="2" strokeLinejoin="round" /></svg>; }
 function Loop() { return <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M25 11a10 10 0 0 0-17-2L5 12m0-7v7h7M7 21a10 10 0 0 0 17 2l3-3m0 7v-7h-7" /></svg>; }
 
+/** One target lands as each goal takes focus; the three examples remain directly selectable. */
 export function GoalsScene({ role, playing }: RoleProps & { playing: boolean }) {
-  const { index, select } = useProcessSequence(GOAL_TIMES, playing);
+  const { index, revision, select } = useProcessSequence(GOAL_TIMES, playing);
   const goals = role ? PROCESS_GOALS[role] : GENERAL_GOALS;
+  const t = useCopy();
   return <div className={`${scene.scene} ${scene.goals}`} data-goal-active={index}>
-    <span className={scene.eyebrow}><Copy text="המטרות לחודש הקרוב" /></span>
-    <div className={scene.goalList}>{goals.map((goal,i) => <button type="button" key={goal} aria-pressed={i===index} onMouseEnter={()=>select(i)} onFocus={()=>select(i)} onClick={()=>select(i)}><span className={scene.goalSymbol}><TargetIcon/></span><strong><Copy text={goal} /></strong><span className={scene.goalTick}>{i===index ? <Tick /> : <span />}</span></button>)}</div>
-    <div className={scene.goalConnection}><span /><i /><span /></div>
-    <p className={scene.goalMeaning}><TargetIcon/><Copy text="בודקים התקדמות לפי המטרות שבחרת" /></p>
+    <div className={scene.goalFocus} key={`${role}-${index}-${revision}`}>
+      <svg className={scene.goalTarget} viewBox="0 0 240 200" fill="none" aria-hidden="true">
+        <g stroke="currentColor" strokeWidth="1.5"><circle cx="100" cy="112" r="72"/><circle cx="100" cy="112" r="48"/><circle cx="100" cy="112" r="24"/></g>
+        <circle className={scene.targetResponse} cx="100" cy="112" r="24" fill="currentColor"/>
+        <circle cx="100" cy="112" r="5" fill="currentColor"/>
+        <g className={scene.targetArrow} stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m100 112 82-82m-15-4v19h19"/></g>
+      </svg>
+      <strong><Copy text={goals[index]}/></strong>
+    </div>
+    <div className={scene.goalChoices} role="group" aria-label={t("המטרות לחודש הקרוב")}>
+      {goals.map((goal,i)=><button type="button" key={goal} aria-label={t(goal)} aria-pressed={i===index} onMouseEnter={()=>select(i)} onFocus={()=>select(i)} onClick={()=>select(i)}><span aria-hidden="true">{String(i+1).padStart(2,"0")}</span><i aria-hidden="true"/></button>)}
+    </div>
+    <p className={scene.goalMeaning}><Copy text="בודקים התקדמות לפי המטרות שבחרת"/></p>
   </div>;
 }
 

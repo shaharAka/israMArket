@@ -45,9 +45,6 @@ export function SignalHero({ start, role }: { start: string; role: ProcessRole |
       if (!root || e.pointerType === "touch") return;
       const box = root.getBoundingClientRect();
       tx = (e.clientX - box.left) / box.width * 2 - 1; ty = (e.clientY - box.top) / box.height * 2 - 1;
-      const band = root.querySelector('[data-panorama]')!.getBoundingClientRect();
-      root.style.setProperty("--cursor-x", `${e.clientX - band.left}px`);
-      root.style.setProperty("--cursor-y", `${e.clientY - band.top}px`);
       if (!frame) frame = requestAnimationFrame(animate);
     }
     function leave() { tx = ty = 0; if (!frame) frame = requestAnimationFrame(animate); }
@@ -64,22 +61,20 @@ export function SignalHero({ start, role }: { start: string; role: ProcessRole |
       <div className={styles.track}>
         <Link href="#goals" className={`${styles.panel} ${styles.goal}`} {...panel(0)}>
           <h2><Copy text="בוחרים מטרה." /><br /><Copy text="בונים סביבה קמפיין." /></h2>
-          <HeroBriefScene role={exampleRole} playing={playing} reduced={reduced}/><span className={styles.open}><Arrow/></span>
+          <HeroBriefScene role={exampleRole} playing={playing} reduced={reduced}/>
         </Link>
         <Link href="#plan" className={`${styles.panel} ${styles.plan}`} {...panel(1)}>
           <div className={styles.calendar}><header><strong><Copy text="התוכנית לחודש הקרוב" /></strong><span><Copy text={example.name} /></span></header><div className={styles.calendarDays} aria-hidden="true">{Array.from({length:20},(_,i)=><i key={i}>{i+1}</i>)}</div><div className={styles.calendarTasks}>{schedule.tasks.map((task,i)=><span key={task} style={{ gridRow:i+1 }}><Copy text={task} /></span>)}</div><div className={styles.tracking}><i /><Copy text="לומדים כל הזמן" /></div></div>
-          <h2><Copy text="יודעים מה לפרסם." /><br /><Copy text="וגם מתי." /></h2><span className={styles.open}><Arrow /></span>
+          <h2><Copy text="יודעים מה לפרסם." /><br /><Copy text="וגם מתי." /></h2>
         </Link>
         <Link href="#campaign" className={`${styles.panel} ${styles.campaign}`} {...panel(2)}>
-          <h2><Copy text="קמפיין אחד." /><br/><Copy text="מותאם לכל ערוץ." /></h2><CampaignMaterialsScene role={exampleRole} playing={playing} compact/><span className={styles.open}><Arrow/></span>
+          <h2><Copy text="קמפיין אחד." /><br/><Copy text="מותאם לכל ערוץ." /></h2><CampaignMaterialsScene role={exampleRole} playing={playing} compact/>
         </Link>
         <Link href="#learning" className={`${styles.panel} ${styles.learning}`} {...panel(3)}>
           <h2><Copy text="לומדים מה עובד." /><br /><Copy text="משפרים את הקמפיין." /></h2>
-          <CampaignGrowthScene role={exampleRole} playing={playing} reduced={reduced} compact/><span className={styles.open}><Arrow/></span>
+          <CampaignGrowthScene role={exampleRole} playing={playing} reduced={reduced} compact/>
         </Link>
       </div>
-      <span className={styles.lens} aria-hidden="true"><Arrow /></span>
     </div>
-    <div className={styles.controls}><p><Copy text="מהמטרה ועד לתוצאה" /></p></div>
   </div></section>;
 }

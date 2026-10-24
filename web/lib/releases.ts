@@ -5,6 +5,13 @@
 // Message: connect Instagram, paste the Story link, and see the count with its read date.
 export const RELEASES = [
   {
+    id: "2026-10-24-clearer-landing-scenes", date: "2026-10-24",
+    title: "יותר מקום לראות את הקמפיין",
+    summary: "הפוסטים והתוצאות מקבלים יותר מקום בעמוד הבית, והמטרות מוצגות אחת בכל פעם עם אפשרות לעבור ביניהן.",
+    detail: "הסרנו חצים מיותרים ורווחים גדולים מתחת להדגמות, בלי להגדיל את אזור התצוגה.",
+    href: "/#campaign", action: "לצפות בקמפיין",
+  },
+  {
     id: "2026-10-24-reviewed-onboarding", date: "2026-10-24",
     title: "יותר שליטה בהיכרות עם העסק",
     summary: "אפשר להוסיף את כל הקהלים הרלוונטיים, לתקן מידע שנלמד ולהסיר מקורות מהמחקר.",
