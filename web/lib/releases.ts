@@ -5,6 +5,13 @@
 // Message: connect Instagram, paste the Story link, and see the count with its read date.
 export const RELEASES = [
   {
+    id: "2026-10-24-campaign-artwork-reveal", date: "2026-10-24",
+    title: "הקמפיין מתגלה בתמונה אחת",
+    summary: "חומרי הקמפיין בעמוד הבית נחשפים בתנועה קצרה כשמגיעים אליהם, ואז נשארים גלויים.",
+    detail: "הטקסט נשאר קריא לאורך כל ההדגמה. למי שמעדיפים פחות תנועה, החומרים מוצגים ישירות.",
+    href: "/#campaign", action: "לצפות בקמפיין",
+  },
+  {
     id: "2026-10-24-single-goal-visual", date: "2026-10-24",
     title: "המטרה, המדידה והפעולה בתמונה אחת",
     summary: "הדגמת המטרות בעמוד הבית מוצגת ברצף אחד, בלי לשוניות ובלי מעבר אוטומטי בין דוגמאות.",

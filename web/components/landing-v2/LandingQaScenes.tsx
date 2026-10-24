@@ -7,6 +7,7 @@ import { PROCESS_CAMPAIGNS } from "./processCampaigns";
 import { CampaignArtwork } from "./ProcessCampaignArtwork";
 import { ProcessSocialPost } from "./ProcessSocialPost";
 import { useProcessSequence } from "./useProcessSequence";
+import { useCampaignReveal } from "./useCampaignReveal";
 import styles from "./qa-scenes.module.css";
 
 const FORM_TIMES=[2200,2400,2400,1700] as const;
@@ -38,8 +39,9 @@ export function HeroBriefScene({role,playing,reduced=false}:{role:ProcessRole;pl
   </div>;
 }
 export function CampaignMaterialsScene({role:requested,playing,compact=false}:{role:ProcessRole|null;playing:boolean;compact?:boolean}){
-  const t=useCopy();const role=requested??"online_shop",example=PROCESS_EXAMPLES[role];const channels=role==="software"?[2,0,3]:[2,0,1];
-  return <div className={`${styles.materials} ${compact?styles.compact:""}`} data-campaign-materials><header><strong><Copy text="הקמפיין: {arg_0}" args={{arg_0:t(example.weeks[0])}}/></strong><span><Copy text={example.name}/></span></header><div className={styles.posts}>{channels.map((channel,i)=><div key={channel} className={styles.post}><ProcessSocialPost index={channel} name={example.name} caption={PROCESS_CAMPAIGNS[role][0].subline} video={i===2} material="campaign"><div className={styles.postMedia}>{i===2?<CampaignClip role={role} playing={playing} detail={compact}/>:<CampaignArtwork role={role} index={0} support={i===0} ratio="4:5"/>}</div></ProcessSocialPost>{compact&&<span className={styles.platformName}>{["Facebook","TikTok","Instagram","LinkedIn"][channel]}</span>}</div>)}</div></div>;
+  const t=useCopy();const {locale}=useLanguage();const role=requested??"online_shop",example=PROCESS_EXAMPLES[role];const channels=role==="software"?[2,0,3]:[2,0,1];
+  const revealRef=useCampaignReveal(!compact,playing,`${role}:${locale}`);
+  return <div className={`${styles.materials} ${compact?styles.compact:""}`} data-campaign-materials><header><strong><Copy text="הקמפיין: {arg_0}" args={{arg_0:t(example.weeks[0])}}/></strong><span><Copy text={example.name}/></span></header><div ref={revealRef} className={styles.posts}>{channels.map((channel,i)=><div key={channel} className={styles.post}><ProcessSocialPost index={channel} name={example.name} caption={PROCESS_CAMPAIGNS[role][0].subline} video={i===2} material="campaign"><div className={styles.postMedia} data-campaign-media>{i===2?<CampaignClip role={role} playing={playing} detail={compact}/>:<CampaignArtwork role={role} index={0} support={i===0} ratio="4:5"/>}</div></ProcessSocialPost>{compact&&<span className={styles.platformName}>{["Facebook","TikTok","Instagram","LinkedIn"][channel]}</span>}</div>)}</div></div>;
 }
 /** The changing metric stays anchored to the campaign material behind it. */
 export function CampaignGrowthScene({playing,reduced=false,compact=false,role="online_shop"}:{playing:boolean;reduced?:boolean;compact?:boolean;role?:ProcessRole}){
