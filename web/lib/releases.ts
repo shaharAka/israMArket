@@ -5,6 +5,13 @@
 // Message: connect Instagram, paste the Story link, and see the count with its read date.
 export const RELEASES = [
   {
+    id: "2026-10-24-single-goal-visual", date: "2026-10-24",
+    title: "המטרה, המדידה והפעולה בתמונה אחת",
+    summary: "הדגמת המטרות בעמוד הבית מוצגת ברצף אחד, בלי לשוניות ובלי מעבר אוטומטי בין דוגמאות.",
+    detail: "רואים יחד מה רוצים להשיג, איך מודדים את ההתקדמות ובאיזה פוסט מתחילים.",
+    href: "/#goals", action: "לראות את ההדגמה",
+  },
+  {
     id: "2026-10-24-clearer-landing-scenes", date: "2026-10-24",
     title: "יותר מקום לראות את הקמפיין",
     summary: "הפוסטים והתוצאות מקבלים יותר מקום בעמוד הבית, ואפשר לבחור מטרה מתוך ההדגמה.",
