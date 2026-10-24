@@ -5,28 +5,46 @@ import { TRIAL_LABEL } from "@/lib/pricing";
 import { ProviderLogo } from "./ProviderLogo";
 import { CampaignArtwork } from "./ProcessCampaignArtwork";
 import { BrandWordmark } from "./BrandWordmark";
-import { PROCESS_GOALS, GENERAL_GOALS, PROCESS_SCHEDULES } from "./processScenarios";
+import { PROCESS_GOALS, GENERAL_GOALS, PROCESS_GOAL_BRIEFS, GENERAL_GOAL_BRIEFS, PROCESS_SCHEDULES } from "./processScenarios";
 import type { ProcessRole } from "./processExamples";
 import { useProcessSequence } from "./useProcessSequence";
 import { TargetIcon } from "./LandingQaScenes";
 import scene from "./process-scenes.module.css";
 
 type RoleProps = { role: ProcessRole | null };
-const GOAL_TIMES = [2600,2600,2600] as const;
+const GOAL_TIMES = [5800,5800,5800] as const;
 const PHONE_TIMES = [4200,3200] as const;
 const TRIAL_TIMES = [2800,4200] as const;
 function Tick() { return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6" /></svg>; }
 function Cursor({ className = "" }: { className?: string }) { return <svg className={`${scene.cursor} ${className}`} viewBox="0 0 32 38" fill="none" aria-hidden="true"><path d="M4 3v27l7-7 6 11 6-3-6-11h10L4 3Z" fill="var(--paper)" stroke="var(--ink)" strokeWidth="2" strokeLinejoin="round" /></svg>; }
 function Loop() { return <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M25 11a10 10 0 0 0-17-2L5 12m0-7v7h7M7 21a10 10 0 0 0 17 2l3-3m0 7v-7h-7" /></svg>; }
 
+/** Choosing a goal changes both the success measure and the first piece of campaign work. */
 export function GoalsScene({ role, playing }: RoleProps & { playing: boolean }) {
-  const { index, select } = useProcessSequence(GOAL_TIMES, playing);
+  const { index, revision, select } = useProcessSequence(GOAL_TIMES, playing);
   const goals = role ? PROCESS_GOALS[role] : GENERAL_GOALS;
-  return <div className={`${scene.scene} ${scene.goals}`} data-goal-active={index}>
-    <span className={scene.eyebrow}><Copy text="המטרות לחודש הקרוב" /></span>
-    <div className={scene.goalList}>{goals.map((goal,i) => <button type="button" key={goal} aria-pressed={i===index} onMouseEnter={()=>select(i)} onFocus={()=>select(i)} onClick={()=>select(i)}><span className={scene.goalSymbol}><TargetIcon/></span><strong><Copy text={goal} /></strong><span className={scene.goalTick}>{i===index ? <Tick /> : <span />}</span></button>)}</div>
-    <div className={scene.goalConnection}><span /><i /><span /></div>
-    <p className={scene.goalMeaning}><TargetIcon/><Copy text="בודקים התקדמות לפי המטרות שבחרת" /></p>
+  const briefs = role ? PROCESS_GOAL_BRIEFS[role] : GENERAL_GOAL_BRIEFS;
+  const brief = briefs[index];
+  const t = useCopy();
+  return <div className={`${scene.scene} ${scene.goals}`}>
+    <div className={scene.goalBrief}>
+      <div className={scene.goalBriefChoices} role="group" aria-label={t("המטרות לחודש הקרוב")}>
+        {briefs.map((item, i) => <button type="button" key={i} aria-label={`${t(item.label)}: ${t(goals[i])}`} aria-pressed={i === index} onFocus={() => select(i)} onClick={() => select(i)}>
+          <Copy text={item.label} />
+        </button>)}
+      </div>
+      <div className={scene.goalBriefContent} key={`${role}-${index}-${revision}`}>
+        <strong className={scene.goalBriefStatement}><Copy text={goals[index]} /></strong>
+        <div className={scene.goalBriefMeasure}>
+          <span><Copy text="נמדוד" /></span>
+          <strong><Copy text={brief.measure} /></strong>
+        </div>
+        <div className={scene.goalBriefPost}>
+          <svg viewBox="0 0 32 40" fill="none" aria-hidden="true"><path d="M5 2h15l7 7v29H5V2Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/><path d="M20 2v8h7M10 17h12M10 23h12M10 29h7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
+          <div><span><Copy text="נתחיל בפוסט" /></span><strong><Copy text={brief.post} /></strong></div>
+        </div>
+      </div>
+    </div>
   </div>;
 }
 

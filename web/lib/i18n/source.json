@@ -633,6 +633,11 @@
         "file": "web/components/landing-v2/processExamples.ts",
         "line": 68,
         "kind": "literal"
+      },
+      {
+        "file": "web/components/landing-v2/processScenarios.ts",
+        "line": 27,
+        "kind": "literal"
       }
     ]
   },
@@ -1989,6 +1994,17 @@
       }
     ]
   },
+  "m_03e755489877f1b2": {
+    "source": "איך המוצר פותר בעיה יומיומית",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processScenarios.ts",
+        "line": 27,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_03e7d6ea12f7aa72": {
     "source": "Invalid recommendation response",
     "language": "en",
@@ -2188,7 +2204,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 39,
+        "line": 57,
         "kind": "literal"
       }
     ]
@@ -2346,7 +2362,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processScenarios.ts",
-        "line": 16,
+        "line": 51,
         "kind": "literal"
       }
     ]
@@ -2967,6 +2983,17 @@
         "line": 190,
         "kind": "template",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_05de17d2b3137721": {
+    "source": "מה אנחנו מציעים ולמי זה מתאים",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processScenarios.ts",
+        "line": 16,
+        "kind": "literal"
       }
     ]
   },
@@ -4187,7 +4214,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 74,
+        "line": 71,
         "kind": "literal"
       }
     ]
@@ -5113,7 +5140,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 55,
+        "line": 73,
         "kind": "literal"
       }
     ]
@@ -5437,7 +5464,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 157,
+        "line": 164,
         "kind": "literal"
       }
     ]
@@ -6138,7 +6165,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processScenarios.ts",
-        "line": 16,
+        "line": 51,
         "kind": "literal"
       }
     ]
@@ -6292,7 +6319,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 31,
+        "line": 38,
         "kind": "literal"
       }
     ]
@@ -6496,12 +6523,12 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 19,
+        "line": 26,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 40,
+        "line": 47,
         "kind": "literal"
       }
     ]
@@ -6928,7 +6955,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 187,
+        "line": 194,
         "kind": "literal"
       }
     ]
@@ -7502,7 +7529,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 220,
+        "line": 227,
         "kind": "literal"
       }
     ]
@@ -7626,6 +7653,11 @@
       {
         "file": "web/components/landing-v2/processExamples.ts",
         "line": 38,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/landing-v2/processScenarios.ts",
+        "line": 37,
         "kind": "literal"
       }
     ]
@@ -7838,7 +7870,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 77,
+        "line": 74,
         "kind": "literal"
       }
     ]
@@ -7876,7 +7908,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processScenarios.ts",
-        "line": 14,
+        "line": 49,
         "kind": "literal"
       }
     ]
@@ -8078,7 +8110,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 18,
+        "line": 25,
         "kind": "literal"
       }
     ]
@@ -8318,7 +8350,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 130,
+        "line": 137,
         "kind": "literal"
       }
     ]
@@ -9061,6 +9093,18 @@
       }
     ]
   },
+  "m_12aecb62d1735115": {
+    "source": "ביקור בחנות",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processScenarios.ts",
+        "line": 42,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
   "m_12b2530f10e964a6": {
     "source": "יש קלישאה אסורה: \"{arg_0}\". פתח בפרט אמיתי על המוצר.",
     "language": "he",
@@ -9587,6 +9631,17 @@
       }
     ]
   },
+  "m_13d5aacb9ea7d70d": {
+    "source": "תרומות מתומכים חוזרים",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processScenarios.ts",
+        "line": 24,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_13d5e841a792ae3a": {
     "source": "עוד אין פוסט שלכם עם שמירות, שיתופים או תגובות שאפשר ללמוד ממנו. הוסיפו עד 5 חשבונות להשראה, ואז לחצו על 'ללמוד מהאינסטגרם'.",
     "language": "he",
@@ -9685,7 +9740,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 185,
+        "line": 192,
         "kind": "literal"
       }
     ]
@@ -10891,7 +10946,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 242,
+        "line": 249,
         "kind": "literal"
       }
     ]
@@ -11605,7 +11660,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 208,
+        "line": 215,
         "kind": "literal"
       }
     ]
@@ -11947,7 +12002,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 16,
+        "line": 23,
         "kind": "literal",
         "purpose": "display"
       }
@@ -12454,17 +12509,17 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 39,
+        "line": 57,
         "kind": "literal"
       },
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 75,
+        "line": 93,
         "kind": "literal"
       },
       {
         "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 70,
+        "line": 67,
         "kind": "literal"
       }
     ]
@@ -13509,7 +13564,7 @@
       },
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 46,
+        "line": 64,
         "kind": "jsx"
       }
     ]
@@ -13893,6 +13948,12 @@
       {
         "file": "web/components/design/ComponentWorkshop.tsx",
         "line": 14,
+        "kind": "literal",
+        "purpose": "display"
+      },
+      {
+        "file": "web/components/landing-v2/processScenarios.ts",
+        "line": 17,
         "kind": "literal",
         "purpose": "display"
       }
@@ -15970,6 +16031,17 @@
       }
     ]
   },
+  "m_20bb3e086e5c7850": {
+    "source": "מה חדש בקולקציה",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processScenarios.ts",
+        "line": 39,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_20be9917644ad783": {
     "source": "{arg_0} אל {arg_1}{arg_2}",
     "language": "he",
@@ -16055,7 +16127,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 65,
+        "line": 83,
         "kind": "literal"
       }
     ]
@@ -16287,7 +16359,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 129,
+        "line": 136,
         "kind": "literal"
       }
     ]
@@ -16481,7 +16553,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 145,
+        "line": 152,
         "kind": "literal"
       }
     ]
@@ -17219,7 +17291,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 198,
+        "line": 205,
         "kind": "literal",
         "purpose": "display"
       }
@@ -18187,7 +18259,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 35,
+        "line": 53,
         "kind": "literal"
       }
     ]
@@ -18506,7 +18578,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processScenarios.ts",
-        "line": 14,
+        "line": 49,
         "kind": "literal"
       }
     ]
@@ -18891,7 +18963,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 58,
+        "line": 65,
         "kind": "literal",
         "purpose": "display"
       }
@@ -19174,7 +19246,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 226,
+        "line": 233,
         "kind": "literal",
         "purpose": "display"
       }
@@ -19383,7 +19455,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 60,
+        "line": 67,
         "kind": "literal"
       }
     ]
@@ -19604,7 +19676,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 99,
+        "line": 106,
         "kind": "literal"
       }
     ]
@@ -20155,7 +20227,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processScenarios.ts",
-        "line": 17,
+        "line": 52,
         "kind": "literal"
       }
     ]
@@ -20195,12 +20267,12 @@
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 26,
+        "line": 33,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 68,
+        "line": 75,
         "kind": "literal"
       }
     ]
@@ -21145,7 +21217,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 114,
+        "line": 121,
         "kind": "literal",
         "purpose": "display"
       }
@@ -21460,7 +21532,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 241,
+        "line": 248,
         "kind": "literal"
       }
     ]
@@ -22395,6 +22467,17 @@
       }
     ]
   },
+  "m_2e27986a4548e11a": {
+    "source": "סלים שננטשו והפכו להזמנות",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processScenarios.ts",
+        "line": 38,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_2e288ff73ea86b67": {
     "source": "פורמט",
     "language": "he",
@@ -22650,17 +22733,17 @@
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 152,
+        "line": 159,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 180,
+        "line": 187,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 222,
+        "line": 229,
         "kind": "literal"
       }
     ]
@@ -24107,6 +24190,12 @@
     "language": "he",
     "references": [
       {
+        "file": "web/components/landing-v2/processScenarios.ts",
+        "line": 34,
+        "kind": "literal",
+        "purpose": "display"
+      },
+      {
         "file": "web/components/results/ServiceCheckIn.tsx",
         "line": 137,
         "kind": "literal"
@@ -24278,6 +24367,17 @@
       {
         "file": "web/app/brand/page.tsx",
         "line": 75,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_31e0d4da1abdf0a8": {
+    "source": "פניות שמתאימות לשירות",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processScenarios.ts",
+        "line": 32,
         "kind": "literal"
       }
     ]
@@ -25748,6 +25848,17 @@
       }
     ]
   },
+  "m_348b9793777d8453": {
+    "source": "למי העמותה עוזרת ואיך",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processScenarios.ts",
+        "line": 23,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_348d1ea451ea6426": {
     "source": "הערכה",
     "language": "he",
@@ -27114,6 +27225,17 @@
       }
     ]
   },
+  "m_371daaa70485b35c": {
+    "source": "אנשים שנחשפו לפוסטים",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processScenarios.ts",
+        "line": 16,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_371dbb3a5f01bcbf": {
     "source": "לא הצלחנו לשמור את הסגנון. השינויים עדיין כאן.",
     "language": "he",
@@ -27303,7 +27425,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 144,
+        "line": 151,
         "kind": "literal"
       }
     ]
@@ -28447,7 +28569,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 123,
+        "line": 130,
         "kind": "literal"
       }
     ]
@@ -28878,6 +29000,17 @@
       {
         "file": "web/app/dev/dna/DnaQa.tsx",
         "line": 30,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_3b894d0acc56601d": {
+    "source": "תשובות לשאלות לפני ההזמנה",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processScenarios.ts",
+        "line": 38,
         "kind": "literal"
       }
     ]
@@ -29862,6 +29995,11 @@
         "file": "web/components/landing-v2/processExamples.ts",
         "line": 78,
         "kind": "literal"
+      },
+      {
+        "file": "web/components/landing-v2/processScenarios.ts",
+        "line": 22,
+        "kind": "literal"
       }
     ]
   },
@@ -30119,7 +30257,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 48,
+        "line": 66,
         "kind": "literal"
       }
     ]
@@ -30359,7 +30497,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 156,
+        "line": 163,
         "kind": "literal",
         "purpose": "display"
       }
@@ -30506,7 +30644,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processScenarios.ts",
-        "line": 16,
+        "line": 51,
         "kind": "literal"
       }
     ]
@@ -30612,7 +30750,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 38,
+        "line": 45,
         "kind": "literal"
       }
     ]
@@ -31050,7 +31188,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processScenarios.ts",
-        "line": 14,
+        "line": 49,
         "kind": "literal"
       }
     ]
@@ -31226,6 +31364,17 @@
       }
     ]
   },
+  "m_408d79ceb728ab2c": {
+    "source": "מנויים משלמים חדשים",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processScenarios.ts",
+        "line": 29,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_4094d7c284d4796b": {
     "source": "אין לנו כתובת אתר של העסק, אז לא בדקנו את האתר.",
     "language": "he",
@@ -31323,7 +31472,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 74,
+        "line": 71,
         "kind": "literal"
       }
     ]
@@ -31446,7 +31595,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 143,
+        "line": 150,
         "kind": "literal"
       }
     ]
@@ -31692,7 +31841,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processScenarios.ts",
-        "line": 18,
+        "line": 53,
         "kind": "literal"
       }
     ]
@@ -31802,7 +31951,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processScenarios.ts",
-        "line": 17,
+        "line": 52,
         "kind": "literal"
       }
     ]
@@ -31845,6 +31994,17 @@
         "line": 170,
         "kind": "literal",
         "purpose": "validation"
+      }
+    ]
+  },
+  "m_41dd0a1ed52da569": {
+    "source": "הסרנו חצים מיותרים ורווחים גדולים מתחת להדגמות, בלי להגדיל את אזור התצוגה.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 11,
+        "kind": "literal"
       }
     ]
   },
@@ -31912,17 +32072,6 @@
       {
         "file": "web/lib/uxFlows.ts",
         "line": 62,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_420d140f58808541": {
-    "source": "דוגמה למעקב אחר קמפיין",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 52,
         "kind": "literal"
       }
     ]
@@ -32541,17 +32690,6 @@
       }
     ]
   },
-  "m_432a3f0dbd9be266": {
-    "source": "מהמטרה ועד לתוצאה",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 83,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_432c2daf5abb0c86": {
     "source": "מבצע|הנחה|הטבה|הזמנ(?:ה|ות)\\s+מראש|מארז",
     "language": "he",
@@ -32640,6 +32778,17 @@
       {
         "file": "web/app/promotion/page.tsx",
         "line": 961,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_4362fec2edd9f6a8": {
+    "source": "שלושה צעדים לשימוש הראשון",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processScenarios.ts",
+        "line": 28,
         "kind": "literal"
       }
     ]
@@ -32988,6 +33137,17 @@
       }
     ]
   },
+  "m_43f1b451f5b2ff8e": {
+    "source": "שיחות היכרות שנקבעו",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processScenarios.ts",
+        "line": 33,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_4400cd21109f3ddc": {
     "source": "עוזרים לבחור מידה",
     "language": "he",
@@ -33225,7 +33385,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 71,
+        "line": 68,
         "kind": "literal"
       }
     ]
@@ -33438,7 +33598,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 201,
+        "line": 208,
         "kind": "literal"
       }
     ]
@@ -33572,7 +33732,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 76,
+        "line": 94,
         "kind": "literal"
       }
     ]
@@ -34002,7 +34162,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 137,
+        "line": 144,
         "kind": "literal"
       }
     ]
@@ -34638,7 +34798,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 178,
+        "line": 185,
         "kind": "literal"
       }
     ]
@@ -34948,17 +35108,12 @@
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 54,
-        "kind": "literal"
-      },
-      {
-        "file": "web/lib/releases.ts",
         "line": 61,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 110,
+        "line": 68,
         "kind": "literal"
       },
       {
@@ -34969,6 +35124,11 @@
       {
         "file": "web/lib/releases.ts",
         "line": 124,
+        "kind": "literal"
+      },
+      {
+        "file": "web/lib/releases.ts",
+        "line": 131,
         "kind": "literal"
       },
       {
@@ -35147,17 +35307,17 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 47,
+        "line": 54,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 75,
+        "line": 82,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 101,
+        "line": 108,
         "kind": "literal"
       }
     ]
@@ -35358,6 +35518,18 @@
         "line": 54,
         "kind": "literal",
         "purpose": "validation"
+      }
+    ]
+  },
+  "m_4946d4d5cab70e40": {
+    "source": "שיחות היכרות",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processScenarios.ts",
+        "line": 33,
+        "kind": "literal",
+        "purpose": "display"
       }
     ]
   },
@@ -36514,7 +36686,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 100,
+        "line": 107,
         "kind": "literal"
       }
     ]
@@ -36746,7 +36918,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processScenarios.ts",
-        "line": 14,
+        "line": 49,
         "kind": "literal"
       }
     ]
@@ -38210,6 +38382,17 @@
       }
     ]
   },
+  "m_4faa49447b5be7ef": {
+    "source": "מה אפשר להזמין מראש לאיסוף",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processScenarios.ts",
+        "line": 43,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_4fab42fc650a3f87": {
     "source": "תמונה מהעסק, סיפור קצר מאחורי הקלעים, ושאלה אחת שמזמינה את הלקוחות להגיב.",
     "language": "he",
@@ -38361,7 +38544,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 35,
+        "line": 53,
         "kind": "literal"
       }
     ]
@@ -38372,7 +38555,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 240,
+        "line": 247,
         "kind": "literal",
         "purpose": "display"
       }
@@ -38761,7 +38944,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processScenarios.ts",
-        "line": 18,
+        "line": 53,
         "kind": "literal"
       }
     ]
@@ -38772,7 +38955,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 83,
+        "line": 90,
         "kind": "literal"
       }
     ]
@@ -39030,7 +39213,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 164,
+        "line": 171,
         "kind": "literal"
       }
     ]
@@ -39197,7 +39380,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 212,
+        "line": 219,
         "kind": "literal",
         "purpose": "display"
       }
@@ -39310,6 +39493,18 @@
       }
     ]
   },
+  "m_523d5ca0126b76bd": {
+    "source": "תרומה חוזרת",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processScenarios.ts",
+        "line": 24,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
   "m_5242e0493fa80fe7": {
     "source": "פרטים והעדפות",
     "language": "he",
@@ -39327,7 +39522,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 35,
+        "line": 53,
         "kind": "literal"
       }
     ]
@@ -41503,7 +41698,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 234,
+        "line": 241,
         "kind": "literal"
       }
     ]
@@ -41983,6 +42178,17 @@
       }
     ]
   },
+  "m_5817f5c7a6a28f6d": {
+    "source": "הפוסטים והתוצאות מקבלים יותר מקום בעמוד הבית, ואפשר לבחור מטרה מתוך ההדגמה.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 10,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_5820befbeeb2428a": {
     "source": "יותר מ-{arg_0}",
     "language": "he",
@@ -42185,7 +42391,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 39,
+        "line": 46,
         "kind": "literal"
       }
     ]
@@ -43480,7 +43686,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 108,
+        "line": 115,
         "kind": "literal"
       }
     ]
@@ -44218,7 +44424,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 235,
+        "line": 242,
         "kind": "literal"
       }
     ]
@@ -44264,7 +44470,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 82,
+        "line": 89,
         "kind": "literal"
       }
     ]
@@ -45099,6 +45305,18 @@
         "file": "web/components/landing-v2/content.ts",
         "line": 94,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_5e544ea850476b9a": {
+    "source": "מנויים",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processScenarios.ts",
+        "line": 29,
+        "kind": "literal",
+        "purpose": "display"
       }
     ]
   },
@@ -46121,7 +46339,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 45,
+        "line": 52,
         "kind": "literal"
       }
     ]
@@ -46529,7 +46747,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 39,
+        "line": 57,
         "kind": "literal"
       }
     ]
@@ -46681,7 +46899,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 213,
+        "line": 220,
         "kind": "literal"
       }
     ]
@@ -47111,7 +47329,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 215,
+        "line": 222,
         "kind": "literal"
       }
     ]
@@ -47535,7 +47753,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 166,
+        "line": 173,
         "kind": "literal"
       }
     ]
@@ -47569,6 +47787,17 @@
       }
     ]
   },
+  "m_63c562ec16890694": {
+    "source": "לקוחות ותומכים שחזרו",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processScenarios.ts",
+        "line": 18,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_63c797e9ca1ee7fa": {
     "source": "בעמוד הבית שלכם לא השתנו מבצעים, מחירים או כותרות מאז {arg_0}.",
     "language": "he",
@@ -47599,7 +47828,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 48,
+        "line": 66,
         "kind": "literal"
       }
     ]
@@ -48225,7 +48454,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 10,
+        "line": 17,
         "kind": "literal"
       }
     ]
@@ -48261,6 +48490,18 @@
         "file": "web/app/onboarding/page.tsx",
         "line": 131,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_654c9b6b852348ba": {
+    "source": "יותר מקום לראות את הקמפיין",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 9,
+        "kind": "literal",
+        "purpose": "display"
       }
     ]
   },
@@ -50020,6 +50261,17 @@
       }
     ]
   },
+  "m_68bf30a83a3791fa": {
+    "source": "קניות של לקוחות חוזרים",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processScenarios.ts",
+        "line": 44,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_68c17263d5c82704": {
     "source": "סגנון הפוסט",
     "language": "he",
@@ -50841,7 +51093,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 149,
+        "line": 156,
         "kind": "literal",
         "purpose": "display"
       }
@@ -50917,7 +51169,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 70,
+        "line": 88,
         "kind": "literal"
       }
     ]
@@ -50985,7 +51237,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 228,
+        "line": 235,
         "kind": "literal"
       }
     ]
@@ -51040,7 +51292,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 227,
+        "line": 234,
         "kind": "literal"
       }
     ]
@@ -51186,7 +51438,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 233,
+        "line": 240,
         "kind": "literal",
         "purpose": "display"
       }
@@ -51455,7 +51707,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 55,
+        "line": 73,
         "kind": "literal"
       }
     ]
@@ -53034,7 +53286,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 26,
+        "line": 31,
         "kind": "literal"
       }
     ]
@@ -53411,9 +53663,20 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 219,
+        "line": 226,
         "kind": "literal",
         "purpose": "display"
+      }
+    ]
+  },
+  "m_6ffe0e64f5d18fec": {
+    "source": "כניסות חדשות לעמוד התרומה",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processScenarios.ts",
+        "line": 23,
+        "kind": "literal"
       }
     ]
   },
@@ -53483,6 +53746,12 @@
         "file": "web/components/landing-v2/businessExamples.ts",
         "line": 48,
         "kind": "literal"
+      },
+      {
+        "file": "web/components/landing-v2/processScenarios.ts",
+        "line": 22,
+        "kind": "literal",
+        "purpose": "display"
       }
     ]
   },
@@ -53720,7 +53989,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 30,
+        "line": 37,
         "kind": "literal",
         "purpose": "display"
       }
@@ -53984,18 +54253,29 @@
       }
     ]
   },
+  "m_70e5369524940734": {
+    "source": "איך פונים, קונים או תורמים",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processScenarios.ts",
+        "line": 17,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_70e84374b3402de4": {
     "source": "לשבוע שלי",
     "language": "he",
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 92,
+        "line": 99,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 138,
+        "line": 145,
         "kind": "literal"
       }
     ]
@@ -54006,7 +54286,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 72,
+        "line": 79,
         "kind": "literal",
         "purpose": "display"
       }
@@ -54051,7 +54331,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 172,
+        "line": 179,
         "kind": "literal"
       }
     ]
@@ -54504,7 +54784,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 81,
+        "line": 88,
         "kind": "literal",
         "purpose": "display"
       }
@@ -56741,7 +57021,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 24,
+        "line": 31,
         "kind": "literal"
       }
     ]
@@ -57637,7 +57917,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 191,
+        "line": 198,
         "kind": "literal",
         "purpose": "display"
       }
@@ -57921,7 +58201,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processScenarios.ts",
-        "line": 15,
+        "line": 50,
         "kind": "literal"
       }
     ]
@@ -57961,6 +58241,17 @@
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
         "line": 50,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_798f1a194c3cd2af": {
+    "source": "מה השתנה בזכות התמיכה שלכם",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processScenarios.ts",
+        "line": 24,
         "kind": "literal"
       }
     ]
@@ -58409,7 +58700,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 171,
+        "line": 178,
         "kind": "literal"
       }
     ]
@@ -60788,6 +61079,17 @@
       }
     ]
   },
+  "m_800444a9589d6438": {
+    "source": "מתנסים שהשלימו שימוש ראשון",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processScenarios.ts",
+        "line": 28,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_8007dd4a232c9ebe": {
     "source": "טקסט",
     "language": "he",
@@ -60952,7 +61254,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 186,
+        "line": 193,
         "kind": "literal"
       }
     ]
@@ -62399,7 +62701,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 179,
+        "line": 186,
         "kind": "literal"
       }
     ]
@@ -64311,6 +64613,17 @@
       }
     ]
   },
+  "m_86c52357a2c71758": {
+    "source": "לצפות בקמפיין",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 12,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_86c6d73d788661c7": {
     "source": "לא הצלחנו לבדוק כרגע. אפשר לחזור לכאן בהמשך.",
     "language": "he",
@@ -64398,6 +64711,17 @@
         "line": 1000,
         "kind": "template",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_86ebbb990c9c0f5f": {
+    "source": "לקוחות שהגיעו בעקבות הפרסום",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processScenarios.ts",
+        "line": 42,
+        "kind": "literal"
       }
     ]
   },
@@ -64595,7 +64919,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 135,
+        "line": 142,
         "kind": "literal",
         "purpose": "display"
       }
@@ -65064,7 +65388,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 35,
+        "line": 53,
         "kind": "literal"
       }
     ]
@@ -65924,7 +66248,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 65,
+        "line": 72,
         "kind": "literal",
         "purpose": "display"
       }
@@ -68069,7 +68393,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 177,
+        "line": 184,
         "kind": "literal",
         "purpose": "display"
       }
@@ -68433,7 +68757,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 170,
+        "line": 177,
         "kind": "literal",
         "purpose": "display"
       }
@@ -70364,6 +70688,18 @@
       }
     ]
   },
+  "m_93f95438a1198f0e": {
+    "source": "סל שננטש",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processScenarios.ts",
+        "line": 38,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
   "m_93fab7664f6af985": {
     "source": "לא נמדד",
     "language": "he",
@@ -70957,7 +71293,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processScenarios.ts",
-        "line": 15,
+        "line": 50,
         "kind": "literal"
       }
     ]
@@ -72134,6 +72470,12 @@
         "kind": "literal"
       },
       {
+        "file": "web/components/landing-v2/processScenarios.ts",
+        "line": 37,
+        "kind": "literal",
+        "purpose": "display"
+      },
+      {
         "file": "api/app/services/goal_numbers.py",
         "line": 888,
         "kind": "literal",
@@ -72165,7 +72507,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 115,
+        "line": 122,
         "kind": "literal"
       }
     ]
@@ -73035,7 +73377,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 46,
+        "line": 64,
         "kind": "jsx"
       }
     ]
@@ -73258,6 +73600,18 @@
       }
     ]
   },
+  "m_99c385901f42f28b": {
+    "source": "קהל חוזר",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processScenarios.ts",
+        "line": 18,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
   "m_99c45643dfee58b1": {
     "source": "עוד {arg_0} הצעות לבדיקה",
     "language": "he",
@@ -73400,6 +73754,18 @@
       {
         "file": "web/lib/quarterPlanMock.ts",
         "line": 619,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
+  "m_9a4cf7a372a60c04": {
+    "source": "שימוש במוצר",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processScenarios.ts",
+        "line": 28,
         "kind": "literal",
         "purpose": "display"
       }
@@ -73693,7 +74059,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 221,
+        "line": 228,
         "kind": "literal"
       }
     ]
@@ -73900,7 +74266,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 236,
+        "line": 243,
         "kind": "literal"
       }
     ]
@@ -74180,7 +74546,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 74,
+        "line": 92,
         "kind": "literal"
       }
     ]
@@ -74199,6 +74565,17 @@
         "line": 662,
         "kind": "template",
         "purpose": "display"
+      }
+    ]
+  },
+  "m_9c4538b04ceb8466": {
+    "source": "הסיבה לביקור הבא בחנות",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processScenarios.ts",
+        "line": 44,
+        "kind": "literal"
       }
     ]
   },
@@ -75022,7 +75399,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 66,
+        "line": 63,
         "kind": "literal"
       }
     ]
@@ -75444,6 +75821,17 @@
       {
         "file": "web/components/start/ResearchJourney.tsx",
         "line": 164,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_9ed46ed3b225adcc": {
+    "source": "למי השירות מתאים",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processScenarios.ts",
+        "line": 32,
         "kind": "literal"
       }
     ]
@@ -75930,6 +76318,18 @@
       }
     ]
   },
+  "m_a042c6fc395cd50b": {
+    "source": "איסוף מהחנות",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processScenarios.ts",
+        "line": 43,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
   "m_a0451e6cd9724214": {
     "source": "{arg_0}, יותר מהפוסט הדומה ({arg_1}).",
     "language": "he",
@@ -76263,7 +76663,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 136,
+        "line": 143,
         "kind": "literal"
       }
     ]
@@ -76398,7 +76798,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processScenarios.ts",
-        "line": 18,
+        "line": 53,
         "kind": "literal"
       }
     ]
@@ -76719,7 +77119,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 66,
+        "line": 63,
         "kind": "literal"
       }
     ]
@@ -77171,7 +77571,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 52,
+        "line": 59,
         "kind": "literal"
       }
     ]
@@ -77595,7 +77995,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 243,
+        "line": 250,
         "kind": "literal"
       }
     ]
@@ -78442,7 +78842,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processScenarios.ts",
-        "line": 15,
+        "line": 50,
         "kind": "literal"
       }
     ]
@@ -78504,6 +78904,17 @@
       {
         "file": "web/lib/api.ts",
         "line": 1154,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_a56f0f4b4a967215": {
+    "source": "נתחיל בפוסט",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/ProcessScenes.tsx",
+        "line": 44,
         "kind": "literal"
       }
     ]
@@ -78962,7 +79373,7 @@
       },
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 46,
+        "line": 64,
         "kind": "jsx"
       }
     ]
@@ -80638,7 +81049,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processScenarios.ts",
-        "line": 16,
+        "line": 51,
         "kind": "literal"
       }
     ]
@@ -81269,7 +81680,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 205,
+        "line": 212,
         "kind": "literal",
         "purpose": "display"
       }
@@ -81460,6 +81871,17 @@
       {
         "file": "web/lib/dna/samples.ts",
         "line": 271,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_ac03cff1ed409231": {
+    "source": "מה התרומה שלכם מאפשרת",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processScenarios.ts",
+        "line": 22,
         "kind": "literal"
       }
     ]
@@ -81807,7 +82229,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 46,
+        "line": 53,
         "kind": "literal"
       }
     ]
@@ -82109,6 +82531,12 @@
         "file": "web/app/decisions/page.tsx",
         "line": 1050,
         "kind": "literal"
+      },
+      {
+        "file": "web/components/landing-v2/processScenarios.ts",
+        "line": 16,
+        "kind": "literal",
+        "purpose": "display"
       }
     ]
   },
@@ -82256,7 +82684,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 122,
+        "line": 129,
         "kind": "literal"
       }
     ]
@@ -83478,7 +83906,7 @@
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 229,
+        "line": 236,
         "kind": "literal"
       }
     ]
@@ -83652,7 +84080,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 109,
+        "line": 116,
         "kind": "literal"
       }
     ]
@@ -84516,7 +84944,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 121,
+        "line": 128,
         "kind": "literal",
         "purpose": "display"
       }
@@ -85121,7 +85549,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 98,
+        "line": 105,
         "kind": "literal",
         "purpose": "display"
       }
@@ -86149,6 +86577,12 @@
         "kind": "literal"
       },
       {
+        "file": "web/components/landing-v2/processScenarios.ts",
+        "line": 32,
+        "kind": "literal",
+        "purpose": "display"
+      },
+      {
         "file": "web/components/results/ServiceCheckIn.tsx",
         "line": 137,
         "kind": "literal"
@@ -86931,7 +87365,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processScenarios.ts",
-        "line": 17,
+        "line": 52,
         "kind": "literal"
       }
     ]
@@ -87008,7 +87442,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 55,
+        "line": 73,
         "kind": "literal"
       }
     ]
@@ -87281,6 +87715,17 @@
       {
         "file": "web/app/decisions/page.tsx",
         "line": 1097,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_b81574cce0f3820f": {
+    "source": "מה קורה בשיחת היכרות",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processScenarios.ts",
+        "line": 33,
         "kind": "literal"
       }
     ]
@@ -87599,12 +88044,12 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 40,
+        "line": 58,
         "kind": "literal"
       },
       {
         "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 70,
+        "line": 67,
         "kind": "literal"
       }
     ]
@@ -88432,7 +88877,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 73,
+        "line": 80,
         "kind": "literal"
       }
     ]
@@ -88958,7 +89403,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processScenarios.ts",
-        "line": 15,
+        "line": 50,
         "kind": "literal"
       }
     ]
@@ -89410,7 +89855,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 128,
+        "line": 135,
         "kind": "literal",
         "purpose": "display"
       }
@@ -90473,7 +90918,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 206,
+        "line": 213,
         "kind": "literal"
       }
     ]
@@ -90615,7 +91060,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 193,
+        "line": 200,
         "kind": "literal"
       }
     ]
@@ -91268,6 +91713,17 @@
       }
     ]
   },
+  "m_c114f82138e388d5": {
+    "source": "הזמנות מלקוחות חוזרים",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processScenarios.ts",
+        "line": 39,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_c11aae0cb77493db": {
     "source": "סכום",
     "language": "he",
@@ -91506,7 +91962,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 23,
+        "line": 30,
         "kind": "literal",
         "purpose": "display"
       }
@@ -91554,6 +92010,24 @@
         "file": "web/components/landing-v2/connectionExamples.ts",
         "line": 32,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_c1c18f3f1891085f": {
+    "source": "קנייה חוזרת",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processScenarios.ts",
+        "line": 39,
+        "kind": "literal",
+        "purpose": "display"
+      },
+      {
+        "file": "web/components/landing-v2/processScenarios.ts",
+        "line": 44,
+        "kind": "literal",
+        "purpose": "display"
       }
     ]
   },
@@ -92632,7 +93106,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 61,
+        "line": 58,
         "kind": "literal"
       }
     ]
@@ -93393,6 +93867,17 @@
       }
     ]
   },
+  "m_c530e25a85a8f289": {
+    "source": "נמדוד",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/ProcessScenes.tsx",
+        "line": 39,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_c53a1849e6a05456": {
     "source": "עוד לא משכנו נתונים. רעננו את הנתונים בעמוד הביצועים, ואז כל שורה כאן תציג את הכניסות והפניות של הפוסטים שנכתבו לאותו קהל.",
     "language": "he",
@@ -93660,7 +94145,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 60,
+        "line": 57,
         "kind": "literal"
       }
     ]
@@ -95298,7 +95783,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 53,
+        "line": 60,
         "kind": "literal"
       }
     ]
@@ -95472,7 +95957,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 9,
+        "line": 16,
         "kind": "literal",
         "purpose": "display"
       }
@@ -95575,7 +96060,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 33,
+        "line": 40,
         "kind": "literal"
       }
     ]
@@ -96066,7 +96551,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 192,
+        "line": 199,
         "kind": "literal"
       }
     ]
@@ -96193,7 +96678,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 44,
+        "line": 51,
         "kind": "literal",
         "purpose": "display"
       }
@@ -96686,6 +97171,17 @@
       }
     ]
   },
+  "m_cbebbf8d9fc2c6ed": {
+    "source": "פניות, קניות או תרומות שהושלמו",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processScenarios.ts",
+        "line": 17,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_cbefbd76a58f4bd2": {
     "source": "בחרתם: {arg_0}",
     "language": "he",
@@ -96748,7 +97244,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 173,
+        "line": 180,
         "kind": "literal"
       }
     ]
@@ -96803,7 +97299,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 66,
+        "line": 73,
         "kind": "literal"
       }
     ]
@@ -97264,7 +97760,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 17,
+        "line": 24,
         "kind": "literal"
       }
     ]
@@ -98290,6 +98786,12 @@
         "file": "web/components/landing-v2/businessExamples.ts",
         "line": 36,
         "kind": "literal"
+      },
+      {
+        "file": "web/components/landing-v2/processScenarios.ts",
+        "line": 27,
+        "kind": "literal",
+        "purpose": "display"
       }
     ]
   },
@@ -99474,7 +99976,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 37,
+        "line": 55,
         "kind": "literal"
       },
       {
@@ -99502,7 +100004,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 55,
+        "line": 73,
         "kind": "literal"
       },
       {
@@ -99564,7 +100066,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 207,
+        "line": 214,
         "kind": "literal"
       }
     ]
@@ -100161,7 +100663,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 51,
+        "line": 58,
         "kind": "literal",
         "purpose": "display"
       }
@@ -100367,7 +100869,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 32,
+        "line": 39,
         "kind": "literal"
       }
     ]
@@ -101075,7 +101577,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 158,
+        "line": 165,
         "kind": "literal"
       }
     ]
@@ -101816,7 +102318,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 142,
+        "line": 149,
         "kind": "literal",
         "purpose": "display"
       }
@@ -101861,7 +102363,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processScenarios.ts",
-        "line": 18,
+        "line": 53,
         "kind": "literal"
       }
     ]
@@ -101883,7 +102385,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 77,
+        "line": 74,
         "kind": "literal"
       }
     ]
@@ -103586,7 +104088,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 84,
+        "line": 91,
         "kind": "literal"
       }
     ]
@@ -103898,17 +104400,6 @@
       {
         "file": "web/components/account/DeleteAccount.tsx",
         "line": 67,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_db745e39f0248813": {
-    "source": "בודקים התקדמות לפי המטרות שבחרת",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 29,
         "kind": "literal"
       }
     ]
@@ -105045,7 +105536,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 48,
+        "line": 66,
         "kind": "literal"
       }
     ]
@@ -105090,7 +105581,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 71,
+        "line": 68,
         "kind": "literal"
       }
     ]
@@ -105194,7 +105685,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 107,
+        "line": 114,
         "kind": "literal",
         "purpose": "display"
       }
@@ -105228,7 +105719,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 165,
+        "line": 172,
         "kind": "literal"
       }
     ]
@@ -105322,6 +105813,18 @@
         "file": "web/components/design/DesignLibrary.tsx",
         "line": 53,
         "kind": "jsx"
+      }
+    ]
+  },
+  "m_de289e98eb20f4d4": {
+    "source": "תומכים חדשים",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processScenarios.ts",
+        "line": 23,
+        "kind": "literal",
+        "purpose": "display"
       }
     ]
   },
@@ -105498,7 +106001,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 150,
+        "line": 157,
         "kind": "literal"
       }
     ]
@@ -106240,7 +106743,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 214,
+        "line": 221,
         "kind": "literal"
       }
     ]
@@ -107194,7 +107697,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 90,
+        "line": 97,
         "kind": "literal"
       }
     ]
@@ -107701,7 +108204,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 39,
+        "line": 57,
         "kind": "literal"
       }
     ]
@@ -108025,7 +108528,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 67,
+        "line": 74,
         "kind": "literal"
       }
     ]
@@ -108081,7 +108584,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processScenarios.ts",
-        "line": 17,
+        "line": 52,
         "kind": "literal"
       }
     ]
@@ -109010,7 +109513,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 25,
+        "line": 32,
         "kind": "literal"
       }
     ]
@@ -109068,6 +109571,17 @@
         "line": 108,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_e5b5b9cd3cba8416": {
+    "source": "עבודה שהושלמה והסיפור שמאחוריה",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processScenarios.ts",
+        "line": 34,
+        "kind": "literal"
       }
     ]
   },
@@ -109435,7 +109949,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 116,
+        "line": 123,
         "kind": "literal"
       }
     ]
@@ -109457,12 +109971,12 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 12,
+        "line": 19,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 159,
+        "line": 166,
         "kind": "literal"
       }
     ]
@@ -109507,7 +110021,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 11,
+        "line": 18,
         "kind": "literal"
       }
     ]
@@ -109630,6 +110144,17 @@
       {
         "file": "web/lib/uxFlows.ts",
         "line": 99,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_e6c7b6d8ab5fb259": {
+    "source": "סיבה חדשה לחזור אלינו",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processScenarios.ts",
+        "line": 18,
         "kind": "literal"
       }
     ]
@@ -109864,7 +110389,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 60,
+        "line": 57,
         "kind": "literal"
       }
     ]
@@ -110344,6 +110869,17 @@
       }
     ]
   },
+  "m_e850295b4e72af86": {
+    "source": "איך הפריט נראה ונלבש",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processScenarios.ts",
+        "line": 37,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_e8517d6f5e88cec2": {
     "source": "אם זה יותר מדי, יורדים לקצב נמוך יותר. קבוע עדיף על הרבה ואז שקט.",
     "language": "he",
@@ -110402,7 +110938,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 89,
+        "line": 96,
         "kind": "literal",
         "purpose": "display"
       }
@@ -110931,7 +111467,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 40,
+        "line": 58,
         "kind": "literal"
       }
     ]
@@ -111879,7 +112415,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 200,
+        "line": 207,
         "kind": "literal"
       }
     ]
@@ -112145,7 +112681,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 59,
+        "line": 66,
         "kind": "literal"
       }
     ]
@@ -112953,7 +113489,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 74,
+        "line": 81,
         "kind": "literal"
       }
     ]
@@ -114048,7 +114584,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 55,
+        "line": 73,
         "kind": "literal"
       }
     ]
@@ -115999,7 +116535,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 48,
+        "line": 66,
         "kind": "literal"
       }
     ]
@@ -117354,7 +117890,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 199,
+        "line": 206,
         "kind": "literal"
       }
     ]
@@ -117897,7 +118433,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 163,
+        "line": 170,
         "kind": "literal",
         "purpose": "display"
       }
@@ -118234,6 +118770,17 @@
       }
     ]
   },
+  "m_f7890bf400a80b65": {
+    "source": "הזמנות לאיסוף שהושלמו",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processScenarios.ts",
+        "line": 43,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_f789366b398451ca": {
     "source": "אנחנו סוגרים מוקדם בערב החג",
     "language": "he",
@@ -118378,7 +118925,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 60,
+        "line": 57,
         "kind": "literal"
       }
     ]
@@ -118870,6 +119417,17 @@
       }
     ]
   },
+  "m_f95facde3c672af3": {
+    "source": "עבודות חדשות שנסגרו",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processScenarios.ts",
+        "line": 34,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_f96ac5cd1c25d494": {
     "source": "מתחילים לספר שבוע לפני, לא ביום עצמו",
     "language": "he",
@@ -119190,6 +119748,17 @@
         "line": 437,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_fa1c59011a29eada": {
+    "source": "מה מקבלים במנוי המלא",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processScenarios.ts",
+        "line": 29,
+        "kind": "literal"
       }
     ]
   },
@@ -119823,7 +120392,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 194,
+        "line": 201,
         "kind": "literal"
       }
     ]
@@ -120360,7 +120929,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 151,
+        "line": 158,
         "kind": "literal"
       }
     ]
@@ -120656,7 +121225,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 37,
+        "line": 44,
         "kind": "literal",
         "purpose": "display"
       }
@@ -121040,7 +121609,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 184,
+        "line": 191,
         "kind": "literal",
         "purpose": "display"
       }
@@ -121368,7 +121937,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 131,
+        "line": 138,
         "kind": "literal"
       }
     ]
@@ -121516,6 +122085,17 @@
         "line": 124,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_ff054eab074dca2f": {
+    "source": "מה מחכה לכם השבוע בחנות",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processScenarios.ts",
+        "line": 42,
+        "kind": "literal"
       }
     ]
   },
@@ -121955,17 +122535,6 @@
       {
         "file": "web/app/promotion/page.tsx",
         "line": 652,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_fff14ccbd9b7e770": {
-    "source": "נתונים להמחשה",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 52,
         "kind": "literal"
       }
     ]
