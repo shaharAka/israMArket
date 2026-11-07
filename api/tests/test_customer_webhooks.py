@@ -23,6 +23,7 @@ from cryptography.x509.oid import NameOID
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.sql.dml import Insert
 
 from app.db import Base, get_db
 from app.deps import get_current_user
@@ -155,6 +156,18 @@ class CustomerWebhookTest(unittest.TestCase):
         with mock.patch.object(webhooks.httpx, "post", return_value=httpx.Response(503)) as post:
             result = self.send([item])[0]
         self.assertEqual(post.call_count, 1); self.assertFalse(result["ok"])
+
+    def test_disconnect_immediately_before_history_insert_cannot_create_an_orphan(self):
+        item = self.receiver(); item_id = item.id
+        execute = self.db.execute
+        def disconnect_at_insert(statement, *args, **kwargs):
+            if isinstance(statement, Insert):
+                with self.Session() as separate:
+                    separate.query(WebhookEndpoint).filter_by(id=item_id).delete(); separate.commit()
+            return execute(statement, *args, **kwargs)
+        with mock.patch.object(self.db, "execute", side_effect=disconnect_at_insert), mock.patch.object(webhooks.httpx, "post", return_value=httpx.Response(204)):
+            self.assertTrue(self.send([item])[0]["ok"])
+        self.assertEqual(self.db.query(WebhookDelivery).count(), 0)
 
     def test_url_is_checked_again_for_each_attempt(self):
         item = self.receiver()

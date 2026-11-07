@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 from uuid import uuid4
 
 import httpx
-from sqlalchemy import select
+from sqlalchemy import and_, exists, insert, literal, select
 from sqlalchemy.exc import SQLAlchemyError
 
 from app.models import WebhookDelivery, WebhookEndpoint
@@ -63,18 +63,22 @@ def _attempt(endpoint: Receiver, body: bytes, event: str, signature: str, event_
     return False, status, "receiver_rejected_delivery", status in {408, 425, 429} or 500 <= status < 600
 
 
-def _current(db, endpoint: Receiver) -> bool:
-    """A captured ORM relationship is not permission to retry a removed receiver."""
-    if db is None:
-        return True
-    try:
-        return db.execute(select(WebhookEndpoint.id).where(
+def _identity(endpoint: Receiver):
+    return and_(
             WebhookEndpoint.id == endpoint.id,
             WebhookEndpoint.business_id == endpoint.business_id,
             WebhookEndpoint.url == endpoint.url,
             WebhookEndpoint.secret == endpoint.secret,
             WebhookEndpoint.events == endpoint.events,
-        )).first() is not None
+    )
+
+
+def _current(db, endpoint: Receiver) -> bool:
+    """A captured ORM relationship is not permission to retry a removed receiver."""
+    if db is None:
+        return True
+    try:
+        return db.execute(select(WebhookEndpoint.id).where(_identity(endpoint))).first() is not None
     except SQLAlchemyError:
         db.rollback()
         return False
@@ -137,19 +141,17 @@ def deliver(
              "ok": ok, "status": status, "attempts": used, "error": error}
         )
 
-        if db is not None and _current(db, endpoint):
+        if db is not None:
             try:
-                db.add(
-                    WebhookDelivery(
-                        endpoint_id=endpoint.id,
-                        event=event,
-                        url=receiver_origin(endpoint.url),
-                        ok=1 if ok else 0,
-                        status_code=status or 0,
-                        attempts=used,
-                        error=error[:500],
-                    )
-                )
+                # One guarded INSERT, not a check followed by an unguarded write:
+                # disconnect may have committed after the last response/check.
+                values = {"endpoint_id": endpoint.id, "event": event,
+                          "url": receiver_origin(endpoint.url), "ok": 1 if ok else 0,
+                          "status_code": status or 0, "attempts": used, "error": error[:500],
+                          "created_at": datetime.now(timezone.utc).replace(tzinfo=None)}
+                db.execute(insert(WebhookDelivery).from_select(list(values),
+                    select(*(literal(value) for value in values.values())).where(
+                        exists(select(WebhookEndpoint.id).where(_identity(endpoint))))))
                 db.commit()
             except Exception:
                 # A logging failure must never break delivery.
