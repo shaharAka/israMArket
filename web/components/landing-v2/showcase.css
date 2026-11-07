@@ -203,7 +203,8 @@ html[lang="ar"] .lv2-site[data-hero-type="sans"] .lv2-display { font-size: clamp
 .lv2-identity-wordmark { font-family: var(--font-inter), sans-serif; font-weight: 750; font-size: 29px; letter-spacing: -.045em; line-height: 1; color: var(--ink); }
 .lv2-identity-symbol { display: none; width: 50px; min-height: 44px; padding-block: 6px; font-size: 17px; color: var(--ink); }
 .lv2-identity-symbol svg { width: 100%; height: 100%; }
-@media (max-width: 520px) { .lv2-identity-wordmark { display: none; } .lv2-identity-symbol { display: block; } }
+/* Phones keep the full name on one line, a little smaller (BrandWordmark). */
+@media (max-width: 520px) { .lv2-identity-wordmark { font-size: 23px; } }
 
 /* Benefit-led feature chapters. Color belongs to a large product stage, not every control. */
 .lv2-site .lv2-learn-group { background: var(--paper); padding-block: 80px; }

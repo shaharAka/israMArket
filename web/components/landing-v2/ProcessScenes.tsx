@@ -6,10 +6,11 @@ import { ProviderLogo } from "./ProviderLogo";
 import { CampaignArtwork } from "./ProcessCampaignArtwork";
 import { BrandWordmark } from "./BrandWordmark";
 import { PROCESS_GOALS, GENERAL_GOALS, PROCESS_GOAL_BRIEFS, GENERAL_GOAL_BRIEFS, PROCESS_SCHEDULES } from "./processScenarios";
-import type { ProcessRole } from "./processExamples";
+import { EXAMPLE_RESULTS, EXAMPLE_OUTCOME, type ProcessRole } from "./processExamples";
 import { useProcessSequence } from "./useProcessSequence";
-import { TargetIcon } from "./LandingQaScenes";
+import { TargetIcon, ExampleTag } from "./LandingQaScenes";
 import scene from "./process-scenes.module.css";
+import rhythm from "./process-rhythm.module.css";
 
 type RoleProps = { role: ProcessRole | null };
 const PHONE_TIMES = [4200,3200] as const;
@@ -46,23 +47,29 @@ export function PlanScene({ role }: RoleProps) {
   return <div className={`${scene.scene} ${scene.planning}`}>
     <div className={scene.planGoal}><TargetIcon/><div><small><Copy text="מה רוצים להשיג" /></small><strong><Copy text={schedule.goal} /></strong></div></div>
     <div className={scene.planFlow} aria-hidden="true"><i /><i /><i /></div>
-    <div className={scene.taskCalendar}><header><strong><Copy text="התוכנית לחודש הקרוב" /></strong><span><Copy text="לקראת החג" /></span></header><div className={scene.dayNames}>{Array.from({length:7},(_,i)=><span key={i}>{new Intl.DateTimeFormat(locale,{weekday:"short",timeZone:"UTC"}).format(new Date(Date.UTC(2026,10,1+i)))}</span>)}</div><div className={scene.calendarGrid} aria-hidden="true">{Array.from({length:21},(_,i)=><span key={i}>{i+10}</span>)}</div><div className={`${scene.scheduledTask} ${scene.taskOne}`}><small><Copy text="לפני החג" /></small><strong><Copy text={schedule.tasks[0]} /></strong></div><div className={`${scene.scheduledTask} ${scene.taskTwo}`}><strong><Copy text={schedule.tasks[1]} /></strong></div><div className={`${scene.scheduledTask} ${scene.taskThree}`}><strong><Copy text={schedule.tasks[2]} /></strong></div><div className={scene.holiday}><span /><Copy text="ערב חג" /></div></div>
-    <div className={scene.continuousAnalysis} data-analysis="continuous"><Loop /><div><strong><Copy text="לומדים כל הזמן" /></strong><small><Copy text="התוצאות ממשיכות לעדכן את התוכנית לאורך החודש" /></small></div></div>
+    <div className={scene.taskCalendar}><header><strong><Copy text="התוכנית לחודש הקרוב" /></strong><span><Copy text="לקראת החג" /></span></header><div className={scene.dayNames}>{Array.from({length:7},(_,i)=><span key={i}>{new Intl.DateTimeFormat(locale,{weekday:"narrow",timeZone:"UTC"}).format(new Date(Date.UTC(2026,10,1+i)))}</span>)}</div><div className={scene.calendarGrid} aria-hidden="true">{Array.from({length:21},(_,i)=><span key={i}>{i+10}</span>)}</div><div className={`${scene.scheduledTask} ${scene.taskOne}`}><small><Copy text="לפני החג" /></small><strong><Copy text={schedule.tasks[0]} /></strong></div><div className={`${scene.scheduledTask} ${scene.taskTwo}`}><strong><Copy text={schedule.tasks[1]} /></strong></div><div className={`${scene.scheduledTask} ${scene.taskThree}`}><strong><Copy text={schedule.tasks[2]} /></strong></div><div className={scene.holiday}><span /><Copy text="ערב חג" /></div></div>
+    <div className={scene.continuousAnalysis} data-analysis="continuous"><Loop /><div><strong><Copy text="לומדים כל הזמן" /></strong></div></div>
   </div>;
 }
 
-export function DataScene() {
+/** The same example figures as the hero and the results chapter, each with its source. */
+export function DataScene({ role }: RoleProps) {
+  const rows = [
+    { question: "כמה אנשים הגיעו לאתר?", value: EXAMPLE_RESULTS.visits, source: "Google Analytics" },
+    { question: "כמה לחצו על המודעות?", value: EXAMPLE_RESULTS.adClicks, source: "Meta Ads" },
+    { question: EXAMPLE_OUTCOME[role ?? "online_shop"].question, value: String(EXAMPLE_RESULTS.outcome), source: "Google Analytics" },
+  ];
   return <div className={`${scene.scene} ${scene.data}`}>
     <div className={scene.rawSources}><div><ProviderLogo provider="google-analytics" size={29}/><span>Google Analytics</span><i/><i/></div><div><ProviderLogo provider="facebook-instagram" size={25}/><span>Instagram · Facebook</span><i/><i/></div><div><ProviderLogo provider="ads-pixel" size={29}/><span>Meta Ads</span><i/><i/></div></div>
     <div className={scene.dataFlow} aria-hidden="true"><i/><i/><i/></div>
-    <div className={scene.readableData}><span className={scene.eyebrow}><Copy text="התמונה החשובה, במקום אחד" /></span>{[{question:"כמה אנשים הגיעו לאתר?",value:"1,240",source:"Google Analytics"},{question:"כמה לחצו על המודעות?",value:"86",source:"Meta Ads"},{question:"כמה פניות נשלחו מהאתר?",value:"12",source:"Google Analytics"}].map(item=><div key={item.question}><p><Copy text={item.question}/></p><strong dir="ltr">{item.value}</strong><small dir="ltr">{item.source}</small></div>)}</div>
+    <div className={scene.readableData}><span className={scene.eyebrow}><ExampleTag /></span>{rows.map(item=><div key={item.question}><p><Copy text={item.question}/></p><strong dir="ltr">{item.value}</strong><small dir="ltr">{item.source}</small></div>)}</div>
   </div>;
 }
 
 export function PhoneScene({ role, playing }: RoleProps & {playing:boolean}) {
   const {index,select}=useProcessSequence(PHONE_TIMES,playing);
   const t=useCopy();
-  return <div className={scene.phoneScene}><div className={scene.approvalPhone} data-approved={index===1}><div className={scene.phoneScreen}><div className={scene.phoneStatus} aria-hidden="true"><span>9:41</span><svg viewBox="0 0 44 12" fill="currentColor"><path d="M1 8h2v3H1Zm4-3h2v6H5Zm4-3h2v9H9Zm4-2h2v11h-2Z"/><path d="M20 4q4-4 8 0l-1 1q-3-3-6 0Zm2 2q2-2 4 0l-2 3Z"/><rect x="32" y="2" width="10" height="8" rx="2" fill="none" stroke="currentColor"/><path d="M34 4h6v4h-6ZM43 5h1v2h-1Z"/></svg></div><div className={scene.phoneLogo}><BrandWordmark/></div><header><Copy text="הפוסט הבא שלך"/></header><div className={scene.phonePost}><CampaignArtwork role={role??"online_shop"} index={2}/></div><div className={scene.approvalState}>{index===1?<><span><Tick/></span><strong><Copy text="מאושר ומוכן לפרסום"/></strong></>:<><small><Copy text="הכול נראה טוב?"/></small><button type="button" onClick={()=>select(1)}><Copy text="לאשר את הפוסט"/></button></>}</div><Cursor className={scene.approvalCursor}/><span className={scene.phoneHome}/></div></div><button type="button" className={scene.replayApproval} onClick={()=>select(0)} aria-label={t("להציג שוב את אישור הפוסט")}><Loop/></button></div>;
+  return <div className={scene.phoneScene}><div className={scene.approvalPhone} data-approved={index===1}><div className={scene.phoneScreen}><div className={scene.phoneStatus} aria-hidden="true"><span>9:41</span><svg viewBox="0 0 44 12" fill="currentColor"><path d="M1 8h2v3H1Zm4-3h2v6H5Zm4-3h2v9H9Zm4-2h2v11h-2Z"/><path d="M20 4q4-4 8 0l-1 1q-3-3-6 0Zm2 2q2-2 4 0l-2 3Z"/><rect x="32" y="2" width="10" height="8" rx="2" fill="none" stroke="currentColor"/><path d="M34 4h6v4h-6ZM43 5h1v2h-1Z"/></svg></div><div className={rhythm.browserBar} dir="ltr" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.3"><rect x="2.5" y="5.5" width="7" height="5" rx="1"/><path d="M4 5.5V4a2 2 0 0 1 4 0v1.5"/></svg>{"isramarket.co.il"}</div><header><Copy text="הפוסט הבא שלכם"/></header><div className={scene.phonePost}><CampaignArtwork role={role??"online_shop"} index={3}/></div><div className={scene.approvalState}>{index===1?<><span><Tick/></span><strong><Copy text="אושר. מוכן לפרסום"/></strong></>:<><small><Copy text="הכול נראה טוב?"/></small><button type="button" onClick={()=>select(1)}><Copy text="לאשר את הפוסט"/></button></>}</div><Cursor className={scene.approvalCursor}/><span className={scene.phoneHome}/></div></div><button type="button" className={scene.replayApproval} onClick={()=>select(0)} aria-label={t("להציג שוב את אישור הפוסט")}><Loop/></button></div>;
 }
 
 /** The free trial offer stays visible while start and plan/content scenes alternate. */
@@ -72,18 +79,17 @@ export function TrialScene({ playing, reduced }: { playing: boolean; reduced: bo
   return <div className={`${scene.scene} ${scene.trial}`} data-trial-stage={stage}>
     <div className={scene.freeOffer}>
       <div><span className={scene.eyebrow}><Copy text={TRIAL_LABEL} /></span><strong dir="ltr">₪0</strong></div>
-      <p><Copy text="זמן להכיר, לנסות ולהחליט" /></p>
     </div>
     <div className={scene.trialStory} key={stage}>
       {stage === 0 ? <div className={scene.trialStart}>
         <BrandWordmark />
-        <strong><Copy text="בואו נראה מה אפשר לעשות בשבילך" /></strong>
+        <strong><Copy text="בואו נראה מה אפשר להכין בשבילכם" /></strong>
         <div className={scene.trialStartAction}><Copy text={TRIAL_LABEL} /><Cursor className={scene.trialCursor} /></div>
       </div> : <div className={scene.trialWorking}>
         <div className={scene.trialPreparation}>
-          <strong><Copy text="התוכנית שלך מוכנה. מתחילים ליצור את הפוסטים." /></strong>
+          <strong><Copy text="התוכנית שלכם מוכנה. מתחילים להכין את הפוסטים." /></strong>
           <div><span><Tick /></span><Copy text="התוכנית לחודש הקרוב" /></div>
-          <div><span><Tick /></span><Copy text="הפוסט הראשון שלך" /></div>
+          <div><span><Tick /></span><Copy text="הפוסט הראשון שלכם" /></div>
         </div>
         <div className={scene.trialPost}><CampaignArtwork role="online_shop" index={0} /></div>
       </div>}

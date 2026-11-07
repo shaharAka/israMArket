@@ -39,7 +39,7 @@ export function ConnectionDetail({ provider }: { provider: ConnectionExampleKey 
       </section>
       <section className="lv2-wrap lv2-connection-benefits"><h2 className="lv2-h2"><Copy text={planned ? "מה אפשר להכין כבר עכשיו" : "מה החיבור נותן לעסק שלכם"} /></h2><ol>{VALUES[provider].map((value, index) => <li key={value}><span aria-hidden="true">0{index+1}</span><h3><Copy text={value} /></h3></li>)}</ol></section>
       <section className="lv2-wrap lv2-connection-practical">
-        <div><h2 className="lv2-h2"><Copy text="הכל נשאר בשליטה שלכם." /></h2><p className="lv2-lead"><Copy text={connection.privacy} /></p><Link href="/security" className="lv2-link"><Copy text="איך שומרים על המידע שלכם" /></Link></div>
+        <div><h2 className="lv2-h2"><Copy text="הכול נשאר בשליטה שלכם." /></h2><p className="lv2-lead"><Copy text={connection.privacy} /></p><Link href="/security" className="lv2-link"><Copy text="איך שומרים על המידע שלכם" /></Link></div>
         <div><p className="lv2-connection-availability"><Copy text={connection.caveat} /></p>
           <details><summary><Copy text={planned ? "מה אפשר לעשות עד שהחיבור יגיע" : "איך מתחילים לחבר"} /></summary><ol className="lv2-setup-steps">{connection.steps.map(step => <li key={step}><Copy text={step} /></li>)}</ol></details>
         </div>

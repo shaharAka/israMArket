@@ -13,7 +13,7 @@ import styles from "./gallery.module.css";
 type Asset = (typeof motionAssets)[number];
 type Phase = "idle" | "pending" | "success" | "error";
 const categories: { id: MotionCategory | "all"; label: string }[] = [
-  { id: "all", label: "הכל" }, { id: "feedback", label: "תגובה לפעולה" }, { id: "progress", label: "בתוך התהליך" }, { id: "delight", label: "רגע קטן של שמחה" },
+  { id: "all", label: "הכול" }, { id: "feedback", label: "תגובה לפעולה" }, { id: "progress", label: "בתוך התהליך" }, { id: "delight", label: "רגע קטן של שמחה" },
 ];
 const samplePost = "משהו קטן וטוב באמצע היום. בואו לגלות מה חדש אצלנו השבוע 🌿";
 

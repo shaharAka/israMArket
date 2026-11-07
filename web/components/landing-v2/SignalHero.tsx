@@ -3,13 +3,11 @@
 import Link from "next/link";
 import { Fragment, useEffect, useState } from "react";
 import { Copy, useCopy, useLanguage } from "@/components/language/LanguageProvider";
-import { TRIAL_LABEL } from "@/lib/pricing";
 import { PROCESS_HERO } from "./processStory";
 import { PROCESS_EXAMPLES, type ProcessRole } from "./processExamples";
-import { PROCESS_SCHEDULES } from "./processScenarios";
 import { useFeatureCycle } from "./useFeatureCycle";
 import { HeroBriefScene, CampaignMaterialsScene, CampaignGrowthScene } from "./LandingQaScenes";
-import { TrialCtaLabel } from "./TrialCtaLabel";
+import { TrialCtaLabel, TrialOfferNote } from "./TrialCtaLabel";
 import styles from "./signal-hero.module.css";
 
 /** Whole words preserve Hebrew/Arabic shaping. The original message remains intact. */
@@ -27,7 +25,6 @@ export function SignalHero({ start, role }: { start: string; role: ProcessRole |
   const { locale } = useLanguage();
   const exampleRole = role ?? "online_shop";
   const example = PROCESS_EXAMPLES[exampleRole];
-  const schedule = PROCESS_SCHEDULES[exampleRole];
   useEffect(() => {
     const root = ref.current;
     if (!root || !playing || !matchMedia("(pointer:fine)").matches) return;
@@ -54,8 +51,8 @@ export function SignalHero({ start, role }: { start: string; role: ProcessRole |
   const panel = (i: number) => ({ draggable: false, onMouseEnter: () => { if (playing) setFocus(i); }, onMouseLeave: () => setFocus(null) });
   return <section className={styles.hero} aria-labelledby="process-title"><div ref={ref} className={styles.root} data-playing={playing} data-reduced={reduced} data-focus={focus ?? "none"}>
     <div className={styles.copy}>
-      <h1 id="process-title" aria-label={t(PROCESS_HERO.title)}>{locale === "he" ? <><span className={styles.line}><ReactiveWords text="מערכת הקידום" /></span><span className={styles.line}><ReactiveWords text="שעושה בשבילך" /></span><span className={styles.line}><ReactiveWords text="את העבודה." /></span></> : <ReactiveWords text={PROCESS_HERO.title} />}</h1>
-      <div className={styles.support}><p><Copy text={PROCESS_HERO.body} /></p><Link href={start} className={styles.start}><TrialCtaLabel /><Arrow /></Link><small><Copy text={TRIAL_LABEL} /> · <Copy text="בלי כרטיס אשראי. בלי התחייבות." /></small></div>
+      <h1 id="process-title" aria-label={t(PROCESS_HERO.title)}>{locale === "he" ? <><span className={styles.line}><ReactiveWords text="מערכת קידום" /></span><span className={styles.line}><ReactiveWords text="שמכינה בשבילכם" /></span><span className={styles.line}><ReactiveWords text="את העבודה." /></span></> : <ReactiveWords text={PROCESS_HERO.title} />}</h1>
+      <div className={styles.support}><p><Copy text={PROCESS_HERO.body} /></p><Link href={start} className={styles.start}><TrialCtaLabel /><Arrow /></Link><small><TrialOfferNote /><Copy text="בלי כרטיס אשראי. בלי התחייבות." /></small></div>
     </div>
     <div className={styles.panorama} data-panorama onFocusCapture={event => setFocused(event.target.matches(":focus-visible"))} onBlurCapture={event => { if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setFocused(false); }}>
       <div className={styles.track}>
@@ -64,14 +61,14 @@ export function SignalHero({ start, role }: { start: string; role: ProcessRole |
           <HeroBriefScene role={exampleRole} playing={playing} reduced={reduced}/>
         </Link>
         <Link href="#plan" className={`${styles.panel} ${styles.plan}`} {...panel(1)}>
-          <div className={styles.calendar}><header><strong><Copy text="התוכנית לחודש הקרוב" /></strong><span><Copy text={example.name} /></span></header><div className={styles.calendarDays} aria-hidden="true">{Array.from({length:20},(_,i)=><i key={i}>{i+1}</i>)}</div><div className={styles.calendarTasks}>{schedule.tasks.map((task,i)=><span key={task} style={{ gridRow:i+1 }}><Copy text={task} /></span>)}</div><div className={styles.tracking}><i /><Copy text="לומדים כל הזמן" /></div></div>
+          <div className={styles.calendar}><header><strong><Copy text="התוכנית לחודש הקרוב" /></strong><span><Copy text={example.name} /></span></header><div className={styles.calendarDays} aria-hidden="true">{Array.from({length:15},(_,i)=><i key={i}>{i+1}</i>)}</div><div className={styles.calendarTasks}>{example.calendarThemes.slice(0,3).map((task,i)=><span key={task} style={{ gridRow:i+1 }}><Copy text={task} /></span>)}</div><div className={styles.tracking}><i /><Copy text="לומדים כל הזמן" /></div></div>
           <h2><Copy text="יודעים מה לפרסם." /><br /><Copy text="וגם מתי." /></h2>
         </Link>
         <Link href="#campaign" className={`${styles.panel} ${styles.campaign}`} {...panel(2)}>
           <h2><Copy text="קמפיין אחד." /><br/><Copy text="מותאם לכל ערוץ." /></h2><CampaignMaterialsScene role={exampleRole} playing={playing} compact/>
         </Link>
         <Link href="#learning" className={`${styles.panel} ${styles.learning}`} {...panel(3)}>
-          <h2><Copy text="לומדים מה עובד." /><br /><Copy text="משפרים את הקמפיין." /></h2>
+          <h2><Copy text="לומדים מה הצליח." /><br /><Copy text="משפרים את הקמפיין הבא." /></h2>
           <CampaignGrowthScene role={exampleRole} playing={playing} reduced={reduced} compact/>
         </Link>
       </div>

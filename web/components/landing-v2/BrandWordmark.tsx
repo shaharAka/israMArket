@@ -1,6 +1,7 @@
 import { IdentityMark, type IdentityDirection } from "./IdentityMark";
 import { Copy } from "@/components/language/LanguageProvider";
-/** Full name on desktop and phone; alternatives are opt-in on the identity workshop. */
+/** The full name on one line, on desktop and phone. The stacked "isra / market" study stays
+ * opt-in on the identity workshop; phones get a smaller size instead of a second line. */
 export function BrandWordmark({ direction = "open" }: { direction?: IdentityDirection }) {
-  return <><span className="lv2-identity-wordmark"><IdentityMark direction={direction} /></span><span className="lv2-identity-symbol"><IdentityMark direction={direction} compact /></span><span className="sr-only"><Copy text="ישראמארקט" /></span></>;
+  return <><span className="lv2-identity-wordmark"><IdentityMark direction={direction} /></span><span className="sr-only"><Copy text="ישראמארקט" /></span></>;
 }

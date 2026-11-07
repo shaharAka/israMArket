@@ -10,16 +10,16 @@ function Like() { return <path d="M7 10H3v11h4m0-11 5-8c3 0 3 3 1 7h6a2 2 0 0 1 
 function Comment() { return <path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5 9 9 0 0 1-4-.9L3 21l1.9-5.5a9 9 0 0 1-.9-4A8.5 8.5 0 0 1 12.5 3H13a8.5 8.5 0 0 1 8 8v.5Z"/>; }
 function Share() { return <path d="m22 2-7 20-4-9-9-4 20-7Zm0 0L11 13"/>; }
 /** Platform chrome demonstrates formats, without invented likes, followers or endorsement. */
-export function ProcessSocialPost({index,name,caption,video,material,children}:{index:number;name:string;caption:string;video:boolean;material:string;children:ReactNode}) {
+export function ProcessSocialPost({index,name,caption,video,material,hideName=false,children}:{index:number;name:string;caption:string;video:boolean;material:string;hideName?:boolean;children:ReactNode}) {
   const channel=CHANNELS[index];
   const vertical=channel==="TikTok";
   const textFirst=channel==="Facebook"||channel==="LinkedIn";
   return <article className={styles.socialPost} data-social-platform={channel} data-campaign-material={video?"video":material}>
-    <header className={styles.socialHeader}><span className={styles.socialAvatar}><Image src={`/connectors/${channel.toLowerCase()}.svg`} width={22} height={22} alt=""/></span><strong><Copy text={name}/></strong><span className={styles.socialPlatform} dir="ltr">{channel}</span></header>
-    {textFirst&&<p className={styles.socialCaption}><Copy text={caption}/></p>}
+    <header className={styles.socialHeader}><span className={styles.socialAvatar}><Image src={`/connectors/${channel.toLowerCase()}.svg`} width={22} height={22} alt=""/></span><strong>{hideName?null:<Copy text={name}/>}</strong><span className={styles.socialPlatform} dir="ltr">{channel}</span></header>
+    {textFirst&&caption&&<p className={styles.socialCaption}><Copy text={caption}/></p>}
     <div className={styles.timelineArtwork}>{children}</div>
     <div className={styles.socialActions} aria-hidden="true"><svg viewBox="0 0 24 24">{channel==="Facebook"||channel==="LinkedIn"?<Like/>:<Heart/>}</svg><svg viewBox="0 0 24 24"><Comment/></svg><svg viewBox="0 0 24 24"><Share/></svg>{channel==="Instagram"&&<svg viewBox="0 0 24 24"><path d="M5 3h14v18l-7-4-7 4V3Z"/></svg>}</div>
-    {!textFirst&&<p className={styles.socialCaption}><Copy text={caption}/></p>}
+    {!textFirst&&caption&&<p className={styles.socialCaption}><Copy text={caption}/></p>}
     {!vertical&&(channel==="Facebook"||channel==="LinkedIn")&&<div className={styles.networkLabels} aria-hidden="true"><span><Copy text="אהבתי"/></span><span><Copy text="תגובה"/></span><span><Copy text="שיתוף"/></span></div>}
   </article>;
 }

@@ -4,6 +4,14 @@ import { CardStage, type CardRatio } from "@/components/CardCanvas";
 import { PROCESS_EXAMPLES, PROCESS_ROLES, type ProcessRole } from "./processExamples";
 import { PROCESS_CAMPAIGNS } from "./processCampaigns";
 import { productFixtures } from "./productFixtures";
+/** The motion week has no still of its own: its film poster stands in, so thumbnails differ. */
+function posterFor(role: ProcessRole, locale: string) {
+  return role === "services" ? "/showcase/designer-human-motion-poster.jpg" : role === "online_shop" ? "/showcase/kefel-fitting-room-poster.jpg" : role === "physical_shop" ? "/showcase/bakery-human-motion-poster.jpg" : role === "fundraising" ? "/showcase/community-human-motion-poster.jpg" : `/showcase/maslul-project-demo-${locale}.jpg`;
+}
+/** The photograph behind a campaign week, for thumbnails too small to carry its text. */
+export function campaignPhoto(role: ProcessRole, index: number, locale: string) {
+  return PROCESS_CAMPAIGNS[role][index].image ?? posterFor(role, locale);
+}
 export function CampaignArtwork({ role, index, support = false, ratio }: { role: ProcessRole; index: number; support?: boolean; ratio?: CardRatio }) {
   const t = useCopy();
   const { locale } = useLanguage();
@@ -15,8 +23,7 @@ export function CampaignArtwork({ role, index, support = false, ratio }: { role:
   const typeOnly = support && (index === 0 || index === 3);
   const composition = support ? ["type_led", "split", "full_bleed", "type_led"][index] : ["full_bleed", "full_bleed", "split", "inset_frame"][index];
   const hasHeadline = support || index > 1;
-  const poster = role === "services" ? "/showcase/designer-human-motion-poster.jpg" : role === "online_shop" ? "/showcase/clothing-linen-ai.png" : role === "physical_shop" ? "/showcase/bakery-human-motion-poster.jpg" : role === "fundraising" ? "/showcase/community-human-motion-poster.jpg" : `/showcase/maslul-project-demo-${locale}.jpg`;
-  const image = typeOnly ? undefined : creative.image ?? poster;
+  const image = typeOnly ? undefined : campaignPhoto(role, index, locale);
   const post = { ...campaign.roadmap.posts[0], uid: `public-${role}-week${index + 1}-${support ? "support" : "main"}`, week: index + 1,
     title: t(headline), overlay_headline: hasHeadline ? t(headline) : "", overlay_sub: support && typeOnly ? t(creative.subline) : "",
     caption: t(creative.caption), cta: t(example.action), image_url: image, has_overlay: hasHeadline,
