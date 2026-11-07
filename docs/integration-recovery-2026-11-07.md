@@ -7,9 +7,10 @@ public provider approval or a fresh real-provider read.
 
 ## Customer behavior
 
-- On a phone, six compact choices show each connection's status. One selected connection
-  is visible at a time. Desktop retains the multi-card view. Changing the selected card
-  does not disconnect or clear another source.
+- On a phone, one native source selector replaces the six-tile grid. Options show source
+  status; the recommended connection comes first, with its reason visible when selected.
+  One selected connection is visible at a time. Desktop retains the multi-card view.
+  Changing the selected card does not disconnect or clear another source.
 - Cards distinguish permission, account/site selection and actual data reads. A completed
   consent return never says data was received. Empty successful reads are distinct from
   failures and unknown measurements.
@@ -65,21 +66,41 @@ Late provider responses cannot restore a disconnected source or replace a newer 
 - Actual application browser checks used an isolated disposable QA server with synthetic
   provider responses. Search Console consent → selection → first read and TikTok consent
   → account confirmation → empty successful read were exercised through the customer UI.
-- Phone checks at 390px in HE/EN/AR/RU: six choices, one visible connection panel, no
+- Phone checks at 390px in HE/EN/AR/RU: one selector, one visible connection panel, no
   horizontal overflow. Ready, empty, expired-access and temporary-failure states checked;
   business search phrases retained their original language. Desktop keeps all connection
   cards and the requested card visible. Screenshots and raw QA observations stay local.
+- The native selector was opened and changed with keyboard navigation. An actual saved,
+  incomplete synthetic account resumed its ordinary onboarding connections step, followed
+  Search Console consent → explicit site confirmation → dated read, returned to the same
+  interview and advanced to goals. This was not the mock interview shortcut. A source
+  retry recovered from an initial simulated outage to a successful dated read.
 - Typecheck, lint, build, connection/resume tests and four-language checks are release
   checks. Catalog updates use reviewed text; no customer data is sent for translation.
 
 ## Genuine-provider gates remain open
 
-The last recorded genuine first reads are on #178 (17 October): Google Analytics,
-Search Console, and an allowlisted TikTok sandbox profile. They do not verify this branch.
-Fresh grant/read/refresh/revoke/reconnect evidence is still required for the reviewed
-revision and owner-authorized test identities. Google public verification (#42), Meta
+On 7 November, a one-off worker ran this branch's TikTok provider/read code against the
+existing allowlisted QA grant. Its expired access token refreshed, account identity matched,
+and the public-video read completed with counts and a new read date. The latest refresh
+credential was saved; the provider returned the same refresh value, so rotation was not
+claimed. The worker loaded existing sandbox credentials inside the VM and changed only
+the dedicated QA connection snapshot/credentials. The running application was not deployed
+or reconfigured. This closes the backend refresh/read checkpoint, not browser consent,
+revocation, reconnection or public approval.
+
+The same day's Google pilot check failed with a refresh error before any new Analytics or
+Search Console data was read. Owner reconnection is pending. Earlier first reads on #178
+(17 October) do not verify this branch. Fresh full grant/read/revoke/reconnect evidence is
+still required for the reviewed revision and owner-authorized test identities.
+Google public verification (#42), Meta
 approval (#41) and the paused Facebook-manager login recovery (#104) are separate gates.
 TikTok stays off or explicitly sandbox-allowlisted until its public review and live
 lifecycle checks are complete. No ads, publishing, fake conversion events or customer
 tracking installation are part of these read-only checks. Claude's customer-facing design
 pass and deployment verification remain required; none of these issues is Done yet.
+
+The 7 November public DNS TXT lookup returned no TXT answers for the owned domain, so
+the pending domain-verification task has not been treated as resolved. The Google OAuth
+deployment guide now describes the three separate sign-in/Analytics/Search Console flows
+and excludes unimplemented future administrative/write permissions from the review scope.

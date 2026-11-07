@@ -627,7 +627,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 861,
+        "line": 870,
         "kind": "literal"
       }
     ]
@@ -760,7 +760,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 678,
+        "line": 687,
         "kind": "literal"
       }
     ]
@@ -2098,7 +2098,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 751,
+        "line": 760,
         "kind": "literal"
       }
     ]
@@ -3543,7 +3543,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 792,
+        "line": 801,
         "kind": "literal"
       }
     ]
@@ -6444,7 +6444,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 937,
+        "line": 946,
         "kind": "literal"
       },
       {
@@ -7323,7 +7323,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 605,
+        "line": 614,
         "kind": "literal"
       },
       {
@@ -7952,7 +7952,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 845,
+        "line": 854,
         "kind": "literal"
       }
     ]
@@ -10158,7 +10158,12 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 598,
+        "line": 578,
+        "kind": "literal"
+      },
+      {
+        "file": "web/app/integrations/page.tsx",
+        "line": 607,
         "kind": "literal"
       },
       {
@@ -11036,7 +11041,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 630,
+        "line": 639,
         "kind": "literal",
         "purpose": "display"
       }
@@ -15077,7 +15082,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 878,
+        "line": 887,
         "kind": "literal"
       }
     ]
@@ -15302,7 +15307,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 602,
+        "line": 611,
         "kind": "literal"
       }
     ]
@@ -15325,7 +15330,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 817,
+        "line": 826,
         "kind": "literal"
       }
     ]
@@ -15800,7 +15805,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 936,
+        "line": 945,
         "kind": "literal"
       },
       {
@@ -16040,7 +16045,7 @@
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 762,
+        "line": 771,
         "kind": "literal"
       },
       {
@@ -16542,7 +16547,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 849,
+        "line": 858,
         "kind": "literal"
       }
     ]
@@ -17109,7 +17114,7 @@
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 584,
+        "line": 593,
         "kind": "literal"
       }
     ]
@@ -18399,7 +18404,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 655,
+        "line": 664,
         "kind": "literal"
       }
     ]
@@ -18967,7 +18972,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 602,
+        "line": 611,
         "kind": "literal"
       }
     ]
@@ -22090,7 +22095,7 @@
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 763,
+        "line": 772,
         "kind": "literal"
       },
       {
@@ -24552,7 +24557,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 882,
+        "line": 891,
         "kind": "literal"
       }
     ]
@@ -30449,7 +30454,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 795,
+        "line": 804,
         "kind": "literal"
       }
     ]
@@ -32095,7 +32100,7 @@
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 907,
+        "line": 916,
         "kind": "literal"
       }
     ]
@@ -37448,7 +37453,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 900,
+        "line": 909,
         "kind": "literal"
       }
     ]
@@ -43885,7 +43890,7 @@
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 589,
+        "line": 598,
         "kind": "literal"
       }
     ]
@@ -44575,7 +44580,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 945,
+        "line": 954,
         "kind": "literal"
       },
       {
@@ -45773,7 +45778,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 569,
+        "line": 571,
         "kind": "literal"
       },
       {
@@ -46073,7 +46078,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 602,
+        "line": 611,
         "kind": "literal"
       }
     ]
@@ -49966,7 +49971,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 824,
+        "line": 833,
         "kind": "literal"
       }
     ]
@@ -50080,7 +50085,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 934,
+        "line": 943,
         "kind": "literal"
       }
     ]
@@ -50174,7 +50179,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 872,
+        "line": 881,
         "kind": "literal"
       }
     ]
@@ -50213,7 +50218,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 920,
+        "line": 929,
         "kind": "literal"
       }
     ]
@@ -51347,7 +51352,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 872,
+        "line": 881,
         "kind": "literal"
       }
     ]
@@ -52294,12 +52299,12 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 845,
+        "line": 854,
         "kind": "literal"
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 918,
+        "line": 927,
         "kind": "literal"
       }
     ]
@@ -53266,7 +53271,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 675,
+        "line": 684,
         "kind": "literal"
       }
     ]
@@ -55033,7 +55038,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 582,
+        "line": 591,
         "kind": "literal"
       }
     ]
@@ -57795,7 +57800,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 604,
+        "line": 613,
         "kind": "literal"
       }
     ]
@@ -58802,7 +58807,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 887,
+        "line": 896,
         "kind": "literal"
       }
     ]
@@ -60176,12 +60181,12 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 605,
+        "line": 614,
         "kind": "literal"
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 613,
+        "line": 622,
         "kind": "literal"
       },
       {
@@ -60992,7 +60997,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 792,
+        "line": 801,
         "kind": "literal"
       }
     ]
@@ -63751,7 +63756,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 767,
+        "line": 776,
         "kind": "literal"
       }
     ]
@@ -66158,7 +66163,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 895,
+        "line": 904,
         "kind": "literal"
       }
     ]
@@ -68777,7 +68782,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 855,
+        "line": 864,
         "kind": "literal"
       }
     ]
@@ -74715,7 +74720,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 662,
+        "line": 671,
         "kind": "literal"
       }
     ]
@@ -75915,7 +75920,12 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 605,
+        "line": 614,
+        "kind": "literal"
+      },
+      {
+        "file": "web/app/integrations/page.tsx",
+        "line": 622,
         "kind": "literal"
       }
     ]
@@ -77896,7 +77906,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 895,
+        "line": 904,
         "kind": "literal"
       }
     ]
@@ -78455,7 +78465,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 947,
+        "line": 956,
         "kind": "literal"
       },
       {
@@ -84845,7 +84855,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 842,
+        "line": 851,
         "kind": "literal"
       }
     ]
@@ -91633,7 +91643,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 795,
+        "line": 804,
         "kind": "literal"
       }
     ]
@@ -95785,7 +95795,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 944,
+        "line": 953,
         "kind": "literal"
       },
       {
@@ -98134,7 +98144,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 647,
+        "line": 656,
         "kind": "literal"
       }
     ]
@@ -100647,7 +100657,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 578,
+        "line": 587,
         "kind": "literal"
       }
     ]
@@ -103276,12 +103286,12 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 935,
+        "line": 944,
         "kind": "literal"
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 946,
+        "line": 955,
         "kind": "literal"
       },
       {
@@ -104000,7 +104010,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 624,
+        "line": 633,
         "kind": "literal"
       }
     ]
@@ -106183,7 +106193,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 774,
+        "line": 783,
         "kind": "literal"
       }
     ]
@@ -108553,7 +108563,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 924,
+        "line": 933,
         "kind": "literal"
       }
     ]
@@ -110926,7 +110936,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 911,
+        "line": 920,
         "kind": "literal"
       },
       {
@@ -113994,7 +114004,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 922,
+        "line": 931,
         "kind": "literal"
       }
     ]
@@ -115754,12 +115764,12 @@
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 795,
+        "line": 804,
         "kind": "literal"
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 882,
+        "line": 891,
         "kind": "literal"
       },
       {
@@ -116255,7 +116265,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 650,
+        "line": 659,
         "kind": "literal"
       }
     ]
@@ -116917,7 +116927,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 823,
+        "line": 832,
         "kind": "literal"
       }
     ]
@@ -118861,7 +118871,7 @@
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 808,
+        "line": 817,
         "kind": "literal"
       },
       {
@@ -120164,7 +120174,7 @@
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 572,
+        "line": 578,
         "kind": "literal"
       },
       {
@@ -122274,7 +122284,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 618,
+        "line": 627,
         "kind": "literal"
       }
     ]
@@ -123305,7 +123315,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 763,
+        "line": 772,
         "kind": "literal"
       }
     ]
@@ -124832,7 +124842,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 872,
+        "line": 881,
         "kind": "literal"
       }
     ]

@@ -1,17 +1,21 @@
 # Google OAuth for IsraMarket (project `isramarket`)
 
-One OAuth client covers two flows:
+One OAuth client covers three independently initiated flows:
 
 | Flow | Endpoint | Scopes | Google's class |
 |---|---|---|---|
 | **"להמשיך עם Google"** (sign in / sign up) | `GET /auth/google/start` → `/auth/google/callback` (`api/app/routers/auth.py`) | `openid` `email` `profile` | **Non-sensitive.** No verification needed to use them |
-| **Site data** (Analytics + Search Console) | `GET /integrations/ga4/start` → `/integrations/ga4/callback` (`api/app/routers/integrations.py`) | `analytics.readonly`, `webmasters.readonly` (+ `openid` `email`) | **Sensitive.** Brand + sensitive-scope verification before public launch |
+| **Website data** (Analytics) | `GET /integrations/ga4/start` → `/integrations/ga4/callback` (`api/app/routers/integrations.py`) | `analytics.readonly` (+ `openid` `email`) | **Sensitive.** Brand + sensitive-scope verification before public launch |
+| **Google search data** (Search Console) | `GET /integrations/search-console/start` → the same `/integrations/ga4/callback` (`api/app/routers/search_console_connections.py`) | `webmasters.readonly` (+ `openid` `email`) | **Sensitive.** Same verification requirement; separate saved connection/site choice |
 
 Sign-in stores nothing from Google except the account id (`sub`): no access or refresh
-token. The site-data flow is **incremental**: it sends `login_hint` (the signed-in Google
-account) and `include_granted_scopes=true`, so the owner sees their own account pre-selected
-and only the new permissions. If they pick a different Google account, it is still connected,
-and `/integrations` says which address it came from.
+token. Each measurement flow requests only its own read-only scope and uses incremental
+authorization (`include_granted_scopes=true`). A previously granted combined permission can
+therefore appear in Google's returned scopes; it is not a new combined access request.
+Analytics uses a sign-in hint unless the owner chooses another account. Search Console
+allows account selection independently. `/integrations` identifies each connected account.
+Signed, session-bound state dispatches Search Console returns through the existing registered
+Analytics callback. No extra Google redirect URI is needed for this split.
 
 Nothing in this document creates cloud resources by script. Every step is a click in the
 Console, done by a project owner.
@@ -93,10 +97,10 @@ comes back to IsraMarket. Cancelling on Google's screen does come back, as
 - Non-sensitive (sign-in): `openid`, `.../auth/userinfo.email`, `.../auth/userinfo.profile`.
 - Sensitive (site data): `.../auth/analytics.readonly`, `.../auth/webmasters.readonly`.
 
-Listing a sensitive scope here is what the verification review looks at. Add the future ones
-from `docs/integrations-research.md` §6 in the same review (`analytics.edit`,
-`siteverification.verify_only`, `webmasters`, `business.manage`), because each re-review
-costs days.
+Declare only scopes used by the implemented features. Do not add future write, verification
+or account-management permissions to this review. Google requires the narrowest access
+needed for the current functionality; see its [sensitive-scope verification guidance](https://developers.google.com/identity/protocols/oauth2/production-readiness/sensitive-scope-verification).
+Any future feature needing broader access requires its own implementation, consent and review.
 
 ### 2.5 Google Auth Platform: Clients
 **Create client** → Application type **Web application** → name `IsraMarket web`.
@@ -139,8 +143,12 @@ short-lived PKCE cookie.
    signed in. `/account` shows **מחובר עם Google**.
 3. `redirect_uri_mismatch` on Google's page means §2.5 does not list the exact URI the API sent.
    Compare with the `redirect_uri` parameter in the Google URL from step 1.
-4. `/integrations` → connect site data → Google pre-selects the same account and asks only
-   for Analytics and Search Console.
+4. `/integrations` → connect website data → Google requests Analytics read-only access;
+   confirm the matching property and verify a dated read.
+5. Connect Google search separately → Google requests Search Console read-only access;
+   confirm a property covering the saved website and verify a dated search read.
+6. Disconnect either source locally and confirm the other source remains usable. A local
+   disconnect does not revoke the entire Google app grant, which could break both sources.
 
 ---
 
@@ -150,10 +158,10 @@ short-lived PKCE cookie.
   verification. On their own they could go to Production at any time without a user cap.
 - **The site-data scopes are sensitive.** `analytics.readonly` and `webmasters.readonly`
   need brand verification plus sensitive-scope verification: the privacy policy and home page
-  on our verified domain, a demo video, and a justification per scope. Lead time is 3–5
-  business days per the developer page, and up to 10 per the Cloud FAQ. See
+  on our verified domain, a demo video, and a justification per scope. Google's guidance
+  says sensitive-scope verification can take up to 10 days. See
   `docs/integrations-research.md` §6.
-- **The cap applies to the project, not to one flow.** Both flows share this client and
+- **The cap applies to the project, not to one flow.** All three flows share this client and
   project:
   - **Testing:** only listed test users (max 100) can sign in or connect. Refresh tokens for
     the sensitive scopes **expire after 7 days**, so a test user's site-data connection

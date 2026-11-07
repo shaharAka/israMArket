@@ -566,12 +566,21 @@ export default function IntegrationsPage() {
         )}
 
         {business ? <PendingLinks key={business.id} business={business} onSaved={setBusiness} /> : null}
-        <nav aria-label={t("בחירת חיבור")} className="mb-5 grid grid-cols-2 gap-2 sm:hidden">
-          {connectionChoices.map(choice => <button key={choice.key} type="button" aria-pressed={mobileKey === choice.key} aria-controls={choice.key === "whatsapp" ? "whatsapp-connection" : choice.key} onClick={() => setExpanded(choice.key)} className={`min-h-[68px] min-w-0 rounded-xl px-3 py-2 text-start transition-colors ${mobileKey === choice.key ? "bg-[var(--primary-soft)] text-[var(--primary)] shadow-[inset_0_0_0_1px_var(--primary)]" : "bg-[var(--paper)] text-[var(--ink)] shadow-[inset_0_0_0_1px_var(--rule)]"}`}>
-            <span className="block text-[14px] font-medium leading-5">{choice.title}</span>
-            <span className="mt-1 block text-[12px] leading-4 text-[var(--ink-muted)]">{data ? choice.status : t("עוד לא נבדק")}</span>
-          </button>)}
-        </nav>
+        {/* בטלפון בוחרים מקור אחד; הסיבה להתחיל בו נשארת ליד הבחירה. */}
+        <div className="mb-5 space-y-2 sm:hidden">
+          <label htmlFor="mobile-connection" className={LABEL}><Copy text="בחירת חיבור" /></label>
+          <SelectFrame>
+            <select id="mobile-connection" value={mobileKey} onChange={event => setExpanded(event.target.value as ConnectionKey)}
+              aria-controls={mobileKey === "whatsapp" ? "whatsapp-connection" : mobileKey}
+              aria-describedby={showRecommendation ? "mobile-connection-reason" : undefined} className={`${SELECT} w-full`}>
+              {sourceOrder.map(key => {
+                const choice = connectionChoices.find(item => item.key === key)!;
+                return <option key={key} value={key}>{choice.title} · {data ? choice.status : t("עוד לא נבדק")}{recommendation?.key === key ? ` · ${t("כדאי להתחיל כאן")}` : ""}</option>;
+              })}
+            </select>
+          </SelectFrame>
+          {showRecommendation ? <p id="mobile-connection-reason" className="text-[14px] leading-6 text-[var(--ink-soft)]">{t(recommendation.why)}</p> : null}
+        </div>
         {error || connectionLoadFailed ? (
           <div className="mb-6">
             {error ? <ErrorNote message={error} /> : null}
@@ -610,7 +619,7 @@ export default function IntegrationsPage() {
           {sourceOrder.map(source => <div key={source} className={source === mobileKey ? "" : "hidden sm:block"}>{data || source === "website" || source === "whatsapp" ? connectionRows[source] : <section id={source} aria-label={connectionChoices.find(choice => choice.key === source)?.title} />}</div>)}
         </div>
 
-        <Link href={business?.owner_context?.research_journey && !business.onboarding_complete ? "/start?phase=after" : "/strategy"} className={`mt-4 sm:hidden ${TEXT_ACTION}`}><Copy text="להמשיך בתוכנית ולחבר אחר כך" /></Link>
+        <Link href={business?.owner_context?.research_journey && !business.onboarding_complete ? "/start?phase=after" : "/strategy"} className={`mt-4 sm:hidden ${TEXT_ACTION}`}><Copy text={business?.owner_context?.research_journey && !business.onboarding_complete ? "לחזור לשאלות על העסק" : "להמשיך בתוכנית ולחבר אחר כך"} /></Link>
 
         {/* Technical, and only for the people who need it: no card, just a line that opens. */}
         <details className="group mt-10 border-t border-[var(--rule)]">
