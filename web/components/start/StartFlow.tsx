@@ -444,7 +444,7 @@ export function StartFlow() {
           </Link>
           {loggedIn ? null : (
             <p className={styles.signin}>
-              כבר יש לכם חשבון?
+              כבר יש לכם חשבון?{" "}
               <Link href="/login">להיכנס</Link>
             </p>
           )}

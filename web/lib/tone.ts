@@ -1,34 +1,33 @@
 /**
- * The system tone.
+ * The system tone: the software talking about itself (a notice, an explanation, a
+ * limitation, the demo badge), as opposed to remarks about the business.
  *
- * Sampled from a Chrome system dialog the owner liked: a cool slate panel with white
- * text and a white pill action. Every other tone in this app is warm (ink, sand, clay),
- * so this is the palette's one cool, "the software is talking" voice.
+ * It used to be a cool slate sampled from a Chrome dialog. Signal / Punch replaced the
+ * product palette, so the tone now reads from the same tokens (components/design/
+ * product-theme.css): a graphite panel with white text, and a warm soft surface with
+ * ink text for inline notes. Values are CSS custom properties, so the tone follows the
+ * theme wherever it renders, portals included.
  *
- * The distinction it buys us: warm notes read as *your business* (a brand remark, a
- * plan suggestion), while these read as *the system* (a notice, an explanation, a
- * limitation). Before this, every informational note used the warm sand surface, so a
- * "we can't measure this yet" message looked like business content.
- *
- * Contrast: white on `base` is 6.1:1, and `ink` on `surface` is 10.4:1 — both clear AA.
+ * Contrast: white on graphite (`--ink`) is 16.1:1; `--ink` on `--soft` is 13.9:1 and
+ * `--ink-muted` on `--soft` is 5.0:1, all clear AA.
  */
 export const SYSTEM_TONE = {
-  /** Panel background. The sampled colour, unchanged. */
-  base: "#505F75",
+  /** Panel background: graphite, the product's action colour. */
+  base: "var(--ink)",
   /** Pressed/hover state for an action sitting on `base`. */
-  baseHover: "#465468",
+  baseHover: "var(--action-hover)",
   /** Deeper shade for a border or divider on a dark panel. */
-  baseEdge: "#3E4A5C",
+  baseEdge: "var(--action-hover)",
   /** Light surface for an inline note in an otherwise light page. */
-  surface: "#F4F6F9",
+  surface: "var(--soft)",
   /** Border that pairs with `surface`. */
-  border: "#D5DCE6",
+  border: "var(--rule-dark)",
   /** Readable text on `surface`. */
-  ink: "#2F3A4A",
+  ink: "var(--ink)",
   /** Body text on `surface`, a step quieter than `ink`. */
-  inkMuted: "#546073",
+  inkMuted: "var(--ink-muted)",
   /** Text and pills on `base`. */
   onBase: "#FFFFFF",
-  /** Body text on `base` — white at reduced strength, never grey (grey dies on slate). */
+  /** Body text on `base`: white at reduced strength, never grey. */
   onBaseMuted: "rgba(255,255,255,0.78)",
 } as const;

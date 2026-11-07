@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { useEffect, useState, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
-import { LATEST_RELEASE, RELEASE_READ_KEY, RELEASE_READ_EVENT } from "@/lib/releases";
+import { RELEASE_READ_KEY, RELEASE_READ_EVENT } from "@/lib/releases";
+import { LATEST_OWNER_UPDATE } from "@/lib/ownerUpdates";
 import { useLanguage } from "./LanguageProvider";
 
 /** A quiet platform utility; release announcements do not belong in the public header. */
@@ -13,7 +14,7 @@ export function WhatsNewLink({ children, className = "", iconOnly = false }: { c
   const [unread, setUnread] = useState(false);
   useEffect(() => {
     function refresh() {
-      try { setUnread(localStorage.getItem(RELEASE_READ_KEY) !== LATEST_RELEASE); }
+      try { setUnread(localStorage.getItem(RELEASE_READ_KEY) !== LATEST_OWNER_UPDATE); }
       catch { setUnread(false); }
     }
     const timer = window.setTimeout(refresh, 0);

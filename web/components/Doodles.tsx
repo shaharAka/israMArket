@@ -4,7 +4,7 @@ import { MotionIllustration, MotionScope } from "@/components/motion";
 export function Scribble({ className = "" }: { className?: string }) {
   return (
     <svg
-      className={`draw block h-2 w-24 text-[#2853c7] ${className}`}
+      className={`draw block h-2 w-24 text-[var(--primary)] ${className}`}
       viewBox="0 0 96 8"
       fill="none"
       stroke="currentColor"
@@ -34,7 +34,7 @@ export function LoadingMark({ label = "טוענים…" }: { label?: string }) {
 export function PlanDoodle({ className = "" }: { className?: string }) {
   return (
     <svg
-      className={`draw text-[#2853c7] ${className}`}
+      className={`draw text-[var(--primary)] ${className}`}
       viewBox="0 0 168 64"
       fill="none"
       stroke="currentColor"

@@ -136,10 +136,10 @@ export default function PlanEditPage() {
         <summary><Copy text="ההשערות שנבדוק (" />{draft.fields.assumptions.length}) <IconChevron className="h-4 w-4" /></summary>
         <div className="space-y-6 pt-4">
           {draft.fields.assumptions.map((a, i) => <fieldset key={i} disabled={busy} className={styles.assumption}>
-            <div><label htmlFor={`bet-${i}`}><Copy text="השערה" />{i + 1}</label><textarea id={`bet-${i}`} required maxLength={300} rows={2} value={a.bet_he} onChange={e => edit({ ...draft.fields, assumptions: draft.fields.assumptions.map((item, index) => index === i ? { ...item, bet_he: e.target.value } : item) })} /></div>
+            <div><label htmlFor={`bet-${i}`}><Copy text="השערה" /> {i + 1}</label><textarea id={`bet-${i}`} required maxLength={300} rows={2} value={a.bet_he} onChange={e => edit({ ...draft.fields, assumptions: draft.fields.assumptions.map((item, index) => index === i ? { ...item, bet_he: e.target.value } : item) })} /></div>
             <div><label htmlFor={`fallback-${i}`}><Copy text="מה ננסה אם היא לא תתאמת?" /><span className={styles.optional}><Copy text="לא חובה" /></span></label><textarea id={`fallback-${i}`} maxLength={300} rows={2} value={a.if_wrong_he} onChange={e => edit({ ...draft.fields, assumptions: draft.fields.assumptions.map((item, index) => index === i ? { ...item, if_wrong_he: e.target.value } : item) })} /></div>
             {/* Available, never inviting: the same quiet weight as "לנתק". */}
-            <button type="button" className={styles.quietAction} onClick={() => edit({ ...draft.fields, assumptions: draft.fields.assumptions.filter((_, index) => index !== i) })}><Copy text="להסיר השערה" />{i + 1}</button>
+            <button type="button" className={styles.quietAction} onClick={() => edit({ ...draft.fields, assumptions: draft.fields.assumptions.filter((_, index) => index !== i) })}><Copy text="להסיר השערה" /> {i + 1}</button>
           </fieldset>)}
           {draft.fields.assumptions.length < 4 ? <button type="button" disabled={busy} className={styles.textAction} onClick={() => edit({ ...draft.fields, assumptions: [...draft.fields.assumptions, { bet_he: "", if_wrong_he: "" }] })}><IconPlus className="h-4 w-4" /><Copy text="להוסיף השערה" /></button> : null}
         </div>

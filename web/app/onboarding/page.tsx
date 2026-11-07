@@ -539,7 +539,7 @@ export default function OnboardingPage() {
           <section className="space-y-6">
             <div>
               <h1 className="text-[28px] font-bold leading-tight tracking-tight text-[var(--ink)] sm:text-[30px]">מי המתחרים שלכם?</h1>
-              <p className="mt-2 text-base leading-relaxed text-[var(--ink-soft)]">לא חובה. נלמד מה עובד אצלם, בלי להעתיק.</p>
+              <p className="mt-2 text-base leading-relaxed text-[var(--ink-soft)]">לא חובה. נלמד מה מצליח אצלם, בלי להעתיק.</p>
             </div>
 
             <fieldset className="space-y-3">

@@ -124,7 +124,7 @@ export function ServiceCheckIn({ data, loadError, primary, onSaved, onEditing, o
       <p className="text-[13px] leading-6 text-[color:var(--ink-muted)]"><Copy text="לקוחות שסגרו החודש יכולים להגיע מפניות של חודש קודם. הדיווח לא משויך לפוסט מסוים." /></p>
       {error ? <p role="alert" className="text-[14px] leading-6 text-[color:var(--danger)]">{error}</p> : null}
       {concurrentReport ? <p className="rounded-md bg-[var(--soft)] p-3 text-[13px] leading-6 text-[color:var(--ink-soft)]">
-        <Copy text="בדיווח שנשמר בחלון האחר:" />{concurrentReport.inquiries ?? t("לא ידוע")} <Copy text="פניות," />{concurrentReport.suitable ?? t("לא ידוע")} <Copy text="מתאימות," />{" "}{concurrentReport.clients_won ?? t("לא ידוע")} <Copy text="לקוחות חדשים. מקום פנוי:" />{concurrentReport.capacity ?? t("לא ידוע")}.
+        <Copy text="בדיווח שנשמר בחלון האחר:" /> {concurrentReport.inquiries ?? t("לא ידוע")} <Copy text="פניות," /> {concurrentReport.suitable ?? t("לא ידוע")} <Copy text="מתאימות," />{" "}{concurrentReport.clients_won ?? t("לא ידוע")} <Copy text="לקוחות חדשים. מקום פנוי:" /> {concurrentReport.capacity ?? t("לא ידוע")}.
         {concurrentReport.fit_criterion ? t(" ההגדרה: {arg_0}.", { arg_0: concurrentReport.fit_criterion }) : ""} <Copy text="שמירה נוספת תחליף אותו במספרים שבטופס שלכם." /></p> : null}
       {conflict ? <button type="button" disabled={pending} onClick={reloadRevision} className="min-h-11 text-[14px] font-semibold text-[color:var(--primary)]"><Copy text="לטעון את הדיווח העדכני" /></button> : null}
       <div className="flex flex-wrap items-center gap-3">

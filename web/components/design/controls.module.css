@@ -5,7 +5,10 @@
 .button[data-variant="secondary"] { background:var(--im-paper,var(--paper)); border-color:var(--im-rule,var(--rule-dark)); color:var(--im-ink,var(--ink)); box-shadow:0 1px 2px rgba(20,32,58,.05); }
 .button[data-variant="text"] { background:transparent; color:var(--im-primary,var(--primary)); padding-inline:4px; box-shadow:none; }
 .button[data-variant="danger"] { background:var(--im-paper,var(--paper)); color:var(--danger,#a53527); border-color:var(--danger-rule,#dcaa9f); box-shadow:none; }
-.button:disabled { opacity:.48; cursor:not-allowed; box-shadow:none; }
+/* Unavailable actions are outlined, not a faded slab: the shape stays, the fill goes. */
+.button:disabled { cursor:not-allowed; box-shadow:none; filter:none; }
+.button:disabled:not([data-variant="text"]):not([aria-busy="true"]) { background:transparent; border-color:var(--im-rule,var(--rule-dark)); color:var(--im-muted,var(--ink-muted)); }
+.button[data-variant="text"]:disabled { color:var(--im-muted,var(--ink-muted)); }
 .button[aria-busy="true"] { opacity:.8; cursor:wait; }
 .button:focus-visible,.choice:focus-visible,.segmented button:focus-visible,.tabs button:focus-visible,.toggle input:focus-visible + .toggleTrack,.fileField input:focus-visible,.tabPanel:focus-visible { outline:2px solid var(--im-primary,var(--primary)); outline-offset:4px; }
 .busyDots { display:flex; gap:3px; }

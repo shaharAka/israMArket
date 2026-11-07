@@ -3,14 +3,14 @@ import type { ReactNode } from "react";
 type Tone = "info" | "success" | "attention" | "error";
 
 const SURFACE: Record<Tone, string> = {
-  info: "bg-[var(--primary-soft)]",
+  info: "bg-[var(--soft)]",
   success: "bg-[var(--good-soft)]",
   attention: "bg-[var(--sand)]",
   error: "bg-[var(--danger-soft)]",
 };
 
 const DOT: Record<Tone, string> = {
-  info: "bg-[var(--primary)]",
+  info: "bg-[var(--ink-muted)]",
   success: "bg-[var(--good)]",
   attention: "bg-[var(--sun)]",
   error: "bg-[var(--danger)]",
@@ -26,7 +26,7 @@ const TITLE: Record<Tone, string> = {
 /**
  * A notice on the account and billing pages: a soft fill and a small dot instead of the
  * coloured side stripe (DESIGN-STANDARD.md §3). Same roles as `InlineNotice`: an error is an
- * alert, everything else a status.
+ * alert, everything else a status. Information is neutral: peach is for selection only.
  */
 export function SetupNotice({ tone = "info", title, children }: { tone?: Tone; title: string; children?: ReactNode }) {
   return (

@@ -365,7 +365,7 @@ export function BusinessCard({
             <span className="block font-semibold">{direction?.title}</span>
             <span className="block text-[13px] leading-5 text-[color:var(--ink-soft)]">{direction?.approach_he}</span>
           </Row>
-          <Row label="האסטרטגיה והצעדים הקרובים" on={Boolean(plan)} empty="נבנה יחד אחרי הכיוון">
+          <Row label="הכיוון והצעדים הקרובים" on={Boolean(plan)} empty="נבנה יחד אחרי הכיוון">
             <span className="block">{plan?.strategy.one_liner_he}</span>
             {plan ? (
               <span className="block text-[13px] leading-5 text-[color:var(--ink-soft)]">

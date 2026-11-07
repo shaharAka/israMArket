@@ -10,7 +10,7 @@ import { SendToHelper } from "@/components/help/SendToHelper";
 import { GUIDES, type Device, type Guide, type GuideBlock, type HelpTopic } from "@/components/help/guides";
 
 /**
- * "איך מוצאים את זה?" — a quiet link that opens a short, step-by-step guide.
+ * "לראות איך מוצאים את זה" — a quiet link that opens a short, step-by-step guide.
  *
  * The owner is not technical and is usually on the phone. A field that asks for "your
  * Instagram link" or a button that says "connect your site's analytics" assumes they know
@@ -21,11 +21,11 @@ import { GUIDES, type Device, type Guide, type GuideBlock, type HelpTopic } from
  */
 export function HowToFind({
   topic,
-  label = "איך מוצאים את זה?",
+  label = "לראות איך מוצאים את זה",
   className = "",
 }: {
   topic: HelpTopic;
-  /** The link text. Defaults to "איך מוצאים את זה?". */
+  /** The link text, an infinitive (HEBREW-COPY §2). Defaults to "לראות איך מוצאים את זה". */
   label?: string;
   className?: string;
 }) {

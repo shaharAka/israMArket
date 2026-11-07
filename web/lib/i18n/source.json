@@ -143,7 +143,7 @@
     "references": [
       {
         "file": "web/components/posts/preparation/PostPreparation.tsx",
-        "line": 98,
+        "line": 106,
         "kind": "literal"
       }
     ]
@@ -245,17 +245,6 @@
       }
     ]
   },
-  "m_006f8573c3152b16": {
-    "source": "להעלות מהטלפון או מקישור",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/posts/preparation/PhotosStep.tsx",
-        "line": 313,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_0071c7fbd6f75023": {
     "source": "הצעד הבא והתקדמות. הרשימה נגזרת ממצב העסק והדרישות הקיימות.",
     "language": "he",
@@ -289,7 +278,7 @@
     "references": [
       {
         "file": "web/components/AssetCard.tsx",
-        "line": 301,
+        "line": 311,
         "kind": "literal"
       }
     ]
@@ -436,7 +425,7 @@
     "references": [
       {
         "file": "web/components/posts/preparation/ContentLanguagePicker.tsx",
-        "line": 52,
+        "line": 56,
         "kind": "literal"
       }
     ]
@@ -739,12 +728,12 @@
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 1128,
+        "line": 1122,
         "kind": "literal"
       },
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 1129,
+        "line": 1123,
         "kind": "literal"
       },
       {
@@ -957,7 +946,7 @@
     "references": [
       {
         "file": "web/components/AssetCard.tsx",
-        "line": 412,
+        "line": 422,
         "kind": "literal"
       }
     ]
@@ -1213,7 +1202,7 @@
     "references": [
       {
         "file": "web/components/AssetCard.tsx",
-        "line": 109,
+        "line": 119,
         "kind": "literal"
       }
     ]
@@ -1522,7 +1511,7 @@
     "references": [
       {
         "file": "web/components/AssetCard.tsx",
-        "line": 260,
+        "line": 270,
         "kind": "literal"
       }
     ]
@@ -1672,7 +1661,7 @@
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 1378,
+        "line": 1372,
         "kind": "literal"
       }
     ]
@@ -2319,7 +2308,7 @@
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 1161,
+        "line": 1155,
         "kind": "literal"
       }
     ]
@@ -2363,7 +2352,7 @@
     "references": [
       {
         "file": "web/app/account/page.tsx",
-        "line": 57,
+        "line": 67,
         "kind": "literal"
       }
     ]
@@ -2876,7 +2865,7 @@
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 1081,
+        "line": 1075,
         "kind": "literal"
       }
     ]
@@ -2898,7 +2887,7 @@
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 1334,
+        "line": 1328,
         "kind": "literal"
       },
       {
@@ -3957,7 +3946,7 @@
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 934,
+        "line": 928,
         "kind": "literal"
       }
     ]
@@ -4147,6 +4136,17 @@
       }
     ]
   },
+  "m_083ff60a9fa5351d": {
+    "source": "שום פוסט לא מתפרסם בלי שתבדקו ותאשרו אותו.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/preparation/PostPreparation.tsx",
+        "line": 72,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_0841661c633ffda2": {
     "source": "- עמוד מוצר/תמחור שקראנו: {arg_0} (נקרא: {arg_1}): {arg_2}",
     "language": "he",
@@ -4213,6 +4213,21 @@
     "source": "המחיר",
     "language": "he",
     "references": [
+      {
+        "file": "web/app/billing/page.tsx",
+        "line": 148,
+        "kind": "literal"
+      },
+      {
+        "file": "web/app/billing/page.tsx",
+        "line": 163,
+        "kind": "literal"
+      },
+      {
+        "file": "web/app/billing/page.tsx",
+        "line": 187,
+        "kind": "literal"
+      },
       {
         "file": "api/app/services/post_rewrite.py",
         "line": 48,
@@ -4590,7 +4605,7 @@
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 1367,
+        "line": 1361,
         "kind": "literal"
       }
     ]
@@ -4764,11 +4779,6 @@
     "source": "לבדוק שהסגנון נשמע כמוכם",
     "language": "he",
     "references": [
-      {
-        "file": "web/lib/trial.ts",
-        "line": 533,
-        "kind": "literal"
-      },
       {
         "file": "api/app/routers/trial.py",
         "line": 339,
@@ -5124,17 +5134,6 @@
       }
     ]
   },
-  "m_0a4aeb93940fdaac": {
-    "source": "כל החשבונות, איפוס סיסמה, השהיה ועלויות",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/account/page.tsx",
-        "line": 161,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_0a4d7b81d48239a0": {
     "source": "מה מייחד אתכם",
     "language": "he",
@@ -5381,7 +5380,7 @@
       },
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 1212,
+        "line": 1206,
         "kind": "literal"
       },
       {
@@ -5511,7 +5510,7 @@
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 1372,
+        "line": 1366,
         "kind": "literal"
       }
     ]
@@ -5967,7 +5966,7 @@
     "references": [
       {
         "file": "web/components/AssetCard.tsx",
-        "line": 412,
+        "line": 422,
         "kind": "literal"
       }
     ]
@@ -5989,7 +5988,7 @@
     "references": [
       {
         "file": "web/app/billing/page.tsx",
-        "line": 167,
+        "line": 115,
         "kind": "literal"
       }
     ]
@@ -6667,7 +6666,7 @@
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 1345,
+        "line": 1339,
         "kind": "literal"
       }
     ]
@@ -7182,17 +7181,6 @@
       }
     ]
   },
-  "m_0eb49e8c16174ac5": {
-    "source": "רוצים לראות שוב מה יש כאן?",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/account/page.tsx",
-        "line": 149,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_0eb86169c74d3b9c": {
     "source": "יעדי העבודה, לפי סדר חשיבות",
     "language": "he",
@@ -7566,6 +7554,17 @@
         "file": "web/components/start/StartFlow.tsx",
         "line": 574,
         "kind": "jsx"
+      }
+    ]
+  },
+  "m_0fa3e18b4e870758": {
+    "source": "מכינים את הקישור ישר מפרסום הפוסט, כדי לדעת מאיזה פוסט הגיעו פניות.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/ownerUpdates.ts",
+        "line": 48,
+        "kind": "literal"
       }
     ]
   },
@@ -8150,17 +8149,6 @@
       }
     ]
   },
-  "m_10b66ff6dd77c238": {
-    "source": "החיוב הראשון רק ב-{arg_0}, אחרי שהחודש החינמי נגמר.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/billing/page.tsx",
-        "line": 189,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_10bc055660737dbf": {
     "source": "זו כבר נקודת פתיחה. מספר מדויק יותר כאן הוא לא חובה.",
     "language": "he",
@@ -8450,17 +8438,6 @@
       {
         "file": "web/components/landing-v2/processScenarios.ts",
         "line": 5,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_11662fdafb739dc2": {
-    "source": "מה השתנה במערכת, ואיפה אפשר לנסות את זה.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/language/ReleaseNotes.tsx",
-        "line": 29,
         "kind": "literal"
       }
     ]
@@ -9153,7 +9130,7 @@
     "references": [
       {
         "file": "web/app/billing/page.tsx",
-        "line": 225,
+        "line": 236,
         "kind": "literal"
       },
       {
@@ -9181,7 +9158,7 @@
     "references": [
       {
         "file": "web/components/AssetCard.tsx",
-        "line": 446,
+        "line": 456,
         "kind": "literal"
       }
     ]
@@ -9616,7 +9593,7 @@
     "references": [
       {
         "file": "web/components/posts/preparation/PostPreparation.tsx",
-        "line": 74,
+        "line": 76,
         "kind": "literal"
       }
     ]
@@ -9707,7 +9684,7 @@
     "references": [
       {
         "file": "web/app/account/page.tsx",
-        "line": 95,
+        "line": 122,
         "kind": "literal"
       }
     ]
@@ -9969,7 +9946,7 @@
     "references": [
       {
         "file": "web/app/account/page.tsx",
-        "line": 70,
+        "line": 80,
         "kind": "literal"
       }
     ]
@@ -10285,17 +10262,6 @@
       {
         "file": "web/lib/uxFlows.ts",
         "line": 64,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_159bdd425ad8eee6": {
-    "source": "הנוכחית",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/account/page.tsx",
-        "line": 110,
         "kind": "literal"
       }
     ]
@@ -10736,7 +10702,7 @@
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 771,
+        "line": 775,
         "kind": "literal"
       }
     ]
@@ -10952,8 +10918,8 @@
       }
     ]
   },
-  "m_1700d224d9d47f49": {
-    "source": "כבר יש לכם קהל כאן. מחזקים את מה שכבר עובד לפני שפותחים משהו חדש.",
+  "m_1702f5b9985d6570": {
+    "source": "כבר יש לכם קהל כאן. מחזקים את מה שכבר מצליח לפני שפותחים משהו חדש.",
     "language": "he",
     "references": [
       {
@@ -11417,7 +11383,7 @@
     "references": [
       {
         "file": "web/components/posts/preparation/PostPreparation.tsx",
-        "line": 106,
+        "line": 114,
         "kind": "literal"
       }
     ]
@@ -11762,7 +11728,7 @@
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 1384,
+        "line": 1378,
         "kind": "literal"
       }
     ]
@@ -12974,7 +12940,7 @@
     "references": [
       {
         "file": "web/app/account/page.tsx",
-        "line": 128,
+        "line": 159,
         "kind": "literal"
       }
     ]
@@ -13044,7 +13010,7 @@
     "references": [
       {
         "file": "web/components/posts/preparation/PhotosStep.tsx",
-        "line": 458,
+        "line": 438,
         "kind": "literal"
       }
     ]
@@ -13526,17 +13492,6 @@
       {
         "file": "web/lib/trial.ts",
         "line": 450,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_1ba251f54e2255ce": {
-    "source": "התשלום דרך פייפאל. את פרטי הכרטיס אנחנו לא רואים.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/billing/page.tsx",
-        "line": 139,
         "kind": "literal"
       }
     ]
@@ -14466,7 +14421,7 @@
     "references": [
       {
         "file": "web/components/posts/preparation/PostPreparation.tsx",
-        "line": 100,
+        "line": 108,
         "kind": "literal"
       }
     ]
@@ -14616,7 +14571,7 @@
     "references": [
       {
         "file": "web/app/account/page.tsx",
-        "line": 160,
+        "line": 184,
         "kind": "literal"
       },
       {
@@ -16190,7 +16145,7 @@
     "references": [
       {
         "file": "web/components/AssetCard.tsx",
-        "line": 446,
+        "line": 456,
         "kind": "literal"
       }
     ]
@@ -16530,6 +16485,17 @@
       }
     ]
   },
+  "m_2149faf70bcf930f": {
+    "source": "לפתוח את המקור",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/AssetCard.tsx",
+        "line": 401,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_214d4eae66a841fe": {
     "source": "אלטרנטיבה",
     "language": "he",
@@ -16823,11 +16789,6 @@
     "source": "מה צריך כדי לחבר?",
     "language": "he",
     "references": [
-      {
-        "file": "web/app/instagram/page.tsx",
-        "line": 132,
-        "kind": "literal"
-      },
       {
         "file": "web/app/integrations/page.tsx",
         "line": 538,
@@ -17227,7 +17188,7 @@
     "references": [
       {
         "file": "web/components/posts/preparation/PostPreparation.tsx",
-        "line": 97,
+        "line": 105,
         "kind": "literal"
       }
     ]
@@ -17866,7 +17827,7 @@
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 809,
+        "line": 803,
         "kind": "literal"
       }
     ]
@@ -17937,7 +17898,7 @@
     "references": [
       {
         "file": "web/components/posts/preparation/PostPreparation.tsx",
-        "line": 94,
+        "line": 102,
         "kind": "literal"
       }
     ]
@@ -18062,7 +18023,7 @@
     "references": [
       {
         "file": "web/app/billing/page.tsx",
-        "line": 98,
+        "line": 100,
         "kind": "literal"
       }
     ]
@@ -18317,17 +18278,6 @@
       }
     ]
   },
-  "m_2557c05cc3d4b5b5": {
-    "source": "זה נשמע כמוכם?",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/posts/preparation/VoiceStep.tsx",
-        "line": 78,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_2559e590071e238a": {
     "source": "פוסט: מה אנחנו מציעים",
     "language": "he",
@@ -18490,7 +18440,7 @@
     "references": [
       {
         "file": "web/app/account/page.tsx",
-        "line": 140,
+        "line": 168,
         "kind": "literal"
       }
     ]
@@ -18890,17 +18840,6 @@
       {
         "file": "web/lib/api.ts",
         "line": 213,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_26a791851b8349cc": {
-    "source": "התשלום עוד לא פתוח",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/billing/page.tsx",
-        "line": 118,
         "kind": "literal"
       }
     ]
@@ -19775,7 +19714,7 @@
     "references": [
       {
         "file": "web/app/account/page.tsx",
-        "line": 54,
+        "line": 64,
         "kind": "literal"
       }
     ]
@@ -20163,17 +20102,6 @@
       }
     ]
   },
-  "m_29525381fe1d5ce1": {
-    "source": "אפשר לבחור כמה קבצים בבת אחת",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/posts/preparation/PhotosStep.tsx",
-        "line": 343,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_2954f61067043385": {
     "source": "החומרים והפינות של עבודות שהסתיימו באמת",
     "language": "he",
@@ -20353,6 +20281,11 @@
         "kind": "literal"
       },
       {
+        "file": "web/lib/ownerUpdates.ts",
+        "line": 25,
+        "kind": "literal"
+      },
+      {
         "file": "web/lib/releases.ts",
         "line": 68,
         "kind": "literal"
@@ -20380,7 +20313,7 @@
       },
       {
         "file": "web/components/posts/preparation/PhotosStep.tsx",
-        "line": 414,
+        "line": 394,
         "kind": "literal"
       },
       {
@@ -20929,17 +20862,6 @@
       }
     ]
   },
-  "m_2b3015c023114f36": {
-    "source": "זה קובע אם נחזק את מה שכבר עובד או נפתח ערוץ חדש.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/lib/businessModel.ts",
-        "line": 115,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_2b3f36d58c2c5ef0": {
     "source": "אפשר לפתוח בחינם. עדיף מהמחשב:",
     "language": "he",
@@ -21025,7 +20947,7 @@
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 873,
+        "line": 867,
         "kind": "literal"
       },
       {
@@ -21316,6 +21238,17 @@
         "line": 158,
         "kind": "literal",
         "purpose": "validation"
+      }
+    ]
+  },
+  "m_2bd6af8eeafbefcd": {
+    "source": "זה בגוגל אנליטיקס: Admin › Property access management › + › Add users.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/help/guides.ts",
+        "line": 197,
+        "kind": "literal"
       }
     ]
   },
@@ -22712,7 +22645,7 @@
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 1161,
+        "line": 1155,
         "kind": "literal"
       }
     ]
@@ -22770,6 +22703,12 @@
         "file": "web/app/strategy/page.tsx",
         "line": 136,
         "kind": "literal"
+      },
+      {
+        "file": "web/components/start/BusinessCard.tsx",
+        "line": 368,
+        "kind": "literal",
+        "purpose": "display"
       }
     ]
   },
@@ -22876,17 +22815,6 @@
         "file": "web/lib/releases.ts",
         "line": 264,
         "kind": "literal"
-      }
-    ]
-  },
-  "m_2eac05eb80c0b90d": {
-    "source": "לא חובה. נלמד מה עובד אצלם, בלי להעתיק.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/onboarding/page.tsx",
-        "line": 542,
-        "kind": "jsx"
       }
     ]
   },
@@ -22999,7 +22927,7 @@
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 992,
+        "line": 986,
         "kind": "literal"
       }
     ]
@@ -23199,17 +23127,6 @@
       {
         "file": "web/lib/api.ts",
         "line": 2437,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_2f52d2b8c2e68e17": {
-    "source": "איך אתם נשמעים",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/posts/preparation/PostPreparation.tsx",
-        "line": 20,
         "kind": "literal"
       }
     ]
@@ -23777,7 +23694,7 @@
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 1044,
+        "line": 1038,
         "kind": "literal"
       }
     ]
@@ -23817,7 +23734,7 @@
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 1028,
+        "line": 1022,
         "kind": "literal"
       }
     ]
@@ -24786,7 +24703,7 @@
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 1039,
+        "line": 1033,
         "kind": "literal"
       }
     ]
@@ -24994,7 +24911,7 @@
     "references": [
       {
         "file": "web/components/posts/preparation/PhotosStep.tsx",
-        "line": 448,
+        "line": 428,
         "kind": "literal"
       }
     ]
@@ -25344,6 +25261,11 @@
       {
         "file": "web/components/posts/QuickPost.tsx",
         "line": 73,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/results/PostObservationLine.tsx",
+        "line": 17,
         "kind": "literal"
       },
       {
@@ -25844,7 +25766,7 @@
     "references": [
       {
         "file": "web/components/AssetCard.tsx",
-        "line": 269,
+        "line": 279,
         "kind": "literal"
       }
     ]
@@ -26245,7 +26167,7 @@
     "references": [
       {
         "file": "web/components/posts/preparation/PhotosStep.tsx",
-        "line": 364,
+        "line": 346,
         "kind": "literal"
       }
     ]
@@ -26273,17 +26195,6 @@
       }
     ]
   },
-  "m_351a654b37ed1a04": {
-    "source": "בוחרים במה להתמקד, מביאים את הסגנון שלכם ומכינים טיוטות. אתם בודקים ומאשרים לפני הפרסום.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/posts/preparation/PostPreparation.tsx",
-        "line": 72,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_351b33519b036342": {
     "source": "לוח מסעות המשתמש · לפני ואחרי הרשמה ←",
     "language": "he",
@@ -26291,6 +26202,17 @@
       {
         "file": "web/components/design/DesignLibrary.tsx",
         "line": 31,
+        "kind": "jsx"
+      }
+    ]
+  },
+  "m_3529a3235db27ff3": {
+    "source": "לא חובה. נלמד מה מצליח אצלם, בלי להעתיק.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/onboarding/page.tsx",
+        "line": 542,
         "kind": "jsx"
       }
     ]
@@ -26303,17 +26225,6 @@
         "file": "web/components/design/BusinessOverview.tsx",
         "line": 49,
         "kind": "jsx"
-      }
-    ]
-  },
-  "m_3534767a546aa468": {
-    "source": "השלב הנוכחי · ",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/decisions/page.tsx",
-        "line": 761,
-        "kind": "literal"
       }
     ]
   },
@@ -26748,7 +26659,7 @@
     "references": [
       {
         "file": "web/app/billing/page.tsx",
-        "line": 180,
+        "line": 183,
         "kind": "literal"
       }
     ]
@@ -27241,18 +27152,6 @@
       }
     ]
   },
-  "m_36d9bc243ebbd0b8": {
-    "source": "מטא: שיתופי פעולה והרשאות לפרסום",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/help/guides.ts",
-        "line": 671,
-        "kind": "literal",
-        "purpose": "display"
-      }
-    ]
-  },
   "m_36e205af1b00c2e7": {
     "source": "גוגל מציג את הכרטיס למי שמחפש בסביבה. אם אתם מגיעים ללקוח, הגדירו אזור שירות והסתירו את הכתובת. אם הלקוח מגיע אליכם, הכתובת חייבת להיות מדויקת.",
     "language": "he",
@@ -27367,12 +27266,12 @@
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 1118,
+        "line": 1112,
         "kind": "literal"
       },
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 1119,
+        "line": 1113,
         "kind": "literal"
       },
       {
@@ -27497,6 +27396,17 @@
       {
         "file": "web/lib/api.ts",
         "line": 308,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_373cea211240b52e": {
+    "source": "לחומרי הקמפיין",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/ownerUpdates.ts",
+        "line": 31,
         "kind": "literal"
       }
     ]
@@ -27886,7 +27796,7 @@
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 740,
+        "line": 744,
         "kind": "literal"
       }
     ]
@@ -28499,7 +28409,7 @@
     "references": [
       {
         "file": "web/components/posts/preparation/PostPreparation.tsx",
-        "line": 100,
+        "line": 108,
         "kind": "literal"
       }
     ]
@@ -28625,17 +28535,6 @@
       {
         "file": "web/components/help/guides.ts",
         "line": 376,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_3a14aa75e1aebcc4": {
-    "source": "להוסיף מקישור או עוד קבצים",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/posts/preparation/PhotosStep.tsx",
-        "line": 313,
         "kind": "literal"
       }
     ]
@@ -28828,7 +28727,7 @@
     "references": [
       {
         "file": "web/components/posts/preparation/PhotosStep.tsx",
-        "line": 459,
+        "line": 439,
         "kind": "literal"
       }
     ]
@@ -29247,12 +29146,12 @@
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 1137,
+        "line": 1131,
         "kind": "literal"
       },
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 1138,
+        "line": 1132,
         "kind": "literal"
       },
       {
@@ -29530,17 +29429,6 @@
       }
     ]
   },
-  "m_3c2ab15920e302f0": {
-    "source": "מדגימים מה שכבר עובד ומסבירים למי זה מתאים.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/lib/quarterPlanMock.ts",
-        "line": 611,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_3c357e5afd14deb7": {
     "source": "רקע לבן של קטלוג",
     "language": "he",
@@ -29616,6 +29504,11 @@
     "language": "he",
     "references": [
       {
+        "file": "web/app/account/page.tsx",
+        "line": 94,
+        "kind": "literal"
+      },
+      {
         "file": "web/app/admin/page.tsx",
         "line": 209,
         "kind": "literal",
@@ -29675,17 +29568,6 @@
       {
         "file": "web/lib/uxFlows.ts",
         "line": 69,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_3c709abbfefac9aa": {
-    "source": "לחצו על ״לאסוף את התמונות מהאתר״, ונביא לכאן את התמונות והסרטונים של העסק.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/posts/preparation/PhotosStep.tsx",
-        "line": 452,
         "kind": "literal"
       }
     ]
@@ -30073,6 +29955,17 @@
       }
     ]
   },
+  "m_3d5f5b4a74c7bbaf": {
+    "source": "בעורך רואים את הקהל, המטרה ומה למדנו, וכמה תמונות AI נשארו.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/ownerUpdates.ts",
+        "line": 42,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_3d61135717720c8f": {
     "source": "מה גילינו ובעל העסק כבר ראה (insight_1 היא הראשונה):",
     "language": "he",
@@ -30149,23 +30042,6 @@
         "line": 702,
         "kind": "template",
         "purpose": "copy"
-      }
-    ]
-  },
-  "m_3d7d4a82918ba3cc": {
-    "source": "איך מוצאים שם משתמש?",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/instagram/HandlesEditor.tsx",
-        "line": 64,
-        "kind": "literal"
-      },
-      {
-        "file": "web/components/start/steps.tsx",
-        "line": 821,
-        "kind": "literal",
-        "purpose": "display"
       }
     ]
   },
@@ -30578,7 +30454,7 @@
     "references": [
       {
         "file": "web/components/instagram/LearnedList.tsx",
-        "line": 113,
+        "line": 94,
         "kind": "literal"
       }
     ]
@@ -31015,7 +30891,12 @@
     "references": [
       {
         "file": "web/app/instagram/page.tsx",
-        "line": 146,
+        "line": 145,
+        "kind": "literal"
+      },
+      {
+        "file": "web/app/instagram/page.tsx",
+        "line": 148,
         "kind": "literal"
       },
       {
@@ -31446,6 +31327,17 @@
       }
     ]
   },
+  "m_4049b71f06314d80": {
+    "source": "פתחו בדפדפן את analytics.google.com, או את אפליקציית גוגל אנליטיקס, והיכנסו עם הג׳ימייל שלכם.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/help/guides.ts",
+        "line": 107,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_4049eb5ddc390ba3": {
     "source": "ביקור(?:ת|ות)|המלצ|לקוחות מספרים",
     "language": "he",
@@ -31498,7 +31390,7 @@
     "references": [
       {
         "file": "web/components/AssetCard.tsx",
-        "line": 249,
+        "line": 259,
         "kind": "literal"
       }
     ]
@@ -32307,7 +32199,7 @@
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 1166,
+        "line": 1160,
         "kind": "literal"
       }
     ]
@@ -32438,6 +32330,17 @@
         "line": 1004,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_424ce8df0890eecc": {
+    "source": "החומר החדש מופיע כשהוא מוכן. עד אז, הגרסה השמורה נשארת מולכם.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/ownerUpdates.ts",
+        "line": 30,
+        "kind": "literal"
       }
     ]
   },
@@ -32592,7 +32495,7 @@
     "references": [
       {
         "file": "web/app/billing/page.tsx",
-        "line": 250,
+        "line": 261,
         "kind": "literal"
       }
     ]
@@ -32772,6 +32675,22 @@
         "file": "web/app/security/page.tsx",
         "line": 168,
         "kind": "jsx"
+      }
+    ]
+  },
+  "m_43084f7d9dae28ff": {
+    "source": "ככה אתם מדברים?",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/preparation/VoiceStep.tsx",
+        "line": 78,
+        "kind": "literal"
+      },
+      {
+        "file": "web/lib/uxFlows.ts",
+        "line": 77,
+        "kind": "literal"
       }
     ]
   },
@@ -33440,7 +33359,7 @@
     "references": [
       {
         "file": "web/components/posts/preparation/PhotosStep.tsx",
-        "line": 414,
+        "line": 394,
         "kind": "literal"
       }
     ]
@@ -33831,17 +33750,6 @@
         "line": 603,
         "kind": "literal",
         "purpose": "copy"
-      }
-    ]
-  },
-  "m_4543c752d390f693": {
-    "source": "Google Analytics ·",
-    "language": "en",
-    "references": [
-      {
-        "file": "web/components/results/PostObservationLine.tsx",
-        "line": 23,
-        "kind": "jsx"
       }
     ]
   },
@@ -34944,7 +34852,7 @@
     "references": [
       {
         "file": "web/app/billing/page.tsx",
-        "line": 242,
+        "line": 253,
         "kind": "literal"
       }
     ]
@@ -34969,6 +34877,17 @@
         "line": 1229,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_480b7c3c66f4ab60": {
+    "source": "לאסוף מהאתר",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/preparation/PhotosStep.tsx",
+        "line": 278,
+        "kind": "literal"
       }
     ]
   },
@@ -35214,7 +35133,7 @@
       },
       {
         "file": "web/components/posts/preparation/PhotosStep.tsx",
-        "line": 413,
+        "line": 393,
         "kind": "literal"
       },
       {
@@ -35301,7 +35220,7 @@
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 1187,
+        "line": 1181,
         "kind": "literal"
       }
     ]
@@ -35462,6 +35381,16 @@
     "source": "לפתוח את הפוסטים",
     "language": "he",
     "references": [
+      {
+        "file": "web/lib/ownerUpdates.ts",
+        "line": 43,
+        "kind": "literal"
+      },
+      {
+        "file": "web/lib/ownerUpdates.ts",
+        "line": 49,
+        "kind": "literal"
+      },
       {
         "file": "web/lib/releases.ts",
         "line": 89,
@@ -36118,6 +36047,17 @@
       }
     ]
   },
+  "m_4a4b8420e732adc3": {
+    "source": "לראות מה צריך כדי לחבר",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/instagram/page.tsx",
+        "line": 134,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_4a50f970c596bb26": {
     "source": "הסיסמה ארוכה מדי.",
     "language": "he",
@@ -36322,7 +36262,7 @@
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 924,
+        "line": 918,
         "kind": "literal"
       },
       {
@@ -36410,7 +36350,7 @@
     "references": [
       {
         "file": "web/app/billing/page.tsx",
-        "line": 247,
+        "line": 258,
         "kind": "literal"
       }
     ]
@@ -37165,7 +37105,7 @@
     "references": [
       {
         "file": "web/app/billing/page.tsx",
-        "line": 129,
+        "line": 143,
         "kind": "literal"
       }
     ]
@@ -37751,17 +37691,6 @@
       }
     ]
   },
-  "m_4db96e084ca1edbd": {
-    "source": "כך קראנו את הסגנון שלכם מהאתר. ככה נכתוב את הפוסטים.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/posts/preparation/VoiceStep.tsx",
-        "line": 85,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_4dbec271b59f99d1": {
     "source": "הפוסט כבר פורסם",
     "language": "he",
@@ -37790,7 +37719,7 @@
     "references": [
       {
         "file": "web/app/account/page.tsx",
-        "line": 44,
+        "line": 53,
         "kind": "literal"
       }
     ]
@@ -37948,7 +37877,7 @@
     "references": [
       {
         "file": "web/components/AssetCard.tsx",
-        "line": 311,
+        "line": 321,
         "kind": "literal"
       }
     ]
@@ -38067,17 +37996,6 @@
       }
     ]
   },
-  "m_4e8006f343453eba": {
-    "source": "החיוב הראשון ביום ההפעלה.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/billing/page.tsx",
-        "line": 186,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_4e83baf46d1b7baf": {
     "source": "צריך להתקין באתר",
     "language": "he",
@@ -38123,12 +38041,12 @@
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 999,
+        "line": 993,
         "kind": "literal"
       },
       {
         "file": "web/components/AssetCard.tsx",
-        "line": 422,
+        "line": 432,
         "kind": "literal"
       }
     ]
@@ -38459,11 +38377,6 @@
         "file": "web/components/posts/preparation/PhotosStep.tsx",
         "line": 255,
         "kind": "literal"
-      },
-      {
-        "file": "web/components/posts/preparation/PhotosStep.tsx",
-        "line": 277,
-        "kind": "literal"
       }
     ]
   },
@@ -38512,17 +38425,6 @@
         "line": 101,
         "kind": "literal",
         "purpose": "validation"
-      }
-    ]
-  },
-  "m_4f9d9a24954128d9": {
-    "source": "אילו מסכים כבר מתורגמים?",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/language/TranslationCoverage.tsx",
-        "line": 8,
-        "kind": "literal"
       }
     ]
   },
@@ -39581,7 +39483,7 @@
     "references": [
       {
         "file": "web/components/AssetCard.tsx",
-        "line": 430,
+        "line": 440,
         "kind": "literal"
       }
     ]
@@ -40104,7 +40006,7 @@
     "references": [
       {
         "file": "web/app/billing/page.tsx",
-        "line": 243,
+        "line": 254,
         "kind": "literal"
       }
     ]
@@ -40115,7 +40017,7 @@
     "references": [
       {
         "file": "web/components/posts/preparation/PhotosStep.tsx",
-        "line": 417,
+        "line": 397,
         "kind": "literal"
       }
     ]
@@ -40234,17 +40136,6 @@
       }
     ]
   },
-  "m_537b8479ca4b7e09": {
-    "source": "לאסוף את התמונות מהאתר",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/posts/preparation/PhotosStep.tsx",
-        "line": 287,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_537d978b06346791": {
     "source": "מה בעל העסק סיפר בפגישה הראשונה (להתחשב בזה, לא להמציא מעבר לזה):\n",
     "language": "he",
@@ -40286,7 +40177,7 @@
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 816,
+        "line": 810,
         "kind": "literal"
       }
     ]
@@ -40620,7 +40511,7 @@
     "references": [
       {
         "file": "web/app/billing/page.tsx",
-        "line": 68,
+        "line": 70,
         "kind": "literal"
       }
     ]
@@ -41097,7 +40988,7 @@
       },
       {
         "file": "web/components/instagram/LearnedList.tsx",
-        "line": 52,
+        "line": 49,
         "kind": "literal"
       }
     ]
@@ -41285,7 +41176,7 @@
     "references": [
       {
         "file": "web/app/account/page.tsx",
-        "line": 54,
+        "line": 64,
         "kind": "literal"
       },
       {
@@ -41824,17 +41715,6 @@
       }
     ]
   },
-  "m_56dc27b2532dcb7b": {
-    "source": "מחובר עם Google",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/account/page.tsx",
-        "line": 85,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_56e1d1fdcb3687f9": {
     "source": "החיבור לאינסטגרם פג. חברו את אינסטגרם מחדש בעמוד החיבורים.",
     "language": "he",
@@ -41956,7 +41836,7 @@
     "references": [
       {
         "file": "web/app/billing/page.tsx",
-        "line": 163,
+        "line": 173,
         "kind": "literal"
       }
     ]
@@ -42383,17 +42263,6 @@
       }
     ]
   },
-  "m_582aa19f6687bf88": {
-    "source": "מהתשובות שלכם ומהמחקר. מכאן נבנה את האסטרטגיה והצעדים הראשונים.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/start/StepPlan.tsx",
-        "line": 139,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_58346a31ad95df1b": {
     "source": "בעלי חנות",
     "language": "he",
@@ -42707,7 +42576,7 @@
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 889,
+        "line": 883,
         "kind": "literal"
       },
       {
@@ -42936,17 +42805,6 @@
       }
     ]
   },
-  "m_5995d98066505b57": {
-    "source": "השינויים נשמרים כשלוחצים על הכפתור בכל שלב. אפשר לחזור לשלבים כאן בלי לעזוב את המסך.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/posts/preparation/PostPreparation.tsx",
-        "line": 107,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_599643fc0a1c2d65": {
     "source": "שמח, צבעוני וקליל",
     "language": "he",
@@ -43121,6 +42979,17 @@
         "line": 650,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_5a029b79c7b7b063": {
+    "source": "בחרו שותף מתאים והציעו יחד תוכן שמועיל לקהל. פונים רק אחרי שבדקתם ואישרתם. לפרסום משותף בפייסבוק ובאינסטגרם דרושות ההרשאות המתאימות מהשותף; הוא לא מופעל אוטומטית ב-IsraMarket.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/help/guides.ts",
+        "line": 667,
+        "kind": "literal"
       }
     ]
   },
@@ -43418,7 +43287,7 @@
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 1039,
+        "line": 1033,
         "kind": "literal"
       }
     ]
@@ -43682,6 +43551,23 @@
         "file": "web/components/start/steps.tsx",
         "line": 657,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_5b7cdbb7a51fb3ac": {
+    "source": "לראות איך מוצאים שם משתמש",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/instagram/HandlesEditor.tsx",
+        "line": 64,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/start/steps.tsx",
+        "line": 821,
+        "kind": "literal",
+        "purpose": "display"
       }
     ]
   },
@@ -44000,17 +43886,6 @@
         "line": 20,
         "kind": "literal",
         "purpose": "copy"
-      }
-    ]
-  },
-  "m_5bfb8f14317a59c2": {
-    "source": "שלב:",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/decisions/page.tsx",
-        "line": 798,
-        "kind": "literal"
       }
     ]
   },
@@ -44608,7 +44483,7 @@
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 1178,
+        "line": 1172,
         "kind": "literal"
       }
     ]
@@ -44695,17 +44570,6 @@
       }
     ]
   },
-  "m_5d2932ed7d5c0f78": {
-    "source": "תוכן אישי של העסק, תוכניות ופוסטים שכבר נשמרו נשארים בשפה שבה נכתבו. הם לא מתורגמים אוטומטית כשמחליפים את שפת האתר.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/language/TranslationCoverage.tsx",
-        "line": 11,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_5d33f6f58fd79a7e": {
     "source": "ורוד",
     "language": "he",
@@ -44768,7 +44632,7 @@
     "references": [
       {
         "file": "web/app/account/page.tsx",
-        "line": 97,
+        "line": 130,
         "kind": "literal"
       }
     ]
@@ -44808,12 +44672,12 @@
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 961,
+        "line": 955,
         "kind": "literal"
       },
       {
         "file": "web/components/AssetCard.tsx",
-        "line": 332,
+        "line": 342,
         "kind": "literal"
       },
       {
@@ -45393,17 +45257,6 @@
         "line": 226,
         "kind": "literal",
         "purpose": "copy"
-      }
-    ]
-  },
-  "m_5e513e2c9e05085b": {
-    "source": "אפשר לבטל בכל רגע, כאן בעמוד.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/billing/page.tsx",
-        "line": 190,
-        "kind": "literal"
       }
     ]
   },
@@ -46044,7 +45897,7 @@
       },
       {
         "file": "web/components/posts/preparation/PhotosStep.tsx",
-        "line": 406,
+        "line": 386,
         "kind": "literal"
       }
     ]
@@ -46337,6 +46190,17 @@
       {
         "file": "web/components/design/ComponentWorkshop.tsx",
         "line": 40,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_600f472eceba8cd2": {
+    "source": "מטרות החודש, התקציב המתוכנן והפוסטים של כל שבוע, בעמוד אחד.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/ownerUpdates.ts",
+        "line": 24,
         "kind": "literal"
       }
     ]
@@ -47095,7 +46959,7 @@
     "references": [
       {
         "file": "web/app/billing/page.tsx",
-        "line": 151,
+        "line": 161,
         "kind": "literal"
       },
       {
@@ -47333,7 +47197,7 @@
     "references": [
       {
         "file": "web/app/billing/page.tsx",
-        "line": 107,
+        "line": 108,
         "kind": "literal"
       }
     ]
@@ -47807,6 +47671,11 @@
     "language": "he",
     "references": [
       {
+        "file": "web/components/posts/preparation/PhotosStep.tsx",
+        "line": 255,
+        "kind": "literal"
+      },
+      {
         "file": "web/lib/api.ts",
         "line": 1760,
         "kind": "literal"
@@ -47995,7 +47864,7 @@
     "references": [
       {
         "file": "web/components/posts/preparation/PostPreparation.tsx",
-        "line": 100,
+        "line": 108,
         "kind": "literal"
       }
     ]
@@ -48006,7 +47875,7 @@
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 1339,
+        "line": 1333,
         "kind": "literal"
       }
     ]
@@ -48082,7 +47951,7 @@
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 939,
+        "line": 933,
         "kind": "literal"
       }
     ]
@@ -48535,17 +48404,6 @@
       }
     ]
   },
-  "m_65120267b5c369ff": {
-    "source": "החיוב הראשון: {arg_0}, אחרי שהחודש החינמי נגמר.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/billing/page.tsx",
-        "line": 137,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_6524221fff7030b1": {
     "source": "העסק במבט אחד",
     "language": "he",
@@ -48641,17 +48499,6 @@
         "line": 44,
         "kind": "literal",
         "purpose": "display"
-      }
-    ]
-  },
-  "m_654dd345054655bb": {
-    "source": "החיוב הראשון ב-{arg_0}, כשהתקופה ששילמתם עליה נגמרת.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/billing/page.tsx",
-        "line": 188,
-        "kind": "literal"
       }
     ]
   },
@@ -48953,7 +48800,7 @@
       },
       {
         "file": "web/components/posts/preparation/PhotosStep.tsx",
-        "line": 413,
+        "line": 393,
         "kind": "literal"
       },
       {
@@ -49177,17 +49024,6 @@
       }
     ]
   },
-  "m_664a3c22ce15b53a": {
-    "source": "להעלות תמונות מהטלפון",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/posts/preparation/PhotosStep.tsx",
-        "line": 277,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_664ed5ff58a0d6d8": {
     "source": "בסוף ההודעה נוסיף קוד קצר לפי המקום, למשל",
     "language": "he",
@@ -49371,17 +49207,6 @@
       }
     ]
   },
-  "m_66a4f8eea4960754": {
-    "source": "פתחו בדפדפן את analytics.google.com, או את אפליקציית Google Analytics, והיכנסו עם הג׳ימייל שלכם.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/help/guides.ts",
-        "line": 107,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_66a56880998c867f": {
     "source": "מטרה אחת עם מספרים",
     "language": "he",
@@ -49391,17 +49216,6 @@
         "line": 36,
         "kind": "literal",
         "purpose": "display"
-      }
-    ]
-  },
-  "m_66a5d8b10fd22fe9": {
-    "source": "עוד דבר אחד",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/instagram/LearnedList.tsx",
-        "line": 91,
-        "kind": "literal"
       }
     ]
   },
@@ -49731,7 +49545,7 @@
     "references": [
       {
         "file": "web/components/AssetCard.tsx",
-        "line": 369,
+        "line": 379,
         "kind": "literal"
       }
     ]
@@ -49972,7 +49786,7 @@
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 1080,
+        "line": 1074,
         "kind": "literal"
       }
     ]
@@ -50577,12 +50391,12 @@
     "references": [
       {
         "file": "web/app/account/page.tsx",
-        "line": 139,
+        "line": 167,
         "kind": "literal"
       },
       {
         "file": "web/app/billing/page.tsx",
-        "line": 65,
+        "line": 67,
         "kind": "literal"
       },
       {
@@ -50727,12 +50541,6 @@
         "file": "web/app/business/page.tsx",
         "line": 43,
         "kind": "literal"
-      },
-      {
-        "file": "web/components/start/BusinessCard.tsx",
-        "line": 368,
-        "kind": "literal",
-        "purpose": "display"
       }
     ]
   },
@@ -51740,7 +51548,7 @@
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 880,
+        "line": 874,
         "kind": "literal"
       }
     ]
@@ -52091,17 +51899,6 @@
       }
     ]
   },
-  "m_6cc8d469fd66437b": {
-    "source": "האם זה נשמע כמוכם?",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/lib/uxFlows.ts",
-        "line": 77,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_6cdee40a04be95d5": {
     "source": "הפרויקט הבא שלכם יכול להיות מסודר יותר.",
     "language": "he",
@@ -52310,6 +52107,11 @@
     "source": "לרענן",
     "language": "he",
     "references": [
+      {
+        "file": "web/app/instagram/page.tsx",
+        "line": 108,
+        "kind": "literal"
+      },
       {
         "file": "web/components/PostEditor.tsx",
         "line": 1073,
@@ -52622,17 +52424,6 @@
         "file": "web/components/motion/MotionGallery.tsx",
         "line": 110,
         "kind": "jsx"
-      }
-    ]
-  },
-  "m_6dca13964b5ad32d": {
-    "source": "האסטרטגיה, הצעדים הקרובים ומה נבדוק כדי להתקדם.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/preview/page.tsx",
-        "line": 13,
-        "kind": "literal"
       }
     ]
   },
@@ -53145,7 +52936,7 @@
     "references": [
       {
         "file": "web/app/billing/page.tsx",
-        "line": 172,
+        "line": 119,
         "kind": "literal"
       }
     ]
@@ -54439,7 +54230,7 @@
     "references": [
       {
         "file": "web/components/posts/preparation/ContentLanguagePicker.tsx",
-        "line": 64,
+        "line": 68,
         "kind": "literal"
       }
     ]
@@ -54574,7 +54365,7 @@
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 791,
+        "line": 797,
         "kind": "literal"
       }
     ]
@@ -54981,17 +54772,6 @@
       }
     ]
   },
-  "m_71fdb3b14ae7d5a1": {
-    "source": "לפי:",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/instagram/LearnedList.tsx",
-        "line": 56,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_7204a8f506655cf3": {
     "source": "ההשערה של ספטמבר מוכנה לבדיקה",
     "language": "he",
@@ -55306,6 +55086,17 @@
       }
     ]
   },
+  "m_726d666533846a05": {
+    "source": "החיוב הבא",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/billing/page.tsx",
+        "line": 147,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_7273bd29c82950c4": {
     "source": "את הפוסטים עצמם נכתוב ונעצב יחד.",
     "language": "he",
@@ -55594,7 +55385,7 @@
     "references": [
       {
         "file": "web/components/posts/preparation/ContentLanguagePicker.tsx",
-        "line": 53,
+        "line": 57,
         "kind": "literal"
       }
     ]
@@ -56296,7 +56087,7 @@
     "references": [
       {
         "file": "web/components/language/WhatsNewLink.tsx",
-        "line": 24,
+        "line": 25,
         "kind": "literal"
       }
     ]
@@ -56744,7 +56535,7 @@
       },
       {
         "file": "web/components/posts/preparation/PostPreparation.tsx",
-        "line": 79,
+        "line": 87,
         "kind": "literal"
       },
       {
@@ -57717,7 +57508,7 @@
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 1361,
+        "line": 1355,
         "kind": "literal"
       }
     ]
@@ -57835,7 +57626,7 @@
     "references": [
       {
         "file": "web/components/posts/preparation/PhotosStep.tsx",
-        "line": 348,
+        "line": 331,
         "kind": "literal"
       }
     ]
@@ -57857,7 +57648,7 @@
     "references": [
       {
         "file": "web/app/billing/page.tsx",
-        "line": 227,
+        "line": 238,
         "kind": "literal"
       }
     ]
@@ -58264,7 +58055,7 @@
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 1007,
+        "line": 1001,
         "kind": "literal"
       },
       {
@@ -58409,17 +58200,6 @@
       {
         "file": "web/app/security/page.tsx",
         "line": 57,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_79a0543b811a8e4d": {
-    "source": "בחרו תמונות של הנושאים שבחרתם: מוצר, עבודה אמיתית או תהליך. מהן נכין את התמונות לפוסטים.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/posts/preparation/PhotosStep.tsx",
-        "line": 267,
         "kind": "literal"
       }
     ]
@@ -58643,6 +58423,18 @@
         "line": 90,
         "kind": "template",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_7a09371b19c54ee5": {
+    "source": "קישור לוואטסאפ ליד כל פוסט",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/ownerUpdates.ts",
+        "line": 47,
+        "kind": "literal",
+        "purpose": "display"
       }
     ]
   },
@@ -59104,7 +58896,7 @@
     "references": [
       {
         "file": "web/components/AssetCard.tsx",
-        "line": 235,
+        "line": 245,
         "kind": "literal"
       }
     ]
@@ -59334,17 +59126,6 @@
       {
         "file": "web/app/promotion/page.tsx",
         "line": 696,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_7b4cfbd3bd3f3bf9": {
-    "source": "זה ב-Google Analytics: Admin › Property access management › + › Add users.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/help/guides.ts",
-        "line": 197,
         "kind": "literal"
       }
     ]
@@ -60647,6 +60428,17 @@
       }
     ]
   },
+  "m_7e5ac1bbf8c3cc38": {
+    "source": "מקורות:",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/instagram/LearnedList.tsx",
+        "line": 54,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_7e5df9131065e293": {
     "source": "לבדוק את הפוסט שהכנו.",
     "language": "he",
@@ -60781,7 +60573,7 @@
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 1043,
+        "line": 1037,
         "kind": "literal"
       }
     ]
@@ -60985,7 +60777,7 @@
     "references": [
       {
         "file": "web/components/posts/preparation/ContentLanguagePicker.tsx",
-        "line": 56,
+        "line": 60,
         "kind": "literal"
       }
     ]
@@ -61260,6 +61052,11 @@
     "language": "he",
     "references": [
       {
+        "file": "web/app/billing/page.tsx",
+        "line": 189,
+        "kind": "literal"
+      },
+      {
         "file": "web/components/posts/CalendarView.tsx",
         "line": 77,
         "kind": "literal"
@@ -61359,7 +61156,7 @@
     "references": [
       {
         "file": "web/components/posts/preparation/PhotosStep.tsx",
-        "line": 396,
+        "line": 376,
         "kind": "literal"
       },
       {
@@ -61659,17 +61456,17 @@
       },
       {
         "file": "web/components/language/ReleaseNotes.tsx",
-        "line": 29,
+        "line": 31,
         "kind": "literal"
       },
       {
         "file": "web/components/language/WhatsNewLink.tsx",
-        "line": 24,
+        "line": 25,
         "kind": "literal"
       },
       {
         "file": "web/components/language/WhatsNewLink.tsx",
-        "line": 32,
+        "line": 33,
         "kind": "literal"
       }
     ]
@@ -62116,6 +61913,18 @@
         "line": 630,
         "kind": "template",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_816e48e8064b5c65": {
+    "source": "פייסבוק: שיתופי פעולה והרשאות לפרסום",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/help/guides.ts",
+        "line": 671,
+        "kind": "literal",
+        "purpose": "display"
       }
     ]
   },
@@ -62829,7 +62638,7 @@
     "references": [
       {
         "file": "web/components/posts/preparation/PhotosStep.tsx",
-        "line": 396,
+        "line": 376,
         "kind": "literal"
       }
     ]
@@ -63341,12 +63150,12 @@
     "references": [
       {
         "file": "web/components/AssetCard.tsx",
-        "line": 146,
+        "line": 156,
         "kind": "literal"
       },
       {
         "file": "web/components/AssetCard.tsx",
-        "line": 155,
+        "line": 165,
         "kind": "literal"
       }
     ]
@@ -63533,7 +63342,7 @@
     "references": [
       {
         "file": "web/components/AssetCard.tsx",
-        "line": 446,
+        "line": 456,
         "kind": "literal"
       }
     ]
@@ -64003,12 +63812,12 @@
     "references": [
       {
         "file": "web/app/billing/page.tsx",
-        "line": 59,
+        "line": 61,
         "kind": "literal"
       },
       {
         "file": "web/app/billing/page.tsx",
-        "line": 127,
+        "line": 141,
         "kind": "literal"
       }
     ]
@@ -64358,6 +64167,18 @@
       }
     ]
   },
+  "m_8619d353f2ea8e1e": {
+    "source": "הקמפיין הוא מקום העבודה",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/ownerUpdates.ts",
+        "line": 23,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
   "m_861fc701ffef53e4": {
     "source": "מדבקות מבצע",
     "language": "he",
@@ -64520,6 +64341,17 @@
         "line": 70,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_8654083641ca01bd": {
+    "source": "נכנסים עם",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/account/page.tsx",
+        "line": 105,
+        "kind": "literal"
       }
     ]
   },
@@ -64687,6 +64519,17 @@
       {
         "file": "web/lib/businessFields.ts",
         "line": 97,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_869facd16aa6af03": {
+    "source": "אין צורך לעשות כלום. לא נבקש תשלום לפני שהוא ייפתח כאן.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/billing/page.tsx",
+        "line": 132,
         "kind": "literal"
       }
     ]
@@ -64942,7 +64785,7 @@
     "references": [
       {
         "file": "web/components/AssetCard.tsx",
-        "line": 300,
+        "line": 310,
         "kind": "literal"
       }
     ]
@@ -65046,7 +64889,7 @@
     "references": [
       {
         "file": "web/components/posts/preparation/PostPreparation.tsx",
-        "line": 100,
+        "line": 108,
         "kind": "literal"
       }
     ]
@@ -65237,7 +65080,7 @@
       },
       {
         "file": "web/components/language/ReleaseNotes.tsx",
-        "line": 27,
+        "line": 28,
         "kind": "literal"
       },
       {
@@ -65247,12 +65090,12 @@
       },
       {
         "file": "web/components/posts/preparation/ContentLanguagePicker.tsx",
-        "line": 56,
+        "line": 60,
         "kind": "literal"
       },
       {
         "file": "web/components/posts/preparation/PostPreparation.tsx",
-        "line": 114,
+        "line": 121,
         "kind": "literal"
       },
       {
@@ -65497,6 +65340,18 @@
       }
     ]
   },
+  "m_8843732572875530": {
+    "source": "רואים מתי תמונה או סרטון מוכנים",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/ownerUpdates.ts",
+        "line": 29,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
   "m_884ad80eb3882720": {
     "source": "להגיע לקהל המתאים ולהוביל אותו לפעולה",
     "language": "he",
@@ -65660,6 +65515,11 @@
       {
         "file": "web/components/integrations/SourceReadState.tsx",
         "line": 70,
+        "kind": "literal"
+      },
+      {
+        "file": "web/lib/ownerUpdates.ts",
+        "line": 37,
         "kind": "literal"
       },
       {
@@ -66466,7 +66326,7 @@
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 986,
+        "line": 980,
         "kind": "literal"
       }
     ]
@@ -66928,17 +66788,6 @@
       {
         "file": "web/lib/api.ts",
         "line": 1233,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_8be5bf2e9c95e351": {
-    "source": "עדיין בתרגום: שאלות ההיכרות, בניית התוכנית והמסכים בתוך החשבון — היום שלי, תוכנית, נושאים ותמונות, עורך הפוסטים, לוח שנה, חיבורים, תוצאות מפורטות, עסק ומותג, עזרה, חשבון ותשלום. גם המסכים המשפטיים וכלי סקירת העיצוב צריכים השלמה ובדיקת שפה.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/language/TranslationCoverage.tsx",
-        "line": 10,
         "kind": "literal"
       }
     ]
@@ -67443,17 +67292,6 @@
       }
     ]
   },
-  "m_8cfb91305fc876fe": {
-    "source": "מהיכרות עם העסק, לקמפיין שעובד בשבילו.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/preview/page.tsx",
-        "line": 36,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_8cfcc2a653cf70a0": {
     "source": "פלאיירים ושילוט",
     "language": "he",
@@ -67696,12 +67534,12 @@
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 978,
+        "line": 972,
         "kind": "literal"
       },
       {
         "file": "web/components/AssetCard.tsx",
-        "line": 404,
+        "line": 414,
         "kind": "literal"
       }
     ]
@@ -67724,17 +67562,17 @@
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 1304,
+        "line": 1298,
         "kind": "literal"
       },
       {
         "file": "web/components/AssetCard.tsx",
-        "line": 273,
+        "line": 283,
         "kind": "literal"
       },
       {
         "file": "web/components/AssetCard.tsx",
-        "line": 274,
+        "line": 284,
         "kind": "literal"
       },
       {
@@ -68938,7 +68776,7 @@
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 1350,
+        "line": 1344,
         "kind": "literal"
       }
     ]
@@ -69155,7 +68993,7 @@
     "references": [
       {
         "file": "web/components/posts/preparation/PhotosStep.tsx",
-        "line": 287,
+        "line": 278,
         "kind": "literal"
       }
     ]
@@ -70273,6 +70111,27 @@
       }
     ]
   },
+  "m_928eec18862cfde2": {
+    "source": "התשלום",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/billing/page.tsx",
+        "line": 129,
+        "kind": "literal"
+      },
+      {
+        "file": "web/app/billing/page.tsx",
+        "line": 149,
+        "kind": "literal"
+      },
+      {
+        "file": "web/app/billing/page.tsx",
+        "line": 190,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_9294526ba143cbcf": {
     "source": "{arg_0}, עם סיבה",
     "language": "he",
@@ -70334,6 +70193,17 @@
         "line": 173,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_92ab94a95269e98f": {
+    "source": "עוד לא קראנו את האתר שלכם, אז התחלנו מסגנון לפי סוג העסק.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/preparation/VoiceStep.tsx",
+        "line": 84,
+        "kind": "literal"
       }
     ]
   },
@@ -70584,6 +70454,17 @@
         "line": 206,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_9383bb4128ca6193": {
+    "source": "בכל רגע, כאן בעמוד",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/billing/page.tsx",
+        "line": 189,
+        "kind": "literal"
       }
     ]
   },
@@ -71007,17 +70888,6 @@
       }
     ]
   },
-  "m_9407fef6f4f29249": {
-    "source": "בחרו שותף מתאים והציעו יחד תוכן שמועיל לקהל. פונים רק אחרי שבדקתם ואישרתם. לפרסום משותף במטא דרושות ההרשאות המתאימות מהשותף; הוא לא מופעל אוטומטית ב-IsraMarket.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/help/guides.ts",
-        "line": 667,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_9408b391f0c6130e": {
     "source": "שואלים בקופה ״איך שמעתם עלינו?״, ומציעים קוד קטן למי שמגיע בזכות פוסט.",
     "language": "he",
@@ -71146,7 +71016,7 @@
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 1304,
+        "line": 1298,
         "kind": "literal"
       },
       {
@@ -71217,7 +71087,7 @@
     "references": [
       {
         "file": "web/app/instagram/page.tsx",
-        "line": 129,
+        "line": 131,
         "kind": "literal"
       },
       {
@@ -71358,6 +71228,17 @@
       }
     ]
   },
+  "m_9467d192d8130edc": {
+    "source": "פייפאל או כרטיס אשראי",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/billing/page.tsx",
+        "line": 190,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_9472c49c80e0ec71": {
     "source": "מחקר מתחרים עם שמות וקישורים אופציונליים.",
     "language": "he",
@@ -71375,7 +71256,7 @@
     "references": [
       {
         "file": "web/app/account/page.tsx",
-        "line": 148,
+        "line": 175,
         "kind": "literal"
       }
     ]
@@ -71583,7 +71464,7 @@
       },
       {
         "file": "web/components/posts/preparation/PostPreparation.tsx",
-        "line": 101,
+        "line": 109,
         "kind": "literal"
       }
     ]
@@ -72398,7 +72279,7 @@
     "references": [
       {
         "file": "web/app/billing/page.tsx",
-        "line": 165,
+        "line": 175,
         "kind": "literal"
       }
     ]
@@ -72583,7 +72464,7 @@
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 1028,
+        "line": 1022,
         "kind": "literal"
       }
     ]
@@ -72713,7 +72594,7 @@
       },
       {
         "file": "web/components/posts/preparation/ContentLanguagePicker.tsx",
-        "line": 48,
+        "line": 52,
         "kind": "literal"
       }
     ]
@@ -72899,17 +72780,6 @@
       }
     ]
   },
-  "m_97e26ca04ad787af": {
-    "source": "החודש החינמי ממשיך כרגיל. לא נבקש תשלום לפני שהוא ייפתח כאן.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/billing/page.tsx",
-        "line": 118,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_97e2e1c66ec5d4fb": {
     "source": "תמונה עגולה",
     "language": "he",
@@ -73033,7 +72903,7 @@
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 1090,
+        "line": 1084,
         "kind": "literal"
       }
     ]
@@ -73553,7 +73423,7 @@
     "references": [
       {
         "file": "web/app/billing/page.tsx",
-        "line": 79,
+        "line": 81,
         "kind": "literal"
       }
     ]
@@ -73567,6 +73437,17 @@
         "line": 1830,
         "kind": "literal",
         "purpose": "validation"
+      }
+    ]
+  },
+  "m_995bd1b19d860519": {
+    "source": "עוד לא פתוח",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/billing/page.tsx",
+        "line": 129,
+        "kind": "literal"
       }
     ]
   },
@@ -75087,17 +74968,6 @@
       }
     ]
   },
-  "m_9cf13ebf275f1ca6": {
-    "source": "אתם מכירים את העסק הכי טוב. נבנה את זה על מה שגילינו, ונמדוד אם זה עובד.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/lib/draft.ts",
-        "line": 1445,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_9d0f20e99e90a0ec": {
     "source": "- מה מוצע באתר: {arg_0}",
     "language": "he",
@@ -75501,7 +75371,7 @@
     "references": [
       {
         "file": "web/app/billing/page.tsx",
-        "line": 106,
+        "line": 107,
         "kind": "literal"
       }
     ]
@@ -76072,7 +75942,7 @@
     "references": [
       {
         "file": "web/app/billing/page.tsx",
-        "line": 171,
+        "line": 117,
         "kind": "literal"
       }
     ]
@@ -76501,7 +76371,7 @@
     "references": [
       {
         "file": "web/components/posts/preparation/PostPreparation.tsx",
-        "line": 90,
+        "line": 98,
         "kind": "literal"
       }
     ]
@@ -76512,7 +76382,7 @@
     "references": [
       {
         "file": "web/components/posts/preparation/PostPreparation.tsx",
-        "line": 114,
+        "line": 121,
         "kind": "literal"
       }
     ]
@@ -77475,7 +77345,7 @@
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 894,
+        "line": 888,
         "kind": "literal"
       }
     ]
@@ -77903,12 +77773,12 @@
     "references": [
       {
         "file": "web/app/billing/page.tsx",
-        "line": 236,
+        "line": 247,
         "kind": "literal"
       },
       {
         "file": "web/app/billing/page.tsx",
-        "line": 248,
+        "line": 259,
         "kind": "literal"
       }
     ]
@@ -79434,6 +79304,17 @@
       }
     ]
   },
+  "m_a61905345aa69e73": {
+    "source": "מדגימים מה שכבר מצליח ומסבירים למי זה מתאים.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/quarterPlanMock.ts",
+        "line": 611,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_a62821b2ecfbc949": {
     "source": "בחיבורים מספיק לכתוב את המספר, למשל 050-1234567. מזה נכין קישור לכל פוסט ולביו, ונספור כמה לחצו על כל אחד.",
     "language": "he",
@@ -79593,7 +79474,7 @@
     "references": [
       {
         "file": "web/components/posts/preparation/PostPreparation.tsx",
-        "line": 90,
+        "line": 98,
         "kind": "literal"
       }
     ]
@@ -80455,7 +80336,7 @@
     "references": [
       {
         "file": "web/components/language/ReleaseNotes.tsx",
-        "line": 27,
+        "line": 28,
         "kind": "literal"
       }
     ]
@@ -81124,17 +81005,6 @@
       }
     ]
   },
-  "m_aa39f1771e1320fc": {
-    "source": "ללמוד מחדש",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/instagram/page.tsx",
-        "line": 108,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_aa3bd5bd43954f27": {
     "source": "לבחור סגנון",
     "language": "he",
@@ -81712,7 +81582,7 @@
     "references": [
       {
         "file": "web/components/AssetCard.tsx",
-        "line": 146,
+        "line": 156,
         "kind": "literal"
       }
     ]
@@ -82722,7 +82592,7 @@
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 1050,
+        "line": 1044,
         "kind": "literal"
       },
       {
@@ -83247,7 +83117,7 @@
     "references": [
       {
         "file": "web/components/posts/preparation/ContentLanguagePicker.tsx",
-        "line": 58,
+        "line": 62,
         "kind": "literal"
       }
     ]
@@ -83405,7 +83275,7 @@
     "references": [
       {
         "file": "web/components/AssetCard.tsx",
-        "line": 354,
+        "line": 364,
         "kind": "literal"
       }
     ]
@@ -83449,7 +83319,7 @@
     "references": [
       {
         "file": "web/components/posts/preparation/PhotosStep.tsx",
-        "line": 295,
+        "line": 308,
         "kind": "literal"
       }
     ]
@@ -83704,17 +83574,6 @@
       {
         "file": "web/lib/draft.ts",
         "line": 1329,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_afa592d9e30e8029": {
-    "source": "עברית, אנגלית, ערבית ורוסית זמינות בעמוד הבית, בכניסה ובהרשמה, בניווט, בעדכונים ובתצוגת ההדגמה של התוצאות. גם בחירת שפת הפוסטים מתורגמת.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/language/TranslationCoverage.tsx",
-        "line": 9,
         "kind": "literal"
       }
     ]
@@ -84443,17 +84302,6 @@
       }
     ]
   },
-  "m_b12a494e5944a308": {
-    "source": "משלמים בפייפאל, עם חשבון פייפאל או בכרטיס אשראי. את פרטי הכרטיס אנחנו לא רואים.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/billing/page.tsx",
-        "line": 191,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_b12e41f29f3b483b": {
     "source": "לעבור לפוסטים",
     "language": "he",
@@ -84877,6 +84725,17 @@
       }
     ]
   },
+  "m_b1ea35ae43da8288": {
+    "source": "לראות איך מוצאים את זה",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/help/HowToFind.tsx",
+        "line": 24,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_b1ef88917ed6bf50": {
     "source": "קישור לשיחה",
     "language": "he",
@@ -84967,7 +84826,7 @@
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 1175,
+        "line": 1169,
         "kind": "literal"
       }
     ]
@@ -85373,7 +85232,7 @@
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 1062,
+        "line": 1056,
         "kind": "literal"
       },
       {
@@ -86112,6 +85971,17 @@
       }
     ]
   },
+  "m_b482452d48d9c4a6": {
+    "source": "תמונות של מוצרים, עבודה אמיתית או תהליך. מהן נכין את הפוסטים.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/preparation/PhotosStep.tsx",
+        "line": 267,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_b4875a7d03633254": {
     "source": "מה בדיוק נספר כאן?",
     "language": "he",
@@ -86154,6 +86024,18 @@
         "file": "web/components/landing-v2/processExamples.ts",
         "line": 51,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_b49aeacd060168ad": {
+    "source": "ליד הפוסט: למי הוא מיועד",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/ownerUpdates.ts",
+        "line": 41,
+        "kind": "literal",
+        "purpose": "display"
       }
     ]
   },
@@ -86432,7 +86314,7 @@
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 1175,
+        "line": 1169,
         "kind": "literal"
       }
     ]
@@ -86963,7 +86845,7 @@
     "references": [
       {
         "file": "web/components/posts/preparation/ContentLanguagePicker.tsx",
-        "line": 56,
+        "line": 60,
         "kind": "literal"
       }
     ]
@@ -87031,12 +86913,12 @@
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 1015,
+        "line": 1009,
         "kind": "literal"
       },
       {
         "file": "web/components/AssetCard.tsx",
-        "line": 440,
+        "line": 450,
         "kind": "literal"
       }
     ]
@@ -87141,6 +87023,17 @@
         "line": 442,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_b6a536c2361d4653": {
+    "source": "Google או אימייל וסיסמה",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/account/page.tsx",
+        "line": 17,
+        "kind": "literal"
       }
     ]
   },
@@ -87647,7 +87540,7 @@
     "references": [
       {
         "file": "web/app/instagram/page.tsx",
-        "line": 124,
+        "line": 126,
         "kind": "literal"
       }
     ]
@@ -87919,7 +87812,7 @@
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 1097,
+        "line": 1091,
         "kind": "literal"
       }
     ]
@@ -88349,7 +88242,7 @@
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 816,
+        "line": 810,
         "kind": "literal"
       }
     ]
@@ -88384,7 +88277,7 @@
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 894,
+        "line": 888,
         "kind": "literal"
       }
     ]
@@ -88979,7 +88872,7 @@
     "references": [
       {
         "file": "web/components/posts/preparation/PhotosStep.tsx",
-        "line": 364,
+        "line": 346,
         "kind": "literal"
       }
     ]
@@ -89778,6 +89671,17 @@
       }
     ]
   },
+  "m_bc91c4aaf53ce1fa": {
+    "source": "איך אתם מדברים",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/preparation/PostPreparation.tsx",
+        "line": 20,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_bc99700535ee0302": {
     "source": "אירועי רכישה שדווחו באתר",
     "language": "he",
@@ -90121,13 +90025,29 @@
       }
     ]
   },
+  "m_bd8a9d5d40bb7fe7": {
+    "source": "אחר כך",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/billing/page.tsx",
+        "line": 128,
+        "kind": "literal"
+      },
+      {
+        "file": "web/app/billing/page.tsx",
+        "line": 187,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_bd8be33b0f8d9e09": {
     "source": "לשמור את ההחלטות",
     "language": "he",
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 1237,
+        "line": 1231,
         "kind": "literal"
       }
     ]
@@ -90739,7 +90659,7 @@
     "references": [
       {
         "file": "web/components/posts/preparation/ContentLanguagePicker.tsx",
-        "line": 58,
+        "line": 62,
         "kind": "literal"
       }
     ]
@@ -91822,17 +91742,6 @@
       }
     ]
   },
-  "m_c101f83164e29c8d": {
-    "source": "עוד פרטים",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/language/ReleaseNotes.tsx",
-        "line": 36,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_c103f1de3380dd16": {
     "source": "\nהגרסה הקודמת נפסלה. תקן את כל אלה:\n",
     "language": "he",
@@ -92298,17 +92207,6 @@
       }
     ]
   },
-  "m_c1f01e73efd06ade": {
-    "source": "החיוב הבא: {arg_0}.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/billing/page.tsx",
-        "line": 136,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_c1f0731f2dd4d7f2": {
     "source": "שיחה קצרה: מה אתם מוכרים, למי ומתי חזק או חלש. אם יש לכם אתר או אינסטגרם, אנחנו קוראים אותם בעצמנו.",
     "language": "he",
@@ -92513,7 +92411,7 @@
     "references": [
       {
         "file": "web/components/instagram/LearnedList.tsx",
-        "line": 49,
+        "line": 46,
         "kind": "literal"
       }
     ]
@@ -92643,7 +92541,7 @@
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 942,
+        "line": 936,
         "kind": "literal"
       }
     ]
@@ -92918,6 +92816,18 @@
         "file": "web/components/plan/QuarterPlanView.tsx",
         "line": 671,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_c3058bddcc84a2ec": {
+    "source": "בתוצאות: צעד אחד לנסות",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/ownerUpdates.ts",
+        "line": 35,
+        "kind": "literal",
+        "purpose": "display"
       }
     ]
   },
@@ -94000,6 +93910,17 @@
       {
         "file": "web/app/performance/page.tsx",
         "line": 40,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_c5185827fb2c9a5a": {
+    "source": "גוגל אנליטיקס",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/results/PostObservationLine.tsx",
+        "line": 23,
         "kind": "literal"
       }
     ]
@@ -95218,7 +95139,7 @@
     "references": [
       {
         "file": "web/components/AssetCard.tsx",
-        "line": 219,
+        "line": 229,
         "kind": "literal"
       }
     ]
@@ -95914,6 +95835,17 @@
       }
     ]
   },
+  "m_c96f7276bf24d806": {
+    "source": "פעולה אחת, המספרים שמאחוריה ואיך נבדוק אם היא הצליחה.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/ownerUpdates.ts",
+        "line": 36,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_c972fe22b653887b": {
     "source": "נותנים רעיון לשילוב יומיומי ומזמינים את הקהל לשתף.",
     "language": "he",
@@ -95999,7 +95931,7 @@
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 934,
+        "line": 928,
         "kind": "literal"
       }
     ]
@@ -96197,7 +96129,7 @@
     "references": [
       {
         "file": "web/components/posts/preparation/ContentLanguagePicker.tsx",
-        "line": 60,
+        "line": 64,
         "kind": "literal"
       }
     ]
@@ -96587,7 +96519,7 @@
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 1213,
+        "line": 1207,
         "kind": "literal"
       }
     ]
@@ -96815,7 +96747,7 @@
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 1432,
+        "line": 1426,
         "kind": "literal"
       }
     ]
@@ -97061,6 +96993,17 @@
       }
     ]
   },
+  "m_cb39163d5e9dd26d": {
+    "source": "להוסיף תמונה מקישור",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/preparation/PhotosStep.tsx",
+        "line": 322,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_cb41f719a01d2c6b": {
     "source": "למשל: טיפולי פנים, הסרת שיער ואיפור לאירועים",
     "language": "he",
@@ -97276,6 +97219,17 @@
       {
         "file": "web/components/posts/preparation/TopicsStep.tsx",
         "line": 120,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_cbaf7792e7918b1d": {
+    "source": "מהיכרות עם העסק, לקמפיין שמתאים לו.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/preview/page.tsx",
+        "line": 36,
         "kind": "literal"
       }
     ]
@@ -97800,7 +97754,7 @@
     "references": [
       {
         "file": "web/components/AssetCard.tsx",
-        "line": 305,
+        "line": 315,
         "kind": "literal"
       }
     ]
@@ -97981,6 +97935,17 @@
       {
         "file": "web/components/posts/MediaAllowanceNote.tsx",
         "line": 23,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_cda60896525f27f0": {
+    "source": "מהתשובות שלכם ומהמחקר. מכאן נבנה את התוכנית והצעדים הראשונים.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/start/StepPlan.tsx",
+        "line": 139,
         "kind": "literal"
       }
     ]
@@ -98221,6 +98186,17 @@
         "line": 632,
         "kind": "literal",
         "purpose": "display"
+      }
+    ]
+  },
+  "m_ce3fe732f8fe5b9f": {
+    "source": "אתם מכירים את העסק הכי טוב. נבנה את זה על מה שגילינו, ונמדוד אם זה מצליח.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/draft.ts",
+        "line": 1445,
+        "kind": "literal"
       }
     ]
   },
@@ -98743,17 +98719,6 @@
       }
     ]
   },
-  "m_cf865da7d45f2815": {
-    "source": "עוד לא קראנו אתר שלכם, אז התחלנו מסגנון לפי סוג העסק. ככה נכתוב את הפוסטים.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/posts/preparation/VoiceStep.tsx",
-        "line": 84,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_cf8fbf956e0cfc29": {
     "source": "המפתח של נושא התוכן מהאסטרטגיה",
     "language": "he",
@@ -98922,6 +98887,22 @@
       {
         "file": "web/components/posts/preparation/TopicsStep.tsx",
         "line": 68,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_cfe006851501b247": {
+    "source": "החיוב הראשון",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/billing/page.tsx",
+        "line": 147,
+        "kind": "literal"
+      },
+      {
+        "file": "web/app/billing/page.tsx",
+        "line": 188,
         "kind": "literal"
       }
     ]
@@ -100017,7 +99998,7 @@
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 1210,
+        "line": 1204,
         "kind": "literal"
       }
     ]
@@ -100296,7 +100277,7 @@
       },
       {
         "file": "web/app/billing/page.tsx",
-        "line": 71,
+        "line": 73,
         "kind": "literal"
       },
       {
@@ -100316,7 +100297,7 @@
       },
       {
         "file": "web/components/language/ReleaseNotes.tsx",
-        "line": 26,
+        "line": 27,
         "kind": "literal"
       },
       {
@@ -100794,7 +100775,7 @@
     "references": [
       {
         "file": "web/app/billing/page.tsx",
-        "line": 243,
+        "line": 254,
         "kind": "literal"
       }
     ]
@@ -101192,7 +101173,7 @@
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 986,
+        "line": 980,
         "kind": "literal"
       }
     ]
@@ -101254,12 +101235,12 @@
     "references": [
       {
         "file": "web/app/account/page.tsx",
-        "line": 66,
+        "line": 76,
         "kind": "literal"
       },
       {
         "file": "web/app/account/page.tsx",
-        "line": 71,
+        "line": 81,
         "kind": "literal"
       },
       {
@@ -101714,7 +101695,7 @@
     "references": [
       {
         "file": "web/app/billing/page.tsx",
-        "line": 152,
+        "line": 162,
         "kind": "literal"
       }
     ]
@@ -101775,7 +101756,7 @@
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 1356,
+        "line": 1350,
         "kind": "literal"
       }
     ]
@@ -102275,6 +102256,17 @@
       }
     ]
   },
+  "m_d68beba2eae0a832": {
+    "source": "ביום ההפעלה",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/billing/page.tsx",
+        "line": 188,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_d6910be868489887": {
     "source": "הרחוב של השוק: קולות, ארגזים, שלטים גבוהים וצרים.",
     "language": "he",
@@ -102572,6 +102564,17 @@
       }
     ]
   },
+  "m_d747897ef46201b2": {
+    "source": "לבדוק שככה אתם מדברים",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/trial.ts",
+        "line": 533,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_d74bfb0b992d22bb": {
     "source": "התוצאות לפי פוסט",
     "language": "he",
@@ -102827,7 +102830,7 @@
     "references": [
       {
         "file": "web/components/posts/preparation/ContentLanguagePicker.tsx",
-        "line": 55,
+        "line": 59,
         "kind": "literal"
       }
     ]
@@ -103053,7 +103056,7 @@
     "references": [
       {
         "file": "web/app/account/page.tsx",
-        "line": 78,
+        "line": 89,
         "kind": "literal"
       },
       {
@@ -104564,7 +104567,7 @@
     "references": [
       {
         "file": "web/app/account/page.tsx",
-        "line": 72,
+        "line": 82,
         "kind": "literal"
       }
     ]
@@ -105010,6 +105013,11 @@
       {
         "file": "web/components/posts/QuickPost.tsx",
         "line": 73,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/results/PostObservationLine.tsx",
+        "line": 17,
         "kind": "literal"
       },
       {
@@ -105819,7 +105827,7 @@
     "references": [
       {
         "file": "web/components/AssetCard.tsx",
-        "line": 82,
+        "line": 92,
         "kind": "literal"
       }
     ]
@@ -105918,7 +105926,7 @@
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 1062,
+        "line": 1056,
         "kind": "literal"
       }
     ]
@@ -107126,11 +107134,6 @@
     "language": "he",
     "references": [
       {
-        "file": "web/app/billing/page.tsx",
-        "line": 116,
-        "kind": "literal"
-      },
-      {
         "file": "web/app/terms/page.tsx",
         "line": 82,
         "kind": "jsx"
@@ -107304,7 +107307,7 @@
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 1052,
+        "line": 1046,
         "kind": "literal"
       }
     ]
@@ -107374,7 +107377,7 @@
     "references": [
       {
         "file": "web/components/AssetCard.tsx",
-        "line": 125,
+        "line": 135,
         "kind": "literal"
       }
     ]
@@ -107745,7 +107748,7 @@
     "references": [
       {
         "file": "web/app/account/page.tsx",
-        "line": 40,
+        "line": 49,
         "kind": "literal"
       }
     ]
@@ -108601,17 +108604,6 @@
       }
     ]
   },
-  "m_e30f865f76879dc7": {
-    "source": "איך מוצאים את זה?",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/help/HowToFind.tsx",
-        "line": 24,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_e3139c400b568910": {
     "source": "חסרה הרשאה לנתוני הפוסטים בפייסבוק. חיבור הדף נשמר; אפשר להמשיך בתוכנית.",
     "language": "he",
@@ -108659,6 +108651,11 @@
       {
         "file": "web/app/instagram/page.tsx",
         "line": 63,
+        "kind": "literal"
+      },
+      {
+        "file": "web/app/instagram/page.tsx",
+        "line": 117,
         "kind": "literal"
       }
     ]
@@ -108914,7 +108911,7 @@
     "references": [
       {
         "file": "web/components/posts/preparation/ContentLanguagePicker.tsx",
-        "line": 61,
+        "line": 65,
         "kind": "literal"
       }
     ]
@@ -110397,7 +110394,7 @@
     "references": [
       {
         "file": "web/components/posts/preparation/PhotosStep.tsx",
-        "line": 396,
+        "line": 376,
         "kind": "literal"
       }
     ]
@@ -110491,7 +110488,7 @@
     "references": [
       {
         "file": "web/components/posts/preparation/PostPreparation.tsx",
-        "line": 93,
+        "line": 101,
         "kind": "literal"
       }
     ]
@@ -111565,7 +111562,7 @@
     "references": [
       {
         "file": "web/app/account/page.tsx",
-        "line": 128,
+        "line": 159,
         "kind": "literal"
       },
       {
@@ -111740,7 +111737,7 @@
       },
       {
         "file": "web/components/posts/preparation/PhotosStep.tsx",
-        "line": 354,
+        "line": 337,
         "kind": "literal",
         "purpose": "display"
       }
@@ -112150,7 +112147,7 @@
     "references": [
       {
         "file": "web/components/posts/preparation/PhotosStep.tsx",
-        "line": 451,
+        "line": 431,
         "kind": "literal"
       }
     ]
@@ -112644,7 +112641,7 @@
     "references": [
       {
         "file": "web/components/posts/preparation/ContentLanguagePicker.tsx",
-        "line": 62,
+        "line": 66,
         "kind": "literal"
       }
     ]
@@ -113224,7 +113221,7 @@
     "references": [
       {
         "file": "web/app/instagram/page.tsx",
-        "line": 120,
+        "line": 122,
         "kind": "literal"
       }
     ]
@@ -113246,7 +113243,7 @@
     "references": [
       {
         "file": "web/app/account/page.tsx",
-        "line": 128,
+        "line": 159,
         "kind": "literal"
       },
       {
@@ -113261,12 +113258,12 @@
       },
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 961,
+        "line": 955,
         "kind": "literal"
       },
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 1237,
+        "line": 1231,
         "kind": "literal"
       },
       {
@@ -113306,7 +113303,7 @@
       },
       {
         "file": "web/components/AssetCard.tsx",
-        "line": 332,
+        "line": 342,
         "kind": "literal"
       },
       {
@@ -113366,7 +113363,7 @@
       },
       {
         "file": "web/components/posts/preparation/ContentLanguagePicker.tsx",
-        "line": 52,
+        "line": 56,
         "kind": "literal"
       },
       {
@@ -113454,7 +113451,7 @@
     "references": [
       {
         "file": "web/components/posts/preparation/PhotosStep.tsx",
-        "line": 377,
+        "line": 357,
         "kind": "literal"
       }
     ]
@@ -115247,7 +115244,18 @@
     "references": [
       {
         "file": "web/components/posts/preparation/ContentLanguagePicker.tsx",
-        "line": 66,
+        "line": 70,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_ef901b52291d8fe9": {
+    "source": "כך קראנו את הסגנון שלכם מהאתר.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/preparation/VoiceStep.tsx",
+        "line": 85,
         "kind": "literal"
       }
     ]
@@ -115489,7 +115497,7 @@
     "references": [
       {
         "file": "web/components/posts/preparation/PostPreparation.tsx",
-        "line": 114,
+        "line": 121,
         "kind": "literal"
       }
     ]
@@ -115635,17 +115643,6 @@
       }
     ]
   },
-  "m_f0cc67e0c4c6accc": {
-    "source": "להעלות קבצים",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/posts/preparation/PhotosStep.tsx",
-        "line": 255,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_f0d1ebe99c491a51": {
     "source": "לבחור נתוני אתר",
     "language": "he",
@@ -115674,12 +115671,12 @@
     "references": [
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 999,
+        "line": 993,
         "kind": "literal"
       },
       {
         "file": "web/components/AssetCard.tsx",
-        "line": 422,
+        "line": 432,
         "kind": "literal"
       },
       {
@@ -116290,12 +116287,12 @@
       },
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 969,
+        "line": 963,
         "kind": "literal"
       },
       {
         "file": "web/app/decisions/page.tsx",
-        "line": 1073,
+        "line": 1067,
         "kind": "literal"
       },
       {
@@ -116305,7 +116302,7 @@
       },
       {
         "file": "web/components/AssetCard.tsx",
-        "line": 345,
+        "line": 355,
         "kind": "literal"
       },
       {
@@ -116398,17 +116395,6 @@
       {
         "file": "web/components/landing-v2/ProcessSocialPost.tsx",
         "line": 23,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_f29151cfff30590d": {
-    "source": "קישור לתמונה אחת ברשת.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/posts/preparation/PhotosStep.tsx",
-        "line": 366,
         "kind": "literal"
       }
     ]
@@ -116757,7 +116743,7 @@
     "references": [
       {
         "file": "web/app/account/page.tsx",
-        "line": 67,
+        "line": 77,
         "kind": "literal"
       }
     ]
@@ -117786,17 +117772,6 @@
       }
     ]
   },
-  "m_f55759f47ed7d1a3": {
-    "source": "בחירה מהירה · ",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/decisions/page.tsx",
-        "line": 761,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_f55824fe3f7bf1f4": {
     "source": "ההסבר של טיקטוק: שיתוף פרופיל",
     "language": "he",
@@ -117870,6 +117845,11 @@
     "source": "אימייל וסיסמה",
     "language": "he",
     "references": [
+      {
+        "file": "web/app/account/page.tsx",
+        "line": 19,
+        "kind": "literal"
+      },
       {
         "file": "web/components/design/FlowCanvas.tsx",
         "line": 128,
@@ -118614,6 +118594,17 @@
       }
     ]
   },
+  "m_f6bb4a97c97f71ca": {
+    "source": "העלו תמונות מהטלפון, או אספו אותן מהאתר של העסק.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/preparation/PhotosStep.tsx",
+        "line": 432,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_f6c46a2ea9a9ad7e": {
     "source": "בחרו חשבון מהרשימה שקיבלנו ממטא.",
     "language": "he",
@@ -118852,6 +118843,11 @@
     "source": "הכיוון, הצעדים הקרובים ומה נבדוק כדי להתקדם.",
     "language": "he",
     "references": [
+      {
+        "file": "web/app/preview/page.tsx",
+        "line": 13,
+        "kind": "literal"
+      },
       {
         "file": "web/components/trial/Welcome.tsx",
         "line": 35,
@@ -119288,7 +119284,7 @@
     "references": [
       {
         "file": "web/components/posts/preparation/PostPreparation.tsx",
-        "line": 100,
+        "line": 108,
         "kind": "literal"
       }
     ]
@@ -119884,6 +119880,17 @@
         "line": 384,
         "kind": "template",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_fa0323acd796dee7": {
+    "source": "לשנות סיסמה",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/account/page.tsx",
+        "line": 122,
+        "kind": "literal"
       }
     ]
   },
@@ -120545,7 +120552,7 @@
     "references": [
       {
         "file": "web/components/posts/preparation/ContentLanguagePicker.tsx",
-        "line": 69,
+        "line": 73,
         "kind": "literal"
       }
     ]
@@ -121546,11 +121553,6 @@
     "language": "he",
     "references": [
       {
-        "file": "web/app/decisions/page.tsx",
-        "line": 796,
-        "kind": "literal"
-      },
-      {
         "file": "web/components/plan/QuarterPlanView.tsx",
         "line": 671,
         "kind": "literal"
@@ -121930,6 +121932,17 @@
       }
     ]
   },
+  "m_fe2a3558b437fd29": {
+    "source": "דרך פייפאל",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/billing/page.tsx",
+        "line": 149,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_fe2aad6a60ac98fd": {
     "source": "כחול לילה",
     "language": "he",
@@ -122281,6 +122294,17 @@
       {
         "file": "web/lib/api.ts",
         "line": 403,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_fefb6a4370422a04": {
+    "source": "זה קובע אם נחזק את מה שכבר מצליח או נפתח ערוץ חדש.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/businessModel.ts",
+        "line": 115,
         "kind": "literal"
       }
     ]
@@ -122725,7 +122749,7 @@
     "references": [
       {
         "file": "web/components/AssetCard.tsx",
-        "line": 291,
+        "line": 301,
         "kind": "literal"
       }
     ]
@@ -122759,17 +122783,6 @@
       {
         "file": "web/components/posts/preparation/TopicsStep.tsx",
         "line": 66,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_fffff952a53f05cc": {
-    "source": "עוד {arg_0} דברים",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/instagram/LearnedList.tsx",
-        "line": 91,
         "kind": "literal"
       }
     ]

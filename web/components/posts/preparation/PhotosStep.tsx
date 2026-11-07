@@ -10,7 +10,7 @@ import { SectionHeader } from "@/components/SectionHeader";
 import { StepLink } from "@/components/trial/StepLink";
 import { endpoints, isDemo, type Asset } from "@/lib/api";
 import ui from "@/components/posts/chrome.module.css";
-import { IconArrowLeft, IconCheck, IconChevron, IconEye, IconImage, IconLink } from "@/lib/icons";
+import { IconArrowLeft, IconCheck, IconChevron, IconImage, IconLink } from "@/lib/icons";
 import { toast } from "@/lib/ui";
 
 /**
@@ -252,7 +252,7 @@ export function PhotosStep({ embedded = false, onNext, onPendingChange }: { embe
     () => Array.from(new Set(assets.flatMap((asset) => asset.tags))).sort((a, b) => a.localeCompare(b, "he")),
     [assets]
   );
-  const uploadLabel = Object.values(pending).includes("uploading") ? t("מעלים…") : t("להעלות קבצים");
+  const uploadLabel = Object.values(pending).includes("uploading") ? t("מעלים…") : t("להעלות תמונות");
 
   const openAsset = openId === null ? null : assets.find((asset) => asset.id === openId) ?? null;
 
@@ -264,9 +264,20 @@ export function PhotosStep({ embedded = false, onNext, onPendingChange }: { embe
           eyebrow={embedded ? null : undefined}
           section="business"
           title={t("התמונות שלי")}
-          subtitle={t("בחרו תמונות של הנושאים שבחרתם: מוצר, עבודה אמיתית או תהליך. מהן נכין את התמונות לפוסטים.")}
+          subtitle={t("תמונות של מוצרים, עבודה אמיתית או תהליך. מהן נכין את הפוסטים.")}
           action={
-            hasSite === false ? (
+            // One filled action: upload. Collecting from the website is the second way in.
+            <div className="flex w-full flex-col-reverse gap-2 sm:w-auto sm:flex-row">
+              {hasSite === false ? null : (
+                <button
+                  type="button"
+                  onClick={() => void handleScan()}
+                  disabled={scanning || busy}
+                  className={`${ui.button} ${ui.buttonLg} w-full sm:w-auto`}
+                >
+                  {scanning ? t("אוספים מהאתר…") : t("לאסוף מהאתר")}
+                </button>
+              )}
               <button
                 type="button"
                 onClick={() => fileInput.current?.click()}
@@ -274,20 +285,22 @@ export function PhotosStep({ embedded = false, onNext, onPendingChange }: { embe
                 className="drawn-button inline-flex min-h-12 w-full items-center justify-center gap-2.5 bg-[var(--primary)] px-5 text-[15px] text-white enabled:hover:bg-[var(--primary-dark)] sm:w-auto"
               >
                 <IconImage className="h-[18px] w-[18px]" />
-                {Object.values(pending).includes("uploading") ? t("מעלים…") : t("להעלות תמונות מהטלפון")}
+                {uploadLabel}
               </button>
-            ) : (
-              <button
-                type="button"
-                onClick={() => void handleScan()}
-                disabled={scanning || busy}
-                className="drawn-button inline-flex min-h-12 w-full items-center justify-center gap-2.5 bg-[var(--primary)] px-5 text-[15px] text-white enabled:hover:bg-[var(--primary-dark)] sm:w-auto"
-              >
-                <IconEye className="h-[18px] w-[18px]" />
-                {scanning ? t("אוספים מהאתר…") : t("לאסוף את התמונות מהאתר")}
-              </button>
-            )
+            </div>
           }
+        />
+
+        {/* Always mounted: the header's upload button opens it. */}
+        <input
+          ref={fileInput}
+          type="file"
+          accept="image/*,video/*"
+          multiple
+          onChange={(event) => void handleFiles(event)}
+          className="sr-only"
+          tabIndex={-1}
+          aria-hidden
         />
 
         {demo ? (
@@ -295,77 +308,44 @@ export function PhotosStep({ embedded = false, onNext, onPendingChange }: { embe
             <Copy text="דמו: אלה תמונות לדוגמה." /></p>
         ) : null}
 
-        {/* One disclosure holds the two other ways in. Closed by default, so the page opens
-            on the pictures rather than on a toolbar; open by one tap for anyone who came
-            here to upload or to paste a link. */}
+        {/* The one optional way in that needs a field: a link to a single image. */}
         <section className={`${ui.card} overflow-hidden`}>
           <button
             type="button"
             onClick={() => setAddOpen((prev) => !prev)}
             aria-expanded={addOpen}
+            aria-controls="asset-import"
             className="group flex min-h-14 w-full cursor-pointer items-center justify-between gap-3 px-5 text-[15px] font-semibold text-[var(--ink)] transition-colors duration-200 hover:bg-[var(--soft)]"
           >
             <span className="flex items-center gap-3">
-              <span aria-hidden className="flex h-8 w-8 items-center justify-center rounded-[10px] bg-[var(--primary-soft)] text-[var(--primary)]">
-                <IconImage className="h-[18px] w-[18px]" />
-              </span>
-              {/* Without a website the header button is already the upload: this is the link. */}
-              {hasSite === false ? t("להוסיף מקישור או עוד קבצים") : t("להעלות מהטלפון או מקישור")}
+              <IconLink className="h-[18px] w-[18px] text-[var(--ink-muted)]" />
+              {t("להוסיף תמונה מקישור")}
             </span>
             <IconChevron
               className={`h-4 w-4 shrink-0 text-[var(--ink-muted)] transition-transform duration-200 ${addOpen ? "rotate-90" : "-rotate-90"}`}
             />
           </button>
-
-          {/* Always mounted: the header's upload button (no website) opens it too. */}
-          <input
-            ref={fileInput}
-            type="file"
-            accept="image/*,video/*"
-            multiple
-            onChange={(event) => void handleFiles(event)}
-            className="sr-only"
-            tabIndex={-1}
-            aria-hidden
-          />
           {addOpen ? (
-            <div className="space-y-5 border-t border-[var(--rule)] px-5 py-5">
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-                <button
-                  type="button"
-                  onClick={() => fileInput.current?.click()}
-                  disabled={busy}
-                  className={ui.button}
-                >
-                  <IconImage />
-                  {uploadLabel}
-                </button>
-                <span className={ui.help}><Copy text="אפשר לבחור כמה קבצים בבת אחת" /></span>
-              </div>
-
-              <form onSubmit={(event) => void handleImport(event)} className="flex flex-wrap items-center gap-2 border-t border-[var(--rule)] pt-5">
-                <label className="sr-only" htmlFor="asset-import-url">
-                  <Copy text="קישור לתמונה" /></label>
-                <input
-                  id="asset-import-url"
-                  type="url"
-                  value={url}
-                  onChange={(event) => setUrl(event.target.value)}
-                  placeholder="https://..."
-                  dir="ltr"
-                  className={`${ui.field} w-72 max-w-full text-left text-sm`}
-                />
-                <button
-                  type="submit"
-                  disabled={importing || busy || !url.trim()}
-                  className={`${ui.button} ${ui.matchField}`}
-                >
-                  <IconLink />
-                  {importing ? t("מביאים…") : t("להוסיף מקישור")}
-                </button>
-                <span className={`${ui.help} basis-full`}><Copy text="קישור לתמונה אחת ברשת." /></span>
-              </form>
-            </div>
+            <form id="asset-import" onSubmit={(event) => void handleImport(event)} className="flex flex-wrap items-center gap-2 border-t border-[var(--rule)] px-5 py-5">
+              <label className="sr-only" htmlFor="asset-import-url">
+                <Copy text="קישור לתמונה" /></label>
+              <input
+                id="asset-import-url"
+                type="url"
+                value={url}
+                onChange={(event) => setUrl(event.target.value)}
+                placeholder="https://..."
+                dir="ltr"
+                className={`${ui.field} w-72 max-w-full text-left`}
+              />
+              <button
+                type="submit"
+                disabled={importing || busy || !url.trim()}
+                className={`${ui.button} ${ui.matchField}`}
+              >
+                {importing ? t("מביאים…") : t("להוסיף מקישור")}
+              </button>
+            </form>
           ) : null}
         </section>
 
@@ -440,7 +420,7 @@ export function PhotosStep({ embedded = false, onNext, onPendingChange }: { embe
           </>
         ) : loadError ? null : (
           // The empty state asks for the one thing the page asks for everywhere else and
-          // stops. Upload and link import are one tap up, in the disclosure.
+          // stops. Upload and collecting from the site are the two actions at the top.
           <section className={`${ui.card} mt-8 px-6 py-12 text-center`}>
             <span className="inline-flex h-12 w-12 items-center justify-center rounded-[14px] bg-[var(--primary-soft)] text-[var(--primary)]">
               <IconImage className="h-6 w-6" />
@@ -449,7 +429,7 @@ export function PhotosStep({ embedded = false, onNext, onPendingChange }: { embe
             <p className="mx-auto mt-2 max-w-xl text-[15px] leading-7 text-[var(--ink-soft)]">
               {hasSite === false
                 ? t("תמונות של העבודה, המקום או המוצרים, ישר מהטלפון. מהן נבנה את הפוסטים.")
-                : t("לחצו על ״לאסוף את התמונות מהאתר״, ונביא לכאן את התמונות והסרטונים של העסק.")}
+                : t("העלו תמונות מהטלפון, או אספו אותן מהאתר של העסק.")}
             </p>
             {!embedded ? <StepLink stepKey="photos" className="mt-2" /> : null}
           </section>

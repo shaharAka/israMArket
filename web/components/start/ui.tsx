@@ -245,7 +245,7 @@ export function TextInput({
   note?: React.ReactNode;
   maxLength?: number;
   prefix?: string;
-  /** Adds an "איך מוצאים את זה?" link that opens the matching guide. */
+  /** Adds a "לראות איך מוצאים את זה" link that opens the matching guide. */
   helpTopic?: HelpTopic;
 }) {
   const t = useCopy();

@@ -160,7 +160,7 @@ export function TrialWelcome() {
       >
         <div className="flex items-center justify-between gap-3">
           <p className="text-[13px] font-semibold text-[color:var(--primary)]">
-            <Copy text="ברוכים הבאים" /><span className="font-medium tabular-nums text-[color:var(--ink-muted)]">· {index + 1} <Copy text="מתוך" />{all.length}</span>
+            <Copy text="ברוכים הבאים" /> <span className="font-medium tabular-nums text-[color:var(--ink-muted)]">· {index + 1} <Copy text="מתוך" /> {all.length}</span>
           </p>
           <button
             type="button"
