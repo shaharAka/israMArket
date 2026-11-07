@@ -264,9 +264,13 @@ class CustomerWebhookTest(unittest.TestCase):
         url = f"https://127.0.0.1:{server.server_port}/hook"
         item = self.receiver(url=url)
         trusted = ssl.create_default_context(cafile=str(cert_file))
+        def allow_local_receiver(candidate):
+            if candidate != url:
+                raise UnsafeUrlError("Unexpected test receiver")
+            return candidate
         try:
             with httpx.Client(verify=trusted, trust_env=False) as client:
-                with mock.patch.object(webhooks.httpx, "post", side_effect=client.post):
+                with mock.patch.object(webhooks, "assert_public_url", side_effect=allow_local_receiver), mock.patch.object(webhooks.httpx, "post", side_effect=client.post):
                     first, repeated = self.send([item])[0], self.send([item])[0]
             self.assertTrue(first["ok"]); self.assertEqual(first["attempts"], 2)
             self.assertTrue(repeated["ok"])
