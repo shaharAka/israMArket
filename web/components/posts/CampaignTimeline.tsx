@@ -16,6 +16,8 @@ import { billingEndpoints, type MediaAllowance } from "@/lib/billing";
 import { campaignEndpoints, nextCampaignPost, protectedPost, supportsLayout, toggleCampaignSelection, type CampaignRevision, type RevisionKind, type VideoOptions } from "@/lib/campaign";
 import { ApiError, endpoints, type RoadmapPost, type StrategyPayload, type Asset } from "@/lib/api";
 import { downloadCardPng, renderCardPng } from "@/lib/cardExport";
+import { loadCampaignWorkspace } from "@/lib/campaignRecovery";
+import { signInUrl } from "@/lib/authNavigation";
 import { LOCALE_META } from "@/lib/i18n/locales";
 import { CampaignVideoOverlay, CampaignVideoPreview } from "./CampaignVideo";
 import styles from "./campaign.module.css";
@@ -47,6 +49,9 @@ export function CampaignTimeline() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [ready, setReady] = useState(false);
+  const [unavailable, setUnavailable] = useState<string[]>([]);
+  const [historyKnown, setHistoryKnown] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
   const [assets, setAssets] = useState<Asset[]>([]);
   const [assetId, setAssetId] = useState<number | undefined>();
   const [overlayHeadline, setOverlayHeadline] = useState("");
@@ -59,30 +64,54 @@ export function CampaignTimeline() {
   // Retain an id after an uncertain HTTP outcome: retrying joins the same request.
   const submission = useRef<{ key: string; id: string; options: VideoOptions } | null>(null);
 
-  async function reload() {
-    const [plan, limits, versions] = await Promise.all([
-      endpoints.postsWorkspace(), billingEndpoints.mediaAllowance(), campaignEndpoints.history(),
-    ]);
-    setStrategy(plan); setAllowance(limits); setHistory(versions.revisions);
-    const pending = versions.revisions.find(r => r.state === "working" || r.state === "ready" || r.state === "failed");
-    setRevision(pending || null);
-    if (pending) { setActive(pending.items[0]?.uid || ""); const post=plan.roadmap.posts.find(post=>post.uid===pending.items[0]?.uid); if(post)setViewWeek(postWeek(post)); }
+  function loadWorkspace() {
+    return loadCampaignWorkspace({ plan: endpoints.postsWorkspace, allowance: billingEndpoints.mediaAllowance, history: campaignEndpoints.history });
+  }
+  function recoverAccess(cause: unknown) {
+    if (cause instanceof ApiError && cause.status === 401) {
+      window.location.assign(signInUrl(window.location.pathname + window.location.search, locale));
+      return true;
+    }
+    return false;
+  }
+  function acceptWorkspace(result: Awaited<ReturnType<typeof loadWorkspace>>, initial = false) {
+    const { plan, allowance: limits, history: versions } = result;
+    setStrategy(plan); setAllowance(limits); setUnavailable(result.unavailable); setHistoryKnown(Boolean(versions));
+    if (versions) {
+      setHistory(versions.revisions);
+      const pending = versions.revisions.find(r => ["working", "ready", "failed"].includes(r.state));
+      setRevision(pending || null);
+      if (pending) {
+        setActive(pending.items[0]?.uid || "");
+        const post = plan.roadmap.posts.find(post => post.uid === pending.items[0]?.uid);
+        if (post) setViewWeek(postWeek(post));
+      } else if (initial) {
+        const query = new URLSearchParams(window.location.search);
+        const week = Number(query.get("week"));
+        if (query.has("week") && Number.isInteger(week) && plan.roadmap.posts.some(post => postWeek(post) === week)) setViewWeek(week);
+        const focused = plan.roadmap.posts.find(post => post.uid === query.get("focus"));
+        if (focused) setFocusedUid(focused.uid!);
+      }
+    }
     setError(""); setReady(true);
   }
-  useEffect(() => { let live = true;
-    Promise.all([endpoints.postsWorkspace(), billingEndpoints.mediaAllowance(), campaignEndpoints.history()])
-      .then(([plan, limits, versions]) => {
-        if (!live) return;
-        setStrategy(plan); setAllowance(limits); setHistory(versions.revisions); setReady(true);
-        const pending = versions.revisions.find(r => ["working", "ready", "failed"].includes(r.state));
-        if (pending) { setRevision(pending); setActive(pending.items[0]?.uid || ""); const post=plan.roadmap.posts.find(post=>post.uid===pending.items[0]?.uid); if(post)setViewWeek(postWeek(post)); }
-        const query=new URLSearchParams(window.location.search);
-        const week=Number(query.get("week"));
-        if(!pending && query.has("week") && Number.isInteger(week) && plan.roadmap.posts.some(post=>postWeek(post)===week))setViewWeek(week);
-        const focused=plan.roadmap.posts.find(post=>post.uid===query.get("focus"));
-        if(focused && !pending){setFocusedUid(focused.uid!);}
-      }).catch(error => { if (live) { setReady(true); if(!(error instanceof ApiError && error.status===404))setError("לא הצלחנו לפתוח את הפוסטים. נסו לטעון שוב."); } });
+  async function reload() {
+    setRefreshing(true);
+    try { acceptWorkspace(await loadWorkspace()); }
+    catch (cause) { if (!recoverAccess(cause)) setError("לא הצלחנו לפתוח את הפוסטים. נסו לטעון שוב."); }
+    finally { setRefreshing(false); }
+  }
+  useEffect(() => {
+    let live = true;
+    loadWorkspace().then(result => { if (live) acceptWorkspace(result, true); })
+      .catch(cause => {
+        if (!live || recoverAccess(cause)) return;
+        setReady(true);
+        if (!(cause instanceof ApiError && cause.status === 404)) setError("לא הצלחנו לפתוח את הפוסטים. נסו לטעון שוב.");
+      });
     return () => { live = false; };
+    // Only the initial account mount restores the URL's focus. Retries keep local edits.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   useEffect(() => {
     if (revision?.state !== "working") return;
@@ -127,7 +156,7 @@ export function CampaignTimeline() {
   const editingOverlay = kind === "finish" && !reviewing && selected.includes(active);
   const overlayPost = editingOverlay && displayed ? { ...displayed, overlay_headline: overlayHeadline, overlay_text: overlayHeadline, has_overlay: Boolean(overlayHeadline.trim()) } : displayed;
   const footage = editingOverlay ? assets.find(a => a.id === (assetId || current?.video_raw_asset_id))?.url : undefined;
-  const mayCreate = (kind !== "layout" || layoutAvailable) && (!videoKind || selected.length === 1) && ((kind !== "finish" && kind !== "video_edit") || Boolean(assetId || current?.video_raw_asset_id || current?.video_asset_id)) && selected.length > 0 && !changing && !reviewing && (
+  const mayCreate = historyKnown && (kind !== "layout" || layoutAvailable) && (!videoKind || selected.length === 1) && ((kind !== "finish" && kind !== "video_edit") || Boolean(assetId || current?.video_raw_asset_id || current?.video_asset_id)) && selected.length > 0 && !changing && !reviewing && (
     (kind === "layout" && layoutAvailable) || kind === "finish" || (kind === "text" ? Boolean(instruction.trim()) : kind === "image" ?
       Boolean(allowance?.images.generation_available && selected.length <= allowance.images.remaining) :
       Boolean(allowance?.videos.generation_available && allowance.videos.remaining > 0 && (kind !== "video_edit" || instruction.trim()))));
@@ -142,7 +171,7 @@ export function CampaignTimeline() {
     window.history.replaceState(window.history.state,"",url.pathname+url.search);
   }
   function choose(post: RoadmapPost) {
-    if (!selecting || !post.uid || reviewing || changing) return;
+    if (!historyKnown || !selecting || !post.uid || reviewing || changing) return;
     const selection = toggleCampaignSelection(posts, selected, post.uid);
     if (selection === selected) return;
     const target = selection.includes(post.uid) ? post : posts.find(item => item.uid === selection.at(-1));
@@ -172,6 +201,7 @@ export function CampaignTimeline() {
     });
   }
   async function create() {
+    if (!historyKnown || !mayCreate) return;
     setBusy(true); setError("");
     try {
       const key = JSON.stringify({ selected, kind, instruction, assetId, start, end, overlayHeadline });
@@ -183,7 +213,13 @@ export function CampaignTimeline() {
       setRevision(next); setActive(selected[0]); setViewWeek(postWeek(posts.find(post=>post.uid===selected[0])!)); setShowOriginal(false); setSelecting(false); setShowStudio(true);
       setHistory(old => [next, ...old.filter(r => r.id !== next.id)]);
       billingEndpoints.mediaAllowance().then(setAllowance).catch(() => {});
-    } catch (e) { setError(e instanceof Error ? e.message : "לא הצלחנו להכין את הגרסה. נסו שוב."); }
+    } catch (e) {
+      if (recoverAccess(e)) return;
+      // An uncertain response may already have queued paid work. Reconcile before
+      // allowing a changed request; the original request id remains available.
+      if (!(e instanceof ApiError) || e.status === 0 || e.status >= 500) { setHistoryKnown(false); setUnavailable(old => [...new Set([...old, "history"])]); }
+      setError(e instanceof Error ? e.message : "לא הצלחנו להכין את הגרסה. נסו שוב.");
+    }
     finally { setBusy(false); }
   }
   async function decide(row: CampaignRevision, action: "keep" | "undo" | "discard") {
@@ -194,7 +230,7 @@ export function CampaignTimeline() {
       endpoints.assets().then(r => setAssets(r.assets.filter(a => a.kind === "video" && !a.url.endsWith(".svg")))).catch(() => {});
       setHistory(old => old.map(r => r.id === row.id ? result.revision : r));
       setRevision(null); setSelected([]); setSelecting(false); setShowStudio(false); setActive(""); setFocusedUid(null); setShowOriginal(false); submission.current = null;
-    } catch (e) { setError(e instanceof Error ? e.message : "לא הצלחנו לשמור. נסו שוב."); }
+    } catch (e) { if (!recoverAccess(e)) setError(e instanceof Error ? e.message : "לא הצלחנו לשמור. נסו שוב."); }
     finally { setBusy(false); }
   }
   async function download() {
@@ -231,7 +267,11 @@ export function CampaignTimeline() {
         <Link href="/assets">{t("התמונות והסרטונים שלכם")}</Link>
       </div> : null}
     </header>
-    {error ? <div className={styles.error} role="alert">{t(error)} <button onClick={() => void reload().catch(() => setError("לא הצלחנו לפתוח את הפוסטים. נסו לטעון שוב."))}>{t("לטעון שוב")}</button></div> : null}
+    {error ? <div className={styles.error} role="alert">{t(error)} <button disabled={refreshing} onClick={() => void reload()}>{t("לטעון שוב")}</button></div> : null}
+    {unavailable.length && posts.length ? <div className={styles.error} role="status">
+      {t(unavailable.includes("history") ? "הפוסטים זמינים. בדיקת הגרסאות לא הושלמה; טענו שוב לפני יצירת גרסה חדשה." : "לא הצלחנו לבדוק את מכסת היצירה. אפשר להמשיך לערוך את הפוסטים השמורים.")}
+      <button type="button" disabled={refreshing} onClick={() => void reload()}>{t("לטעון שוב")}</button>
+    </div> : null}
     {!ready ? <p aria-live="polite">{t("פותחים את הקמפיין…")}</p> : null}
     {ready && !posts.length && !error ? <div className={styles.empty}><p>{t(strategy?.post_workspace_only ? "הפוסטים שתכינו יופיעו כאן לפי השבוע שלהם." : "מכינים את הפוסטים לפי המטרות והתוכנית שלכם.")}</p><Link href={strategy?.post_workspace_only ? "/posts?create=1" : "/strategy"}>{t(strategy?.post_workspace_only ? "ליצור פוסט משלכם" : "להכין את פוסטי החודש")}</Link></div> : null}
     {posts.length ? <>
@@ -243,14 +283,15 @@ export function CampaignTimeline() {
           <p dir="auto">{nextPost ? `${nextPost.title}${ownerNeedsOf(nextPost)[0]?.text ? ` · ${t(ownerNeedsOf(nextPost)[0].text)}` : ""}` : t("אפשר לראות את התוצאות ולבחור את הצעד הבא.")}</p></div>
         <Link className={styles.textAction} href={nextPost ? `/posts?post=${next.index}&from=campaign&week=${postWeek(nextPost)}` : "/performance"}>{t(next.action === "review" ? "לבדוק ולאשר" : next.action === "publish" ? "לפתוח לפרסום" : "לראות תוצאות")}</Link>
       </section>}
+      <a href="#campaign-weeks" className={styles.textAction}>{t("לפוסטים של השבוע")}</a>
       {ready && strategy ? <CampaignOverview strategy={strategy}/> : null}
       {!pendingRevision ? <div className={styles.timelineTools}>
           {selecting ? <p>{t("אפשר לבחור עד שלושה פוסטים לעריכה משותפת.")}</p> : null}
-          <button type="button" className={styles.textAction} aria-pressed={selecting} onClick={selecting ? endSelection : beginSelection}>
+          <button type="button" className={styles.textAction} aria-pressed={selecting} disabled={!historyKnown || refreshing} onClick={selecting ? endSelection : beginSelection}>
             {t(selecting ? "לסיים בחירה" : "לבחור כמה פוסטים לעריכה")}
           </button>
         </div> : null}
-      <nav className={styles.weekNav} aria-label={t("שבועות הקמפיין")}>
+      <nav id="campaign-weeks" className={styles.weekNav} aria-label={t("שבועות הקמפיין")}>
         {weeks.map(week=><button key={week} type="button" aria-pressed={visibleWeek===week} onClick={()=>selectWeek(week)}>
           <strong>{week ? t("שבוע {arg_0}",{arg_0:week}) : t("ללא שבוע")}</strong>
           <span>{posts.filter(post=>postWeek(post)===week).length===1 ? t("פוסט אחד") : t("{arg_0} פוסטים",{arg_0:posts.filter(post=>postWeek(post)===week).length})}</span>
@@ -320,7 +361,7 @@ export function CampaignTimeline() {
             {(kind === "video" || kind === "video_edit") && !allowance?.videos.generation_available ? <button type="button" className={styles.textAction} onClick={() => setKind("finish")}>{t("להשתמש בסרטון שכבר יש לכם")}</button> : null}
             {kind === "image" && !allowance?.images.generation_available ? <Link href="/assets" className={styles.textAction}>{t("לבחור תמונה שכבר יש לכם")}</Link> : null}
           </form>}
-          {history.some(r => r.state === "kept") ? <div className={styles.history}><h2>{t("גרסאות ששמרתם")}</h2>{history.filter(r => r.state === "kept").map(r => <div key={r.id}><span dir="auto">{r.instruction || t(REVISION_LABEL[r.kind])}</span><button disabled={busy || changing || reviewing} onClick={() => void decide(r, "undo")}>{t("לחזור לגרסה הקודמת")}</button></div>)}</div> : null}
+          {history.some(r => r.state === "kept") ? <div className={styles.history}><h2>{t("גרסאות ששמרתם")}</h2>{history.filter(r => r.state === "kept").map(r => <div key={r.id}><span dir="auto">{r.instruction || t(REVISION_LABEL[r.kind])}</span><button disabled={!historyKnown || busy || changing || reviewing} onClick={() => void decide(r, "undo")}>{t("לחזור לגרסה הקודמת")}</button></div>)}</div> : null}
         </div>
       </section> : null}
     </> : null}

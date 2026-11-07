@@ -14,7 +14,10 @@ from sqlalchemy.orm import Session
 from app.db import Base, get_db
 from app.deps import get_current_user
 from app.main import app
-from app.services import billing
+from app.models import Asset, Business, Strategy
+from app.services import billing, connected_posts
+from app.services.images import media_root
+from app.services.jsonutil import loads
 from _qa_personas import QA_PASSWORD, personas, seed_personas
 
 
@@ -134,6 +137,51 @@ class QaPersonaFixtureTest(unittest.TestCase):
                 if case["state"]["trial"] == "expired":
                     # The endpoint is gated before any generation/provider code runs.
                     self.assertEqual(self.client.post("/audiences/generate").status_code, 402)
+
+    def test_populated_mode_seeds_four_weeks_assets_and_attributed_fixture_metrics(self):
+        engine = create_engine(f"sqlite:///{self.tmp / 'populated.sqlite'}")
+        Base.metadata.create_all(engine)
+        try:
+            with Session(engine) as db:
+                cases = seed_personas(db, populated=True)
+                self.assertEqual({case["id"] for case in cases}, {case["id"] for case in personas()})
+                for case in cases:
+                    with self.subTest(persona=case["id"]):
+                        business = db.get(Business, case["business_id"])
+                        strategy = db.query(Strategy).filter_by(business_id=business.id).one()
+                        roadmap = loads(strategy.roadmap_json)
+                        posts = roadmap["roadmap"]["posts"]
+                        self.assertEqual(len(posts), 12)
+                        self.assertTrue(all(post["channel"] == post["primary_outlet"] for post in posts))
+                        self.assertEqual({post["week"] for post in posts}, {1, 2, 3, 4})
+                        for week in range(1, 5):
+                            week_posts = [post for post in posts if post["week"] == week]
+                            self.assertEqual(len(week_posts), 3)
+                            self.assertGreaterEqual(sum(post["approval_status"] == "review" for post in week_posts), 2)
+                        self.assertTrue(any(post.get("video_url") for post in posts))
+                        self.assertTrue(any(post.get("approval_status") == "approved" for post in posts))
+                        published = [post for post in posts if post.get("published_at")]
+                        self.assertTrue(published)
+                        for post in published:
+                            self.assertTrue(post["published_url"].startswith("https://qa-fixture.invalid/"))
+                            self.assertEqual(post["results"]["matched_by"], ["qa_fixture"])
+                            self.assertTrue(post["results"]["fixture_data"])
+                            metric = post["results"]["metric"]
+                            self.assertEqual(post["results"]["observations"][metric]["source"], "qa_fixture")
+                        self.assertEqual(len({post["title"] for post in posts}), 12)
+                        assets = db.query(Asset).filter_by(business_id=business.id).all()
+                        self.assertEqual(len(assets), 3)
+                        for asset in assets:
+                            self.assertTrue((media_root() / str(business.id) / asset.filename).is_file())
+                        measured = connected_posts.measured_posts(connected_posts.connect_posts(
+                            posts, business_id=business.id, year=strategy.year, month=strategy.month))
+                        self.assertEqual(len(measured["items"]), len(published))
+                        self.assertEqual({item["matched_by"][0] for item in measured["items"]}, {"qa_fixture"})
+                software = next(case for case in cases if case["id"] == "software")
+                self.assertEqual(software["name"], "מסלול")
+                self.assertIn("פרויקטים", software["offerings"])
+        finally:
+            engine.dispose()
 
 
 if __name__ == "__main__":

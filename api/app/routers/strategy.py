@@ -858,6 +858,8 @@ def save_post(
         raise HTTPException(status_code=404, detail="הפוסט לא נמצא בתוכנית")
 
     target = posts[body.post_index]
+    if body.post_uid and target.get("uid") != body.post_uid:
+        raise HTTPException(status_code=409, detail={"code": "post_changed", "detail_he": "התוכנית השתנתה. פתחו את הפוסט המעודכן לפני שמירה."})
     before = copy.deepcopy(target)
     target["title"] = body.title
     target["format"] = body.format
@@ -926,7 +928,31 @@ def save_post(
     # Write this post only, onto the month as it is now: an image the job saved for any
     # post between this request's read and its write stays (#123).
     business.updated_at = datetime.utcnow()
-    target = image_jobs.save_post(db, strategy, body.post_index, before, target)
+    def merge_owner_caption(previous: dict, submitted: dict, current: dict) -> dict:
+        expected_uid = body.post_uid or previous.get("uid")
+        if expected_uid and current.get("uid") != expected_uid:
+            raise HTTPException(status_code=409, detail={"code": "post_changed", "detail_he": "התוכנית השתנתה. פתחו את הפוסט המעודכן לפני שמירה."})
+        if body.expected_caption is not None:
+            captions = current.get("outlet_captions") or {}
+            current_caption = captions.get(body.primary_outlet, current.get("caption") or "")
+            if current_caption != body.expected_caption:
+                raise HTTPException(status_code=409, detail={
+                    "code": "caption_conflict",
+                    "detail_he": "הנוסח בפוסט השתנה. בדקו את הנוסח המעודכן לפני שמירה.",
+                })
+        merged = image_jobs.owner_changes(previous, submitted, current)
+        # A caption save owns one outlet only; another tab may have updated a
+        # different channel while this editor was open.
+        merged["outlet_captions"] = {**(current.get("outlet_captions") or {}),
+                                     body.primary_outlet: body.caption}
+        return merged
+
+    try:
+        target = image_jobs.save_post(db, strategy, body.post_index, before, target,
+                                      merge=merge_owner_caption, require_target=True)
+    except IndexError:
+        raise HTTPException(status_code=409, detail={"code": "post_changed", "detail_he": "התוכנית השתנתה. פתחו את הפוסט המעודכן לפני שמירה."})
+
     db.refresh(strategy)
     return {"post": _post_view(strategy, business, body.post_index, target), "strategy": serialize_strategy(strategy, business)}
 

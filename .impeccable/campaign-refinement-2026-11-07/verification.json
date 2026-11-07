@@ -1,0 +1,69 @@
+{
+  "date": "2026-11-07",
+  "scope": "Campaign refinement and owner-work recovery; no production deployment",
+  "fixtures": {
+    "accounts": 5,
+    "posts_per_account": 12,
+    "weeks": 4,
+    "sources": "Public owned showcase media in throwaway SQLite/media; synthetic metrics tagged qa_fixture",
+    "providers": "disabled"
+  },
+  "verified": [
+    "All four interface locales at phone width390; no horizontal overflow; business content language preserved",
+    "Caption draft survives reload; concurrent caption save returns409 and preserves local copy; explicit keep then save succeeds",
+    "QuickPost reload preserves text, LinkedIn destination and English content language; saved draft opens editor",
+    "History503 keeps saved posts and editor links visible; new campaign revisions disabled; retry retains page",
+    "Expired session returns through signin to week2 and same locale; restored history re-enables actions",
+    "Keyboard Tab, Shift+Tab, Enter operate week controls; native anchor opens week rail",
+    "Selection cancel corrected to white on graphite, 44px target; practical measurement help reachable from metric row",
+    "Design503 retains selected layout; main editor keeps retry/discard visible after closing tools, while approve/export disabled; explicit retry saves and re-enables both",
+    "Rapid artwork headline/subtitle edits coalesce and both persist after reload; save completion visible",
+    "Explicit failed-design discard restores server base; storage-full fallback picks newest draft even if stale primary cannot be deleted",
+    "Text-layout previews and saved cards use existing title if no headline; phone Escape closes sheet and restores trigger focus",
+    "Post UID and caption compare-and-swap prevent old tabs overwriting a replacement/removed post or another channel caption"
+  ],
+  "api_tests": {
+    "full_suite": 1664,
+    "result": "passed",
+    "final_caption_and_fixture_tests": 10,
+    "result_final": "passed"
+  },
+  "web_checks": {
+    "typecheck": "passed",
+    "lint": "passed",
+    "i18n": "9676/9676 he,en,ar,ru; 0 provider calls; checks passed",
+    "build": "passed",
+    "known_build_warning": "Next font fallback metrics unavailable for existing Playpen Sans Hebrew; no new font introduced",
+    "behavior_helpers": "caption/quick-post/storage fallback, latest-write queue and campaign load recovery passed"
+  },
+  "review": {
+    "assessment_a_design_heuristics": [
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4
+    ],
+    "assessment_a_total": 40,
+    "max": 40,
+    "assessment_b_advisory_total": 39,
+    "assessment_b_reservation": "H8=3 is a non-actionable craft judgment; no concrete defect identified. Other scores4.",
+    "independence": "Two isolated Luna contexts; A finished before B findings entered synthesis; neither read the other assessment.",
+    "detector_findings": 0,
+    "detector_final_scope": "Campaign components, PostEditor, QuickPost, help page, recovery helpers; final extra two-file scan included DesignOptions and PostEditor.",
+    "overlay": "Unavailable: CUA evaluation is read-only. No injected overlay or live detector server claimed.",
+    "scoped_design_target_achieved": true,
+    "whole_platform_40_claimed": false,
+    "questions_skipped": "User already instructed implementing all gaps and selected route; no new preference required."
+  },
+  "remaining": [
+    "Draft PR release/owner sign-off and CI; no deployment in this task. Broader platform/provider readiness is not certified by this scoped review."
+  ],
+  "capture_note": "Native viewport captures are authoritative; faulty fullPage captures with artificial gutter were removed.",
+  "cleanup": "Owned QA API/web processes stopped; temporary database/media removed by launcher; temporary browser tabs closed and viewport reset."
+}

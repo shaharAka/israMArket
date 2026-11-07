@@ -1,7 +1,7 @@
 # Isolated browser QA personas
 
 The QA personas are fictional test accounts backed by a throwaway SQLite database. They
-are not part of the app's customer demo or runtime fixtures. The fixture currently covers
+are not part of the app's customer demo or runtime fixtures. The default minimal fixture covers
 the five named business paths from `web/lib/uxFlows.ts`: online shop, physical shop,
 designer/service, software, and fundraising. Each has one fictional draft campaign post,
 one audience segment, a persona-specific KPI, a monthly hypothesis with three qualitative
@@ -35,6 +35,34 @@ API_ORIGIN=http://127.0.0.1:8765 npm --prefix web run dev -- --hostname 127.0.0.
 Sign in at `http://127.0.0.1:3160/login` with any printed persona email and the printed
 QA-only password. The accounts have separate business IDs and no live customer data.
 
+## Populated campaign and read-failure cases
+
+Add `--scenario populated` to the API command for twelve dated posts per account across
+four weeks. It uses existing public showcase media copied into the temporary account's
+media folder, native channel/format combinations, draft/approved/published states, and
+explicitly tagged `qa_fixture` measurements. These numbers are fictional QA inputs,
+not live provider results. The software example is Maslul, a project-management product.
+
+Add `--fail-read history` or `--fail-read allowance` to simulate a 503 for that read only.
+These controls exist only in the local QA launcher, never the production app. With
+history unavailable, stored campaign posts must remain readable and editor links usable,
+while starting new campaign revisions stays blocked until history can be checked. With
+allowance unavailable, the saved campaign must remain visible without inventing quota.
+Use `--fail-post-saves 1` to fail one editor save, then let a manual retry succeed without
+restarting or losing the sign-in. A failed design save must remain visibly unsaved, retain
+the chosen design and text, and block approval/export until it succeeds.
+
+Restart without `--fail-read` to restore the read. Each restart creates a fresh database
+and signing key, so sign in again; the sign-in return path should preserve the campaign
+week and interface language.
+
+For recovery, type a manual post in a different content language, reload, and verify text,
+channel and language remain. In the editor, save a different caption in another session
+before saving the first tab: the first save must offer an explicit local/server choice,
+not overwrite the newer caption. No paid generation or publishing is needed for these
+checks. Run the helper behavior scripts with `node web/scripts/test-post-caption-drafts.mjs`
+and `node web/scripts/test-campaign-recovery.mjs`.
+
 ## Check the fixture
 
 ```sh
@@ -61,6 +89,6 @@ controlled state fields:
 - `generation`: `idle` or `failed` (failed state has a test-only, non-provider error).
 
 The seeder refuses to run unless the database is SQLite and contains no existing users or
-businesses. It seeds no OAuth connections, assets, customer files, measured results,
-subscriptions, or live provider configuration. Extend cases only with fictional, clearly
+businesses. Minimal mode seeds no assets or measured results. Neither mode seeds OAuth connections,
+customer files, subscriptions, or live provider configuration. Extend cases only with fictional, clearly
 identified content and update the API fixture test for each new state.

@@ -360,7 +360,7 @@ function PostsWorkspace() {
         </div>
       ) : null}
 
-      <QuickPost draft={quickDraft} onDraftChange={setQuickDraft} open={location.creating} onCancel={() => go("", "replace")} onCreated={(saved, index) => {
+      <QuickPost draft={quickDraft} onDraftChange={setQuickDraft} plan={strategy?.id} open={location.creating} onCancel={() => go("", "replace")} onCreated={(saved, index) => {
         setStrategy(saved); setNoMonth(false); setError("");
         openedHere.current = false;
         go(`post=${index}`, "replace"); window.scrollTo(0, 0);

@@ -26,7 +26,15 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--port", type=int, default=8765, help="local API port (default: 8765)")
     parser.add_argument("--web-origin", default="http://127.0.0.1:3160", help="local web origin allowed by CORS")
+    parser.add_argument("--scenario", choices=("empty", "populated"), default="empty",
+                        help="fixture state for the fictional accounts")
+    parser.add_argument("--fail-read", choices=("history", "allowance"),
+                        help="QA-only: return 503 for one campaign-history or media-allowance GET")
+    parser.add_argument("--fail-post-saves", type=int, default=0,
+                        help="QA-only: return 503 for the first N post saves, then recover")
     args = parser.parse_args()
+    if not 0 <= args.fail_post_saves <= 10:
+        parser.error("--fail-post-saves must be between 0 and 10")
     if not 1024 <= args.port <= 65535:
         parser.error("--port must be between 1024 and 65535")
     if not args.web_origin.startswith(("http://127.0.0.1:", "http://localhost:")):
@@ -77,16 +85,46 @@ def main() -> int:
     from app.main import app  # noqa: E402
     from _qa_personas import QA_PASSWORD, seed_personas  # noqa: E402
 
+    if args.fail_read:
+        from fastapi.responses import JSONResponse  # noqa: E402
+
+        failed_path = {
+            "history": "/campaign/revisions",
+            "allowance": "/billing/media-allowance",
+        }[args.fail_read]
+
+        @app.middleware("http")
+        async def fail_one_qa_read(request, call_next):
+            if request.method == "GET" and request.url.path == failed_path:
+                return JSONResponse(status_code=503, content={"detail": "תקלה זמנית בתצוגת QA."})
+            return await call_next(request)
+
+    if args.fail_post_saves:
+        from starlette.responses import JSONResponse
+        saves_left = args.fail_post_saves
+
+        @app.middleware("http")
+        async def fail_qa_saves(request, call_next):
+            nonlocal saves_left
+            if saves_left and request.method == "POST" and request.url.path == "/strategy/posts/save":
+                saves_left -= 1
+                return JSONResponse(status_code=503, content={"detail": "לא הצלחנו לשמור את העיצוב. נסו שוב."})
+            return await call_next(request)
+
     try:
         Base.metadata.create_all(bind=engine)
         with SessionLocal() as db:
-            seeded = seed_personas(db)
+            seeded = seed_personas(db, populated=args.scenario == "populated")
         import uvicorn
 
         print(f"QA API: http://127.0.0.1:{args.port}")
         print(f"Web origin: {args.web_origin}")
         print(f"Temporary SQLite and media: {temp_root}")
         print(f"QA-only password for every account: {QA_PASSWORD}")
+        if args.fail_read:
+            print(f"QA-only 503 read fault: GET {failed_path}")
+        if args.fail_post_saves:
+            print(f"QA-only 503 write fault: first {args.fail_post_saves} post saves")
         print("Accounts:")
         for case in seeded:
             print(f"  {case['id']}: {case['name']} · {case['email']} · {case['state']}")

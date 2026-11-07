@@ -37,7 +37,7 @@
 .selectionBar { position: sticky; bottom: 16px; z-index: 5; display: flex; justify-content: space-between; align-items: center; gap: 24px; padding: 12px 16px; border-radius: 14px; background: var(--paper); box-shadow: var(--shadow-card); font-size: 14px; margin-bottom: 24px; }
 .selectionBar .primary { width: auto; }
 .selectionActions { display: flex; align-items: center; gap: 12px; }
-.selectionCancel { min-height: 44px; padding-inline: 8px; color: var(--primary); font-size: 14px; }
+.selectionCancel { min-height: 44px; padding-inline: 8px; color: var(--paper); font-size: 14px; }
 .timelineTools { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-block: 4px 12px; }
 .timelineTools p { color: var(--ink-soft); font-size: 14px; }
 .nextTask { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 4px 0 24px; margin-bottom: 24px; border-bottom: 1px solid var(--rule); }
@@ -178,3 +178,74 @@
 .primary {box-shadow:var(--shadow-button)}
 .primary:disabled {box-shadow:none}
 @media(max-width:700px){.selectionBar{bottom:calc(80px + env(safe-area-inset-bottom))}.choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.choices button{padding-inline:4px;font-size:13px}}
+
+/* Campaign surfaces stay on the Signal / Punch palette; the artwork supplies each card's colour. */
+.overview { padding:22px 24px 18px; border-radius:16px; margin-bottom:24px; }
+.overview > header { align-items:center; }
+.monthTitle { display:flex; flex-wrap:wrap; align-items:baseline; gap:4px 12px; color:var(--ink); }
+.monthTitle strong { font-size:17px; font-weight:600; }
+.period { display:inline; margin:0; font-size:12px; color:var(--ink-muted); }
+.overview dl.overviewFacts { display:grid; grid-template-columns:minmax(0,1.55fr) minmax(150px,.7fr) minmax(170px,.9fr); gap:20px; padding:18px 0 20px; }
+.overviewFacts > div { min-width:0; }
+.overviewFacts .budgetFacts,.overviewFacts .audienceFacts { border-inline-start:1px solid var(--rule); padding-inline-start:20px; }
+.overviewFacts dt { margin-bottom:7px; }
+.overviewFacts dd { font-size:14px; line-height:1.6; }
+.overviewFacts .budgetFacts dd { font-size:17px; font-weight:600; font-variant-numeric:tabular-nums; }
+.overviewFacts a { min-height:44px; font-size:13px; }
+.goalFacts dd p + p { margin-top:6px; }
+.audienceFacts dd p + p { margin-top:4px; }
+.monthTest { grid-template-columns:minmax(0,1.65fr) minmax(150px,.7fr); gap:20px; padding:16px 0 18px; border-top:1px solid var(--rule); }
+.monthTest h2 { margin-bottom:5px; }
+.monthTest p { line-height:1.65; }
+.monthTest .assessment { margin-top:6px; }
+.overview > footer { padding-top:11px; }
+.week { padding:22px 24px 26px; margin-bottom:20px; }
+.weekHeading { padding-bottom:15px; margin-bottom:20px; }
+.weekHeading h2 { font-size:18px; }
+.weekBrief { padding:16px; }
+.weekBrief h3 { font-size:18px; font-weight:600; line-height:1.45; margin-bottom:16px; }
+.weekBrief dl { gap:13px; }
+.weekBrief dt { margin-bottom:3px; }
+.weekBrief dd { font-size:13px; }
+.weekBrief dd p + p { margin-top:6px; }
+.thumbnail { padding:12px 16px; max-height:none; }
+.thumbnail > div { max-width:min(100%,220px); }
+.thumbnail[data-vertical="true"] > div { max-width:min(100%,132px); }
+.cardBody { gap:5px; }
+.postMeta { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:3px 10px; }
+.cardBody .date { font-size:12px; }
+.cardBody .status { display:inline-flex; align-items:center; gap:6px; white-space:nowrap; }
+.cardBody .status::after { content:""; width:6px; height:6px; border-radius:50%; background:var(--ink-muted); }
+.cardBody .status[data-status="approved"]::after,.cardBody .status[data-status="published"]::after,.cardBody .status[data-status="measured"]::after { background:var(--good); }
+.cardBody .outcome { color:var(--ink); font-size:13px; font-weight:600; font-variant-numeric:tabular-nums; }
+.card[data-active="true"],.card[data-focus="true"] { outline-color:var(--primary); }
+@media(max-width:700px) {
+ .overview { padding:18px 18px 16px; }
+ .overview dl.overviewFacts { grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:14px 16px; padding-block:14px 16px; }
+ .overviewFacts .goalFacts { grid-column:1/-1; }
+ .overviewFacts .budgetFacts,.overviewFacts .audienceFacts { border-inline-start:0; padding-inline-start:0; }
+ .overviewFacts .budgetFacts { border-inline-start:1px solid var(--rule); padding-inline-start:16px; }
+ .overviewFacts .budgetFacts dd { font-size:15px; }
+ .monthTest { grid-template-columns:1fr; gap:14px; }
+ .week { padding:18px 14px 20px; }
+ .weekBrief { padding:14px; }
+ .thumbnail { padding:10px; }
+ .thumbnail > div { max-width:100%; }
+ .thumbnail[data-vertical="true"] > div { max-width:100%; }
+}
+@media(max-width:580px) {
+ .weekLayout .cards { grid-template-columns:1fr; }
+ .select { grid-template-columns:116px minmax(0,1fr); }
+ .thumbnail { max-height:160px; }
+ .thumbnail > div { max-width:92px; }
+ .thumbnail[data-vertical="true"] > div { max-width:78px; }
+ .cardBody .date { font-size:11px; }
+ .postMeta { align-items:flex-start; }
+}
+
+/* Keep native anchor navigation clear of the fixed app chrome. */
+.weekNav { scroll-margin-top:112px; }
+.workspace > a.textAction { display:inline-flex; min-height:44px; align-items:center; margin-bottom:12px; }
+@media(max-width:700px) { .heading { margin-bottom:12px; } .nextTask { padding-top:8px; padding-bottom:12px; margin-bottom:8px; } }
+
+.selectionBar button:focus-visible { outline:2px solid var(--paper); outline-offset:3px; }

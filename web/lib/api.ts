@@ -3244,9 +3244,12 @@ async function demoResolve<T>(path: string, options: RequestInit = {}): Promise<
     return { post: { ...POSTS[index] }, strategy: cloneDemoStrategy() } as T;
   }
   if (path === "/strategy/posts/save" && method === "POST") {
-    const body = JSON.parse(String(options.body || "{}")) as { post_index?: number } & Partial<RoadmapPost>;
+    const body = JSON.parse(String(options.body || "{}")) as { post_index?: number; expected_caption?: string; post_uid?: string } & Partial<RoadmapPost>;
     const index = body.post_index ?? 0;
     if (!POSTS[index]) throw new ApiError("הפוסט לא נמצא", 404);
+    if (body.post_uid && body.post_uid !== POSTS[index].uid) throw new ApiError("התוכנית השתנתה. פתחו את הפוסט המעודכן לפני שמירה.", 409, "post_changed");
+    const outlet = body.primary_outlet || POSTS[index].primary_outlet || "instagram";
+    if (body.expected_caption !== undefined && body.expected_caption !== (POSTS[index].outlet_captions?.[outlet] ?? POSTS[index].caption ?? "")) throw new ApiError("הנוסח בפוסט השתנה. בדקו את הנוסח המעודכן לפני שמירה.", 409, "caption_conflict");
     const has_overlay = body.has_overlay !== undefined ? body.has_overlay : (POSTS[index].has_overlay ?? true);
     const headline = body.overlay_headline !== undefined ? body.overlay_headline : (body.overlay_text || POSTS[index].overlay_headline || "");
     POSTS[index] = {
@@ -4089,7 +4092,7 @@ export const endpoints = {
       method: "POST",
       body: JSON.stringify({ post_index, published_url }),
     }),
-  savePost: (post_index: number, post: Partial<RoadmapPost>) =>
+  savePost: (post_index: number, post: Partial<RoadmapPost> & { expected_caption?: string; post_uid?: string }) =>
     api<{ post: RoadmapPost; strategy: StrategyPayload }>("/strategy/posts/save", {
       method: "POST",
       body: JSON.stringify({ post_index, ...post }),

@@ -165,10 +165,13 @@ class PostCreateIn(BaseModel):
 
 class PostUpdateIn(BaseModel):
     post_index: int = Field(ge=0, le=500)
+    post_uid: str | None = Field(default=None, max_length=100)
     title: str = Field(min_length=1, max_length=300)
     format: Literal["reel", "carousel", "image", "story"]
     hook: str = Field(default="", max_length=500)
     caption: str = Field(default="", max_length=4000)
+    # Optional compare-and-swap for recovered owner copy, checked under the row lock.
+    expected_caption: str | None = Field(default=None, max_length=4000)
     cta: str = Field(default="", max_length=500)
     overlay_text: str = Field(default="", max_length=200)
     date_hint: str = Field(default="", max_length=50)
