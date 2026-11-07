@@ -8280,6 +8280,22 @@
       }
     ]
   },
+  "m_108a19a6347e6fcc": {
+    "source": "להמשיך בהגדרת העסק",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/integrations/page.tsx",
+        "line": 614,
+        "kind": "literal"
+      },
+      {
+        "file": "web/app/integrations/page.tsx",
+        "line": 622,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_1096d248c9be3e43": {
     "source": "נחבר את המדידה הזמינה, נכין פוסט לאישור ולפרסום ונלמד מהתוצאות.",
     "language": "he",
@@ -75910,22 +75926,6 @@
       {
         "file": "web/components/integrations/MetaAdsSummary.tsx",
         "line": 31,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_9ae5aa89c90848ff": {
-    "source": "לחזור לשאלות על העסק",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/integrations/page.tsx",
-        "line": 614,
-        "kind": "literal"
-      },
-      {
-        "file": "web/app/integrations/page.tsx",
-        "line": 622,
         "kind": "literal"
       }
     ]

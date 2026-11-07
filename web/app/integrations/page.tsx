@@ -611,7 +611,7 @@ export default function IntegrationsPage() {
           </> : !expanded ? <p className="text-[15px] leading-6 text-[var(--ink-soft)]">{unavailableCount === 3 ? t("החיבורים עוד לא זמינים. התוכנית ממשיכה בלעדיהם.") : unavailableCount ? t("חלק מהחיבורים עוד לא זמינים. התוכנית ממשיכה בלעדיהם.") : t("אפשר להמשיך בתוכנית. החיבורים זמינים כאן כשתצטרכו אותם.")}</p> : null}
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
             {recommendation && activeKey !== primaryKey && !["ga4", "meta", "tiktok", "search_console"].includes(primaryKey || "") ? <UIAction onClick={() => setExpanded(primaryKey)}><Copy text="לפתוח את החיבור המומלץ" /></UIAction> : null}
-            <Link href={business?.owner_context?.research_journey && !business.onboarding_complete ? "/start?phase=after" : "/strategy"} className={primaryKey ? TEXT_ACTION : BACK_TO_PLAN}><Copy text={business?.owner_context?.research_journey && !business.onboarding_complete ? t("לחזור לשאלות על העסק") : primaryKey ? t("להמשיך בתוכנית ולחבר אחר כך") : t("לחזור לתוכנית")} /></Link>
+            <Link href={business?.owner_context?.research_journey && !business.onboarding_complete ? "/start?phase=after" : "/strategy"} className={primaryKey ? TEXT_ACTION : BACK_TO_PLAN}><Copy text={business?.owner_context?.research_journey && !business.onboarding_complete ? t("להמשיך בהגדרת העסק") : primaryKey ? t("להמשיך בתוכנית ולחבר אחר כך") : t("לחזור לתוכנית")} /></Link>
           </div>
         </div> : null}
 
@@ -619,7 +619,7 @@ export default function IntegrationsPage() {
           {sourceOrder.map(source => <div key={source} className={source === mobileKey ? "" : "hidden sm:block"}>{data || source === "website" || source === "whatsapp" ? connectionRows[source] : <section id={source} aria-label={connectionChoices.find(choice => choice.key === source)?.title} />}</div>)}
         </div>
 
-        <Link href={business?.owner_context?.research_journey && !business.onboarding_complete ? "/start?phase=after" : "/strategy"} className={`mt-4 sm:hidden ${TEXT_ACTION}`}><Copy text={business?.owner_context?.research_journey && !business.onboarding_complete ? "לחזור לשאלות על העסק" : "להמשיך בתוכנית ולחבר אחר כך"} /></Link>
+        <Link href={business?.owner_context?.research_journey && !business.onboarding_complete ? "/start?phase=after" : "/strategy"} className={`mt-4 sm:hidden ${TEXT_ACTION}`}><Copy text={business?.owner_context?.research_journey && !business.onboarding_complete ? "להמשיך בהגדרת העסק" : "להמשיך בתוכנית ולחבר אחר כך"} /></Link>
 
         {/* Technical, and only for the people who need it: no card, just a line that opens. */}
         <details className="group mt-10 border-t border-[var(--rule)]">
