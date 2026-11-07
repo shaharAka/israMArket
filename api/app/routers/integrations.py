@@ -9,11 +9,12 @@ from fastapi import APIRouter, Depends, HTTPException, Query, Request, Response
 from fastapi.responses import RedirectResponse
 from jose import jwt
 from sqlalchemy.orm import Session
+from sqlalchemy import func, select
 
 from app.config import get_settings
 from app.db import get_db
 from app.deps import get_business, get_current_user
-from app.models import Business, Integration, User, WebhookEndpoint
+from app.models import Business, Integration, User, WebhookDelivery, WebhookEndpoint
 from app.schemas import Ga4PropertyIn, MetaAccountIn, WebhookIn
 from app.security import (
     ALGORITHM,
@@ -87,13 +88,21 @@ def _upsert(db: Session, business_id: int, provider: str) -> Integration:
 @router.get("")
 def list_integrations(business: Business = Depends(get_business), db: Session = Depends(get_db)) -> dict:
     search_console.ensure_legacy(db, business)
+    latest = (select(WebhookDelivery.endpoint_id, func.max(WebhookDelivery.id).label("last_id"))
+              .join(WebhookEndpoint, WebhookEndpoint.id == WebhookDelivery.endpoint_id)
+              .where(WebhookEndpoint.business_id == business.id)
+              .group_by(WebhookDelivery.endpoint_id).subquery())
+    deliveries = {row.endpoint_id: row for row in db.query(WebhookDelivery).join(latest, WebhookDelivery.id == latest.c.last_id).all()}
     return {
         "ga4_ready": ga4.ga4_configured(),
         "meta_ready": meta.meta_configured(),
         "tiktok_ready": tiktok.configured_for(business.owner.email),
         "integrations": [_public_integration(item, business.website_url) for item in db.query(Integration).filter_by(business_id=business.id).all()],
         "webhooks": [
-            {"id": hook.id, "url": hook.url, "events": hook.events, "created_at": hook.created_at.isoformat()}
+            {"id": hook.id, "url": hook.url, "events": hook.events, "created_at": hook.created_at.isoformat(),
+             "last_delivery": {"ok": bool(deliveries[hook.id].ok), "at": deliveries[hook.id].created_at.isoformat(),
+                               "status_code": deliveries[hook.id].status_code, "attempts": deliveries[hook.id].attempts}
+             if hook.id in deliveries else None}
             for hook in business.webhooks
         ],
     }
@@ -371,6 +380,7 @@ def delete_webhook(
     hook = db.get(WebhookEndpoint, hook_id)
     if not hook or hook.business_id != business.id:
         raise HTTPException(status_code=404, detail="הוובהוק לא נמצא")
+    db.query(WebhookDelivery).filter_by(endpoint_id=hook.id).delete(synchronize_session=False)
     db.delete(hook)
     db.commit()
     return {"ok": True}

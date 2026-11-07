@@ -410,7 +410,22 @@ class PostScheduleIn(BaseModel):
 
 class WebhookIn(BaseModel):
     url: HttpUrl
-    events: str = "recommendations,strategy"
+    events: str = Field(default="recommendations,strategy", min_length=1, max_length=255)
+
+    @field_validator("url")
+    @classmethod
+    def webhook_receiver(cls, value: HttpUrl) -> HttpUrl:
+        from app.services.webhook_urls import validate_endpoint_url
+        validate_endpoint_url(str(value))
+        return value
+
+    @field_validator("events")
+    @classmethod
+    def webhook_events(cls, value: str) -> str:
+        events = list(dict.fromkeys(part.strip() for part in value.split(",") if part.strip()))
+        if not events or any(event not in {"recommendations", "strategy"} for event in events):
+            raise ValueError("סוג ההודעה לא נתמך. אפשר לבחור strategy או recommendations.")
+        return ",".join(events)
 
 
 class Ga4PropertyIn(BaseModel):

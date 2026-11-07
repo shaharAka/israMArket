@@ -434,6 +434,7 @@ def weekly(business: Business = Depends(get_business), db: Session = Depends(get
         "recommendations",
         {"business_id": business.id, "week_of": rec.week_of, "suggestions": suggestions},
         db=db,
+        event_id=f"recommendations:{rec.id}",
     )
     return {
         "performance": snap,

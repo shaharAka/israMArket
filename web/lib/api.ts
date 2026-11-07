@@ -4138,7 +4138,7 @@ export const endpoints = {
   disconnectIntegration: (provider: "ga4" | "meta" | "tiktok" | "search_console") =>
     api<{ ok: boolean; remote_revoked?: boolean }>(`/integrations/${provider}`, { method: "DELETE" }),
   createWebhook: (body: { url: string; events: string }) =>
-    api<{ secret: string; id: number; url: string }>("/integrations/webhooks", {
+    api<IntegrationsPayload["webhooks"][number] & { secret: string }>("/integrations/webhooks", {
       method: "POST",
       body: JSON.stringify(body),
     }),
@@ -5206,7 +5206,8 @@ export type IntegrationsPayload = {
     connection_attempt?: string | null;
     tiktok_data?: TikTokData | null;
   }[];
-  webhooks: { id: number; url: string; events: string; created_at: string }[];
+  webhooks: { id: number; url: string; events: string; created_at: string;
+    last_delivery?: { ok: boolean; at: string; status_code: number; attempts: number } | null }[];
 };
 
 export type TikTokData = {

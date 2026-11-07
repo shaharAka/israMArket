@@ -5,7 +5,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 30,
+        "line": 37,
         "kind": "literal",
         "purpose": "display"
       }
@@ -627,7 +627,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 870,
+        "line": 894,
         "kind": "literal"
       }
     ]
@@ -649,7 +649,7 @@
     "references": [
       {
         "file": "api/app/routers/integrations.py",
-        "line": 373,
+        "line": 382,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -760,7 +760,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 687,
+        "line": 711,
         "kind": "literal"
       }
     ]
@@ -811,7 +811,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 39,
+        "line": 46,
         "kind": "literal"
       }
     ]
@@ -1755,7 +1755,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 18,
+        "line": 25,
         "kind": "literal"
       }
     ]
@@ -1961,12 +1961,12 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 287,
+        "line": 291,
         "kind": "literal"
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 297,
+        "line": 301,
         "kind": "literal"
       },
       {
@@ -2098,7 +2098,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 760,
+        "line": 784,
         "kind": "literal"
       }
     ]
@@ -3212,7 +3212,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 31,
+        "line": 38,
         "kind": "literal"
       }
     ]
@@ -3543,7 +3543,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 801,
+        "line": 825,
         "kind": "literal"
       }
     ]
@@ -4031,6 +4031,18 @@
         "file": "web/components/posts/InspirationLine.tsx",
         "line": 26,
         "kind": "template"
+      }
+    ]
+  },
+  "m_07ce53758ce22aa2": {
+    "source": "הזינו כתובת HTTPS מלאה של המערכת המקבלת, בלי שם משתמש, סיסמה או סימן #.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/webhook_urls.py",
+        "line": 19,
+        "kind": "literal",
+        "purpose": "validation"
       }
     ]
   },
@@ -4972,37 +4984,37 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 171,
+        "line": 175,
         "kind": "literal"
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 284,
+        "line": 288,
         "kind": "literal"
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 285,
+        "line": 289,
         "kind": "literal"
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 286,
+        "line": 290,
         "kind": "literal"
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 292,
+        "line": 296,
         "kind": "literal"
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 349,
+        "line": 353,
         "kind": "literal"
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 484,
+        "line": 488,
         "kind": "literal"
       },
       {
@@ -5484,7 +5496,7 @@
     "references": [
       {
         "file": "api/app/routers/onboarding.py",
-        "line": 996,
+        "line": 997,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -5664,7 +5676,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 220,
+        "line": 227,
         "kind": "literal"
       }
     ]
@@ -6260,7 +6272,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 420,
+        "line": 424,
         "kind": "literal"
       },
       {
@@ -6444,7 +6456,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 946,
+        "line": 970,
         "kind": "literal"
       },
       {
@@ -6525,7 +6537,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 80,
+        "line": 87,
         "kind": "literal"
       }
     ]
@@ -6740,12 +6752,12 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 68,
+        "line": 75,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 89,
+        "line": 96,
         "kind": "literal"
       }
     ]
@@ -6942,7 +6954,7 @@
     "references": [
       {
         "file": "api/app/routers/integrations.py",
-        "line": 302,
+        "line": 311,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -7011,7 +7023,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 312,
+        "line": 316,
         "kind": "literal",
         "purpose": "display"
       }
@@ -7172,7 +7184,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 250,
+        "line": 257,
         "kind": "literal"
       }
     ]
@@ -7323,7 +7335,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 614,
+        "line": 618,
         "kind": "literal"
       },
       {
@@ -7735,7 +7747,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 283,
+        "line": 290,
         "kind": "literal"
       }
     ]
@@ -7952,7 +7964,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 854,
+        "line": 878,
         "kind": "literal"
       }
     ]
@@ -8053,7 +8065,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 170,
+        "line": 174,
         "kind": "literal"
       },
       {
@@ -8286,12 +8298,12 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 614,
+        "line": 618,
         "kind": "literal"
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 622,
+        "line": 626,
         "kind": "literal"
       }
     ]
@@ -8335,7 +8347,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 67,
+        "line": 74,
         "kind": "literal"
       }
     ]
@@ -8412,7 +8424,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 257,
+        "line": 261,
         "kind": "literal"
       }
     ]
@@ -8564,7 +8576,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 193,
+        "line": 200,
         "kind": "literal"
       }
     ]
@@ -9607,13 +9619,13 @@
     "references": [
       {
         "file": "api/app/routers/onboarding.py",
-        "line": 962,
+        "line": 963,
         "kind": "literal",
         "purpose": "validation"
       },
       {
         "file": "api/app/routers/onboarding.py",
-        "line": 988,
+        "line": 989,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -9940,7 +9952,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 248,
+        "line": 255,
         "kind": "literal"
       }
     ]
@@ -10174,12 +10186,12 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 578,
+        "line": 582,
         "kind": "literal"
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 607,
+        "line": 611,
         "kind": "literal"
       },
       {
@@ -11057,7 +11069,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 639,
+        "line": 648,
         "kind": "literal",
         "purpose": "display"
       }
@@ -11172,7 +11184,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 503,
+        "line": 507,
         "kind": "literal"
       }
     ]
@@ -11206,7 +11218,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 305,
+        "line": 312,
         "kind": "literal"
       }
     ]
@@ -11925,7 +11937,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 271,
+        "line": 278,
         "kind": "literal"
       }
     ]
@@ -12255,7 +12267,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 65,
+        "line": 72,
         "kind": "literal",
         "purpose": "display"
       }
@@ -15098,7 +15110,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 887,
+        "line": 911,
         "kind": "literal"
       }
     ]
@@ -15323,7 +15335,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 611,
+        "line": 615,
         "kind": "literal"
       }
     ]
@@ -15346,7 +15358,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 826,
+        "line": 850,
         "kind": "literal"
       }
     ]
@@ -15368,7 +15380,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 38,
+        "line": 45,
         "kind": "literal"
       }
     ]
@@ -15821,7 +15833,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 945,
+        "line": 969,
         "kind": "literal"
       },
       {
@@ -16051,17 +16063,17 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 283,
+        "line": 287,
         "kind": "literal"
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 344,
+        "line": 348,
         "kind": "literal"
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 771,
+        "line": 795,
         "kind": "literal"
       },
       {
@@ -16563,7 +16575,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 858,
+        "line": 882,
         "kind": "literal"
       }
     ]
@@ -16682,7 +16694,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 192,
+        "line": 199,
         "kind": "literal"
       }
     ]
@@ -16876,7 +16888,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 208,
+        "line": 215,
         "kind": "literal"
       }
     ]
@@ -16887,7 +16899,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 100,
+        "line": 107,
         "kind": "literal",
         "purpose": "display"
       }
@@ -17130,7 +17142,7 @@
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 593,
+        "line": 597,
         "kind": "literal"
       }
     ]
@@ -17632,7 +17644,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 261,
+        "line": 268,
         "kind": "literal",
         "purpose": "display"
       }
@@ -18420,7 +18432,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 664,
+        "line": 679,
         "kind": "literal"
       }
     ]
@@ -18988,7 +19000,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 611,
+        "line": 615,
         "kind": "literal"
       }
     ]
@@ -19344,7 +19356,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 121,
+        "line": 128,
         "kind": "literal",
         "purpose": "display"
       }
@@ -19367,7 +19379,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 44,
+        "line": 51,
         "kind": "literal",
         "purpose": "display"
       }
@@ -19412,7 +19424,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 93,
+        "line": 100,
         "kind": "literal",
         "purpose": "display"
       }
@@ -19662,7 +19674,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 289,
+        "line": 296,
         "kind": "literal",
         "purpose": "display"
       }
@@ -19871,7 +19883,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 123,
+        "line": 130,
         "kind": "literal"
       }
     ]
@@ -20092,7 +20104,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 162,
+        "line": 169,
         "kind": "literal"
       }
     ]
@@ -20705,17 +20717,17 @@
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 19,
+        "line": 26,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 75,
+        "line": 82,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 131,
+        "line": 138,
         "kind": "literal"
       }
     ]
@@ -21671,7 +21683,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 177,
+        "line": 184,
         "kind": "literal",
         "purpose": "display"
       }
@@ -21986,7 +21998,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 304,
+        "line": 311,
         "kind": "literal"
       }
     ]
@@ -22101,17 +22113,17 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 283,
+        "line": 287,
         "kind": "literal"
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 344,
+        "line": 348,
         "kind": "literal"
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 772,
+        "line": 796,
         "kind": "literal"
       },
       {
@@ -22647,7 +22659,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 264,
+        "line": 268,
         "kind": "literal"
       }
     ]
@@ -22869,7 +22881,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 16,
+        "line": 23,
         "kind": "literal",
         "purpose": "display"
       }
@@ -23248,17 +23260,17 @@
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 215,
+        "line": 222,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 243,
+        "line": 250,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 285,
+        "line": 292,
         "kind": "literal"
       }
     ]
@@ -23720,7 +23732,7 @@
     "references": [
       {
         "file": "api/app/routers/integrations.py",
-        "line": 249,
+        "line": 258,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -24573,7 +24585,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 891,
+        "line": 915,
         "kind": "literal"
       }
     ]
@@ -25240,12 +25252,12 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 285,
+        "line": 289,
         "kind": "literal"
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 292,
+        "line": 296,
         "kind": "literal"
       },
       {
@@ -26176,7 +26188,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 356,
+        "line": 360,
         "kind": "literal"
       }
     ]
@@ -28008,7 +28020,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 207,
+        "line": 214,
         "kind": "literal"
       }
     ]
@@ -28326,7 +28338,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 441,
+        "line": 445,
         "kind": "literal"
       }
     ]
@@ -29184,7 +29196,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 186,
+        "line": 193,
         "kind": "literal"
       }
     ]
@@ -30470,7 +30482,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 804,
+        "line": 828,
         "kind": "literal"
       }
     ]
@@ -31193,7 +31205,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 219,
+        "line": 226,
         "kind": "literal",
         "purpose": "display"
       }
@@ -31446,7 +31458,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 87,
+        "line": 94,
         "kind": "literal"
       }
     ]
@@ -31573,7 +31585,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 550,
+        "line": 554,
         "kind": "literal"
       }
     ]
@@ -32116,7 +32128,7 @@
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 916,
+        "line": 940,
         "kind": "literal"
       }
     ]
@@ -32190,7 +32202,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 458,
+        "line": 462,
         "kind": "literal"
       }
     ]
@@ -32334,7 +32346,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 206,
+        "line": 213,
         "kind": "literal"
       }
     ]
@@ -32769,7 +32781,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 53,
+        "line": 60,
         "kind": "literal"
       }
     ]
@@ -33252,12 +33264,12 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 284,
+        "line": 288,
         "kind": "literal"
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 349,
+        "line": 353,
         "kind": "literal"
       },
       {
@@ -33605,7 +33617,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 498,
+        "line": 502,
         "kind": "literal"
       }
     ]
@@ -33834,7 +33846,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 468,
+        "line": 472,
         "kind": "literal"
       }
     ]
@@ -34347,7 +34359,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 264,
+        "line": 271,
         "kind": "literal"
       }
     ]
@@ -34911,7 +34923,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 200,
+        "line": 207,
         "kind": "literal"
       }
     ]
@@ -35107,7 +35119,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 170,
+        "line": 174,
         "kind": "literal"
       },
       {
@@ -35384,6 +35396,18 @@
       }
     ]
   },
+  "m_47954ef5eda0c352": {
+    "source": "יודעים אם המידע הגיע למערכת שלכם",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 9,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
   "m_47989cef9bbfacc1": {
     "source": "הרשאה לפרסם, לערוך או למחוק פוסטים. בלי ההרשאה הזו אין לנו דרך טכנית לפרסם בשמכם. את הפוסטים אתם מפרסמים בעצמכם.",
     "language": "he",
@@ -35579,7 +35603,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 241,
+        "line": 248,
         "kind": "literal"
       }
     ]
@@ -35907,17 +35931,12 @@
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 117,
-        "kind": "literal"
-      },
-      {
-        "file": "web/lib/releases.ts",
         "line": 124,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 173,
+        "line": 131,
         "kind": "literal"
       },
       {
@@ -35928,6 +35947,11 @@
       {
         "file": "web/lib/releases.ts",
         "line": 187,
+        "kind": "literal"
+      },
+      {
+        "file": "web/lib/releases.ts",
+        "line": 194,
         "kind": "literal"
       },
       {
@@ -36106,17 +36130,17 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 110,
+        "line": 117,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 138,
+        "line": 145,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 164,
+        "line": 171,
         "kind": "literal"
       }
     ]
@@ -36242,7 +36266,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 494,
+        "line": 498,
         "kind": "literal"
       }
     ]
@@ -37447,7 +37471,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 163,
+        "line": 170,
         "kind": "literal"
       }
     ]
@@ -37469,7 +37493,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 909,
+        "line": 933,
         "kind": "literal"
       }
     ]
@@ -37597,7 +37621,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 94,
+        "line": 101,
         "kind": "literal"
       }
     ]
@@ -37608,7 +37632,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 492,
+        "line": 496,
         "kind": "literal"
       }
     ]
@@ -37630,7 +37654,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 509,
+        "line": 513,
         "kind": "literal"
       }
     ]
@@ -38829,7 +38853,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 424,
+        "line": 428,
         "kind": "literal"
       }
     ]
@@ -38987,7 +39011,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 460,
+        "line": 464,
         "kind": "literal"
       }
     ]
@@ -39262,7 +39286,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 188,
+        "line": 192,
         "kind": "literal"
       }
     ]
@@ -39344,7 +39368,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 303,
+        "line": 310,
         "kind": "literal",
         "purpose": "display"
       }
@@ -39540,7 +39564,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 466,
+        "line": 470,
         "kind": "jsx"
       }
     ]
@@ -39654,7 +39678,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 32,
+        "line": 39,
         "kind": "literal"
       }
     ]
@@ -39755,7 +39779,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 146,
+        "line": 153,
         "kind": "literal"
       }
     ]
@@ -39840,7 +39864,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 24,
+        "line": 31,
         "kind": "literal"
       }
     ]
@@ -40047,7 +40071,7 @@
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 404,
+        "line": 408,
         "kind": "literal"
       },
       {
@@ -40090,7 +40114,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 227,
+        "line": 234,
         "kind": "literal"
       }
     ]
@@ -40269,7 +40293,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 275,
+        "line": 282,
         "kind": "literal",
         "purpose": "display"
       }
@@ -42651,7 +42675,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 297,
+        "line": 304,
         "kind": "literal"
       }
     ]
@@ -43160,7 +43184,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 52,
+        "line": 59,
         "kind": "literal"
       }
     ]
@@ -43367,7 +43391,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 88,
+        "line": 95,
         "kind": "literal"
       }
     ]
@@ -43901,12 +43925,12 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 139,
+        "line": 143,
         "kind": "literal"
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 598,
+        "line": 602,
         "kind": "literal"
       }
     ]
@@ -44379,7 +44403,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 46,
+        "line": 53,
         "kind": "literal"
       }
     ]
@@ -44596,7 +44620,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 954,
+        "line": 978,
         "kind": "literal"
       },
       {
@@ -44733,7 +44757,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 171,
+        "line": 178,
         "kind": "literal"
       }
     ]
@@ -44822,7 +44846,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 170,
+        "line": 174,
         "kind": "literal"
       },
       {
@@ -45238,7 +45262,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 529,
+        "line": 533,
         "kind": "literal"
       }
     ]
@@ -45325,7 +45349,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 498,
+        "line": 502,
         "kind": "literal"
       }
     ]
@@ -45437,7 +45461,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 298,
+        "line": 305,
         "kind": "literal"
       }
     ]
@@ -45483,7 +45507,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 145,
+        "line": 152,
         "kind": "literal"
       }
     ]
@@ -45794,7 +45818,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 571,
+        "line": 575,
         "kind": "literal"
       },
       {
@@ -46094,7 +46118,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 611,
+        "line": 615,
         "kind": "literal"
       }
     ]
@@ -46824,7 +46848,7 @@
     "references": [
       {
         "file": "api/app/routers/integrations.py",
-        "line": 222,
+        "line": 231,
         "kind": "template",
         "purpose": "copy"
       }
@@ -47238,7 +47262,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 95,
+        "line": 102,
         "kind": "literal"
       }
     ]
@@ -47368,7 +47392,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 108,
+        "line": 115,
         "kind": "literal"
       }
     ]
@@ -47944,7 +47968,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 276,
+        "line": 283,
         "kind": "literal"
       }
     ]
@@ -48375,7 +48399,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 278,
+        "line": 285,
         "kind": "literal"
       }
     ]
@@ -48799,7 +48823,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 229,
+        "line": 236,
         "kind": "literal"
       }
     ]
@@ -49088,7 +49112,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 23,
+        "line": 30,
         "kind": "literal",
         "purpose": "display"
       }
@@ -49122,7 +49146,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 11,
+        "line": 18,
         "kind": "literal"
       }
     ]
@@ -49283,7 +49307,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 324,
+        "line": 328,
         "kind": "literal"
       }
     ]
@@ -49425,7 +49449,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 324,
+        "line": 328,
         "kind": "literal"
       },
       {
@@ -49544,7 +49568,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 59,
+        "line": 66,
         "kind": "literal"
       }
     ]
@@ -49589,7 +49613,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 51,
+        "line": 58,
         "kind": "literal",
         "purpose": "display"
       }
@@ -49676,7 +49700,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 451,
+        "line": 455,
         "kind": "literal"
       }
     ]
@@ -49784,6 +49808,17 @@
       {
         "file": "web/lib/api.ts",
         "line": 2407,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_658ba397d07b0eae": {
+    "source": "אם המסירה נכשלת זמנית, נבצע עד שלושה ניסיונות מסירה. התוכנית וההמלצות נשמרות גם אם המערכת המקבלת אינה זמינה.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 11,
         "kind": "literal"
       }
     ]
@@ -49987,7 +50022,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 833,
+        "line": 857,
         "kind": "literal"
       }
     ]
@@ -50101,7 +50136,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 943,
+        "line": 967,
         "kind": "literal"
       }
     ]
@@ -50195,7 +50230,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 881,
+        "line": 905,
         "kind": "literal"
       }
     ]
@@ -50234,7 +50269,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 929,
+        "line": 953,
         "kind": "literal"
       }
     ]
@@ -51153,7 +51188,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 223,
+        "line": 227,
         "kind": "literal"
       }
     ]
@@ -51286,7 +51321,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 170,
+        "line": 174,
         "kind": "literal"
       },
       {
@@ -51368,7 +51403,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 881,
+        "line": 905,
         "kind": "literal"
       }
     ]
@@ -52279,7 +52314,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 212,
+        "line": 219,
         "kind": "literal",
         "purpose": "display"
       }
@@ -52315,12 +52350,12 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 854,
+        "line": 878,
         "kind": "literal"
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 927,
+        "line": 951,
         "kind": "literal"
       }
     ]
@@ -52434,7 +52469,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 291,
+        "line": 298,
         "kind": "literal"
       }
     ]
@@ -52489,7 +52524,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 290,
+        "line": 297,
         "kind": "literal"
       }
     ]
@@ -52635,7 +52670,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 296,
+        "line": 303,
         "kind": "literal",
         "purpose": "display"
       }
@@ -52971,7 +53006,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 45,
+        "line": 52,
         "kind": "literal"
       }
     ]
@@ -53121,7 +53156,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 501,
+        "line": 505,
         "kind": "literal"
       }
     ]
@@ -53287,7 +53322,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 684,
+        "line": 705,
         "kind": "literal"
       }
     ]
@@ -54135,7 +54170,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 334,
+        "line": 338,
         "kind": "literal"
       }
     ]
@@ -54324,7 +54359,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 330,
+        "line": 334,
         "kind": "literal"
       }
     ]
@@ -54904,7 +54939,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 282,
+        "line": 289,
         "kind": "literal",
         "purpose": "display"
       }
@@ -54939,7 +54974,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 544,
+        "line": 548,
         "kind": "literal"
       }
     ]
@@ -55054,7 +55089,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 591,
+        "line": 595,
         "kind": "literal"
       }
     ]
@@ -55219,7 +55254,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 79,
+        "line": 86,
         "kind": "literal",
         "purpose": "display"
       }
@@ -55499,12 +55534,12 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 155,
+        "line": 162,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 201,
+        "line": 208,
         "kind": "literal"
       }
     ]
@@ -55515,7 +55550,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 135,
+        "line": 142,
         "kind": "literal",
         "purpose": "display"
       }
@@ -55560,7 +55595,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 235,
+        "line": 242,
         "kind": "literal"
       }
     ]
@@ -56013,7 +56048,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 144,
+        "line": 151,
         "kind": "literal",
         "purpose": "display"
       }
@@ -56318,7 +56353,7 @@
     "references": [
       {
         "file": "api/app/routers/integrations.py",
-        "line": 240,
+        "line": 249,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -57439,7 +57474,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 453,
+        "line": 457,
         "kind": "literal"
       }
     ]
@@ -57505,7 +57540,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 170,
+        "line": 174,
         "kind": "literal"
       },
       {
@@ -57605,6 +57640,17 @@
         "line": 336,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_75659e7cbb03fe09": {
+    "source": "המערכת המקבלת אישרה את קבלת ההודעה.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/integrations/page.tsx",
+        "line": 692,
+        "kind": "literal"
       }
     ]
   },
@@ -57816,7 +57862,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 613,
+        "line": 617,
         "kind": "literal"
       }
     ]
@@ -57934,13 +57980,13 @@
       },
       {
         "file": "api/app/routers/integrations.py",
-        "line": 191,
+        "line": 200,
         "kind": "literal",
         "purpose": "copy"
       },
       {
         "file": "api/app/routers/integrations.py",
-        "line": 197,
+        "line": 206,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -58314,7 +58360,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 490,
+        "line": 494,
         "kind": "literal"
       }
     ]
@@ -58325,7 +58371,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 73,
+        "line": 80,
         "kind": "literal"
       }
     ]
@@ -58457,7 +58503,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 220,
+        "line": 224,
         "kind": "literal"
       }
     ]
@@ -58823,7 +58869,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 896,
+        "line": 920,
         "kind": "literal"
       }
     ]
@@ -59210,7 +59256,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 254,
+        "line": 261,
         "kind": "literal",
         "purpose": "display"
       }
@@ -59679,7 +59725,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 17,
+        "line": 24,
         "kind": "literal"
       }
     ]
@@ -59778,12 +59824,12 @@
       },
       {
         "file": "web/lib/api.ts",
-        "line": 5728,
+        "line": 5729,
         "kind": "literal"
       },
       {
         "file": "web/lib/api.ts",
-        "line": 5729,
+        "line": 5730,
         "kind": "literal"
       },
       {
@@ -59988,7 +60034,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 496,
+        "line": 500,
         "kind": "literal"
       }
     ]
@@ -60073,7 +60119,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 234,
+        "line": 241,
         "kind": "literal"
       }
     ]
@@ -60168,6 +60214,17 @@
       }
     ]
   },
+  "m_7a99182a92d0a6b0": {
+    "source": "כתובת המערכת המקבלת",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/integrations/page.tsx",
+        "line": 641,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_7a9cedee14a105b5": {
     "source": "יומן פעולות",
     "language": "he",
@@ -60197,12 +60254,12 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 614,
+        "line": 618,
         "kind": "literal"
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 622,
+        "line": 626,
         "kind": "literal"
       },
       {
@@ -61013,7 +61070,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 801,
+        "line": 825,
         "kind": "literal"
       }
     ]
@@ -61211,6 +61268,17 @@
       {
         "file": "web/lib/businessModel.ts",
         "line": 97,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_7cb69b2d62f1a975": {
+    "source": "הכתובת נשמרה. עדיין לא נשלחה אליה הודעה.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/integrations/page.tsx",
+        "line": 692,
         "kind": "literal"
       }
     ]
@@ -62679,7 +62747,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 249,
+        "line": 256,
         "kind": "literal"
       }
     ]
@@ -62746,12 +62814,17 @@
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 96,
+        "line": 19,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
         "line": 103,
+        "kind": "literal"
+      },
+      {
+        "file": "web/lib/releases.ts",
+        "line": 110,
         "kind": "literal"
       }
     ]
@@ -63443,12 +63516,12 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 282,
+        "line": 286,
         "kind": "literal"
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 302,
+        "line": 306,
         "kind": "literal"
       }
     ]
@@ -63772,7 +63845,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 776,
+        "line": 800,
         "kind": "literal"
       }
     ]
@@ -63840,7 +63913,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 248,
+        "line": 252,
         "kind": "literal"
       }
     ]
@@ -64168,7 +64241,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 242,
+        "line": 249,
         "kind": "literal"
       }
     ]
@@ -65251,7 +65324,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 498,
+        "line": 502,
         "kind": "literal"
       }
     ]
@@ -66125,17 +66198,17 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 33,
-        "kind": "literal"
-      },
-      {
-        "file": "web/lib/releases.ts",
         "line": 40,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 54,
+        "line": 47,
+        "kind": "literal"
+      },
+      {
+        "file": "web/lib/releases.ts",
+        "line": 61,
         "kind": "literal"
       }
     ]
@@ -66179,7 +66252,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 904,
+        "line": 928,
         "kind": "literal"
       }
     ]
@@ -66435,7 +66508,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 198,
+        "line": 205,
         "kind": "literal",
         "purpose": "display"
       }
@@ -67030,22 +67103,22 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 171,
+        "line": 175,
         "kind": "literal"
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 286,
+        "line": 290,
         "kind": "literal"
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 349,
+        "line": 353,
         "kind": "literal"
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 484,
+        "line": 488,
         "kind": "literal"
       },
       {
@@ -67740,7 +67813,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 448,
+        "line": 452,
         "kind": "literal"
       }
     ]
@@ -67843,7 +67916,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 128,
+        "line": 135,
         "kind": "literal",
         "purpose": "display"
       }
@@ -68798,7 +68871,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 864,
+        "line": 888,
         "kind": "literal"
       }
     ]
@@ -70054,7 +70127,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 240,
+        "line": 247,
         "kind": "literal",
         "purpose": "display"
       }
@@ -70199,7 +70272,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 448,
+        "line": 452,
         "kind": "literal"
       }
     ]
@@ -70407,7 +70480,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 233,
+        "line": 240,
         "kind": "literal",
         "purpose": "display"
       }
@@ -71177,7 +71250,7 @@
     "references": [
       {
         "file": "api/app/routers/onboarding.py",
-        "line": 1004,
+        "line": 1005,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -71650,7 +71723,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 386,
+        "line": 390,
         "kind": "literal"
       }
     ]
@@ -71897,22 +71970,22 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 282,
+        "line": 286,
         "kind": "literal"
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 283,
+        "line": 287,
         "kind": "literal"
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 302,
+        "line": 306,
         "kind": "literal"
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 344,
+        "line": 348,
         "kind": "literal"
       }
     ]
@@ -72429,7 +72502,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 446,
+        "line": 450,
         "kind": "literal"
       }
     ]
@@ -73793,7 +73866,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 512,
+        "line": 516,
         "kind": "literal"
       }
     ]
@@ -74341,7 +74414,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 178,
+        "line": 185,
         "kind": "literal"
       }
     ]
@@ -74538,7 +74611,7 @@
     "references": [
       {
         "file": "api/app/routers/integrations.py",
-        "line": 181,
+        "line": 190,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -74736,7 +74809,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 671,
+        "line": 686,
         "kind": "literal"
       }
     ]
@@ -74792,7 +74865,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 324,
+        "line": 328,
         "kind": "literal"
       },
       {
@@ -75328,12 +75401,12 @@
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 286,
+        "line": 290,
         "kind": "literal"
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 484,
+        "line": 488,
         "kind": "literal"
       },
       {
@@ -75659,7 +75732,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 438,
+        "line": 442,
         "kind": "literal"
       }
     ]
@@ -75952,7 +76025,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 284,
+        "line": 291,
         "kind": "literal"
       }
     ]
@@ -76171,7 +76244,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 299,
+        "line": 306,
         "kind": "literal"
       }
     ]
@@ -77365,7 +77438,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 26,
+        "line": 33,
         "kind": "literal"
       }
     ]
@@ -77697,7 +77770,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 169,
+        "line": 173,
         "kind": "literal"
       },
       {
@@ -77906,7 +77979,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 904,
+        "line": 928,
         "kind": "literal"
       }
     ]
@@ -78465,7 +78538,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 956,
+        "line": 980,
         "kind": "literal"
       },
       {
@@ -78612,7 +78685,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 199,
+        "line": 206,
         "kind": "literal"
       }
     ]
@@ -79205,7 +79278,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 332,
+        "line": 336,
         "kind": "literal"
       }
     ]
@@ -79325,19 +79398,19 @@
     "references": [
       {
         "file": "api/app/routers/integrations.py",
-        "line": 256,
+        "line": 265,
         "kind": "literal",
         "purpose": "validation"
       },
       {
         "file": "api/app/routers/integrations.py",
-        "line": 261,
+        "line": 270,
         "kind": "literal",
         "purpose": "validation"
       },
       {
         "file": "api/app/routers/integrations.py",
-        "line": 276,
+        "line": 285,
         "kind": "literal",
         "purpose": "validation"
       },
@@ -79551,7 +79624,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 115,
+        "line": 122,
         "kind": "literal"
       }
     ]
@@ -79971,7 +80044,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 306,
+        "line": 313,
         "kind": "literal"
       }
     ]
@@ -79982,7 +80055,7 @@
     "references": [
       {
         "file": "api/app/routers/integrations.py",
-        "line": 300,
+        "line": 309,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -80185,7 +80258,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 437,
+        "line": 441,
         "kind": "literal"
       }
     ]
@@ -81185,6 +81258,18 @@
         "line": 25,
         "kind": "literal",
         "purpose": "display"
+      }
+    ]
+  },
+  "m_a5e91b54da2cc9ff": {
+    "source": "סוג ההודעה לא נתמך. אפשר לבחור strategy או recommendations.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/schemas.py",
+        "line": 427,
+        "kind": "literal",
+        "purpose": "validation"
       }
     ]
   },
@@ -82373,7 +82458,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 514,
+        "line": 518,
         "kind": "literal"
       }
     ]
@@ -83441,7 +83526,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 383,
+        "line": 387,
         "kind": "literal"
       }
     ]
@@ -83732,7 +83817,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 268,
+        "line": 275,
         "kind": "literal",
         "purpose": "display"
       }
@@ -84131,12 +84216,12 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 282,
+        "line": 286,
         "kind": "literal"
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 302,
+        "line": 306,
         "kind": "literal"
       },
       {
@@ -84297,7 +84382,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 109,
+        "line": 116,
         "kind": "literal"
       }
     ]
@@ -84740,7 +84825,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 185,
+        "line": 192,
         "kind": "literal"
       }
     ]
@@ -84855,7 +84940,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 851,
+        "line": 875,
         "kind": "literal"
       }
     ]
@@ -84951,7 +85036,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 402,
+        "line": 406,
         "kind": "literal"
       },
       {
@@ -85120,7 +85205,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 25,
+        "line": 32,
         "kind": "literal"
       }
     ]
@@ -86073,7 +86158,7 @@
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 292,
+        "line": 299,
         "kind": "literal"
       }
     ]
@@ -86247,7 +86332,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 172,
+        "line": 179,
         "kind": "literal"
       }
     ]
@@ -87111,7 +87196,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 184,
+        "line": 191,
         "kind": "literal",
         "purpose": "display"
       }
@@ -87737,7 +87822,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 161,
+        "line": 168,
         "kind": "literal",
         "purpose": "display"
       }
@@ -88029,6 +88114,17 @@
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
         "line": 20,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_b46da0304b682849": {
+    "source": "לא הצלחנו להסיר את הכתובת. נסו שוב.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/integrations/page.tsx",
+        "line": 707,
         "kind": "literal"
       }
     ]
@@ -88512,7 +88608,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 383,
+        "line": 387,
         "kind": "literal"
       }
     ]
@@ -89496,7 +89592,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 9,
+        "line": 16,
         "kind": "literal",
         "purpose": "display"
       }
@@ -89833,13 +89929,13 @@
     "references": [
       {
         "file": "api/app/routers/onboarding.py",
-        "line": 848,
+        "line": 849,
         "kind": "literal",
         "purpose": "validation"
       },
       {
         "file": "api/app/routers/onboarding.py",
-        "line": 991,
+        "line": 992,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -90175,6 +90271,17 @@
       }
     ]
   },
+  "m_b8dbc872c062845a": {
+    "source": "בחיבור למערכות אחרות רואים אם הכתובת רק נשמרה, אם ההודעה התקבלה או אם המסירה נכשלה.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 10,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_b8e044f1dbdab885": {
     "source": "כל קנייה משאירה לכם כ-{arg_0} ₪, וקנייה מפרסום עולה לפי המקור {arg_1}-{arg_2} ₪. קודם מרוויחים יותר מלקוחות שכבר יש.",
     "language": "he",
@@ -90499,7 +90606,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 424,
+        "line": 428,
         "kind": "literal"
       }
     ]
@@ -91140,7 +91247,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 136,
+        "line": 143,
         "kind": "literal"
       }
     ]
@@ -91230,7 +91337,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 170,
+        "line": 174,
         "kind": "literal"
       },
       {
@@ -91427,7 +91534,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 201,
+        "line": 205,
         "kind": "literal"
       }
     ]
@@ -91643,7 +91750,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 804,
+        "line": 828,
         "kind": "literal"
       }
     ]
@@ -92093,7 +92200,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 366,
+        "line": 370,
         "kind": "literal"
       }
     ]
@@ -92148,7 +92255,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 191,
+        "line": 198,
         "kind": "literal",
         "purpose": "display"
       }
@@ -93237,7 +93344,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 269,
+        "line": 276,
         "kind": "literal"
       }
     ]
@@ -93391,7 +93498,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 256,
+        "line": 263,
         "kind": "literal"
       }
     ]
@@ -93546,7 +93653,7 @@
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 529,
+        "line": 533,
         "kind": "literal"
       },
       {
@@ -94258,7 +94365,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 72,
+        "line": 79,
         "kind": "literal",
         "purpose": "display"
       }
@@ -94542,7 +94649,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 47,
+        "line": 54,
         "kind": "literal"
       }
     ]
@@ -95505,6 +95612,17 @@
       }
     ]
   },
+  "m_c3d52f907504f2db": {
+    "source": "ההודעה האחרונה לא נמסרה. בדקו את הכתובת במערכת המקבלת.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/integrations/page.tsx",
+        "line": 692,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_c3d777ee82873de4": {
     "source": "הודעות וואטסאפ שמגיעות מקישור בפוסט או בביו, עם הודעה מוכנה מראש (למשל \"ראיתי באינסטגרם\"). בעל העסק סופר כמה הודעות כאלה הגיעו. אפשר למדוד מהיום.",
     "language": "he",
@@ -95795,7 +95913,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 953,
+        "line": 977,
         "kind": "literal"
       },
       {
@@ -96709,7 +96827,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 393,
+        "line": 397,
         "kind": "literal"
       }
     ]
@@ -97530,7 +97648,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 484,
+        "line": 488,
         "kind": "literal"
       }
     ]
@@ -98144,7 +98262,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 656,
+        "line": 667,
         "kind": "literal"
       }
     ]
@@ -98178,7 +98296,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 116,
+        "line": 123,
         "kind": "literal"
       }
     ]
@@ -98341,7 +98459,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 58,
+        "line": 65,
         "kind": "literal",
         "purpose": "display"
       }
@@ -98444,7 +98562,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 82,
+        "line": 89,
         "kind": "literal"
       }
     ]
@@ -98940,7 +99058,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 255,
+        "line": 262,
         "kind": "literal"
       }
     ]
@@ -99067,7 +99185,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 107,
+        "line": 114,
         "kind": "literal",
         "purpose": "display"
       }
@@ -99195,7 +99313,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 507,
+        "line": 511,
         "kind": "literal"
       }
     ]
@@ -99644,7 +99762,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 236,
+        "line": 243,
         "kind": "literal"
       }
     ]
@@ -99699,7 +99817,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 129,
+        "line": 136,
         "kind": "literal"
       }
     ]
@@ -99916,7 +100034,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 437,
+        "line": 441,
         "kind": "literal"
       },
       {
@@ -100154,7 +100272,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 66,
+        "line": 73,
         "kind": "literal"
       }
     ]
@@ -100657,7 +100775,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 587,
+        "line": 591,
         "kind": "literal"
       }
     ]
@@ -100696,7 +100814,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 268,
+        "line": 272,
         "kind": "literal"
       }
     ]
@@ -101364,7 +101482,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 251,
+        "line": 255,
         "kind": "literal"
       }
     ]
@@ -102543,7 +102661,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 270,
+        "line": 277,
         "kind": "literal"
       }
     ]
@@ -103185,7 +103303,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 114,
+        "line": 121,
         "kind": "literal",
         "purpose": "display"
       }
@@ -103197,7 +103315,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 236,
+        "line": 240,
         "kind": "literal"
       },
       {
@@ -103286,12 +103404,12 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 944,
+        "line": 968,
         "kind": "literal"
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 955,
+        "line": 979,
         "kind": "literal"
       },
       {
@@ -103401,7 +103519,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 81,
+        "line": 88,
         "kind": "literal"
       }
     ]
@@ -103717,7 +103835,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 444,
+        "line": 448,
         "kind": "literal"
       }
     ]
@@ -104010,7 +104128,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 633,
+        "line": 637,
         "kind": "literal"
       }
     ]
@@ -104093,7 +104211,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 221,
+        "line": 228,
         "kind": "literal"
       }
     ]
@@ -104828,7 +104946,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 473,
+        "line": 477,
         "kind": "literal"
       }
     ]
@@ -104862,7 +104980,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 205,
+        "line": 212,
         "kind": "literal",
         "purpose": "display"
       }
@@ -106193,7 +106311,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 783,
+        "line": 807,
         "kind": "literal"
       }
     ]
@@ -106281,7 +106399,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 471,
+        "line": 475,
         "kind": "literal"
       }
     ]
@@ -106574,7 +106692,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 369,
+        "line": 373,
         "kind": "literal"
       }
     ]
@@ -106674,7 +106792,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 147,
+        "line": 154,
         "kind": "literal"
       }
     ]
@@ -107170,7 +107288,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 349,
+        "line": 353,
         "kind": "literal"
       },
       {
@@ -107993,7 +108111,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 207,
+        "line": 211,
         "kind": "literal"
       },
       {
@@ -108270,7 +108388,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 170,
+        "line": 177,
         "kind": "literal",
         "purpose": "display"
       }
@@ -108293,7 +108411,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 228,
+        "line": 235,
         "kind": "literal"
       }
     ]
@@ -108563,7 +108681,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 933,
+        "line": 957,
         "kind": "literal"
       }
     ]
@@ -108597,7 +108715,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 213,
+        "line": 220,
         "kind": "literal"
       }
     ]
@@ -108619,7 +108737,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 242,
+        "line": 246,
         "kind": "literal"
       }
     ]
@@ -109010,6 +109128,17 @@
       }
     ]
   },
+  "m_df50c9b3d3eb7eb9": {
+    "source": "מצב המסירה עוד לא נבדק.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/integrations/page.tsx",
+        "line": 692,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_df518e9767797c77": {
     "source": "ימי הולדת, אירוח ומגשים לשבת.",
     "language": "he",
@@ -109361,7 +109490,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 277,
+        "line": 284,
         "kind": "literal"
       }
     ]
@@ -110231,7 +110360,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 549,
+        "line": 553,
         "kind": "literal"
       }
     ]
@@ -110338,7 +110467,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 153,
+        "line": 160,
         "kind": "literal"
       }
     ]
@@ -110445,7 +110574,7 @@
     "references": [
       {
         "file": "api/app/routers/integrations.py",
-        "line": 341,
+        "line": 350,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -110594,7 +110723,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 503,
+        "line": 507,
         "kind": "literal"
       }
     ]
@@ -110936,7 +111065,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 920,
+        "line": 944,
         "kind": "literal"
       },
       {
@@ -111196,7 +111325,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 130,
+        "line": 137,
         "kind": "literal"
       }
     ]
@@ -112182,7 +112311,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 74,
+        "line": 81,
         "kind": "literal"
       }
     ]
@@ -112618,7 +112747,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 179,
+        "line": 186,
         "kind": "literal"
       }
     ]
@@ -112640,12 +112769,12 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 61,
+        "line": 68,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 222,
+        "line": 229,
         "kind": "literal"
       }
     ]
@@ -112690,7 +112819,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 60,
+        "line": 67,
         "kind": "literal"
       }
     ]
@@ -113613,7 +113742,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 152,
+        "line": 159,
         "kind": "literal",
         "purpose": "display"
       }
@@ -113689,7 +113818,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 193,
+        "line": 197,
         "kind": "literal"
       }
     ]
@@ -114004,7 +114133,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 931,
+        "line": 955,
         "kind": "literal"
       }
     ]
@@ -114053,7 +114182,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 248,
+        "line": 252,
         "kind": "literal"
       }
     ]
@@ -114431,7 +114560,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 101,
+        "line": 108,
         "kind": "literal"
       }
     ]
@@ -115069,7 +115198,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 263,
+        "line": 270,
         "kind": "literal"
       }
     ]
@@ -115340,7 +115469,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 122,
+        "line": 129,
         "kind": "literal"
       }
     ]
@@ -115764,12 +115893,17 @@
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 804,
+        "line": 673,
         "kind": "literal"
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 891,
+        "line": 828,
+        "kind": "literal"
+      },
+      {
+        "file": "web/app/integrations/page.tsx",
+        "line": 915,
         "kind": "literal"
       },
       {
@@ -116165,7 +116299,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 137,
+        "line": 144,
         "kind": "literal"
       }
     ]
@@ -116265,7 +116399,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 659,
+        "line": 673,
         "kind": "literal"
       }
     ]
@@ -116452,7 +116586,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 140,
+        "line": 144,
         "kind": "literal"
       }
     ]
@@ -116927,7 +117061,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 832,
+        "line": 856,
         "kind": "literal"
       }
     ]
@@ -118684,7 +118818,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 305,
+        "line": 309,
         "kind": "literal"
       },
       {
@@ -118871,7 +119005,7 @@
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 817,
+        "line": 841,
         "kind": "literal"
       },
       {
@@ -119055,7 +119189,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 102,
+        "line": 109,
         "kind": "literal"
       }
     ]
@@ -119783,7 +119917,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 265,
+        "line": 269,
         "kind": "literal"
       }
     ]
@@ -120082,7 +120216,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 448,
+        "line": 452,
         "kind": "literal"
       }
     ]
@@ -120149,32 +120283,32 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 170,
+        "line": 174,
         "kind": "literal"
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 284,
+        "line": 288,
         "kind": "literal"
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 285,
+        "line": 289,
         "kind": "literal"
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 286,
+        "line": 290,
         "kind": "literal"
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 292,
+        "line": 296,
         "kind": "literal"
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 578,
+        "line": 582,
         "kind": "literal"
       },
       {
@@ -120632,7 +120766,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 262,
+        "line": 269,
         "kind": "literal"
       }
     ]
@@ -121175,7 +121309,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 226,
+        "line": 233,
         "kind": "literal",
         "purpose": "display"
       }
@@ -121408,7 +121542,7 @@
     "references": [
       {
         "file": "api/app/routers/integrations.py",
-        "line": 271,
+        "line": 280,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -122138,12 +122272,12 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 126,
+        "line": 130,
         "kind": "literal"
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 141,
+        "line": 145,
         "kind": "literal"
       }
     ]
@@ -122284,7 +122418,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 627,
+        "line": 631,
         "kind": "literal"
       }
     ]
@@ -122306,7 +122440,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 443,
+        "line": 447,
         "kind": "literal"
       }
     ]
@@ -122368,7 +122502,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 357,
+        "line": 361,
         "kind": "literal"
       }
     ]
@@ -122640,7 +122774,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 10,
+        "line": 17,
         "kind": "literal"
       }
     ]
@@ -123212,7 +123346,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 257,
+        "line": 264,
         "kind": "literal"
       }
     ]
@@ -123315,7 +123449,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 772,
+        "line": 796,
         "kind": "literal"
       }
     ]
@@ -123677,7 +123811,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 37,
+        "line": 44,
         "kind": "literal",
         "purpose": "display"
       }
@@ -123761,7 +123895,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 214,
+        "line": 221,
         "kind": "literal"
       }
     ]
@@ -124057,7 +124191,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 86,
+        "line": 93,
         "kind": "literal",
         "purpose": "display"
       }
@@ -124452,7 +124586,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 247,
+        "line": 254,
         "kind": "literal",
         "purpose": "display"
       }
@@ -124809,7 +124943,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 194,
+        "line": 201,
         "kind": "literal"
       }
     ]
@@ -124842,7 +124976,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 881,
+        "line": 905,
         "kind": "literal"
       }
     ]
@@ -124960,6 +125094,17 @@
       }
     ]
   },
+  "m_ff0109b1261ac948": {
+    "source": "לא הצלחנו לשמור את הכתובת. נסו שוב.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/integrations/page.tsx",
+        "line": 669,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_ff054eab074dca2f": {
     "source": "מה מחכה לכם השבוע בחנות",
     "language": "he",
@@ -125069,7 +125214,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 230,
+        "line": 234,
         "kind": "literal"
       }
     ]
