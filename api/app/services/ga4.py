@@ -23,9 +23,10 @@ GA4_SCOPES = [
 
 
 class Ga4AccessError(RuntimeError):
-    def __init__(self, status: str):
+    def __init__(self, status: str, reason: str = ""):
         super().__init__("Google Analytics access unavailable")
         self.readiness_status = status
+        self.reason = reason
 
 
 def ga4_configured() -> bool:
@@ -39,7 +40,7 @@ def redirect_uri() -> str:
     return f"{get_settings().oauth_callback_base()}/integrations/ga4/callback"
 
 
-def authorization_url(state: str, login_hint: str = "") -> str:
+def authorization_url(state: str, login_hint: str = "", *, choose_account: bool = False) -> str:
     """Google's consent screen for Analytics + Search Console.
 
     Incremental authorization on top of "להמשיך עם Google": `login_hint` (the linked Google
@@ -57,11 +58,11 @@ def authorization_url(state: str, login_hint: str = "") -> str:
         "response_type": "code",
         "scope": " ".join(GA4_SCOPES),
         "access_type": "offline",
-        "prompt": "consent",
+        "prompt": "select_account consent" if choose_account else "consent",
         "include_granted_scopes": "true",
         "state": state,
     }
-    if login_hint:
+    if login_hint and not choose_account:
         params["login_hint"] = login_hint
     query = urlencode(params)
     return f"https://accounts.google.com/o/oauth2/v2/auth?{query}"
@@ -84,6 +85,11 @@ def exchange_code(code: str) -> dict:
     if response.status_code >= 400:
         raise RuntimeError(f"לא הצלחנו להשלים את החיבור לגוגל: {response.text}")
     payload = response.json()
+    scopes = [scope for scope in (payload.get("scope") or "").split(" ") if scope]
+    # Granular consent can succeed with sign-in alone. Do not call that the wrong
+    # account, nor overwrite a previously working grant with unusable permission.
+    if "scope" in payload and "https://www.googleapis.com/auth/analytics.readonly" not in scopes:
+        raise Ga4AccessError("reconnect", "analytics_permission_missing")
     if "refresh_token" not in payload:
         raise RuntimeError("גוגל לא נתן לנו הרשאה קבועה. חברו את גוגל מחדש ואשרו את כל ההרשאות.")
     expires = datetime.now(timezone.utc) + timedelta(seconds=int(payload.get("expires_in", 3600)))
@@ -93,7 +99,7 @@ def exchange_code(code: str) -> dict:
         "expires_at": expires,
         # What Google actually granted, which is not always what was asked for. Stored so
         # Search Console can be reported as "not granted" instead of failing silently.
-        "scopes": [scope for scope in (payload.get("scope") or "").split(" ") if scope],
+        "scopes": scopes,
         # `openid email` is in the scopes, so Google says which account granted this. Used
         # only to compare with the account the owner signs in with; never stored raw.
         "id_token": payload.get("id_token") or "",

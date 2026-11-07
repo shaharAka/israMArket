@@ -616,7 +616,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 811,
+        "line": 834,
         "kind": "literal"
       }
     ]
@@ -638,7 +638,7 @@
     "references": [
       {
         "file": "api/app/routers/integrations.py",
-        "line": 283,
+        "line": 298,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -749,7 +749,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 629,
+        "line": 651,
         "kind": "literal"
       }
     ]
@@ -2033,7 +2033,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 701,
+        "line": 724,
         "kind": "literal"
       }
     ]
@@ -2724,6 +2724,12 @@
         "file": "web/components/integrations/SourceReadState.tsx",
         "line": 75,
         "kind": "literal"
+      },
+      {
+        "file": "web/components/integrations/connectionJourney.ts",
+        "line": 54,
+        "kind": "literal",
+        "purpose": "display"
       }
     ]
   },
@@ -3152,18 +3158,6 @@
       }
     ]
   },
-  "m_0622d2c75eace181": {
-    "source": "צפיות, כמה צפו עד הסוף ומאיפה הגיעו",
-    "language": "he",
-    "references": [
-      {
-        "file": "api/app/services/quarter_plan.py",
-        "line": 111,
-        "kind": "literal",
-        "purpose": "copy"
-      }
-    ]
-  },
   "m_0626159f8603c45a": {
     "source": "כמה שמרו את הפוסט כדי לחזור אליו.",
     "language": "he",
@@ -3242,7 +3236,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 343,
+        "line": 349,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -3456,7 +3450,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 742,
+        "line": 765,
         "kind": "literal"
       }
     ]
@@ -4784,7 +4778,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 339,
+        "line": 345,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -4930,17 +4924,6 @@
         "line": 422,
         "kind": "literal",
         "purpose": "copy"
-      }
-    ]
-  },
-  "m_09c22c5638549133": {
-    "source": "להוראות של",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/integrations/PixelSetupGuide.tsx",
-        "line": 50,
-        "kind": "literal"
       }
     ]
   },
@@ -6797,7 +6780,7 @@
     "references": [
       {
         "file": "api/app/routers/integrations.py",
-        "line": 221,
+        "line": 234,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -6866,7 +6849,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 275,
+        "line": 294,
         "kind": "literal",
         "purpose": "display"
       }
@@ -7119,7 +7102,7 @@
     "references": [
       {
         "file": "api/app/routers/trial.py",
-        "line": 270,
+        "line": 276,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -7178,7 +7161,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 558,
+        "line": 580,
         "kind": "literal"
       },
       {
@@ -7807,7 +7790,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 795,
+        "line": 818,
         "kind": "literal"
       }
     ]
@@ -7907,8 +7890,28 @@
     "language": "he",
     "references": [
       {
+        "file": "web/app/integrations/page.tsx",
+        "line": 167,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/design/ConnectionGuidePreview.tsx",
+        "line": 39,
+        "kind": "literal"
+      },
+      {
         "file": "web/components/integrations/SourceReadState.tsx",
         "line": 22,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/integrations/connectionJourney.ts",
+        "line": 16,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/integrations/connectionJourney.ts",
+        "line": 67,
         "kind": "literal"
       }
     ]
@@ -8231,7 +8234,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 240,
+        "line": 254,
         "kind": "literal"
       }
     ]
@@ -8602,18 +8605,6 @@
       }
     ]
   },
-  "m_11c4a58ba805ddac": {
-    "source": "WordPress / WooCommerce",
-    "language": "en",
-    "references": [
-      {
-        "file": "web/components/integrations/PixelSetupGuide.tsx",
-        "line": 23,
-        "kind": "literal",
-        "purpose": "display"
-      }
-    ]
-  },
   "m_11c5cc8bc8efc3ee": {
     "source": "כבר יש חשבון עם האימייל הזה. אפשר להיכנס, ומה שבנינו יחכה כאן.",
     "language": "he",
@@ -8704,7 +8695,7 @@
     "references": [
       {
         "file": "api/app/services/plan_connections.py",
-        "line": 41,
+        "line": 49,
         "kind": "template",
         "purpose": "copy"
       }
@@ -9634,7 +9625,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 390,
+        "line": 396,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -9978,7 +9969,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 551,
+        "line": 573,
         "kind": "literal"
       },
       {
@@ -10827,7 +10818,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 581,
+        "line": 603,
         "kind": "literal",
         "purpose": "display"
       }
@@ -10942,7 +10933,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 463,
+        "line": 485,
         "kind": "literal"
       }
     ]
@@ -11176,7 +11167,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 278,
+        "line": 284,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -11634,7 +11625,7 @@
     "references": [
       {
         "file": "api/app/routers/trial.py",
-        "line": 326,
+        "line": 332,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -12272,7 +12263,7 @@
     "references": [
       {
         "file": "web/components/integrations/connectionRecommendation.ts",
-        "line": 17,
+        "line": 18,
         "kind": "literal"
       }
     ]
@@ -14812,7 +14803,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 828,
+        "line": 851,
         "kind": "literal"
       }
     ]
@@ -15026,7 +15017,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 555,
+        "line": 577,
         "kind": "literal"
       }
     ]
@@ -15049,7 +15040,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 767,
+        "line": 790,
         "kind": "literal"
       }
     ]
@@ -15326,7 +15317,7 @@
     "references": [
       {
         "file": "api/app/services/ga4.py",
-        "line": 88,
+        "line": 94,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -15376,7 +15367,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 312,
+        "line": 318,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -15524,7 +15515,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 886,
+        "line": 909,
         "kind": "literal"
       },
       {
@@ -16261,7 +16252,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 799,
+        "line": 822,
         "kind": "literal"
       }
     ]
@@ -16805,7 +16796,7 @@
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 537,
+        "line": 559,
         "kind": "literal"
       }
     ]
@@ -17037,7 +17028,7 @@
     "references": [
       {
         "file": "api/app/services/plan_connections.py",
-        "line": 69,
+        "line": 77,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -17170,17 +17161,6 @@
       {
         "file": "web/components/instagram/sources.ts",
         "line": 8,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_22f247bad6697f1b": {
-    "source": "ב־Wix נדרשים מסלול Premium ודומיין מחובר.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/integrations/PixelSetupGuide.tsx",
-        "line": 13,
         "kind": "literal"
       }
     ]
@@ -17668,17 +17648,6 @@
       }
     ]
   },
-  "m_240556e7d381b82b": {
-    "source": "בהגדרות השיווק של האתר, פתחו Meta Pixel & CAPI והמשיכו לחיבור לפייסבוק.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/integrations/PixelSetupGuide.tsx",
-        "line": 12,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_240fa44d3f85bc5c": {
     "source": "יותר לחיצות לוואטסאפ",
     "language": "he",
@@ -18088,7 +18057,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 606,
+        "line": 628,
         "kind": "literal"
       }
     ]
@@ -18645,7 +18614,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 555,
+        "line": 577,
         "kind": "literal"
       }
     ]
@@ -19493,7 +19462,7 @@
     "references": [
       {
         "file": "api/app/services/plan_connections.py",
-        "line": 52,
+        "line": 60,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -19714,7 +19683,7 @@
     "references": [
       {
         "file": "api/app/main.py",
-        "line": 243,
+        "line": 263,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -19772,17 +19741,6 @@
       {
         "file": "web/components/start/steps.tsx",
         "line": 147,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_28b230fbf32bec12": {
-    "source": "בדקו קודם אם חיבור Meta כבר מותקן. אם לא, מנהל האתר יכול לחבר דרך התוסף Meta pixel for WordPress של Facebook ולבחור את ה־Pixel של העסק.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/integrations/PixelSetupGuide.tsx",
-        "line": 24,
         "kind": "literal"
       }
     ]
@@ -21165,17 +21123,6 @@
       }
     ]
   },
-  "m_2b9f0e1b7651be66": {
-    "source": "אם כבר יש Pixel, בקשו ממנהל העסק לאפשר גישה אליו ולחשבון הפרסום שמקושר אליו. אין צורך לפתוח מעקב חדש.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/integrations/PixelSetupGuide.tsx",
-        "line": 31,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_2ba8d2ed602efd70": {
     "source": "בחרו קטגוריה ולחצו **Done**.",
     "language": "he",
@@ -22266,7 +22213,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 247,
+        "line": 261,
         "kind": "literal"
       }
     ]
@@ -23097,6 +23044,11 @@
     "language": "he",
     "references": [
       {
+        "file": "web/components/integrations/ConnectionJourneyCard.tsx",
+        "line": 38,
+        "kind": "literal"
+      },
+      {
         "file": "web/components/results/PostObservationLine.tsx",
         "line": 17,
         "kind": "literal"
@@ -23322,7 +23274,7 @@
     "references": [
       {
         "file": "api/app/routers/integrations.py",
-        "line": 176,
+        "line": 188,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -23681,7 +23633,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 435,
+        "line": 441,
         "kind": "template",
         "purpose": "copy"
       }
@@ -24163,7 +24115,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 832,
+        "line": 855,
         "kind": "literal"
       }
     ]
@@ -24426,7 +24378,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 299,
+        "line": 305,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -24887,10 +24839,9 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/integrations/PixelSetupGuide.tsx",
-        "line": 29,
-        "kind": "literal",
-        "purpose": "display"
+        "file": "web/components/integrations/TrackingSetupGuide.tsx",
+        "line": 10,
+        "kind": "literal"
       }
     ]
   },
@@ -24928,7 +24879,7 @@
     "references": [
       {
         "file": "api/app/routers/trial.py",
-        "line": 273,
+        "line": 279,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -25584,7 +25535,7 @@
     "references": [
       {
         "file": "api/app/services/plan_connections.py",
-        "line": 42,
+        "line": 50,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -25725,7 +25676,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 319,
+        "line": 338,
         "kind": "literal"
       }
     ]
@@ -27443,7 +27394,7 @@
     "references": [
       {
         "file": "api/app/services/plan_connections.py",
-        "line": 52,
+        "line": 60,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -27720,8 +27671,13 @@
     "language": "he",
     "references": [
       {
+        "file": "web/components/integrations/connectionJourney.ts",
+        "line": 36,
+        "kind": "literal"
+      },
+      {
         "file": "web/components/integrations/connectionRecommendation.ts",
-        "line": 20,
+        "line": 22,
         "kind": "literal",
         "purpose": "display"
       }
@@ -27844,7 +27800,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 401,
+        "line": 423,
         "kind": "literal"
       }
     ]
@@ -28718,7 +28674,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 325,
+        "line": 331,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -28824,7 +28780,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 405,
+        "line": 411,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -29951,7 +29907,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 745,
+        "line": 768,
         "kind": "literal"
       }
     ]
@@ -30091,6 +30047,11 @@
     "source": "עוד לא חובר",
     "language": "he",
     "references": [
+      {
+        "file": "web/components/design/ConnectionGuidePreview.tsx",
+        "line": 39,
+        "kind": "literal"
+      },
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
         "line": 25,
@@ -30735,7 +30696,7 @@
     "references": [
       {
         "file": "api/app/routers/trial.py",
-        "line": 355,
+        "line": 361,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -31015,7 +30976,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 510,
+        "line": 532,
         "kind": "literal"
       }
     ]
@@ -31125,7 +31086,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 375,
+        "line": 381,
         "kind": "template",
         "purpose": "copy"
       }
@@ -31547,7 +31508,7 @@
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 857,
+        "line": 880,
         "kind": "literal"
       }
     ]
@@ -31621,7 +31582,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 418,
+        "line": 440,
         "kind": "literal"
       }
     ]
@@ -33004,7 +32965,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 458,
+        "line": 480,
         "kind": "literal"
       }
     ]
@@ -33233,7 +33194,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 428,
+        "line": 450,
         "kind": "literal"
       }
     ]
@@ -33618,17 +33579,6 @@
       {
         "file": "web/lib/draft.ts",
         "line": 1224,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_44d98ef35bb40c52": {
-    "source": "המעקב חסר? כך מחברים אותו לאתר",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/integrations/PixelSetupGuide.tsx",
-        "line": 41,
         "kind": "literal"
       }
     ]
@@ -34070,7 +34020,7 @@
     "references": [
       {
         "file": "api/app/routers/trial.py",
-        "line": 436,
+        "line": 442,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -34360,7 +34310,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 353,
+        "line": 359,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -34516,8 +34466,18 @@
     "language": "he",
     "references": [
       {
+        "file": "web/app/integrations/page.tsx",
+        "line": 167,
+        "kind": "literal"
+      },
+      {
         "file": "web/components/integrations/SourceReadState.tsx",
         "line": 24,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/integrations/connectionJourney.ts",
+        "line": 16,
         "kind": "literal"
       }
     ]
@@ -34590,7 +34550,7 @@
     "references": [
       {
         "file": "api/app/services/ga4.py",
-        "line": 52,
+        "line": 53,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -35004,6 +34964,12 @@
         "file": "web/components/instagram/sources.ts",
         "line": 51,
         "kind": "template"
+      },
+      {
+        "file": "api/app/services/research.py",
+        "line": 1089,
+        "kind": "template",
+        "purpose": "copy"
       }
     ]
   },
@@ -35238,7 +35204,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 434,
+        "line": 440,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -35602,7 +35568,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 454,
+        "line": 476,
         "kind": "literal"
       }
     ]
@@ -36829,7 +36795,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 850,
+        "line": 873,
         "kind": "literal"
       }
     ]
@@ -36957,7 +36923,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 452,
+        "line": 474,
         "kind": "literal"
       }
     ]
@@ -36979,7 +36945,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 469,
+        "line": 491,
         "kind": "literal"
       }
     ]
@@ -37141,7 +37107,7 @@
     "references": [
       {
         "file": "web/components/integrations/connectionRecommendation.ts",
-        "line": 29,
+        "line": 31,
         "kind": "literal",
         "purpose": "display"
       }
@@ -37833,7 +37799,7 @@
     "references": [
       {
         "file": "web/components/integrations/connectionRecommendation.ts",
-        "line": 21,
+        "line": 23,
         "kind": "literal",
         "purpose": "display"
       }
@@ -38025,7 +37991,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 418,
+        "line": 424,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -38064,7 +38030,7 @@
     "references": [
       {
         "file": "api/app/services/plan_connections.py",
-        "line": 70,
+        "line": 78,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -38076,7 +38042,7 @@
     "references": [
       {
         "file": "api/app/services/ga4.py",
-        "line": 85,
+        "line": 86,
         "kind": "template",
         "purpose": "validation"
       }
@@ -38133,7 +38099,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 386,
+        "line": 406,
         "kind": "literal"
       }
     ]
@@ -38268,7 +38234,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 408,
+        "line": 414,
         "kind": "template",
         "purpose": "copy"
       }
@@ -38291,7 +38257,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 420,
+        "line": 442,
         "kind": "literal"
       }
     ]
@@ -38410,7 +38376,7 @@
     "references": [
       {
         "file": "api/app/routers/trial.py",
-        "line": 315,
+        "line": 321,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -38566,7 +38532,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 171,
+        "line": 185,
         "kind": "literal"
       }
     ]
@@ -38844,7 +38810,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 426,
+        "line": 448,
         "kind": "jsx"
       }
     ]
@@ -39250,18 +39216,6 @@
       }
     ]
   },
-  "m_5157f45d83c81fd3": {
-    "source": "Wix",
-    "language": "en",
-    "references": [
-      {
-        "file": "web/components/integrations/PixelSetupGuide.tsx",
-        "line": 11,
-        "kind": "literal",
-        "purpose": "display"
-      }
-    ]
-  },
   "m_515f3cbcc19fb3fc": {
     "source": "תארו שירות שאתם נותנים, עבודה שעשיתם או שאלה שלקוחות שואלים. משם נתחיל.",
     "language": "he",
@@ -39340,12 +39294,17 @@
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 366,
+        "line": 386,
         "kind": "literal"
       },
       {
         "file": "web/components/integrations/MetaConnection.tsx",
         "line": 208,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/integrations/TikTokConnection.tsx",
+        "line": 94,
         "kind": "literal"
       }
     ]
@@ -40494,7 +40453,7 @@
     "references": [
       {
         "file": "api/app/routers/trial.py",
-        "line": 314,
+        "line": 320,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -42517,7 +42476,7 @@
     "references": [
       {
         "file": "api/app/routers/trial.py",
-        "line": 244,
+        "line": 250,
         "kind": "template",
         "purpose": "copy"
       }
@@ -43087,7 +43046,12 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 88,
+        "line": 92,
+        "kind": "literal"
+      },
+      {
+        "file": "web/app/integrations/page.tsx",
+        "line": 564,
         "kind": "literal"
       }
     ]
@@ -43766,7 +43730,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 895,
+        "line": 918,
         "kind": "literal"
       },
       {
@@ -43991,8 +43955,23 @@
     "language": "he",
     "references": [
       {
+        "file": "web/app/integrations/page.tsx",
+        "line": 167,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/design/ConnectionGuidePreview.tsx",
+        "line": 41,
+        "kind": "literal"
+      },
+      {
         "file": "web/components/integrations/SourceReadState.tsx",
         "line": 21,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/integrations/connectionJourney.ts",
+        "line": 15,
         "kind": "literal"
       }
     ]
@@ -44187,17 +44166,6 @@
         "line": 637,
         "kind": "literal",
         "purpose": "copy"
-      }
-    ]
-  },
-  "m_5c440dd3eea80a37": {
-    "source": "חפשו בחיבורי השיווק של מערכת האתר את Meta Pixel. אם אין חיבור מובנה, מי שמנהל את האתר יוכל לעזור בהתקנה.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/integrations/PixelSetupGuide.tsx",
-        "line": 30,
-        "kind": "literal"
       }
     ]
   },
@@ -44415,7 +44383,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 489,
+        "line": 511,
         "kind": "literal"
       }
     ]
@@ -44502,7 +44470,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 458,
+        "line": 480,
         "kind": "literal"
       }
     ]
@@ -44902,7 +44870,7 @@
     "references": [
       {
         "file": "api/app/routers/trial.py",
-        "line": 268,
+        "line": 274,
         "kind": "template",
         "purpose": "copy"
       }
@@ -45266,7 +45234,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 555,
+        "line": 577,
         "kind": "literal"
       }
     ]
@@ -45581,18 +45549,6 @@
       }
     ]
   },
-  "m_5e875bc90a360147": {
-    "source": "Shopify",
-    "language": "en",
-    "references": [
-      {
-        "file": "web/components/integrations/PixelSetupGuide.tsx",
-        "line": 17,
-        "kind": "literal",
-        "purpose": "display"
-      }
-    ]
-  },
   "m_5e89cc126e21cca6": {
     "source": "דיג׳יי מפעיל ציוד מוזיקה מול קהל רוקד באור כחול וכתום, בהמחשה שנוצרה ב-AI",
     "language": "he",
@@ -45699,7 +45655,7 @@
     "references": [
       {
         "file": "web/components/integrations/connectionRecommendation.ts",
-        "line": 15,
+        "line": 16,
         "kind": "literal"
       }
     ]
@@ -45722,7 +45678,7 @@
     "references": [
       {
         "file": "api/app/services/plan_connections.py",
-        "line": 52,
+        "line": 60,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -46008,7 +45964,7 @@
     "references": [
       {
         "file": "api/app/routers/integrations.py",
-        "line": 150,
+        "line": 162,
         "kind": "template",
         "purpose": "copy"
       }
@@ -46914,6 +46870,11 @@
     "language": "he",
     "references": [
       {
+        "file": "web/components/design/ConnectionGuidePreview.tsx",
+        "line": 39,
+        "kind": "literal"
+      },
+      {
         "file": "web/components/design/ConnectionWorkshop.tsx",
         "line": 119,
         "kind": "jsx"
@@ -46964,7 +46925,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 393,
+        "line": 399,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -47326,7 +47287,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 296,
+        "line": 302,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -47451,7 +47412,7 @@
     "references": [
       {
         "file": "api/app/routers/trial.py",
-        "line": 328,
+        "line": 334,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -48350,7 +48311,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 359,
+        "line": 365,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -48395,7 +48356,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 287,
+        "line": 306,
         "kind": "literal"
       }
     ]
@@ -48788,7 +48749,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 411,
+        "line": 433,
         "kind": "literal"
       }
     ]
@@ -49087,7 +49048,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 774,
+        "line": 797,
         "kind": "literal"
       }
     ]
@@ -49201,7 +49162,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 884,
+        "line": 907,
         "kind": "literal"
       }
     ]
@@ -49284,7 +49245,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 822,
+        "line": 845,
         "kind": "literal"
       }
     ]
@@ -49323,7 +49284,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 870,
+        "line": 893,
         "kind": "literal"
       }
     ]
@@ -50231,7 +50192,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 206,
+        "line": 220,
         "kind": "literal"
       }
     ]
@@ -50351,8 +50312,23 @@
     "language": "he",
     "references": [
       {
+        "file": "web/app/integrations/page.tsx",
+        "line": 167,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/design/ConnectionGuidePreview.tsx",
+        "line": 41,
+        "kind": "literal"
+      },
+      {
         "file": "web/components/integrations/SourceReadState.tsx",
         "line": 23,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/integrations/connectionJourney.ts",
+        "line": 15,
         "kind": "literal"
       }
     ]
@@ -50384,20 +50360,9 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 360,
+        "line": 366,
         "kind": "literal",
         "purpose": "copy"
-      }
-    ]
-  },
-  "m_6893b80e6fc636f8": {
-    "source": "חיברתי באתר, לרענן את הרשימה",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/integrations/PixelSetupGuide.tsx",
-        "line": 52,
-        "kind": "literal"
       }
     ]
   },
@@ -50430,7 +50395,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 822,
+        "line": 845,
         "kind": "literal"
       }
     ]
@@ -51204,7 +51169,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 437,
+        "line": 443,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -51331,12 +51296,12 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 795,
+        "line": 818,
         "kind": "literal"
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 868,
+        "line": 891,
         "kind": "literal"
       }
     ]
@@ -52126,7 +52091,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 461,
+        "line": 483,
         "kind": "literal"
       }
     ]
@@ -52270,7 +52235,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 626,
+        "line": 648,
         "kind": "literal"
       }
     ]
@@ -52483,7 +52448,7 @@
     "references": [
       {
         "file": "api/app/services/ga4.py",
-        "line": 224,
+        "line": 230,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -53106,7 +53071,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 297,
+        "line": 316,
         "kind": "literal"
       }
     ]
@@ -53295,7 +53260,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 293,
+        "line": 312,
         "kind": "literal"
       }
     ]
@@ -53910,7 +53875,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 504,
+        "line": 526,
         "kind": "literal"
       }
     ]
@@ -54025,7 +53990,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 535,
+        "line": 557,
         "kind": "literal"
       }
     ]
@@ -54391,7 +54356,7 @@
     "references": [
       {
         "file": "api/app/routers/trial.py",
-        "line": 353,
+        "line": 359,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -55266,7 +55231,7 @@
     "references": [
       {
         "file": "api/app/services/plan_connections.py",
-        "line": 44,
+        "line": 52,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -55278,7 +55243,7 @@
     "references": [
       {
         "file": "api/app/routers/integrations.py",
-        "line": 168,
+        "line": 180,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -56399,7 +56364,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 413,
+        "line": 435,
         "kind": "literal"
       }
     ]
@@ -56453,8 +56418,23 @@
     "language": "he",
     "references": [
       {
+        "file": "web/app/integrations/page.tsx",
+        "line": 167,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/design/ConnectionGuidePreview.tsx",
+        "line": 41,
+        "kind": "literal"
+      },
+      {
         "file": "web/components/integrations/SourceReadState.tsx",
         "line": 21,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/integrations/connectionJourney.ts",
+        "line": 15,
         "kind": "literal"
       },
       {
@@ -56739,7 +56719,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 557,
+        "line": 579,
         "kind": "literal"
       }
     ]
@@ -56901,6 +56881,11 @@
     "language": "he",
     "references": [
       {
+        "file": "web/components/design/ConnectionGuidePreview.tsx",
+        "line": 13,
+        "kind": "literal"
+      },
+      {
         "file": "web/components/landing-v2/connectionExamples.ts",
         "line": 4,
         "kind": "literal"
@@ -57020,7 +57005,7 @@
     "references": [
       {
         "file": "api/app/routers/trial.py",
-        "line": 361,
+        "line": 367,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -57209,7 +57194,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 450,
+        "line": 472,
         "kind": "literal"
       }
     ]
@@ -57352,7 +57337,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 203,
+        "line": 217,
         "kind": "literal"
       }
     ]
@@ -57683,7 +57668,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 342,
+        "line": 348,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -57718,7 +57703,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 837,
+        "line": 860,
         "kind": "literal"
       }
     ]
@@ -58849,7 +58834,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 456,
+        "line": 478,
         "kind": "literal"
       }
     ]
@@ -58899,7 +58884,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 370,
+        "line": 376,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -58935,17 +58920,6 @@
       {
         "file": "web/lib/releases.ts",
         "line": 213,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_7a7e079b3b8598f0": {
-    "source": "פתחו את ערוץ Facebook & Instagram, ואז Settings ← Share data settings. בחרו את ה־Pixel ואת רמת שיתוף הנתונים שמתאימה לכם.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/integrations/PixelSetupGuide.tsx",
-        "line": 18,
         "kind": "literal"
       }
     ]
@@ -59069,7 +59043,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 558,
+        "line": 580,
         "kind": "literal"
       },
       {
@@ -59536,7 +59510,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 280,
+        "line": 286,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -59733,7 +59707,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 421,
+        "line": 427,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -59825,7 +59799,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 742,
+        "line": 765,
         "kind": "literal"
       }
     ]
@@ -60630,7 +60604,7 @@
     "references": [
       {
         "file": "api/app/routers/trial.py",
-        "line": 298,
+        "line": 304,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -61370,7 +61344,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 394,
+        "line": 400,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -62212,7 +62186,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 265,
+        "line": 284,
         "kind": "literal"
       }
     ]
@@ -62525,7 +62499,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 717,
+        "line": 740,
         "kind": "literal"
       }
     ]
@@ -62593,7 +62567,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 231,
+        "line": 245,
         "kind": "literal"
       }
     ]
@@ -63032,7 +63006,7 @@
     "references": [
       {
         "file": "api/app/routers/trial.py",
-        "line": 260,
+        "line": 266,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -63981,7 +63955,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 458,
+        "line": 480,
         "kind": "literal"
       }
     ]
@@ -64909,7 +64883,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 845,
+        "line": 868,
         "kind": "literal"
       }
     ]
@@ -65733,12 +65707,27 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 312,
+        "line": 168,
         "kind": "literal"
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 444,
+        "line": 331,
+        "kind": "literal"
+      },
+      {
+        "file": "web/app/integrations/page.tsx",
+        "line": 466,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/design/ConnectionGuidePreview.tsx",
+        "line": 41,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/integrations/connectionJourney.ts",
+        "line": 67,
         "kind": "literal"
       }
     ]
@@ -65815,7 +65804,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 409,
+        "line": 415,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -66423,7 +66412,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 408,
+        "line": 430,
         "kind": "literal"
       }
     ]
@@ -66954,7 +66943,7 @@
       },
       {
         "file": "api/app/services/ga4_readiness.py",
-        "line": 100,
+        "line": 102,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -67222,7 +67211,7 @@
     "references": [
       {
         "file": "api/app/routers/trial.py",
-        "line": 340,
+        "line": 346,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -67470,7 +67459,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 805,
+        "line": 828,
         "kind": "literal"
       }
     ]
@@ -68832,7 +68821,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 408,
+        "line": 430,
         "kind": "literal"
       }
     ]
@@ -69563,7 +69552,7 @@
     "references": [
       {
         "file": "web/components/integrations/connectionRecommendation.ts",
-        "line": 29,
+        "line": 31,
         "kind": "literal"
       }
     ]
@@ -70477,12 +70466,12 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 265,
+        "line": 284,
         "kind": "literal"
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 307,
+        "line": 326,
         "kind": "literal"
       }
     ]
@@ -70988,7 +70977,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 406,
+        "line": 428,
         "kind": "literal"
       }
     ]
@@ -72302,7 +72291,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 472,
+        "line": 494,
         "kind": "literal"
       }
     ]
@@ -73025,7 +73014,7 @@
     "references": [
       {
         "file": "api/app/routers/integrations.py",
-        "line": 110,
+        "line": 116,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -73223,7 +73212,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 613,
+        "line": 635,
         "kind": "literal"
       }
     ]
@@ -73279,7 +73268,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 287,
+        "line": 306,
         "kind": "literal"
       },
       {
@@ -74391,7 +74380,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 558,
+        "line": 580,
         "kind": "literal"
       }
     ]
@@ -74750,13 +74739,13 @@
     "references": [
       {
         "file": "api/app/main.py",
-        "line": 265,
+        "line": 285,
         "kind": "literal",
         "purpose": "validation"
       },
       {
         "file": "api/app/main.py",
-        "line": 273,
+        "line": 293,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -76162,6 +76151,11 @@
     "language": "he",
     "references": [
       {
+        "file": "web/app/integrations/page.tsx",
+        "line": 166,
+        "kind": "literal"
+      },
+      {
         "file": "web/components/integrations/SourceReadState.tsx",
         "line": 23,
         "kind": "literal"
@@ -76367,7 +76361,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 845,
+        "line": 868,
         "kind": "literal"
       }
     ]
@@ -77632,7 +77626,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 295,
+        "line": 314,
         "kind": "literal"
       }
     ]
@@ -78355,7 +78349,7 @@
     "references": [
       {
         "file": "api/app/routers/integrations.py",
-        "line": 219,
+        "line": 232,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -80690,7 +80684,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 474,
+        "line": 496,
         "kind": "literal"
       }
     ]
@@ -81712,7 +81706,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 346,
+        "line": 365,
         "kind": "literal"
       }
     ]
@@ -81871,6 +81865,11 @@
       {
         "file": "web/components/integrations/SourceReadState.tsx",
         "line": 24,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/integrations/connectionJourney.ts",
+        "line": 18,
         "kind": "literal"
       }
     ]
@@ -82397,7 +82396,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 265,
+        "line": 284,
         "kind": "literal"
       },
       {
@@ -83116,7 +83115,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 792,
+        "line": 815,
         "kind": "literal"
       }
     ]
@@ -83195,7 +83194,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 364,
+        "line": 384,
         "kind": "literal"
       }
     ]
@@ -84973,7 +84972,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 279,
+        "line": 285,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -86090,7 +86089,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 376,
+        "line": 382,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -86695,7 +86694,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 346,
+        "line": 365,
         "kind": "literal"
       }
     ]
@@ -87083,7 +87082,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 374,
+        "line": 380,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -87419,17 +87418,6 @@
         "line": 37,
         "kind": "literal",
         "purpose": "copy"
-      }
-    ]
-  },
-  "m_b6d4a7349de5994c": {
-    "source": "באיזו מערכת האתר שלכם?",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/integrations/PixelSetupGuide.tsx",
-        "line": 43,
-        "kind": "literal"
       }
     ]
   },
@@ -88659,18 +88647,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 386,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_b98d4451beec0d94": {
-    "source": "לבחור את מערכת האתר",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/integrations/PixelSetupGuide.tsx",
-        "line": 44,
+        "line": 406,
         "kind": "literal"
       }
     ]
@@ -88943,7 +88920,7 @@
     "references": [
       {
         "file": "api/app/services/ga4.py",
-        "line": 154,
+        "line": 160,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -89320,6 +89297,11 @@
     "language": "he",
     "references": [
       {
+        "file": "web/components/design/ConnectionGuidePreview.tsx",
+        "line": 39,
+        "kind": "literal"
+      },
+      {
         "file": "web/components/landing-v2/connectionExamples.ts",
         "line": 29,
         "kind": "literal"
@@ -89336,8 +89318,18 @@
     "language": "he",
     "references": [
       {
+        "file": "web/app/integrations/page.tsx",
+        "line": 167,
+        "kind": "literal"
+      },
+      {
         "file": "web/components/integrations/SourceReadState.tsx",
         "line": 22,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/integrations/connectionJourney.ts",
+        "line": 17,
         "kind": "literal"
       }
     ]
@@ -89524,7 +89516,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 184,
+        "line": 198,
         "kind": "literal"
       }
     ]
@@ -89740,7 +89732,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 745,
+        "line": 768,
         "kind": "literal"
       }
     ]
@@ -90202,7 +90194,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 329,
+        "line": 348,
         "kind": "literal"
       }
     ]
@@ -92543,7 +92535,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 297,
+        "line": 303,
         "kind": "template",
         "purpose": "copy"
       }
@@ -93880,7 +93872,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 894,
+        "line": 917,
         "kind": "literal"
       },
       {
@@ -94771,7 +94763,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 355,
+        "line": 375,
         "kind": "literal"
       }
     ]
@@ -95563,7 +95555,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 444,
+        "line": 466,
         "kind": "literal"
       }
     ]
@@ -96155,7 +96147,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 598,
+        "line": 620,
         "kind": "literal"
       }
     ]
@@ -97195,7 +97187,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 467,
+        "line": 489,
         "kind": "literal"
       }
     ]
@@ -97915,14 +97907,19 @@
     "language": "he",
     "references": [
       {
+        "file": "web/app/integrations/page.tsx",
+        "line": 419,
+        "kind": "literal"
+      },
+      {
         "file": "web/components/integrations/connectionRecommendation.ts",
-        "line": 23,
+        "line": 25,
         "kind": "literal",
         "purpose": "display"
       },
       {
         "file": "api/app/services/plan_connections.py",
-        "line": 45,
+        "line": 53,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -98658,7 +98655,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 251,
+        "line": 265,
         "kind": "literal"
       }
     ]
@@ -99314,7 +99311,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 234,
+        "line": 248,
         "kind": "literal"
       }
     ]
@@ -99559,6 +99556,16 @@
     "language": "he",
     "references": [
       {
+        "file": "web/components/design/ConnectionGuidePreview.tsx",
+        "line": 39,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/design/ConnectionGuidePreview.tsx",
+        "line": 41,
+        "kind": "literal"
+      },
+      {
         "file": "web/components/integrations/SourceReadState.tsx",
         "line": 20,
         "kind": "literal"
@@ -99692,17 +99699,6 @@
       }
     ]
   },
-  "m_d1784826f9688bb4": {
-    "source": "בסיום החיבור לאתר, חזרו לכאן ובחרו את המעקב שהופיע בחשבון הפרסום שלכם.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/integrations/PixelSetupGuide.tsx",
-        "line": 51,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_d1857f3065bb20b9": {
     "source": "שמירת תוכנית ופעולה ראשונה, מעבר לביקור באתר.",
     "language": "he",
@@ -99777,7 +99773,7 @@
     "references": [
       {
         "file": "api/app/routers/trial.py",
-        "line": 327,
+        "line": 333,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -100751,7 +100747,7 @@
     "references": [
       {
         "file": "web/components/integrations/connectionRecommendation.ts",
-        "line": 16,
+        "line": 17,
         "kind": "literal"
       }
     ]
@@ -101049,7 +101045,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 407,
+        "line": 413,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -101107,7 +101103,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 219,
+        "line": 233,
         "kind": "literal"
       }
     ]
@@ -101622,7 +101618,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 404,
+        "line": 426,
         "kind": "literal"
       }
     ]
@@ -101885,6 +101881,12 @@
         "kind": "literal"
       },
       {
+        "file": "web/components/integrations/connectionJourney.ts",
+        "line": 52,
+        "kind": "literal",
+        "purpose": "display"
+      },
+      {
         "file": "api/app/services/recommendation_context.py",
         "line": 155,
         "kind": "literal",
@@ -101909,7 +101911,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 575,
+        "line": 597,
         "kind": "literal"
       }
     ]
@@ -102617,6 +102619,11 @@
         "file": "web/components/design/Primitives.tsx",
         "line": 29,
         "kind": "literal"
+      },
+      {
+        "file": "web/components/integrations/ConnectionJourneyCard.tsx",
+        "line": 29,
+        "kind": "literal"
       }
     ]
   },
@@ -102699,7 +102706,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 433,
+        "line": 455,
         "kind": "literal"
       }
     ]
@@ -104048,7 +104055,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 724,
+        "line": 747,
         "kind": "literal"
       }
     ]
@@ -104136,7 +104143,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 431,
+        "line": 453,
         "kind": "literal"
       }
     ]
@@ -104429,7 +104436,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 332,
+        "line": 351,
         "kind": "literal"
       }
     ]
@@ -104549,17 +104556,6 @@
       {
         "file": "web/components/design/FindingSummary.tsx",
         "line": 21,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_daf1f5c13292eae7": {
-    "source": "השתמשו בחיבור אחד למעקב. אין צורך להתקין תוסף נוסף אם המעקב כבר עובד.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/integrations/PixelSetupGuide.tsx",
-        "line": 25,
         "kind": "literal"
       }
     ]
@@ -105009,7 +105005,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 312,
+        "line": 331,
         "kind": "literal"
       },
       {
@@ -105827,7 +105823,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 190,
+        "line": 204,
         "kind": "literal"
       }
     ]
@@ -106279,7 +106275,7 @@
     "references": [
       {
         "file": "api/app/services/plan_connections.py",
-        "line": 52,
+        "line": 60,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -106359,7 +106355,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 874,
+        "line": 897,
         "kind": "literal"
       }
     ]
@@ -106415,7 +106411,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 225,
+        "line": 239,
         "kind": "literal"
       }
     ]
@@ -107122,7 +107118,7 @@
     "references": [
       {
         "file": "api/app/services/plan_connections.py",
-        "line": 72,
+        "line": 80,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -107682,17 +107678,6 @@
       }
     ]
   },
-  "m_e0d0c867bb20300d": {
-    "source": "אם כבר יש Pixel באתר, השתמשו בו. התקנה נוספת עלולה לספור פעולות פעמיים.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/integrations/PixelSetupGuide.tsx",
-        "line": 19,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_e0d7aa08bf1669d4": {
     "source": "מאפה",
     "language": "he",
@@ -107925,7 +107910,7 @@
     "references": [
       {
         "file": "api/app/routers/trial.py",
-        "line": 313,
+        "line": 319,
         "kind": "template",
         "purpose": "copy"
       }
@@ -107993,7 +107978,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 509,
+        "line": 531,
         "kind": "literal"
       }
     ]
@@ -108077,7 +108062,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 316,
+        "line": 322,
         "kind": "template",
         "purpose": "copy"
       }
@@ -108207,7 +108192,7 @@
     "references": [
       {
         "file": "api/app/routers/integrations.py",
-        "line": 260,
+        "line": 273,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -108356,7 +108341,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 463,
+        "line": 485,
         "kind": "literal"
       }
     ]
@@ -109666,7 +109651,7 @@
     "references": [
       {
         "file": "api/app/routers/trial.py",
-        "line": 408,
+        "line": 414,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -110600,7 +110585,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 329,
+        "line": 335,
         "kind": "template",
         "purpose": "copy"
       }
@@ -111428,7 +111413,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 176,
+        "line": 190,
         "kind": "literal"
       }
     ]
@@ -111743,7 +111728,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 872,
+        "line": 895,
         "kind": "literal"
       }
     ]
@@ -111792,7 +111777,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 231,
+        "line": 245,
         "kind": "literal"
       }
     ]
@@ -112969,8 +112954,13 @@
     "language": "he",
     "references": [
       {
+        "file": "web/components/integrations/connectionJourney.ts",
+        "line": 35,
+        "kind": "literal"
+      },
+      {
         "file": "api/app/services/plan_connections.py",
-        "line": 73,
+        "line": 81,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -113977,7 +113967,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 601,
+        "line": 623,
         "kind": "literal"
       }
     ]
@@ -114153,7 +114143,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 91,
+        "line": 95,
         "kind": "literal"
       }
     ]
@@ -114459,7 +114449,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 362,
+        "line": 368,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -114628,7 +114618,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 773,
+        "line": 796,
         "kind": "literal"
       }
     ]
@@ -114836,7 +114826,7 @@
     "references": [
       {
         "file": "api/app/routers/trial.py",
-        "line": 432,
+        "line": 438,
         "kind": "template",
         "purpose": "copy"
       }
@@ -116196,7 +116186,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 420,
+        "line": 426,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -117423,7 +117413,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 248,
+        "line": 262,
         "kind": "literal"
       }
     ]
@@ -117722,7 +117712,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 408,
+        "line": 430,
         "kind": "literal"
       }
     ]
@@ -117788,8 +117778,18 @@
     "language": "he",
     "references": [
       {
+        "file": "web/app/integrations/page.tsx",
+        "line": 167,
+        "kind": "literal"
+      },
+      {
         "file": "web/components/integrations/SourceReadState.tsx",
         "line": 20,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/integrations/connectionJourney.ts",
+        "line": 17,
         "kind": "literal"
       }
     ]
@@ -119002,7 +119002,7 @@
     "references": [
       {
         "file": "api/app/routers/integrations.py",
-        "line": 196,
+        "line": 208,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -119697,12 +119697,12 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 124,
+        "line": 126,
         "kind": "literal"
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 151,
+        "line": 158,
         "kind": "literal"
       }
     ]
@@ -119843,7 +119843,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 569,
+        "line": 591,
         "kind": "literal"
       }
     ]
@@ -119865,7 +119865,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 403,
+        "line": 425,
         "kind": "literal"
       }
     ]
@@ -119916,7 +119916,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 320,
+        "line": 339,
         "kind": "literal"
       }
     ]
@@ -120264,7 +120264,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 267,
+        "line": 273,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -120830,7 +120830,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 713,
+        "line": 736,
         "kind": "literal"
       }
     ]
@@ -122305,7 +122305,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 822,
+        "line": 845,
         "kind": "literal"
       }
     ]
@@ -122532,7 +122532,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 213,
+        "line": 227,
         "kind": "literal"
       }
     ]
@@ -122893,6 +122893,1642 @@
         "file": "web/components/instagram/LearnedList.tsx",
         "line": 91,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_0232cee54dfbbe48": {
+    "source": "לעזור לי להפעיל מדידה באתר",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TrackingSetupGuide.tsx",
+        "line": 42,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_04aa587d87784c5f": {
+    "source": "צפיות ותגובות לסרטונים",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/connectionJourney.ts",
+        "line": 61,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
+  "m_0538fa9ce19c8bec": {
+    "source": "לבדיקת העיצוב: לעבור לשלב הבא",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/design/ConnectionGuidePreview.tsx",
+        "line": 44,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_0758561af73b250b": {
+    "source": "החיבור באתר",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TrackingSetupGuide.tsx",
+        "line": 60,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_07dfc42db6192b60": {
+    "source": "ללוח החיבורים",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/design/ConnectionGuidePreview.tsx",
+        "line": 36,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_0c89cb6acb222f7f": {
+    "source": "לחבר את הטיקטוק",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TikTokConnection.tsx",
+        "line": 110,
+        "kind": "literal"
+      },
+      {
+        "file": "api/app/services/plan_connections.py",
+        "line": 42,
+        "kind": "literal",
+        "purpose": "copy"
+      }
+    ]
+  },
+  "m_1283aa221af72faa": {
+    "source": "לא הצלחנו להשלים את החיבור לטיקטוק. נסו שוב.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TikTokConnection.tsx",
+        "line": 35,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_1459da0fb5071032": {
+    "source": "נתונים שמורים",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/connectionJourney.ts",
+        "line": 47,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/integrations/connectionJourney.ts",
+        "line": 67,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_174353bb8920645d": {
+    "source": "מי שמנהל את האתר יכול לחבר מעקב דרך הקוד של טיקטוק או חיבור מהשרת, לפי מערכת האתר.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TrackingSetupGuide.tsx",
+        "line": 28,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_1a463e7e1b49e925": {
+    "source": "בניהול האתר בדקו אם Google Analytics כבר מחובר. אם לא, אפשר לחבר דרך התוסף Site Kit של גוגל.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TrackingSetupGuide.tsx",
+        "line": 15,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_1ad44e6b6063faa5": {
+    "source": "פתחו את ערוץ Facebook & Instagram, ובהגדרות שיתוף הנתונים בחרו את המעקב של העסק.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TrackingSetupGuide.tsx",
+        "line": 20,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_1cf0935e5727cfee": {
+    "source": "קראנו חלק מנתוני הסרטונים.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/tiktok_data.py",
+        "line": 20,
+        "kind": "literal",
+        "purpose": "copy"
+      }
+    ]
+  },
+  "m_1dbf2a9641e84d2e": {
+    "source": "אפשר לנתח פוסטים בלי מעקב באתר. המעקב נחוץ כדי לבדוק פעולות באתר בעקבות הפרסום.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/design/ConnectionGuidePreview.tsx",
+        "line": 43,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_1e3d5ce1d5cc5c4b": {
+    "source": "לא נבחר מעקב",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/connectionJourney.ts",
+        "line": 57,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_216592490772df32": {
+    "source": "סרטון ללא כותרת",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TikTokConnection.tsx",
+        "line": 101,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_21702fb3392677f5": {
+    "source": "חיבור לטיקטוק בבדיקה מוגבלת",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 16,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
+  "m_2377fdb863361d94": {
+    "source": "נשאר לקרוא את נתוני הסרטונים.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TikTokConnection.tsx",
+        "line": 96,
+        "kind": "literal"
+      },
+      {
+        "file": "api/app/services/tiktok_data.py",
+        "line": 18,
+        "kind": "literal",
+        "purpose": "copy"
+      }
+    ]
+  },
+  "m_25dbe89571cd60d1": {
+    "source": "חלק מהנתונים התקבלו",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/design/ConnectionGuidePreview.tsx",
+        "line": 39,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_274f0ce2b91e7e0d": {
+    "source": "רואים מה מחובר ומה נשאר לעשות",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 9,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
+  "m_278d5ed3e42d6938": {
+    "source": "ומה עם מדידת פעולות באתר?",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TrackingSetupGuide.tsx",
+        "line": 42,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_29c6afd48ea20751": {
+    "source": "אם כבר יש מעקב באתר, נשתמש בו.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TrackingSetupGuide.tsx",
+        "line": 65,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_2cd1875ca17d0ca5": {
+    "source": "לחבר את המעקב של פייסבוק לאתר",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TrackingSetupGuide.tsx",
+        "line": 42,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_30b0c0807beb4228": {
+    "source": "לא הצלחנו לקרוא את הסרטונים. נסו שוב.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/tiktok_data.py",
+        "line": 24,
+        "kind": "literal",
+        "purpose": "copy"
+      }
+    ]
+  },
+  "m_317ce571382d6b26": {
+    "source": "בחירת החשבון",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/ConnectionJourneyCard.tsx",
+        "line": 18,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_3395d363ca846b0a": {
+    "source": "נלמד מהסרטונים של העסק כדי לדייק את הפוסטים הבאים.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/connectionRecommendation.ts",
+        "line": 21,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/integrations/connectionRecommendation.ts",
+        "line": 35,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_3538405b02fc6782": {
+    "source": "בניהול האתר פתחו את חיבורי השיווק ובחרו Meta Pixel & CAPI. התחברו עם מנהל העסק ובחרו את המעקב של העסק.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TrackingSetupGuide.tsx",
+        "line": 19,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_354c23753aa67262": {
+    "source": "הנתון עדיין לא זמין",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/connectionJourney.ts",
+        "line": 19,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_383fa2b3b6e4a295": {
+    "source": "לפתוח את הוראות החיבור",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TrackingSetupGuide.tsx",
+        "line": 70,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_391ef94c8a3bef22": {
+    "source": "מצטבר מאז פרסום כל סרטון · נקרא ב־",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TikTokConnection.tsx",
+        "line": 98,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_3a3d41aa188b657e": {
+    "source": "לחדש את הגישה",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/connectionJourney.ts",
+        "line": 34,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_3e1bc1d65fe46e25": {
+    "source": "החיבור הזה כבר לא בתוקף. לחצו שוב על חיבור הטיקטוק.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TikTokConnection.tsx",
+        "line": 34,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_3fa19c0ee880de52": {
+    "source": "לא נבחר",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/connectionJourney.ts",
+        "line": 19,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_41034810d9352e8f": {
+    "source": "קוראים את נתוני הסרטונים…",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TikTokConnection.tsx",
+        "line": 85,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/integrations/TikTokConnection.tsx",
+        "line": 92,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_417cd4c5273bdf92": {
+    "source": "באיזו מערכת בניתם את האתר?",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TrackingSetupGuide.tsx",
+        "line": 63,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_47237e66af85125a": {
+    "source": "מערכת האתר",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TrackingSetupGuide.tsx",
+        "line": 60,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_47b35eedd939eced": {
+    "source": "כן, לקרוא את הסרטונים",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TikTokConnection.tsx",
+        "line": 85,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_4872ac52d522e9ed": {
+    "source": "נתוני מודעות",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/connectionJourney.ts",
+        "line": 55,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
+  "m_4c8d215c6358903c": {
+    "source": "בחיבורים רואים בנפרד את אישור הגישה, בחירת החשבון והנתונים שהתקבלו. אם האתר לא מופיע בגוגל, אפשר לבחור חשבון גוגל אחר.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 10,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_4e218a9b2aa53098": {
+    "source": "הסרטון בטיקטוק \"{arg_0}\" ({arg_1}): ",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/research.py",
+        "line": 1093,
+        "kind": "template",
+        "purpose": "copy"
+      }
+    ]
+  },
+  "m_4e57674ce5683f85": {
+    "source": "אישור גישה",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/ConnectionJourneyCard.tsx",
+        "line": 18,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_518899efcb887166": {
+    "source": "החיבור לטיקטוק עדיין לא זמין.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TikTokConnection.tsx",
+        "line": 112,
+        "kind": "literal"
+      },
+      {
+        "file": "api/app/routers/tiktok_connections.py",
+        "line": 28,
+        "kind": "literal",
+        "purpose": "validation"
+      },
+      {
+        "file": "api/app/services/plan_connections.py",
+        "line": 41,
+        "kind": "literal",
+        "purpose": "copy"
+      }
+    ]
+  },
+  "m_51dea64b2771d7ec": {
+    "source": "נשאר להשלים את החיבור",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/design/ConnectionGuidePreview.tsx",
+        "line": 41,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_51e6f06c197f8ece": {
+    "source": "נשאר לאשר קריאה של נתוני האתר. בחיבור לגוגל, סמנו את ההרשאה לקריאת Google Analytics לפני שממשיכים.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/ga4_readiness.py",
+        "line": 31,
+        "kind": "literal",
+        "purpose": "copy"
+      }
+    ]
+  },
+  "m_53966ac6d75ac278": {
+    "source": "צפיות בסרטון",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TikTokConnection.tsx",
+        "line": 103,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_54e6abdf5b551aa7": {
+    "source": "מישהו אחר מנהל את האתר?",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TrackingSetupGuide.tsx",
+        "line": 83,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_554723dd83c436f1": {
+    "source": "מספר הצפיות לא התקבל",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/research.py",
+        "line": 1089,
+        "kind": "literal",
+        "purpose": "copy"
+      }
+    ]
+  },
+  "m_572c5fd05f0d90b3": {
+    "source": "נתוני הסרטונים עודכנו.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/tiktok_data.py",
+        "line": 19,
+        "kind": "literal",
+        "purpose": "copy"
+      }
+    ]
+  },
+  "m_60145af9e142a162": {
+    "source": "הוראות התקנת המעקב מותאמות למערכת האתר ושומרות את המקום שבו עצרתם. אחרי ההתקנה חוזרים לבדוק נתונים בפועל.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 11,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_64389020952953a7": {
+    "source": "לבחור חשבון גוגל אחר",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/connectionJourney.ts",
+        "line": 35,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_65b50a93658f99a1": {
+    "source": "צפיות, לייקים, תגובות ושיתופים של הסרטונים הציבוריים",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/quarter_plan.py",
+        "line": 111,
+        "kind": "literal",
+        "purpose": "copy"
+      }
+    ]
+  },
+  "m_663d0611e6a06e9c": {
+    "source": "בהגדרות האירועים של טיקטוק בדקו אם WooCommerce מופיעה כשותפה. אם אין חיבור מתאים, מי שמנהל את האתר יכול לעזור.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TrackingSetupGuide.tsx",
+        "line": 27,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_678182d3c35d3dd8": {
+    "source": "חיברנו באתר, מה עכשיו?",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TrackingSetupGuide.tsx",
+        "line": 72,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_686f2a1b60164d84": {
+    "source": "הסרטון הציבורי האחרון שנקרא מהטיקטוק שלכם פורסם ב־{arg_0}: \"{arg_1}\".",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/research.py",
+        "line": 1467,
+        "kind": "template",
+        "purpose": "copy"
+      }
+    ]
+  },
+  "m_68ed64d68e6aa879": {
+    "source": "כניסות לאתר ומקורות שלהן",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/connectionJourney.ts",
+        "line": 63,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
+  "m_6a812257d91a7953": {
+    "source": "לעדכן את נתוני הסרטונים",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TikTokConnection.tsx",
+        "line": 92,
+        "kind": "literal"
+      },
+      {
+        "file": "api/app/services/plan_connections.py",
+        "line": 42,
+        "kind": "literal",
+        "purpose": "copy"
+      }
+    ]
+  },
+  "m_6c1a67a465cbcb94": {
+    "source": "בחרו את המעקב בחשבון הפרסום ובדקו אם מתקבלים אירועים מהאתר שלכם. אחר כך נבדוק אילו פעולות נמדדות.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TrackingSetupGuide.tsx",
+        "line": 76,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_6cdae78eb8f54e9f": {
+    "source": "בחרו את האתר בחשבון הגוגל שמנהל את המדידה. נקרא את הנתונים ונציג את התאריך שלהם. ספירת קניות או פניות דורשת הגדרה שלהן באתר.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TrackingSetupGuide.tsx",
+        "line": 77,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_6d05b9f6274c69d8": {
+    "source": "החיבורים, צעד אחר צעד",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/design/ConnectionGuidePreview.tsx",
+        "line": 36,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_6d908342d2391303": {
+    "source": "לזהות את חשבון הטיקטוק שבחרתם",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/security/page.tsx",
+        "line": 141,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
+  "m_708ef068bc73d385": {
+    "source": "עכשיו בודקים מה באמת מתקבל",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TrackingSetupGuide.tsx",
+        "line": 75,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_7519b6f63e9fe2da": {
+    "source": "החיבור אצלנו נותק. כדי להסיר גם את ההרשאה בטיקטוק, פתחו את הגדרות האפליקציות המחוברות בטיקטוק.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TikTokConnection.tsx",
+        "line": 80,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_798c49c2d2c03809": {
+    "source": "לסגור את שלבי החיבור",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/ConnectionJourneyCard.tsx",
+        "line": 40,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_79f995ba038fba14": {
+    "source": "המעקב כבר מחובר לאתר",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TrackingSetupGuide.tsx",
+        "line": 66,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_7b0756951970013d": {
+    "source": "מי שמנהל את האתר יכול לחבר את המדידה של גוגל ולהגדיר את הפעולות שרוצים לספור.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TrackingSetupGuide.tsx",
+        "line": 16,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_7bfb5851c46c5806": {
+    "source": "לבדוק את הנתונים",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/connectionJourney.ts",
+        "line": 37,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_7e97dd1b792c155b": {
+    "source": "לחזור לבחירת המעקב",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/design/ConnectionGuidePreview.tsx",
+        "line": 45,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_7f92e8c2acadf1ec": {
+    "source": "נתוני האתר מראים מאיפה מגיעים אנשים ומה הם עושים בו.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/design/ConnectionGuidePreview.tsx",
+        "line": 43,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_807e167dc3d65de5": {
+    "source": "לפתוח את החיבורים",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 12,
+        "kind": "literal"
+      },
+      {
+        "file": "web/lib/releases.ts",
+        "line": 19,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_81eb294c5d3ce86b": {
+    "source": "בניהול האתר בדקו אם יש חיבור לטיקטוק. בהגדרות האירועים של טיקטוק בחרו חיבור דרך שותף, אם המערכת שלכם מוצעת שם.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TrackingSetupGuide.tsx",
+        "line": 25,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_8762fbf7a8f9ceb1": {
+    "source": "לבחור את העסק",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/connectionJourney.ts",
+        "line": 36,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_880073b035882ca5": {
+    "source": "חיבור לבדיקה",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/design/ConnectionGuidePreview.tsx",
+        "line": 38,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_8b08b670a477c596": {
+    "source": "הנתונים התקבלו",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/design/ConnectionGuidePreview.tsx",
+        "line": 39,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_8d6869209dca4ec4": {
+    "source": "לראות את הנתונים וההגדרות",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/connectionJourney.ts",
+        "line": 37,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_91669c43679f4342": {
+    "source": "reconnect",
+    "language": "en",
+    "references": [
+      {
+        "file": "api/app/services/ga4.py",
+        "line": 92,
+        "kind": "literal",
+        "purpose": "validation"
+      },
+      {
+        "file": "api/app/services/tiktok.py",
+        "line": 114,
+        "kind": "literal",
+        "purpose": "validation"
+      },
+      {
+        "file": "api/app/services/tiktok_data.py",
+        "line": 88,
+        "kind": "literal",
+        "purpose": "validation"
+      },
+      {
+        "file": "api/app/services/tiktok_data.py",
+        "line": 91,
+        "kind": "literal",
+        "purpose": "validation"
+      }
+    ]
+  },
+  "m_922589b8a0e4b881": {
+    "source": "האתר לא מופיע? לבחור חשבון גוגל אחר",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/integrations/page.tsx",
+        "line": 368,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_93d0248843f9af98": {
+    "source": "את האירועים מהאתר אפשר לבדוק במנהל האירועים של טיקטוק. חיבור נתוני המודעות והאתר של טיקטוק לישראמארקט עדיין לא זמין; כאן אפשר לקרוא נתוני סרטונים בלבד.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TrackingSetupGuide.tsx",
+        "line": 78,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_973cde2e9b7fd8fd": {
+    "source": "אין פעילות בתקופה",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/design/ConnectionGuidePreview.tsx",
+        "line": 39,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_98e1cc89eb213082": {
+    "source": "לרענן את רשימת המעקבים",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/PixelSetupGuide.tsx",
+        "line": 7,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_9a58f2cb00c33645": {
+    "source": "כאן קוראים את נתוני האתר בגוגל. חיבור לדוחות של חשבון פרסום בגוגל עדיין לא זמין.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/integrations/page.tsx",
+        "line": 420,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_a018e26de6a96526": {
+    "source": "לחזור להוראות ההתקנה",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TrackingSetupGuide.tsx",
+        "line": 81,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_a1955f2599705198": {
+    "source": "נשאר לבדוק את המעקב",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/connectionJourney.ts",
+        "line": 57,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_a372c9a20032ee1d": {
+    "source": "פוסטים באינסטגרם",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/connectionJourney.ts",
+        "line": 53,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
+  "m_a39c27916c198356": {
+    "source": "לא נמצאו סרטונים ציבוריים בחשבון הזה.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/tiktok_data.py",
+        "line": 21,
+        "kind": "literal",
+        "purpose": "copy"
+      }
+    ]
+  },
+  "m_a43abecfb674881b": {
+    "source": "לחבר את חשבון הגוגל של האתר",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/integrations/page.tsx",
+        "line": 419,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_a4478b9a703e4571": {
+    "source": "לבחור חשבון אחר",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TikTokConnection.tsx",
+        "line": 87,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_a7c921f435d4ae44": {
+    "source": "כותרות, קישורים, תאריכי פרסום ומספרי צפיות, לייקים, תגובות ושיתופים. אלה מספרים מצטברים לכל סרטון, לא פניות או רכישות. לא מבקשים הרשאת פרסום.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/security/page.tsx",
+        "line": 142,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_a8a8392ead84e88c": {
+    "source": "לבחור מערכת אתר אחרת",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TrackingSetupGuide.tsx",
+        "line": 73,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_aa6285183765dbc0": {
+    "source": "נתוני הטיקטוק",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/plan_connections.py",
+        "line": 40,
+        "kind": "literal",
+        "purpose": "copy"
+      }
+    ]
+  },
+  "m_aad1c8f139ab8e83": {
+    "source": "אושרה גישה",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/design/ConnectionGuidePreview.tsx",
+        "line": 39,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_adf56404f331bc9e": {
+    "source": "זה חשבון הטיקטוק של העסק?",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TikTokConnection.tsx",
+        "line": 82,
+        "kind": "literal"
+      },
+      {
+        "file": "api/app/services/tiktok_data.py",
+        "line": 17,
+        "kind": "literal",
+        "purpose": "copy"
+      }
+    ]
+  },
+  "m_af1abd2e8f98a297": {
+    "source": "אפשר לבדוק אם Google Analytics מחובר לאתר שלנו? אם כן, נרצה להשתמש במדידה הקיימת ולהגדיר את הפעולות שחשובות לעסק. נצטרך גם גישת צפייה כדי לחבר את הנתונים לישראמארקט.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TrackingSetupGuide.tsx",
+        "line": 84,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_b00763c13cbce924": {
+    "source": "מי שמנהל את האתר יכול לחבר את המעקב של פייסבוק ולוודא שהוא שייך לעסק שלכם.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TrackingSetupGuide.tsx",
+        "line": 22,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_b4975344a7f79a8d": {
+    "source": "אירועים מהאתר",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/connectionJourney.ts",
+        "line": 56,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
+  "m_b7b2153b8741348f": {
+    "source": "קריאת נתונים",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/ConnectionJourneyCard.tsx",
+        "line": 18,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_b965f7a91df2bbd8": {
+    "source": "אפשר לבדוק אם המעקב של פייסבוק מחובר לאתר שלנו? נרצה להשתמש במעקב הקיים, לוודא שהוא שייך לעסק ולהגדיר את הפעולות שחשובות לנו. אחר כך נחבר אותו לישראמארקט.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TrackingSetupGuide.tsx",
+        "line": 85,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_bd927c72ecae816b": {
+    "source": "TikTok Display API (הסרטונים שלכם)",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/research.py",
+        "line": 1468,
+        "kind": "literal",
+        "purpose": "copy"
+      },
+      {
+        "file": "api/app/services/research.py",
+        "line": 1095,
+        "kind": "literal",
+        "purpose": "copy"
+      }
+    ]
+  },
+  "m_c25c4592a144be5b": {
+    "source": "החשבון השתנה. בדקו את החשבון שמוצג ונסו שוב.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/routers/tiktok_connections.py",
+        "line": 135,
+        "kind": "literal",
+        "purpose": "validation"
+      },
+      {
+        "file": "api/app/routers/tiktok_connections.py",
+        "line": 138,
+        "kind": "literal",
+        "purpose": "validation"
+      }
+    ]
+  },
+  "m_c2cd194640bced33": {
+    "source": "חברו קודם את הטיקטוק של העסק.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/routers/tiktok_connections.py",
+        "line": 132,
+        "kind": "literal",
+        "purpose": "validation"
+      }
+    ]
+  },
+  "m_c64f8148fac489c0": {
+    "source": "לראות את הסרטונים הציבוריים שלכם",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/security/page.tsx",
+        "line": 142,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
+  "m_c67ead7faaa668b9": {
+    "source": "נלמד אילו סרטונים מושכים צפיות ותגובות, כדי לדייק את הפוסטים הבאים.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/plan_connections.py",
+        "line": 41,
+        "kind": "literal",
+        "purpose": "copy"
+      }
+    ]
+  },
+  "m_c70be95b10ebc70f": {
+    "source": "הגישה לסרטונים לא אושרה. חברו שוב ואשרו אותה בטיקטוק.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TikTokConnection.tsx",
+        "line": 36,
+        "kind": "literal"
+      },
+      {
+        "file": "api/app/services/tiktok_data.py",
+        "line": 22,
+        "kind": "literal",
+        "purpose": "copy"
+      }
+    ]
+  },
+  "m_c867836d7d044f96": {
+    "source": "נלמד אילו סרטונים מושכים צפיות ותגובות, ונשתמש בזה לתכנון הפוסטים הבאים.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TikTokConnection.tsx",
+        "line": 77,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_c96ff121d74f31ae": {
+    "source": "השלב הנוכחי",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/ConnectionJourneyCard.tsx",
+        "line": 29,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_c9b2206020cab5fd": {
+    "source": "אפשר לבדוק אם המעקב של טיקטוק מחובר לאתר שלנו? נרצה להשתמש במעקב הקיים ולהגדיר את הפעולות שחשובות לעסק. את הבדיקה נבצע במנהל האירועים של טיקטוק.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TrackingSetupGuide.tsx",
+        "line": 86,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_cd82b9762e6cd7aa": {
+    "source": "שלבי התקנת המדידה",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TrackingSetupGuide.tsx",
+        "line": 59,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_ce161d5574d57d73": {
+    "source": "בהגדרות האירועים של טיקטוק בחרו חיבור דרך שותף וחפשו Shopify. המשיכו עם החנות והמעקב של העסק.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TrackingSetupGuide.tsx",
+        "line": 26,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_d194389cdbc22883": {
+    "source": "מתקבלים אירועים",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/connectionJourney.ts",
+        "line": 56,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_d1c2a3f29091a2c1": {
+    "source": "החיבור השתנה. בדקו את החשבון ונסו שוב.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/routers/tiktok_connections.py",
+        "line": 141,
+        "kind": "literal",
+        "purpose": "validation"
+      },
+      {
+        "file": "api/app/routers/tiktok_connections.py",
+        "line": 153,
+        "kind": "literal",
+        "purpose": "validation"
+      }
+    ]
+  },
+  "m_d3b035ffcc727337": {
+    "source": "צריך לחבר שוב את הטיקטוק כדי לעדכן את הנתונים.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/tiktok_data.py",
+        "line": 23,
+        "kind": "literal",
+        "purpose": "copy"
+      }
+    ]
+  },
+  "m_d5f631a3220ccb00": {
+    "source": "בחרו קודם את חשבון הטיקטוק של העסק.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/routers/tiktok_connections.py",
+        "line": 151,
+        "kind": "literal",
+        "purpose": "validation"
+      }
+    ]
+  },
+  "m_d7a65aca35375c6f": {
+    "source": "לפתוח את חשבון הפרסום בטיקטוק",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TrackingSetupGuide.tsx",
+        "line": 80,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_d975c5186f4144ac": {
+    "source": "קוראים נתונים",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/connectionJourney.ts",
+        "line": 18,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_dad62cbae7eb6567": {
+    "source": "נעה · עיצוב",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/design/ConnectionGuidePreview.tsx",
+        "line": 24,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/design/ConnectionGuidePreview.tsx",
+        "line": 30,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_db9eec482a77e0ef": {
+    "source": "כאן נלמד מצפיות ותגובות לסרטונים. נתוני מודעות ופעולות באתר הם חיבור נפרד.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/design/ConnectionGuidePreview.tsx",
+        "line": 43,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_dd9f5ac2344fbeca": {
+    "source": "ב־Wix נדרשים מסלול מתאים ודומיין מחובר.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TrackingSetupGuide.tsx",
+        "line": 71,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_de09b322a5e0facb": {
+    "source": "בניהול האתר פתחו את חיבורי השיווק ובחרו Google Analytics. חברו את המדידה שכבר קיימת, או צרו חדשה דרך גוגל.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TrackingSetupGuide.tsx",
+        "line": 13,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_df15b33158b2b3ca": {
+    "source": "לחזור לבחירת החשבון ולבדיקה",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TrackingSetupGuide.tsx",
+        "line": 79,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_dff0d16025ffca38": {
+    "source": "בניהול האתר בדקו אם המעקב של פייסבוק כבר מחובר. אם לא, מנהל האתר יכול לחבר דרך התוסף Meta pixel for WordPress של פייסבוק.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TrackingSetupGuide.tsx",
+        "line": 21,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_e023fd370b6b4dab": {
+    "source": "הודעה למנהל האתר",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TrackingSetupGuide.tsx",
+        "line": 84,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_e044f9df7e8229d7": {
+    "source": ". אלה מספרים מצטברים מאז הפרסום, נכון לקריאה האחרונה; אין כאן מדידת פניות או מכירות.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/research.py",
+        "line": 1094,
+        "kind": "literal",
+        "purpose": "copy"
+      }
+    ]
+  },
+  "m_e368d4a754b47b78": {
+    "source": "עוד לא הושלם",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/ConnectionJourneyCard.tsx",
+        "line": 29,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_e46edb9a18b0c9c9": {
+    "source": "נשתמש בנתונים שנקראו מהחשבונות שלכם.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/research.py",
+        "line": 1887,
+        "kind": "literal",
+        "purpose": "copy"
+      }
+    ]
+  },
+  "m_ea1a0f840d423b34": {
+    "source": "כשהחיבור זמין לחשבון שלכם, אפשר לבחור את הטיקטוק של העסק ולקרוא צפיות, תגובות ושיתופים של הסרטונים. הנתונים מצטרפים למחקר ולתכנון הפוסטים הבאים.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 17,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_ea6b8af8c2a29578": {
+    "source": "לראות איך מכינים את החיבור",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/connectionJourney.ts",
+        "line": 34,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_ed4c296d2c361542": {
+    "source": "לא הצלחנו לעדכן את החיבור לטיקטוק. נסו שוב.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TikTokConnection.tsx",
+        "line": 72,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_ef644de69fc18c43": {
+    "source": "בדיקת הנתונים",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TrackingSetupGuide.tsx",
+        "line": 60,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_efd6009858488b9f": {
+    "source": "להשלים את החיבור",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/connectionJourney.ts",
+        "line": 37,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_f2b2545cf4e5a856": {
+    "source": "החיבור עדיין לא פתוח לכל המשתמשים. לא נמדדות כאן פניות או רכישות, ולא מפרסמים בשמכם.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 18,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_f748a636c58ec1e9": {
+    "source": "לחזור לבחירת האתר",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/design/ConnectionGuidePreview.tsx",
+        "line": 45,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_f8461e390d1d2ba9": {
+    "source": "לאשר את חשבון הטיקטוק",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/connectionRecommendation.ts",
+        "line": 21,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
+  "m_f8774edb976c177f": {
+    "source": "כשמחברים את טיקטוק, נקרא את השם והמזהה של החשבון שבחרתם, בקריאה בלבד.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/security/page.tsx",
+        "line": 141,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_f990d36a76ece263": {
+    "source": "האישור בטיקטוק לא הושלם. אפשר לחבר שוב.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TikTokConnection.tsx",
+        "line": 33,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_f9ceed12d4fc0283": {
+    "source": "התקדמות החיבור",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/ConnectionJourneyCard.tsx",
+        "line": 25,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_faf07c5caf5ca08d": {
+    "source": "לחבר שוב את הטיקטוק",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TikTokConnection.tsx",
+        "line": 92,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_fd087c77120aa35d": {
+    "source": "בניהול החנות פתחו את ערוץ Google & YouTube, ובהגדרות Google Analytics בחרו את המדידה של החנות.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TrackingSetupGuide.tsx",
+        "line": 14,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_fdeb33892d186762": {
+    "source": "permission",
+    "language": "en",
+    "references": [
+      {
+        "file": "api/app/services/tiktok.py",
+        "line": 85,
+        "kind": "literal",
+        "purpose": "validation"
+      },
+      {
+        "file": "api/app/services/tiktok_data.py",
+        "line": 103,
+        "kind": "literal",
+        "purpose": "validation"
       }
     ]
   }

@@ -34,6 +34,7 @@ from sqlalchemy import delete, select
 from sqlalchemy.orm import Session
 
 from app.models import (
+    Integration,
     Business,
     AnalysisJob,
     PerformanceSnapshot,
@@ -127,6 +128,11 @@ def delete_account(db: Session, user: User) -> dict:
     billing.cancel_for_deletion(db, user)
 
     business_ids = [row[0] for row in db.query(Business.id).filter(Business.user_id == user.id).all()]
+    # Stop TikTok locally and revoke its remote grant when reachable. Deletion must
+    # still succeed when TikTok is down; no provider message or token is logged.
+    from app.services import tiktok_data
+    for item in db.query(Integration).filter(Integration.business_id.in_(business_ids), Integration.provider == "tiktok").all():
+        tiktok_data.disconnect(db, item)
     counts: dict[str, int] = {}
 
     # Children before parents: deliveries, then every business-keyed table (strategies,
