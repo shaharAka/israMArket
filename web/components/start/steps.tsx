@@ -818,7 +818,7 @@ export function StepCompetitors(props: StepProps) {
           than the name box beside it. */}
       <div className="-my-2 flex flex-wrap items-center justify-between gap-x-3">
         <p className="text-[13px] text-[color:var(--ink-muted)]">לא חייבים קישור. מספיק השם.</p>
-        {flow.draft.business_model !== "saas" && <HowToFind topic="competitor_instagram" label="איך מוצאים שם משתמש?" />}
+        {flow.draft.business_model !== "saas" && <HowToFind topic="competitor_instagram" label="לראות איך מוצאים שם משתמש" />}
       </div>
     </StepShell>
   );

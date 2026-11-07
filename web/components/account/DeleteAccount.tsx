@@ -125,7 +125,7 @@ export function DeleteAccount({ googleOnly = false, email = "" }: { googleOnly?:
             <button
               type="submit"
               disabled={pending || !password}
-              className="inline-flex min-h-11 items-center justify-center rounded-lg bg-[var(--danger)] px-5 text-[14px] font-semibold text-[color:var(--paper)] transition-[filter,opacity] hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-45"
+              className="inline-flex min-h-11 items-center justify-center rounded-lg border border-transparent bg-[var(--danger)] px-5 text-[14px] font-semibold text-[color:var(--paper)] transition-[filter,background-color] hover:brightness-95 disabled:cursor-not-allowed disabled:border-[var(--danger-rule)] disabled:bg-transparent disabled:text-[color:var(--danger)] disabled:hover:brightness-100"
             >
               {pending ? t("מוחקים…") : t("למחוק לתמיד")}
             </button>

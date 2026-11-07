@@ -10,7 +10,7 @@ import { IconArrowLeft } from "@/lib/icons";
 
 const screens = [
   { href: "/dashboard", name: "השבוע", detail: "הכיוון בתוכנית, המדד וההחלטה שצריך מכם." },
-  { href: "/strategy", name: "התוכנית", detail: "האסטרטגיה, הצעדים הקרובים ומה נבדוק כדי להתקדם." },
+  { href: "/strategy", name: "התוכנית", detail: "הכיוון, הצעדים הקרובים ומה נבדוק כדי להתקדם." },
   { href: "/posts", name: "הפוסטים", detail: "לבדוק, לערוך ולאשר את הפוסטים שנבנו מהתוכנית." },
   { href: "/calendar", name: "לוח התוכנית", detail: "פוסטים, משימות ותאריכים מהתוכנית, לפי יום." },
   { href: "/performance", name: "תוצאות", detail: "מה נמדד, מה למדנו ומה כדאי לשנות בהמשך." },
@@ -33,7 +33,7 @@ export default function PreviewPage() {
       </header>
       <div className="flex items-center justify-between gap-4 py-8 sm:py-12">
         <div>
-          <h1 className="text-3xl font-medium leading-tight sm:text-5xl"><Copy text="מהיכרות עם העסק, לקמפיין שעובד בשבילו." /></h1>
+          <h1 className="text-3xl font-medium leading-tight sm:text-5xl"><Copy text="מהיכרות עם העסק, לקמפיין שמתאים לו." /></h1>
           <p className="mt-4 max-w-md text-sm leading-7 text-[var(--ink-soft)]"><Copy text="התוכנית, הפוסטים והתוצאות. בחרו מסך כדי לעבור לתוכו." /></p>
         </div>
       </div>

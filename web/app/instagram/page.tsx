@@ -102,17 +102,19 @@ export default function InstagramPage() {
       className={
         refreshIsPrimary
           ? "drawn-button mt-4 inline-flex min-h-12 w-full items-center justify-center bg-[var(--primary)] px-6 text-[15px] text-white hover:bg-[var(--primary-dark)] sm:w-auto"
-          : "inline-flex min-h-11 shrink-0 items-center rounded-[12px] border border-[var(--rule-dark)] bg-[var(--paper)] px-4 text-[14px] font-semibold text-[color:var(--ink)] shadow-[0_1px_2px_rgba(20,32,58,0.05)] transition-colors hover:bg-[var(--soft)] disabled:opacity-50"
+          : "inline-flex min-h-11 shrink-0 items-center rounded-[12px] border border-[var(--rule-dark)] bg-[var(--paper)] px-4 text-[14px] font-semibold text-[color:var(--ink)] shadow-[0_1px_2px_color-mix(in_srgb,var(--ink)_5%,transparent)] transition-colors hover:bg-[var(--soft)] disabled:text-[color:var(--ink-muted)]"
       }
     >
-      {refreshing ? t("לומדים…") : refreshIsPrimary ? t("ללמוד מהאינסטגרם") : t("ללמוד מחדש")}
+      {refreshing ? t("לומדים…") : refreshIsPrimary ? t("ללמוד מהאינסטגרם") : t("לרענן")}
     </button>
   ) : null;
 
   return (
     <AppShell>
       <div className="mx-auto max-w-3xl">
-        {header}
+        {/* The page title already says what this is: relearning sits beside it, so the
+            findings start right under the title (text budget, DESIGN-STANDARD §6). */}
+        <SectionHeader section="business" title={t("מה מצליח באינסטגרם")} action={brief ? refreshButton : undefined} />
 
         <div className="space-y-10 sm:space-y-12">
           {connected ? null : (
@@ -129,7 +131,7 @@ export default function InstagramPage() {
                     <Copy text="לחבר את האינסטגרם" /><IconArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-0.5" />
                   </Link>
                   <div className="mt-2 flex flex-wrap items-center gap-x-5">
-                    <HowToFind topic="instagram_business" label={t("מה צריך כדי לחבר?")} />
+                    <HowToFind topic="instagram_business" label={t("לראות מה צריך כדי לחבר")} />
                     <StepLink stepKey="instagram" />
                   </div>
                 </>
@@ -140,12 +142,11 @@ export default function InstagramPage() {
           )}
 
           {connected || brief ? (
-            <section aria-labelledby="learned-heading">
-              <div className="flex items-center justify-between gap-3">
-                <h2 id="learned-heading" className="text-lg font-bold tracking-tight text-[color:var(--ink)]">
+            <section aria-label={t("מה למדנו")}>
+              {brief ? null : (
+                <h2 className="text-lg font-bold tracking-tight text-[color:var(--ink)]">
                   <Copy text="מה למדנו" /></h2>
-                {brief ? refreshButton : null}
-              </div>
+              )}
               {brief ? (
                 <LearnedList brief={brief} />
               ) : (

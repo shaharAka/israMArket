@@ -110,7 +110,7 @@ const ROW_IDS = ["model", "budget", "diagnostics", "audiences", "targets", "told
  */
 const CARD = "rounded-2xl bg-[var(--paper)] shadow-[var(--shadow-card)]";
 const INPUT =
-  "min-h-[46px] w-full rounded-md border border-[var(--rule-dark)] bg-[var(--paper)] px-3.5 py-2.5 text-[15px] text-[var(--ink)] transition-colors duration-150 focus:border-[var(--primary)]";
+  "min-h-[46px] w-full rounded-md border border-[var(--rule-dark)] bg-[var(--paper)] px-3.5 py-2.5 text-[16px] text-[var(--ink)] transition-colors duration-150 focus:border-[var(--primary)] sm:text-[15px]";
 const FIELD_LABEL = "mb-1.5 block text-[13px] font-semibold text-[var(--ink)]";
 /** The row's own introduction line, above its controls. */
 const INTRO = "text-sm leading-6 text-[var(--ink-soft)]";
@@ -736,72 +736,66 @@ export default function DecisionsPage() {
                 open={openGroup === "budget"}
                 onToggle={() => toggleGroup("budget")}
               >
-                <p className={INTRO}>
-                  <Copy text="התקציב קובע כמה התוכנית יכולה לעשות החודש." /></p>
-
-                <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                  {BUDGET_STAGES.map((stage) => {
-                    const selected = !budgetInvalid && currentStage.key === stage.key;
-                    return (
-                      <button
-                        key={stage.key}
-                        type="button"
-                        onClick={() => {
-                          setBudgetText(String(stage.suggestion));
+                {/* The four levels as one radio list, and the exact amount as the list's last
+                    row: picking a level fills in its typical amount, typing an amount moves
+                    the selection. Only the chosen level explains what the money buys. */}
+                <fieldset>
+                  <legend className={INTRO}>
+                    <Copy text="התקציב קובע כמה התוכנית יכולה לעשות החודש." /></legend>
+                  <div className={`mt-4 divide-y divide-[var(--rule)] overflow-hidden ${CARD}`}>
+                    {BUDGET_STAGES.map((stage) => {
+                      const selected = !budgetInvalid && currentStage.key === stage.key;
+                      return (
+                        <label
+                          key={stage.key}
+                          className={`flex min-h-14 cursor-pointer items-start gap-3 px-4 py-3.5 transition-colors ${selected ? "bg-[var(--primary-soft)]" : "hover:bg-[var(--soft)]"}`}
+                        >
+                          <input
+                            type="radio"
+                            name="budget-stage"
+                            checked={selected}
+                            onChange={() => {
+                              setBudgetText(String(stage.suggestion));
+                              markChanged();
+                            }}
+                            className="mt-0.5 h-5 w-5 shrink-0 cursor-pointer accent-[var(--ink)]"
+                          />
+                          <span className="min-w-0 flex-1">
+                            <span className="flex flex-wrap items-baseline justify-between gap-x-3">
+                              <span className="text-[15px] font-semibold text-[var(--ink)]">{t(stage.title)}</span>
+                              <span className="text-[13px] tabular-nums text-[var(--ink-muted)]">{stage.range}</span>
+                            </span>
+                            {selected ? <span className="mt-1 block text-[14px] leading-6 text-[var(--ink-soft)]">{t(stage.buys)}</span> : null}
+                          </span>
+                        </label>
+                      );
+                    })}
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-2 px-4 py-3.5">
+                      <label htmlFor="monthly-budget" className="text-[15px] font-semibold text-[var(--ink)]">
+                        <Copy text="סכום מדויק לחודש (ש״ח)" /></label>
+                      <input
+                        id="monthly-budget"
+                        type="number"
+                        min={0}
+                        step={100}
+                        inputMode="numeric"
+                        value={budgetText}
+                        placeholder="4500"
+                        aria-invalid={budgetInvalid || undefined}
+                        aria-describedby={budgetInvalid ? "monthly-budget-error" : undefined}
+                        onChange={(event) => {
+                          setBudgetText(event.target.value);
                           markChanged();
                         }}
-                        className={choiceClass(selected)}
-                      >
-                        <span className="flex items-baseline justify-between gap-2">
-                          <span className="text-sm font-semibold text-[var(--ink)]">{stage.title}</span>
-                          <span className="text-xs tabular-nums text-[var(--ink-muted)]">{stage.range}</span>
-                        </span>
-                        <span className="mt-1 block text-[13px] leading-5 text-[var(--ink-soft)]">{stage.buys}</span>
-                        <span className={`mt-3 block text-xs font-semibold tabular-nums ${selected ? "text-[var(--primary-dark)]" : "text-[var(--ink-muted)]"}`}>
-                          {selected ? t("השלב הנוכחי · ") : t("בחירה מהירה · ")}
-                          {formatNis(stage.suggestion)}
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
-
-                <div className="mt-6">
-                  <label htmlFor="monthly-budget" className={FIELD_LABEL}>
-                    <Copy text="סכום מדויק לחודש (ש״ח)" /></label>
-                  <input
-                    id="monthly-budget"
-                    type="number"
-                    min={0}
-                    step={100}
-                    inputMode="numeric"
-                    value={budgetText}
-                    placeholder="4500"
-                    onChange={(event) => {
-                      setBudgetText(event.target.value);
-                      markChanged();
-                    }}
-                    className={`${INPUT} font-semibold tabular-nums ${budgetInvalid ? "border-[var(--danger-rule)]" : ""}`}
-                  />
-                </div>
-
-                <div className={`mt-4 px-5 py-4 ${CARD}`}>
-                  {budgetInvalid ? (
-                    <p className="text-sm leading-6 text-[var(--danger)]">
-                      <Copy text="הזינו תקציב חודשי במספרים, כדי שנדע מה אפשר לעשות איתו." /></p>
-                  ) : (
-                    <>
-                      <div className="flex flex-wrap items-baseline justify-between gap-2">
-                        <span className="metric-number text-lg font-bold text-[var(--ink)]">
-                          {formatNis(budgetValue)} <Copy text="בחודש" /></span>
-                        <span className="text-xs font-semibold text-[var(--primary-dark)]">
-                          <Copy text="שלב:" />{currentStage.title} · {currentStage.range}
-                        </span>
-                      </div>
-                      <p className="mt-1 text-sm leading-6 text-[var(--ink-soft)]">{currentStage.buys}</p>
-                    </>
-                  )}
-                </div>
+                        className={`${INPUT.replace("w-full", "w-36")} font-semibold tabular-nums sm:ms-auto ${budgetInvalid ? "border-[var(--danger-rule)]" : ""}`}
+                      />
+                    </div>
+                  </div>
+                </fieldset>
+                {budgetInvalid ? (
+                  <p id="monthly-budget-error" className="mt-3 text-sm leading-6 text-[var(--danger)]">
+                    <Copy text="הזינו תקציב חודשי במספרים, כדי שנדע מה אפשר לעשות איתו." /></p>
+                ) : null}
               </DecisionRow>
 
               <DecisionRow
@@ -813,7 +807,7 @@ export default function DecisionsPage() {
                 onToggle={() => toggleGroup("diagnostics")}
               >
                 <p className={INTRO}>
-                  <Copy text="התשובות קובעות מה" />{AGENT_NAME} <Copy text="תציע לשפר קודם. השאלות משתנות לפי סוג העסק." /></p>
+                  <Copy text="התשובות קובעות מה" /> {AGENT_NAME} <Copy text="תציע לשפר קודם. השאלות משתנות לפי סוג העסק." /></p>
 
                 <div className="mt-6 space-y-6">
                   {/* The questions come from the fork, not from this file: a shop is asked

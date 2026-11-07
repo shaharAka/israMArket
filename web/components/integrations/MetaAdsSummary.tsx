@@ -35,14 +35,14 @@ export function MetaAdsSummary({ ads, tracking }: { ads?: MetaAdsReport; trackin
         <div><dt>{overview.website_purchases != null ? t("רכישות באתר שיוחסו למודעות") : t("פניות שיוחסו למודעות")}</dt><dd>{count(overview.website_purchases ?? overview.leads)}</dd></div>
       </dl>
       <p className={styles.note}><Copy text="לפי הספירה של פייסבוק, לא מספר ההזמנות ששולמו." /></p>
-      {campaigns.length > 0 && <details className={styles.campaigns}><summary><Copy text="מה קרה בכל קמפיין (" />{campaigns.length})</summary>{campaigns.map(row => <div key={row.id}><strong>{row.name || t("קמפיין ללא שם")}</strong><span>{money(row.spend, row.currency)} <Copy text="הוצאה ·" />{count(row.link_clicks)} <Copy text="לחיצות" />{row.website_purchases != null ? t(" · {arg_0} רכישות שיוחסו", { arg_0: count(row.website_purchases) }) : ""}</span></div>)}</details>}
+      {campaigns.length > 0 && <details className={styles.campaigns}><summary><Copy text="מה קרה בכל קמפיין (" />{campaigns.length})</summary>{campaigns.map(row => <div key={row.id}><strong>{row.name || t("קמפיין ללא שם")}</strong><span>{money(row.spend, row.currency)} <Copy text="הוצאה ·" /> {count(row.link_clicks)} <Copy text="לחיצות" />{row.website_purchases != null ? t(" · {arg_0} רכישות שיוחסו", { arg_0: count(row.website_purchases) }) : ""}</span></div>)}</details>}
       <details className={styles.campaigns}><summary><Copy text="איך סופרים את זה" /></summary><div>
         <span><Copy text="פייסבוק מייחס פעולה למודעה אם היא קרתה עד 7 ימים אחרי לחיצה, או עד יום אחרי שראו את המודעה. לכן לא מחברים את המספר הזה למספר של גוגל, ונתוני היום עוד עשויים להשתנות." /></span>
         <span><Copy text="התובנות ועדכון התוכנית משתמשים גם בנתונים האלה: נבחר שינוי אחד לבדוק, בפוסט, בהצעה או בעמוד שהמודעה מובילה אליו." /></span>
         {tracking?.status === "receiving" && <span><Copy text="גם כשהמעקב באתר עובד, זה עוד לא אומר שכל רכישה נספרת נכון." /></span>}
       </div></details>
     </> : <p>{ads?.status === "no_activity" ? t("פייסבוק לא החזיר פעילות פרסום לתקופה הזו. אפשר להמשיך עם תוצאות הפוסטים והאתר.") : t(ads?.note_he || "") || t("נתוני המודעות עדיין לא זמינים.")}</p>}
-    {tracking && <div className={styles.tracking} data-ready={tracking.status === "receiving"}><span className={styles.dot} aria-hidden="true" /><div><strong><Copy text="המעקב באתר" /></strong><p>{t(tracking.note_he || "")}</p>{tracking.checked_at && <small><Copy text="נבדק" />{checkedAt(tracking.checked_at)}</small>}</div></div>}
+    {tracking && <div className={styles.tracking} data-ready={tracking.status === "receiving"}><span className={styles.dot} aria-hidden="true" /><div><strong><Copy text="המעקב באתר" /></strong><p>{t(tracking.note_he || "")}</p>{tracking.checked_at && <small><Copy text="נבדק" /> {checkedAt(tracking.checked_at)}</small>}</div></div>}
     <footer><Link href="/strategy"><Copy text="לתוכנית השיווק" /><IconArrowLeft className="h-4 w-4 locale-arrow" /></Link><Link href="/integrations">{tracking?.status === "receiving" ? t("לניהול החיבורים") : t("לחבר או לבדוק את המעקב")}</Link></footer>
   </section>;
 }
