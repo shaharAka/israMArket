@@ -6,6 +6,7 @@ import { useCopy, useLanguage } from "@/components/language/LanguageProvider";
 import { metricLabel, lifecycleOf } from "@/lib/postLifecycle";
 import { reviewByKey, reviewFor } from "@/components/plan/HypothesisStatusLine";
 import styles from "./campaign.module.css";
+import { IconChevron } from "@/lib/icons";
 
 const unique = (items: (string | undefined | null)[]) => [...new Set(items.map(item=>item?.trim()).filter((item):item is string=>Boolean(item)))];
 
@@ -32,12 +33,17 @@ export function CampaignOverview({ strategy }: { strategy: StrategyPayload }) {
     <dl className={styles.overviewFacts}>
       {goals.length ? <div className={styles.goalFacts}><dt>{t("המטרות של החודש")}</dt><dd>{goals.map(value=><p dir="auto" key={value}>{value}</p>)}</dd></div> : null}
       <div className={styles.budgetFacts}><dt>{t("תקציב שיווק מתוכנן")}</dt><dd>{budget ? new Intl.NumberFormat(locale,{style:"currency",currency:"ILS",maximumFractionDigits:0}).format(budget) : t(brief ? "לא הוגדר תקציב" : "התקציב מופיע בתוכנית המלאה")}</dd><Link href="/decisions">{t("לעריכת התקציב")}</Link></div>
-      {audiences.length ? <div className={styles.audienceFacts}><dt>{t("למי פונים")}</dt><dd>{audiences.slice(0,3).map(value=><p dir="auto" key={value}>{value}</p>)}</dd></div> : null}
     </dl>
     {hypothesis || measures.length ? <div className={styles.monthTest}>
       {hypothesis ? <div className={styles.hypothesis}><h2>{t("מה נבדוק החודש")}</h2><p dir="auto">{hypothesis}</p>{assessment?.evidence_he ? <p className={styles.assessment} dir="auto">{t(assessment.evidence_he)}</p> : null}</div> : null}
-      {measures.length ? <div className={styles.measures}><h2>{t("המדדים של הפוסטים")}</h2><p>{measures.slice(0,3).join(" · ")}</p><p className={styles.assessment}>{t("כדי לבחור מה להמשיך לפרסם, השוו פוסטים לפי אותו מדד ובאותה תקופה.")}</p><Link href="/help#campaign-results">{t("איך יודעים אם הקמפיין עובד?")}</Link></div> : null}
     </div> : null}
+    {audiences.length || measures.length ? <details className={styles.contextDetails}>
+      <summary>{t("קהל ומדידה")}<IconChevron className={styles.disclosureIcon}/></summary>
+      <div className={styles.contextGrid}>
+        {audiences.length ? <div><h2>{t("למי פונים")}</h2>{audiences.map(value=><p dir="auto" key={value}>{value}</p>)}</div> : null}
+        {measures.length ? <div><h2>{t("המדדים של הפוסטים")}</h2><p>{measures.join(" · ")}</p><p className={styles.assessment}>{t("כדי לבחור מה להמשיך לפרסם, השוו פוסטים לפי אותו מדד ובאותה תקופה.")}</p><Link href="/help#campaign-results">{t("איך יודעים אם הקמפיין עובד?")}</Link></div> : null}
+      </div>
+    </details> : null}
     <footer><span>{t("{arg_0} מתוך {arg_1} פוסטים פורסמו",{arg_0:published,arg_1:posts.length})}</span><Link href="/performance">{t("לתוצאות ולהוצאה בפועל")}</Link></footer>
   </section>;
 }

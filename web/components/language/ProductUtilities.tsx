@@ -4,13 +4,14 @@ import { usePathname } from "next/navigation";
 import { useId } from "react";
 import { SUPPORTED_LOCALES, LOCALE_META, isLocale } from "@/lib/i18n/locales";
 import { useLanguage } from "./LanguageProvider";
+import { usesAppShell } from "@/lib/appNavigation";
 
 export function ProductUtilities({ inline = false }: { inline?: boolean }) {
   const pathname = usePathname();
   const { locale, choose, t, busy, error } = useLanguage();
   const id = useId();
   if (!inline && (pathname === "/login" || pathname === "/signup" || pathname === "/start" || pathname === "/" || pathname.startsWith("/for/") || pathname === "/design/hero" || pathname === "/design/identity" || pathname.startsWith("/connections/"))) return null;
-  return <div className={inline ? "product-utilities product-utilities-inline" : "product-utilities"} aria-label={t("שפה")}>
+  return <div className={inline ? "product-utilities product-utilities-inline" : `product-utilities ${usesAppShell(pathname) ? "hidden md:block" : ""}`} aria-label={t("שפה")}>
     <div className="product-utilities-row" dir="rtl">
       <label htmlFor={id} className="product-language-control">
         <span className="sr-only">{t("שפה")}</span>

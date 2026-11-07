@@ -113,9 +113,8 @@ export function QuickPost({ open, onCancel, onCreated, draft, onDraftChange, pla
     return () => { active = false; };
   }, []);
   if (!open) return null;
-  return <section className="mt-6 max-w-2xl" aria-labelledby={`${id}-heading`}>
-    <h2 id={`${id}-heading`} className="text-xl font-semibold">{t("פוסט משלכם")}</h2>
-    <form className="mt-5 space-y-5" onSubmit={async event => {
+  return <section className="mt-6 max-w-2xl" aria-label={t("פוסט משלכם")}>
+    <form className="space-y-5" onSubmit={async event => {
       event.preventDefault();
       if (busy || !text.trim()) return;
       const request = quickPostRequest({ text, destination, language, requestId: requestId.current, pending: pending.current }, () => crypto.randomUUID());
@@ -176,7 +175,7 @@ export function QuickPost({ open, onCancel, onCreated, draft, onDraftChange, pla
       }}>{t("לפתוח את הטיוטה שנשמרה")}</button> : null}
       <div className="flex flex-wrap items-center gap-4">
         <button className={ui.button} type="submit" disabled={busy || !text.trim()}>{t(busy ? "שומרים את הטיוטה…" : hasPending ? "לנסות שוב" : "לפתוח בעורך")}</button>
-        <button type="button" className={`${ui.link} min-h-11`} disabled={busy} onClick={onCancel}>{t("לחזור לפוסטים")}</button>
+        <button type="button" className={`${ui.link} min-h-11`} disabled={busy} onClick={onCancel}>{t("לחזור לקמפיין")}</button>
       </div>
     </form>
   </section>;

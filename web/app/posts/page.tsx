@@ -19,6 +19,7 @@ import { ApiError, endpoints, isPlanRequired, type PublishQueue, type StrategyPa
 import { IconArrowLeft, IconChevron } from "@/lib/icons";
 import { useImageJob } from "@/lib/useImageJob";
 import { LOCALE_META } from "@/lib/i18n/locales";
+import { postsIndexDestination, campaignReturnHref } from "@/lib/postNavigation";
 
 /**
  * What the header's due line depends on.
@@ -61,7 +62,9 @@ function go(query: string, mode: "push" | "replace") {
   const language = new URLSearchParams(window.location.search).get("lang");
   if (language) next.set("lang", language);
   const current=new URLSearchParams(window.location.search);
-  if(current.get("from")==="campaign"){next.set("from","campaign");if(current.has("week"))next.set("week",current.get("week")!);}
+  if(!next.has("from") && ["campaign","calendar"].includes(current.get("from") || "")){
+    next.set("from",current.get("from")!);if(current.has("week") && !next.has("week"))next.set("week",current.get("week")!);
+  }
   const url = next.size ? `/posts?${next}` : "/posts";
   if (mode === "push") window.history.pushState(null, "", url);
   else window.history.replaceState(null, "", url);
@@ -166,6 +169,8 @@ function PostsWorkspace() {
   }, [signature]);
 
   const posts = strategy?.roadmap?.posts ?? [];
+  const campaignDestination = postsIndexDestination(new URLSearchParams(params.toString()), posts.length > 0);
+  useEffect(() => { if (campaignDestination) router.replace(campaignDestination); }, [campaignDestination, router]);
   function retryRead() { setError(""); setReadNeedsPlan(false); setNoMonth(false); setReload(n => n + 1); }
   const readRecovery = readNeedsPlan ? <Link href="/billing" className={`${ui.link} mt-2 min-h-11`}>{t("למנוי שלי")}</Link> : <button type="button" className={`${ui.link} mt-2 min-h-11`} onClick={retryRead}>{t("לטעון את הפוסטים שוב")}</button>;
   const matching = reviewUid ? posts.map((post, index) => post.uid === reviewUid ? index : -1).filter(index => index >= 0) : [];
@@ -184,24 +189,22 @@ function PostsWorkspace() {
   function openPost(index: number) {
     feedScroll.current = window.scrollY;
     openedHere.current = true;
-    go(`post=${index}`, "push");
+    go(`post=${index}${location.calendar ? "&from=calendar" : ""}`, "push");
     window.scrollTo(0, 0);
   }
 
   function closeEditor() {
-    if(params.get("from")==="campaign"){
-      const post=posts[openIndex ?? 0];
-      const query=new URLSearchParams({week:String(post ? postWeek(post) : 0),lang:locale});
-      if(post?.uid)query.set("focus",post.uid);
-      router.push(`/campaign?${query}`);return;
-    }
-    if (openedHere.current) {
+    if (openedHere.current && params.get("from") !== "campaign") {
       openedHere.current = false;
       window.history.back();
       return;
     }
-    feedScroll.current = 0;
-    go("", "replace");
+    if (params.get("from") === "calendar") {
+      router.push(`/posts?view=calendar&lang=${locale}`);
+      return;
+    }
+    const post = posts[openIndex ?? 0];
+    router.push(campaignReturnHref(post, post ? postWeek(post) : 0, locale));
   }
 
   /** The editor moving on to another post (after an approval) replaces, never stacks. */
@@ -209,6 +212,8 @@ function PostsWorkspace() {
     go(`post=${index}`, "replace");
     window.scrollTo(0, 0);
   }
+
+  if (campaignDestination) return <p className="text-sm text-[var(--ink-muted)]">{t("פותחים את הקמפיין…")}</p>;
 
   if (location.post !== null && !strategy && !noMonth) {
     return error ? (
@@ -234,7 +239,7 @@ function PostsWorkspace() {
           onStrategyUpdated={setStrategy}
           onNavigate={moveEditor}
           onClose={closeEditor}
-          closeLabel={params.get("from")==="campaign" ? "הקמפיין" : undefined}
+          closeLabel={params.get("from") === "calendar" ? "לוח" : "הקמפיין"}
           imagesWaiting={imageJob?.waiting}
         />
       </div>
@@ -273,11 +278,11 @@ function PostsWorkspace() {
     <div className={`mx-auto ${location.calendar && posts.length ? "max-w-6xl" : "max-w-3xl"}`}>
       <RecommendationReview planId={strategy?.id} targetUnavailable={reviewing && Boolean(strategy) && openIndex === null} />
       <header>
-        {!strategy?.post_workspace_only ? <Link href="/strategy" className={`${ui.link} ${ui.linkQuiet} -my-2 text-[13px] font-medium`}>
+        {!location.creating && !strategy?.post_workspace_only ? <Link href="/strategy" className={`${ui.link} ${ui.linkQuiet} -my-2 text-[13px] font-medium`}>
           {t("כלי הביצוע של התוכנית")}
         </Link> : null}
         <h1 className="mt-1 text-[28px] font-bold leading-tight tracking-tight text-[color:var(--ink)] sm:text-[32px]">
-          {strategy && !strategy.post_workspace_only ? t("הפוסטים של {arg_0}", { arg_0: new Intl.DateTimeFormat(LOCALE_META[locale].formatLocale, { month: "long" }).format(new Date(strategy.year, strategy.month - 1, 1)) }) : t("הפוסטים")}
+          {location.creating ? t("פוסט משלכם") : strategy && !strategy.post_workspace_only ? t("הפוסטים של {arg_0}", { arg_0: new Intl.DateTimeFormat(LOCALE_META[locale].formatLocale, { month: "long" }).format(new Date(strategy.year, strategy.month - 1, 1)) }) : t("הפוסטים")}
         </h1>
 
         {!location.creating ? <button type="button" className={`${ui.link} mt-3 min-h-11`} onClick={() => go("create=1", "push")}>{t("ליצור פוסט משלכם")}</button> : null}
@@ -360,10 +365,11 @@ function PostsWorkspace() {
         </div>
       ) : null}
 
-      <QuickPost draft={quickDraft} onDraftChange={setQuickDraft} plan={strategy?.id} open={location.creating} onCancel={() => go("", "replace")} onCreated={(saved, index) => {
+      <QuickPost draft={quickDraft} onDraftChange={setQuickDraft} plan={strategy?.id} open={location.creating} onCancel={() => router.push(campaignReturnHref(undefined, Number(params.get("week")) || 0, locale))} onCreated={(saved, index) => {
         setStrategy(saved); setNoMonth(false); setError("");
         openedHere.current = false;
-        go(`post=${index}`, "replace"); window.scrollTo(0, 0);
+        const post = saved.roadmap.posts[index];
+        go(`post=${index}&from=campaign&week=${post ? postWeek(post) : 0}`, "replace"); window.scrollTo(0, 0);
       }} />
       {!location.creating ? <div className="mt-8">
         {!strategy ? (
