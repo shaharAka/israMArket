@@ -22,7 +22,7 @@ export function MetaReturn({ result }: { result: string }) {
           {result === "success" ? t("האישור התקבל") : t("לחזור לחיבור העסק")}
         </h1>
         <p className="mt-3 text-[15px] leading-relaxed text-[var(--ink-soft)]">
-          <Copy text="אפשר לחזור לחלון של ישראמארקט ולהמשיך לבחור את החשבונות. אם הוא נסגר, המשיכו מכאן." /></p>
+          <Copy text="אפשר לחזור לחלון של isramarket ולהמשיך לבחור את החשבונות. אם הוא נסגר, המשיכו מכאן." /></p>
         <Link
           href={`/integrations?meta_result=${encodeURIComponent(result)}`}
           className="drawn-button mt-7 inline-flex min-h-12 w-full items-center justify-center gap-2 bg-[var(--primary)] px-6 text-[15px] text-white hover:bg-[var(--primary-dark)]"

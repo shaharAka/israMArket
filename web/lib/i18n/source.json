@@ -372,17 +372,6 @@
       }
     ]
   },
-  "m_00c56db86b752797": {
-    "source": "אפשר לחזור לחלון של ישראמארקט ולהמשיך לבחור את החשבונות. אם הוא נסגר, המשיכו מכאן.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/integrations/MetaReturn.tsx",
-        "line": 25,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_00cbdb385a031a29": {
     "source": "חיבורים חסרים ומספרים לא ידועים מסומנים, בלי תחזיות על סמך ממוצעי סוכנויות.",
     "language": "he",
@@ -2188,6 +2177,17 @@
       }
     ]
   },
+  "m_041cce808daa66d1": {
+    "source": "היכנסו ל-isramarket עם החשבון שאת המידע שלו רוצים למחוק.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/data-deletion/page.tsx",
+        "line": 33,
+        "kind": "jsx"
+      }
+    ]
+  },
   "m_041cdb291d63c076": {
     "source": "ביטויים מההשלמה האוטומטית של גוגל, בלי מספרים",
     "language": "he",
@@ -2923,17 +2923,6 @@
         "file": "web/components/start/BusinessCard.tsx",
         "line": 265,
         "kind": "literal"
-      }
-    ]
-  },
-  "m_05b2d07581328da6": {
-    "source": "פוסטים שכבר פרסמתם ברשתות החברתיות והמידע שנמצא בגוגל, במטא או באתר העסק שלכם נשארים שם. מחיקת החשבון בישראמארקט לא מוחקת אותם.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/data-deletion/page.tsx",
-        "line": 51,
-        "kind": "jsx"
       }
     ]
   },
@@ -3836,6 +3825,17 @@
       }
     ]
   },
+  "m_0797ad3550768db6": {
+    "source": "פוסטים שכבר פרסמתם ברשתות החברתיות והמידע שנמצא בגוגל, במטא או באתר העסק שלכם נשארים שם. מחיקת החשבון ב-isramarket לא מוחקת אותם.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/data-deletion/page.tsx",
+        "line": 51,
+        "kind": "jsx"
+      }
+    ]
+  },
   "m_079d5d80ed2788af": {
     "source": "בנושא '{arg_0}' חסרים דוגמה או 'למה'.",
     "language": "he",
@@ -4294,7 +4294,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 87,
+        "line": 86,
         "kind": "literal"
       }
     ]
@@ -5309,7 +5309,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 62,
+        "line": 61,
         "kind": "literal"
       }
     ]
@@ -5769,7 +5769,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 87,
+        "line": 86,
         "kind": "literal"
       }
     ]
@@ -6959,18 +6959,6 @@
         "file": "web/components/landing-v2/connectionExamples.ts",
         "line": 57,
         "kind": "literal"
-      }
-    ]
-  },
-  "m_0e5205cf89d01d95": {
-    "source": "סיסמה חדשה · ישראמארקט",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/reset/[token]/layout.tsx",
-        "line": 9,
-        "kind": "literal",
-        "purpose": "display"
       }
     ]
   },
@@ -8225,17 +8213,6 @@
         "file": "web/lib/quarterPlanMock.ts",
         "line": 233,
         "kind": "literal"
-      }
-    ]
-  },
-  "m_10da50330aa944af": {
-    "source": "מהאימייל של החשבון וציינו שזו בקשה למחיקת המידע בישראמארקט. נצטרך לוודא שהבקשה באמת מגיעה מכם. אל תשלחו סיסמאות או מפתחות חיבור.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/data-deletion/page.tsx",
-        "line": 75,
-        "kind": "jsx"
       }
     ]
   },
@@ -12633,7 +12610,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 64,
+        "line": 63,
         "kind": "literal"
       }
     ]
@@ -15599,6 +15576,17 @@
       }
     ]
   },
+  "m_1fd82ebb30deda9f": {
+    "source": "<!doctype html>\n<html lang=\"he\" dir=\"rtl\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<meta name=\"robots\" content=\"noindex\">\n<title>הקישור לא נפתח · isramarket</title>\n<style>\n  body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #f6f7fb;\n         color: #14203a; font-family: system-ui, -apple-system, \"Segoe UI\", Arial, sans-serif; }\n  main { max-width: 24rem; padding: 2rem 1.25rem; text-align: center; }\n  .mark { display: inline-block; width: 10px; height: 10px; border-radius: 999px; background: #ffc44a;\n          box-shadow: 0 0 0 5px #fff4d6; }\n  h1 { font-size: 1.4rem; line-height: 1.3; margin: 1.25rem 0 .5rem; }\n  p { margin: 0; line-height: 1.7; color: #4b5670; }\n  a { display: inline-flex; align-items: center; min-height: 44px; margin-top: 1.25rem; color: #2853c7;\n      font-weight: 600; text-decoration: none; }\n  a:hover { text-decoration: underline; }\n</style>\n</head>\n<body><main><span class=\"mark\" aria-hidden=\"true\"></span><h1>הקישור לא נפתח כרגע</h1>\n<p>כנראה תקלה רגעית אצלנו. נסו שוב בעוד דקה.</p>\n<a href=\"/\">לעמוד הבית של isramarket</a></main></body>\n</html>",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/r/[code]/route.ts",
+        "line": 22,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_1fdc8520fd07d5a3": {
     "source": "אנחנו מתכננים וכותבים את הפוסטים לפי המטרה שלכם, ומשבצים אותם לאורך השבוע. אתם רואים מה יעלה ומתי, ויכולים לערוך כל פוסט לפני הפרסום.",
     "language": "he",
@@ -16370,6 +16358,18 @@
       }
     ]
   },
+  "m_21234e5823e2b8f6": {
+    "source": "מסע המשתמש — isramarket",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/design/flows/page.tsx",
+        "line": 4,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
   "m_2123dc7cb0175a65": {
     "source": "יש לנו הרשאה לפרסם בשמכם באינסטגרם ובפייסבוק.",
     "language": "he",
@@ -16743,7 +16743,7 @@
       },
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 69,
+        "line": 68,
         "kind": "literal"
       },
       {
@@ -18731,17 +18731,6 @@
       }
     ]
   },
-  "m_26334e43733ad73a": {
-    "source": "ישראמארקט · ספרייה חיה",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/design/DesignLibrary.tsx",
-        "line": 53,
-        "kind": "jsx"
-      }
-    ]
-  },
   "m_263958d70b90937a": {
     "source": "webhook not configured",
     "language": "en",
@@ -19222,6 +19211,18 @@
         "line": 124,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_2776aede1f32877f": {
+    "source": "זהות המותג — isramarket",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/design/identity/page.tsx",
+        "line": 4,
+        "kind": "literal",
+        "purpose": "display"
       }
     ]
   },
@@ -19869,18 +19870,6 @@
       }
     ]
   },
-  "m_28c688dca3dd38fc": {
-    "source": "חיבורים פשוטים לעסק — ישראמארקט",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/design/connections/page.tsx",
-        "line": 5,
-        "kind": "literal",
-        "purpose": "display"
-      }
-    ]
-  },
   "m_28c7dd79703c06dd": {
     "source": "לחזור לבחירת המסלול",
     "language": "he",
@@ -20304,6 +20293,17 @@
       {
         "file": "web/lib/api.ts",
         "line": 145,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_29a6441ec5e38dd5": {
+    "source": "השימוש ב-isramarket אומר שאתם מסכימים לתנאים האלה. כתבנו אותם בקצרה ובפשטות.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/terms/page.tsx",
+        "line": 42,
         "kind": "literal"
       }
     ]
@@ -23867,6 +23867,17 @@
       }
     ]
   },
+  "m_30712d0797751c88": {
+    "source": "אפשר להסיר את ההרשאה גם בהגדרות החיבורים של גוגל או בהגדרות ״אינטגרציות עסקיות״ של פייסבוק. הסרת ההרשאה שם לא מוחקת את החשבון ב-isramarket. כדי למחוק את המידע אצלנו, השתמשו בשלבים שלמעלה.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/data-deletion/page.tsx",
+        "line": 65,
+        "kind": "jsx"
+      }
+    ]
+  },
   "m_307818468755391a": {
     "source": "לא הצלחנו לקרוא את האתר של {arg_0}: {arg_1}",
     "language": "he",
@@ -23972,18 +23983,6 @@
         "file": "web/components/help/guides.ts",
         "line": 512,
         "kind": "literal"
-      }
-    ]
-  },
-  "m_30c2391dc2cb0f10": {
-    "source": "בונים יחד את התוכנית · ישראמארקט",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/start/layout.tsx",
-        "line": 4,
-        "kind": "literal",
-        "purpose": "display"
       }
     ]
   },
@@ -25104,8 +25103,30 @@
         "kind": "jsx"
       },
       {
+        "file": "web/components/landing-v2/BrandWordmark.tsx",
+        "line": 5,
+        "kind": "jsx"
+      },
+      {
         "file": "web/components/landing-v2/ConnectionDetail.tsx",
         "line": 33,
+        "kind": "jsx"
+      },
+      {
+        "file": "web/components/landing-v2/Landing.tsx",
+        "line": 40,
+        "kind": "literal",
+        "purpose": "display"
+      },
+      {
+        "file": "web/components/landing-v2/ProcessLanding.tsx",
+        "line": 51,
+        "kind": "literal",
+        "purpose": "display"
+      },
+      {
+        "file": "web/components/landing-v2/ProcessLanding.tsx",
+        "line": 68,
         "kind": "jsx"
       },
       {
@@ -25119,6 +25140,11 @@
         "kind": "jsx"
       },
       {
+        "file": "web/components/landing/LegalPage.tsx",
+        "line": 68,
+        "kind": "jsx"
+      },
+      {
         "file": "web/components/start/StartFlow.tsx",
         "line": 433,
         "kind": "jsx"
@@ -25127,6 +25153,12 @@
         "file": "web/components/start/StartFlow.tsx",
         "line": 443,
         "kind": "jsx"
+      },
+      {
+        "file": "web/lib/uxFlows.ts",
+        "line": 20,
+        "kind": "literal",
+        "purpose": "display"
       }
     ]
   },
@@ -25134,11 +25166,6 @@
     "source": "העמוד הזה פתוח רק למנהלי ישראמארקט, אחרי כניסה עם Google.",
     "language": "he",
     "references": [
-      {
-        "file": "web/app/admin/page.tsx",
-        "line": 163,
-        "kind": "literal"
-      },
       {
         "file": "api/app/errors.py",
         "line": 16,
@@ -25265,7 +25292,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 64,
+        "line": 63,
         "kind": "literal"
       }
     ]
@@ -25745,6 +25772,17 @@
       }
     ]
   },
+  "m_33fa2f06b71a4d5a": {
+    "source": "מהאימייל של החשבון וציינו שזו בקשה למחיקת המידע ב-isramarket. נצטרך לוודא שהבקשה באמת מגיעה מכם. אל תשלחו סיסמאות או מפתחות חיבור.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/data-deletion/page.tsx",
+        "line": 75,
+        "kind": "jsx"
+      }
+    ]
+  },
   "m_34025d7f2377d804": {
     "source": "יש לכם חשבון, צריך רק קצב קבוע.",
     "language": "he",
@@ -26150,17 +26188,6 @@
       }
     ]
   },
-  "m_34e0f595d8abb838": {
-    "source": "אפשר להסיר את ההרשאה גם בהגדרות החיבורים של גוגל או בהגדרות ״אינטגרציות עסקיות״ של פייסבוק. הסרת ההרשאה שם לא מוחקת את החשבון בישראמארקט. כדי למחוק את המידע אצלנו, השתמשו בשלבים שלמעלה.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/data-deletion/page.tsx",
-        "line": 65,
-        "kind": "jsx"
-      }
-    ]
-  },
   "m_34e48555f6f86efa": {
     "source": "לפי פורמט ({arg_0}): {arg_1}.",
     "language": "he",
@@ -26484,6 +26511,18 @@
         "file": "web/lib/uxFlows.ts",
         "line": 63,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_359e8ae26a564c78": {
+    "source": "תוצאות שמובילות לצעד הבא — isramarket",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/design/results/page.tsx",
+        "line": 5,
+        "kind": "literal",
+        "purpose": "display"
       }
     ]
   },
@@ -27891,7 +27930,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 50,
+        "line": 49,
         "kind": "literal"
       }
     ]
@@ -28791,6 +28830,24 @@
         "file": "web/components/posts/preparation/PhotosStep.tsx",
         "line": 459,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_3a6f869730be026c": {
+    "source": "isramarket, לעמוד הבית",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing/LegalPage.tsx",
+        "line": 36,
+        "kind": "literal",
+        "purpose": "display"
+      },
+      {
+        "file": "web/components/start/StartFlow.tsx",
+        "line": 442,
+        "kind": "literal",
+        "purpose": "display"
       }
     ]
   },
@@ -31990,6 +32047,18 @@
       }
     ]
   },
+  "m_41a789ca502f87b1": {
+    "source": "איך מוחקים את החשבון והמידע ב-isramarket, ואיך מנתקים את פייסבוק, אינסטגרם וגוגל.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/data-deletion/page.tsx",
+        "line": 12,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
   "m_41b80cc17163d23b": {
     "source": "עונתי",
     "language": "he",
@@ -34113,18 +34182,6 @@
       }
     ]
   },
-  "m_46061da1a672d1e9": {
-    "source": "איך מוחקים את החשבון והמידע בישראמארקט, ואיך מנתקים את פייסבוק, אינסטגרם וגוגל.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/data-deletion/page.tsx",
-        "line": 12,
-        "kind": "literal",
-        "purpose": "display"
-      }
-    ]
-  },
   "m_4643079764e71ba3": {
     "source": "כתבו איזה מוצר לקדם קודם. אם עוד אין שם, תיאור קצר מספיק.",
     "language": "he",
@@ -34866,17 +34923,6 @@
       {
         "file": "web/components/landing-v2/connectionExamples.ts",
         "line": 20,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_47efba04e5ae3b0a": {
-    "source": "אין מחליף עסקים. לא להשתמש באותו חשבון לישראמארקט וללקוח קיים בלי פתרון נפרד.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/lib/uxFlows.ts",
-        "line": 63,
         "kind": "literal"
       }
     ]
@@ -38919,7 +38965,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 65,
+        "line": 64,
         "kind": "literal"
       }
     ]
@@ -40835,18 +40881,6 @@
       }
     ]
   },
-  "m_54c7e0d207f407b4": {
-    "source": "העמוד לא נמצא · ישראמארקט",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/not-found.tsx",
-        "line": 6,
-        "kind": "literal",
-        "purpose": "display"
-      }
-    ]
-  },
   "m_54c9c45c8abfcdad": {
     "source": "פרויקט מגורים",
     "language": "he",
@@ -41485,7 +41519,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 100,
+        "line": 99,
         "kind": "literal"
       }
     ]
@@ -41949,7 +41983,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 64,
+        "line": 63,
         "kind": "literal"
       }
     ]
@@ -43322,18 +43356,6 @@
       }
     ]
   },
-  "m_5a9cb52cfba79c6c": {
-    "source": "ניהול · ישראמארקט",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/admin/layout.tsx",
-        "line": 5,
-        "kind": "literal",
-        "purpose": "display"
-      }
-    ]
-  },
   "m_5abc20f31f0df0ab": {
     "source": "בחרו מההצעות או הוסיפו נושא משלכם.",
     "language": "he",
@@ -43427,18 +43449,6 @@
         "file": "web/components/help/guides.ts",
         "line": 113,
         "kind": "literal"
-      }
-    ]
-  },
-  "m_5ae8c99e5a492185": {
-    "source": "ישראמארקט — שיווק לעסקים קטנים",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/layout.tsx",
-        "line": 17,
-        "kind": "literal",
-        "purpose": "display"
       }
     ]
   },
@@ -44119,6 +44129,18 @@
         "line": 637,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_5c407b812daa50ce": {
+    "source": "העמוד לא נמצא · isramarket",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/not-found.tsx",
+        "line": 6,
+        "kind": "literal",
+        "purpose": "display"
       }
     ]
   },
@@ -45470,18 +45492,6 @@
       }
     ]
   },
-  "m_5e5b0dde676e3072": {
-    "source": "מעבדת תנועה — ישראמארקט",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/motion/page.tsx",
-        "line": 4,
-        "kind": "literal",
-        "purpose": "display"
-      }
-    ]
-  },
   "m_5e634e9898570bd8": {
     "source": ",.0f",
     "language": "en",
@@ -46257,17 +46267,6 @@
       }
     ]
   },
-  "m_5ff651a8a4b0caed": {
-    "source": "ישראמארקט בונה לעסק תוכנית שיווק, מציעה פוסטים ומשימות לכל שבוע ומראה מה הצליח. חלק מהתוכן נכתב בעזרת AI, ולכן הוא הצעה. לפני שמפרסמים, קוראים ומאשרים.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/terms/page.tsx",
-        "line": 48,
-        "kind": "jsx"
-      }
-    ]
-  },
   "m_5ffe6af0361b9f6a": {
     "source": "לא הצלחנו לשמור. אפשר לנסות שוב.",
     "language": "he",
@@ -46293,6 +46292,18 @@
         "line": 652,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_6002a2e6084665b4": {
+    "source": "בונים יחד את התוכנית · isramarket",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/start/layout.tsx",
+        "line": 4,
+        "kind": "literal",
+        "purpose": "display"
       }
     ]
   },
@@ -49568,7 +49579,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 58,
+        "line": 57,
         "kind": "literal"
       }
     ]
@@ -50931,7 +50942,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 61,
+        "line": 60,
         "kind": "literal"
       }
     ]
@@ -51455,6 +51466,18 @@
         "file": "web/components/PostEditor.tsx",
         "line": 633,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_6b58ce671a1b3632": {
+    "source": "isramarket, לעמוד הראשי",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing/PublicNotice.tsx",
+        "line": 16,
+        "kind": "literal",
+        "purpose": "display"
       }
     ]
   },
@@ -54303,17 +54326,6 @@
       }
     ]
   },
-  "m_70c0256458e6a97f": {
-    "source": "<!doctype html>\n<html lang=\"he\" dir=\"rtl\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<meta name=\"robots\" content=\"noindex\">\n<title>הקישור לא נפתח · ישראמארקט</title>\n<style>\n  body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #f6f7fb;\n         color: #14203a; font-family: system-ui, -apple-system, \"Segoe UI\", Arial, sans-serif; }\n  main { max-width: 24rem; padding: 2rem 1.25rem; text-align: center; }\n  .mark { display: inline-block; width: 10px; height: 10px; border-radius: 999px; background: #ffc44a;\n          box-shadow: 0 0 0 5px #fff4d6; }\n  h1 { font-size: 1.4rem; line-height: 1.3; margin: 1.25rem 0 .5rem; }\n  p { margin: 0; line-height: 1.7; color: #4b5670; }\n  a { display: inline-flex; align-items: center; min-height: 44px; margin-top: 1.25rem; color: #2853c7;\n      font-weight: 600; text-decoration: none; }\n  a:hover { text-decoration: underline; }\n</style>\n</head>\n<body><main><span class=\"mark\" aria-hidden=\"true\"></span><h1>הקישור לא נפתח כרגע</h1>\n<p>כנראה תקלה רגעית אצלנו. נסו שוב בעוד דקה.</p>\n<a href=\"/\">לעמוד הבית של ישראמארקט</a></main></body>\n</html>",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/r/[code]/route.ts",
-        "line": 22,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_70c17e8ec8c603f2": {
     "source": "אחרי התמונות, השירותים והסגנון.",
     "language": "he",
@@ -55961,7 +55973,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 87,
+        "line": 86,
         "kind": "literal"
       }
     ]
@@ -56353,17 +56365,6 @@
         "file": "web/components/dna/parts.tsx",
         "line": 79,
         "kind": "jsx"
-      }
-    ]
-  },
-  "m_750edd78c4d7c3e2": {
-    "source": "השימוש בישראמארקט אומר שאתם מסכימים לתנאים האלה. כתבנו אותם בקצרה ובפשטות.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/terms/page.tsx",
-        "line": 42,
-        "kind": "literal"
       }
     ]
   },
@@ -59921,17 +59922,6 @@
       }
     ]
   },
-  "m_7c9671dc59ed9ddc": {
-    "source": "לא הצלחנו לטעון את האתר · ישראמארקט",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/global-error.tsx",
-        "line": 17,
-        "kind": "jsx"
-      }
-    ]
-  },
   "m_7caa3efcd8b0998d": {
     "source": "רובם מגיעים בפעם הראשונה",
     "language": "he",
@@ -59962,18 +59952,6 @@
         "file": "web/lib/draft.ts",
         "line": 1446,
         "kind": "literal"
-      }
-    ]
-  },
-  "m_7cd318dd089692bd": {
-    "source": "מה ישראמארקט עושה, מה אתם אחראים עליו, מחיר, ביטול ומחיקה.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/terms/page.tsx",
-        "line": 9,
-        "kind": "literal",
-        "purpose": "display"
       }
     ]
   },
@@ -60376,18 +60354,6 @@
         "file": "web/components/plan/QuarterPlanView.tsx",
         "line": 726,
         "kind": "literal"
-      }
-    ]
-  },
-  "m_7dcee132b1145651": {
-    "source": "מחיקת מידע · ישראמארקט",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/data-deletion/page.tsx",
-        "line": 11,
-        "kind": "literal",
-        "purpose": "display"
       }
     ]
   },
@@ -62012,7 +61978,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 62,
+        "line": 61,
         "kind": "literal"
       }
     ]
@@ -62845,6 +62811,18 @@
       }
     ]
   },
+  "m_82dc5dbdc0a7b897": {
+    "source": "ספריית העיצוב — isramarket",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/design/page.tsx",
+        "line": 4,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
   "m_82df56b5c562cb56": {
     "source": "מעלים ובודקים…",
     "language": "he",
@@ -63284,18 +63262,6 @@
         "file": "web/lib/businessFields.ts",
         "line": 215,
         "kind": "literal"
-      }
-    ]
-  },
-  "m_83db4463e4282444": {
-    "source": "ישראמארקט · תצוגת המוצר",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/preview/layout.tsx",
-        "line": 2,
-        "kind": "literal",
-        "purpose": "display"
       }
     ]
   },
@@ -64109,7 +64075,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 87,
+        "line": 86,
         "kind": "literal"
       }
     ]
@@ -65961,6 +65927,17 @@
       {
         "file": "web/lib/businessFields.ts",
         "line": 239,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_89920ba981af3829": {
+    "source": "העמוד הזה פתוח רק למנהלי isramarket, אחרי כניסה עם Google.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/admin/page.tsx",
+        "line": 163,
         "kind": "literal"
       }
     ]
@@ -69183,6 +69160,18 @@
       }
     ]
   },
+  "m_908e0f6fc948f8c0": {
+    "source": "מחיקת מידע · isramarket",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/data-deletion/page.tsx",
+        "line": 11,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
   "m_909e650b29e3582c": {
     "source": "מתכננים שיפוץ ולא יודעים מאיפה להתחיל? בשיחת היכרות נדבר על הבית, הצרכים והתקציב, ונבין מה חשוב לכם להשיג לפני שמתקדמים לתכנון.",
     "language": "he",
@@ -69213,6 +69202,18 @@
         "file": "web/components/design/FlowBoard.tsx",
         "line": 115,
         "kind": "jsx"
+      }
+    ]
+  },
+  "m_90a70a3c47ec0ba6": {
+    "source": "חיבורים פשוטים לעסק — isramarket",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/design/connections/page.tsx",
+        "line": 5,
+        "kind": "literal",
+        "purpose": "display"
       }
     ]
   },
@@ -75640,7 +75641,7 @@
       },
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 69,
+        "line": 68,
         "kind": "literal"
       },
       {
@@ -76786,7 +76787,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 100,
+        "line": 99,
         "kind": "literal"
       }
     ]
@@ -78959,6 +78960,18 @@
       }
     ]
   },
+  "m_a55cc5c90d8eb574": {
+    "source": "סיסמה חדשה · isramarket",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/reset/[token]/layout.tsx",
+        "line": 9,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
   "m_a55ed260a4dcc06a": {
     "source": "להגיע לצוותים שמתכננים את העבודה לקראת החג",
     "language": "he",
@@ -78967,6 +78980,17 @@
         "file": "web/components/landing-v2/processScenarios.ts",
         "line": 50,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_a56024c870881954": {
+    "source": "isramarket בונה לעסק תוכנית שיווק, מציעה פוסטים ומשימות לכל שבוע ומראה מה הצליח. חלק מהתוכן נכתב בעזרת AI, ולכן הוא הצעה. לפני שמפרסמים, קוראים ומאשרים.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/terms/page.tsx",
+        "line": 48,
+        "kind": "jsx"
       }
     ]
   },
@@ -80752,7 +80776,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 63,
+        "line": 62,
         "kind": "literal"
       }
     ]
@@ -84144,18 +84168,6 @@
         "file": "web/lib/businessModel.ts",
         "line": 107,
         "kind": "literal"
-      }
-    ]
-  },
-  "m_b0c2742675d8678a": {
-    "source": "זהות המותג — ישראמארקט",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/design/identity/page.tsx",
-        "line": 4,
-        "kind": "literal",
-        "purpose": "display"
       }
     ]
   },
@@ -87794,7 +87806,7 @@
       },
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 96,
+        "line": 95,
         "kind": "literal"
       },
       {
@@ -88490,6 +88502,18 @@
         "file": "web/components/integrations/PixelSetupGuide.tsx",
         "line": 44,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_b98e2f50d3bf5f00": {
+    "source": "מעבדת תנועה — isramarket",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/motion/page.tsx",
+        "line": 4,
+        "kind": "literal",
+        "purpose": "display"
       }
     ]
   },
@@ -89772,7 +89796,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 87,
+        "line": 86,
         "kind": "literal"
       }
     ]
@@ -92092,18 +92116,6 @@
       }
     ]
   },
-  "m_c196832cdbeb7786": {
-    "source": "תוצאות שמובילות לצעד הבא — ישראמארקט",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/design/results/page.tsx",
-        "line": 5,
-        "kind": "literal",
-        "purpose": "display"
-      }
-    ]
-  },
   "m_c1b50c6cd89efc34": {
     "source": "הקמפיין במרכז העבודה",
     "language": "he",
@@ -92920,6 +92932,18 @@
       }
     ]
   },
+  "m_c30ec4dabb3617cb": {
+    "source": "isramarket · תצוגת המוצר",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/preview/layout.tsx",
+        "line": 2,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
   "m_c312988e98632dc4": {
     "source": "חודש הוא מספר בין 1 ל-12.",
     "language": "he",
@@ -93074,18 +93098,6 @@
         "file": "web/lib/dna/library.ts",
         "line": 329,
         "kind": "literal"
-      }
-    ]
-  },
-  "m_c36139aa6fed1400": {
-    "source": "תנאי שימוש · ישראמארקט",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/terms/page.tsx",
-        "line": 8,
-        "kind": "literal",
-        "purpose": "display"
       }
     ]
   },
@@ -93719,18 +93731,6 @@
         "file": "web/components/account/AuthFields.tsx",
         "line": 15,
         "kind": "literal"
-      },
-      {
-        "file": "web/components/landing/LegalPage.tsx",
-        "line": 36,
-        "kind": "literal",
-        "purpose": "display"
-      },
-      {
-        "file": "web/components/start/StartFlow.tsx",
-        "line": 442,
-        "kind": "literal",
-        "purpose": "display"
       }
     ]
   },
@@ -94563,7 +94563,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 96,
+        "line": 95,
         "kind": "literal"
       }
     ]
@@ -95894,12 +95894,12 @@
       },
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 42,
+        "line": 41,
         "kind": "literal"
       },
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 53,
+        "line": 52,
         "kind": "literal"
       },
       {
@@ -99999,17 +99999,6 @@
       }
     ]
   },
-  "m_d290033c1f276601": {
-    "source": "היכנסו לישראמארקט עם החשבון שאת המידע שלו רוצים למחוק.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/data-deletion/page.tsx",
-        "line": 33,
-        "kind": "jsx"
-      }
-    ]
-  },
   "m_d29414d18ed20644": {
     "source": "יותר מדי ניסיונות מהכתובת הזו. נסו שוב בעוד כמה דקות.",
     "language": "he",
@@ -101901,6 +101890,17 @@
       }
     ]
   },
+  "m_d5bca96c6818c022": {
+    "source": "אין מחליף עסקים. לא להשתמש באותו חשבון ל-isramarket וללקוח קיים בלי פתרון נפרד.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/uxFlows.ts",
+        "line": 63,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_d5c09a738eadc861": {
     "source": "שפת הפוסט",
     "language": "he",
@@ -103150,7 +103150,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 63,
+        "line": 62,
         "kind": "literal"
       }
     ]
@@ -103453,6 +103453,17 @@
       {
         "file": "web/components/design/FlowBoard.tsx",
         "line": 98,
+        "kind": "jsx"
+      }
+    ]
+  },
+  "m_d8fc03ef5f6a49af": {
+    "source": "לא הצלחנו לטעון את האתר · isramarket",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/global-error.tsx",
+        "line": 17,
         "kind": "jsx"
       }
     ]
@@ -105332,6 +105343,18 @@
         "file": "web/app/calendar/page.tsx",
         "line": 71,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_dcc20dc74e1566bc": {
+    "source": "תנאי שימוש · isramarket",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/terms/page.tsx",
+        "line": 8,
+        "kind": "literal",
+        "purpose": "display"
       }
     ]
   },
@@ -107333,6 +107356,18 @@
       }
     ]
   },
+  "m_e08dbcc9eb2ad15f": {
+    "source": "מה isramarket עושה, מה אתם אחראים עליו, מחיר, ביטול ומחיקה.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/terms/page.tsx",
+        "line": 9,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
   "m_e08f2a583b730a1c": {
     "source": "אין תצוגה מקדימה",
     "language": "he",
@@ -108171,34 +108206,9 @@
         "kind": "literal"
       },
       {
-        "file": "web/components/landing-v2/BrandWordmark.tsx",
-        "line": 6,
-        "kind": "literal"
-      },
-      {
         "file": "web/components/landing-v2/ConnectionDetail.tsx",
         "line": 30,
         "kind": "literal"
-      },
-      {
-        "file": "web/components/landing-v2/Landing.tsx",
-        "line": 41,
-        "kind": "literal"
-      },
-      {
-        "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 52,
-        "kind": "literal"
-      },
-      {
-        "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 69,
-        "kind": "literal"
-      },
-      {
-        "file": "web/components/landing/LegalPage.tsx",
-        "line": 68,
-        "kind": "jsx"
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
@@ -108209,12 +108219,6 @@
         "file": "web/components/start/ResearchJourney.tsx",
         "line": 183,
         "kind": "literal"
-      },
-      {
-        "file": "web/lib/uxFlows.ts",
-        "line": 20,
-        "kind": "literal",
-        "purpose": "display"
       }
     ]
   },
@@ -108556,6 +108560,18 @@
       }
     ]
   },
+  "m_e3070ddebefc22ae": {
+    "source": "ניהול · isramarket",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/admin/layout.tsx",
+        "line": 5,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
   "m_e30b004af3549375": {
     "source": "{arg_0} מתוך 10 (היום {arg_1})",
     "language": "he",
@@ -108794,6 +108810,18 @@
         "file": "web/components/landing-v2/productFixtures.ts",
         "line": 73,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_e3d0e7780f27b706": {
+    "source": "isramarket — שיווק לעסקים קטנים",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/layout.tsx",
+        "line": 17,
+        "kind": "literal",
+        "purpose": "display"
       }
     ]
   },
@@ -116633,6 +116661,17 @@
       }
     ]
   },
+  "m_f3312355e04f41df": {
+    "source": "isramarket · ספרייה חיה",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/design/DesignLibrary.tsx",
+        "line": 53,
+        "kind": "jsx"
+      }
+    ]
+  },
   "m_f332fbf6f91d6bae": {
     "source": "למנוי שלי",
     "language": "he",
@@ -118786,18 +118825,6 @@
       }
     ]
   },
-  "m_f746f14639b1fa8d": {
-    "source": "ישראמארקט, לעמוד הראשי",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing/PublicNotice.tsx",
-        "line": 16,
-        "kind": "literal",
-        "purpose": "display"
-      }
-    ]
-  },
   "m_f749b03197ad6de2": {
     "source": "על מה לחצו כדי להתחיל התנסות",
     "language": "he",
@@ -120545,6 +120572,17 @@
       }
     ]
   },
+  "m_fb4dfd1e04bfd1f2": {
+    "source": "אפשר לחזור לחלון של isramarket ולהמשיך לבחור את החשבונות. אם הוא נסגר, המשיכו מכאן.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/MetaReturn.tsx",
+        "line": 25,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_fb55dd5b7681f878": {
     "source": "Assumptions must be nonblank and bounded",
     "language": "en",
@@ -121322,18 +121360,6 @@
       }
     ]
   },
-  "m_fcde730eb6c9583d": {
-    "source": "ספריית העיצוב — ישראמארקט",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/design/page.tsx",
-        "line": 4,
-        "kind": "literal",
-        "purpose": "display"
-      }
-    ]
-  },
   "m_fcdf5c30225f2786": {
     "source": "שמרנו את העבודה בתוכנית. כשיגיעו נתוני הזמנות חדשים, נוכל להמשיך לבדוק את התוצאות.",
     "language": "he",
@@ -121692,7 +121718,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 58,
+        "line": 57,
         "kind": "literal"
       }
     ]
@@ -122448,7 +122474,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 66,
+        "line": 65,
         "kind": "literal"
       }
     ]
@@ -122487,18 +122513,6 @@
         "file": "web/components/plan/QuarterPlanView.tsx",
         "line": 857,
         "kind": "literal"
-      }
-    ]
-  },
-  "m_ff7a19fd6ecd0917": {
-    "source": "מסע המשתמש — ישראמארקט",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/design/flows/page.tsx",
-        "line": 4,
-        "kind": "literal",
-        "purpose": "display"
       }
     ]
   },

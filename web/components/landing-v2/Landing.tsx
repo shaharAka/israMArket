@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { TRIAL_LABEL } from "@/lib/pricing";
 import { useEffect, useState } from "react";
-import { Copy, useCopy, useLanguage } from "@/components/language/LanguageProvider";
+import { Copy, useLanguage } from "@/components/language/LanguageProvider";
 import { ProductUtilities } from "@/components/language/ProductUtilities";
 import { HERO } from "./content";
 import { type ExamplePath } from "./businessExamples";
@@ -33,12 +33,11 @@ function HeroStudy({ initialPath = "services", heroVariant = "workspace", heroTy
     const timer = window.setTimeout(read, 0); window.addEventListener("popstate", read);
     return () => { window.clearTimeout(timer); window.removeEventListener("popstate", read); };
   }, [initialPath]);
-  const t = useCopy();
   const { locale } = useLanguage();
   const start = `/start?model=${initialPath}&lang=${locale}${segment ? `&segment=${segment}` : ""}`;
   return <div className={`lv2 lv2-site ${siteClean.variable} ${artSerif.variable} ${siteSerif.variable}`} data-business={initialPath} data-hero-type={heroTypeface}>
     <header className="lv2-nav"><div className="lv2-wrap lv2-nav-row">
-      <Link href="/" className="lv2-brand" aria-label={t("ישראמארקט")}><BrandWordmark direction={identity} /></Link>
+      <Link href="/" className="lv2-brand" aria-label="isramarket"><BrandWordmark direction={identity} /></Link>
       <div className="lv2-nav-end"><ProductUtilities inline /><Link href="/login" className="lv2-login"><Copy text="להיכנס" /></Link><Link href={start} className="lv2-btn-quiet"><Copy text={TRIAL_LABEL} /></Link></div>
     </div></header>
     <main><section className="lv2-hero" aria-labelledby="lv2-title"><div className="lv2-wrap lv2-hero-grid">

@@ -50,7 +50,7 @@ export function DesignLibrary() {
       </>}
       {area === "results" && <ResultsWorkshop />}
       <div className={styles.libraryControls}><SegmentedControl label="אופי התנועה" value={mood} onChange={value => setMood(value as MotionMood)} options={[{value:"quiet",label:"עדין"},{value:"playful",label:"עם אופי"}]} /><ToggleField label="הפחתת תנועה" checked={reduced} onChange={setReduced} /></div>
-      <footer className={styles.footer}><span>ישראמארקט · ספרייה חיה</span><Link href="/preview">למסכי המוצר ←</Link></footer>
+      <footer className={styles.footer}><span>isramarket · ספרייה חיה</span><Link href="/preview">למסכי המוצר ←</Link></footer>
     </main>
   </div></DesignScope>;
 }
