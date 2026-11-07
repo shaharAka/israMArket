@@ -551,7 +551,7 @@ class GoogleLoginTest(unittest.TestCase):
         claims = self.claims("", aud=CLIENT_ID)
         claims.pop("nonce")
         response = self._ga4_callback(query, claims)
-        self.assertEqual(response.headers["location"], f"{WEB}/integrations?ga4=connected")
+        self.assertEqual(response.headers["location"], f"{WEB}/integrations?ga4=connected#ga4")
         self.assertEqual(self.token_posts[-1]["redirect_uri"], f"{WEB}/backend/integrations/ga4/callback")
         item = self._ga4_item()
         self.assertEqual(item["status"], "select_property")
@@ -565,7 +565,7 @@ class GoogleLoginTest(unittest.TestCase):
         claims = self.claims("", sub="work-account-sub", email="data@agency.example")
         claims.pop("nonce")
         response = self._ga4_callback(query, claims)
-        self.assertEqual(response.headers["location"], f"{WEB}/integrations?ga4=connected&ga4_account=other")
+        self.assertEqual(response.headers["location"], f"{WEB}/integrations?ga4=connected&ga4_account=other#ga4")
         item = self._ga4_item()
         # The grant is kept, as before.
         self.assertEqual(item["status"], "select_property")
@@ -583,12 +583,11 @@ class GoogleLoginTest(unittest.TestCase):
         query = self._ga4_start()
         with mock.patch.object(google_login, "account_of", return_value=None):
             response = self._ga4_callback(query, {})
-        self.assertEqual(response.headers["location"], f"{WEB}/integrations?ga4=connected")
+        self.assertEqual(response.headers["location"], f"{WEB}/integrations?ga4=connected#ga4")
         self.assertIsNone(self._ga4_item()["account_email"])
 
     def test_signin_only_consent_preserves_prior_connection_and_explains_missing_analytics(self):
         business_id = self._signed_in_with_business()
-        query = self._ga4_start()
         with mock.patch.object(get_settings(), "token_encryption_key", Fernet.generate_key().decode()):
             db = self.Session()
             prior = Integration(business_id=business_id, provider="ga4", status="connected",
@@ -597,6 +596,7 @@ class GoogleLoginTest(unittest.TestCase):
             db.add(prior); db.commit()
             before = (prior.access_token_enc, prior.refresh_token_enc, prior.external_id)
             db.close()
+            query = self._ga4_start()
             reply = httpx.Response(200, json={"access_token": "private-new-token", "refresh_token": "private-new-refresh",
                                             "scope": "openid email", "expires_in": 3600})
             with mock.patch.object(ga4.httpx, "post", return_value=reply), mock.patch.object(ga4, "list_properties") as listing, self.assertLogs("app.routers.integrations", level="WARNING") as logged:

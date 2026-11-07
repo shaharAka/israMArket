@@ -1,9 +1,11 @@
 """GA4 authorization is separate from a verified, dated source read."""
 from datetime import date, datetime, timedelta
+import secrets
 
 from google.api_core.exceptions import PermissionDenied, Unauthenticated
 from google.auth.exceptions import RefreshError
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import InvalidRequestError
 
 from app.models import Integration, PerformanceSnapshot
 from app.security import decrypt_secret
@@ -58,13 +60,15 @@ def public_state(item: Integration) -> dict:
     return {"status": status, "note_he": NOTES[status], "property_id": item.external_id}
 
 
-def record(db: Session, item: Integration, status: str, *, report: dict | None = None) -> dict:
+def record(db: Session, item: Integration, status: str, *, report: dict | None = None, request_id: str = "", expected: str | None = None) -> dict | None:
     extra = loads(item.extra_json, {}) or {}
     prior = extra.get("source_readiness") or {}
     if prior.get("property_id") != item.external_id:
         prior = {}
     now = datetime.utcnow().isoformat()
     state = {**prior, "status": status, "note_he": NOTES[status], "property_id": item.external_id}
+    if request_id:
+        state["request_id"] = request_id
     if status == "reading":
         state["started_at"] = now
     else:
@@ -72,6 +76,11 @@ def record(db: Session, item: Integration, status: str, *, report: dict | None =
     if report is not None:
         state.update(last_success_at=now, period=report.get("period") or {})
     extra["source_readiness"] = state
+    if expected is not None:
+        from app.services.search_console import write
+        if not write(db, item, expected, extra_json=dumps(extra), status="reconnect" if status == "reconnect" else "connected" if item.external_id else "select_property"):
+            return None
+        return state
     item.extra_json = dumps(extra)
     item.status = "reconnect" if status == "reconnect" else "connected" if item.external_id else "select_property"
     db.commit()
@@ -92,8 +101,10 @@ def has_activity(report: dict) -> bool:
 
 def initial_read(db: Session, item: Integration) -> dict:
     """Read once without a model prerequisite; retain the last successful snapshot on failure."""
-    property_id = item.external_id
-    record(db, item, "reading")
+    property_id, grant, item_id = item.external_id, item.access_token_enc, item.id
+    request_id = secrets.token_urlsafe(16)
+    record(db, item, "reading", request_id=request_id)
+    before = item.extra_json
     end = date.today() - timedelta(days=1)
     start = end - timedelta(days=27)
     try:
@@ -101,16 +112,24 @@ def initial_read(db: Session, item: Integration) -> dict:
         if not isinstance(report, dict) or report.get("property_id") != property_id or not isinstance(report.get("overview"), dict):
             raise RuntimeError("Invalid source response")
     except Exception as exc:
-        db.refresh(item)
-        if item.external_id == property_id:
-            record(db, item, failure(exc)["status"])
+        try:
+            db.refresh(item)
+        except InvalidRequestError:
+            return {"status": "unchecked", "note_he": NOTES["unchecked"]}
+        if item.external_id == property_id and item.access_token_enc == grant and item.extra_json == before:
+            record(db, item, failure(exc)["status"], expected=before)
         return public_state(item)
-    db.refresh(item)
-    if item.external_id != property_id:
+    try:
+        db.refresh(item)
+    except InvalidRequestError:
+        return {"status": "unchecked", "note_he": NOTES["unchecked"]}
+    if item.external_id != property_id or item.access_token_enc != grant or item.extra_json != before:
         # A newer selection must not be overwritten by the old request's result.
         return public_state(item)
     report["read_at"] = datetime.utcnow().isoformat()
-    record(db, item, "ready" if has_activity(report) else "empty", report=report)
+    if record(db, item, "ready" if has_activity(report) else "empty", report=report, expected=before) is None:
+        current = db.get(Integration, item_id)
+        return public_state(current) if current else {"status": "unchecked", "note_he": NOTES["unchecked"]}
     # No rows is not a measured zero. Do not complete the journey's baseline step
     # or replace dated observations with an empty snapshot.
     if not report.get("overview"):

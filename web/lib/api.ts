@@ -4118,7 +4118,10 @@ export const endpoints = {
   studio: () => api<StudioOverviewPayload>("/strategy/studio"),
   calendar: (year: number, month: number) => api<CalendarPayload>(`/calendar?year=${year}&month=${month}`),
   integrations: (forceLive = false) => api<IntegrationsPayload>("/integrations", {}, forceLive),
-  ga4Start: (chooseAccount = false) => api<{ url: string }>(`/integrations/ga4/start${chooseAccount ? "?choose_account=true" : ""}`),
+  ga4Start: (chooseAccount = false, lang = "he") => api<{ url: string }>(`/integrations/ga4/start?${new URLSearchParams({ lang, ...(chooseAccount ? { choose_account: "true" } : {}) })}`),
+  searchConsoleStart: (lang: string) => api<{ url: string }>(`/integrations/search-console/start?lang=${encodeURIComponent(lang)}`),
+  searchConsoleRead: () => api<{ integration: IntegrationsPayload["integrations"][number] }>("/integrations/search-console/read", { method: "POST" }),
+  searchConsoleSite: (site_url: string) => api<{ integration: IntegrationsPayload["integrations"][number] }>("/integrations/search-console/site", { method: "POST", body: JSON.stringify({ site_url }) }),
   tiktokStart: (locale: "he" | "en" | "ar" | "ru" = "he") => api<{ url: string }>(`/integrations/tiktok/start?lang=${locale}`),
   tiktokAccount: (attempt: string) => api<{ ok: boolean }>("/integrations/tiktok/account", { method: "POST", body: JSON.stringify({ connection_attempt: attempt }) }),
   tiktokRead: () => api<{ data: TikTokData }>("/integrations/tiktok/read", { method: "POST" }),
@@ -4132,7 +4135,7 @@ export const endpoints = {
   ga4Read: () => api<{ integration: IntegrationsPayload["integrations"][number] }>("/integrations/ga4/read", { method: "POST" }),
   metaAccount: (body: { page_id: string; instagram_id?: string; display_name?: string; ad_account_id?: string; pixel_id?: string }) =>
     api("/integrations/meta/account", { method: "POST", body: JSON.stringify(body) }),
-  disconnectIntegration: (provider: "ga4" | "meta" | "tiktok") =>
+  disconnectIntegration: (provider: "ga4" | "meta" | "tiktok" | "search_console") =>
     api<{ ok: boolean; remote_revoked?: boolean }>(`/integrations/${provider}`, { method: "DELETE" }),
   createWebhook: (body: { url: string; events: string }) =>
     api<{ secret: string; id: number; url: string }>("/integrations/webhooks", {
@@ -5163,7 +5166,7 @@ export type CalendarPayload = {
 };
 
 export type SourceReadiness = {
-  status: "choose_property" | "no_properties" | "unchecked" | "reading" | "ready" | "empty" | "reconnect" | "unavailable";
+  status: "choose_property" | "no_properties" | "choose_site" | "no_sites" | "website_required" | "permission" | "unchecked" | "reading" | "ready" | "empty" | "reconnect" | "unavailable";
   note_he: string;
   property_id?: string;
   checked_at?: string | null;
@@ -5193,6 +5196,8 @@ export type IntegrationsPayload = {
     pixel_id?: string;
     pixel_verification?: PixelVerification | null;
     properties?: { property_id: string; display_name: string; account: string }[];
+    sites?: { site_url: string }[] | null;
+    search_data?: { site_url: string; read_at: string; period: { start: string; end: string }; queries: { query: string; clicks: number; impressions: number; position: number }[]; limited: boolean } | null;
     pages?: { page_id: string; display_name: string; instagram_id: string }[];
     /** Google only: which Google account granted it, and a note when it is not the sign-in one. */
     account_email?: string | null;

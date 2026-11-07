@@ -1,7 +1,7 @@
 import type { IntegrationsPayload, MetaSourceReadiness } from "@/lib/api";
 
 type Item = IntegrationsPayload["integrations"][number];
-export type JourneyProvider = "ga4" | "meta" | "tiktok";
+export type JourneyProvider = "ga4" | "meta" | "tiktok" | "search_console";
 export type JourneyStep = "done" | "current" | "waiting";
 export type ConnectionJourney = {
   steps: JourneyStep[];
@@ -24,7 +24,7 @@ export function connectionJourney(provider: JourneyProvider, item: Item | undefi
   const source = provider === "tiktok" ? item?.tiktok_data?.source_readiness : item?.source_readiness;
   const status = source?.status || "unchecked";
   const renewing = ["reconnect", "permission"].includes(status);
-  const permission = Boolean(item && ["connected", "select_property", "select_page", "select_assets", "select_account"].includes(item.status));
+  const permission = Boolean(item && ["connected", "select_property", "select_page", "select_assets", "select_account", "select_site"].includes(item.status));
   const selected = Boolean(item?.connected && item.external_id);
   const usable = selected && ["ready", "partial"].includes(status);
   // An empty successful read completes setup, but supplies no activity to optimize.
@@ -32,8 +32,9 @@ export function connectionJourney(provider: JourneyProvider, item: Item | undefi
   const current = renewing ? 0 : !permission ? 0 : !selected ? 1 : 2;
   const steps: JourneyStep[] = [0, 1, 2].map(index => read && !renewing || index < current ? "done" : index === current ? "current" : "waiting");
   const action = !available ? "לראות איך מכינים את החיבור" : renewing ? "לחדש את הגישה"
-    : !permission ? "לחבר את החשבון" : provider === "ga4" && status === "no_properties" ? "לבחור חשבון גוגל אחר"
-    : !selected ? provider === "ga4" ? "לבחור את האתר" : "לבחור את העסק"
+    : !permission ? "לחבר את החשבון" : status === "website_required" ? "להוסיף את כתובת האתר"
+    : ["no_properties", "no_sites"].includes(status) ? "לבחור חשבון גוגל אחר"
+    : !selected ? ["ga4", "search_console"].includes(provider) ? "לבחור את האתר" : "לבחור את העסק"
     : status === "partial" ? "להשלים את החיבור" : read ? "לראות את הנתונים וההגדרות" : "לבדוק את הנתונים";
   const state = (name?: string) => ({ status: READ_LABELS[name || "unchecked"] || READ_LABELS.unchecked,
     usable: name === "ready" || name === "partial" });
@@ -59,6 +60,8 @@ export function connectionJourney(provider: JourneyProvider, item: Item | undefi
     ];
   } else if (provider === "tiktok") {
     streams = [{ label: "צפיות ותגובות לסרטונים", ...state(selected ? status : "not_connected") }];
+  } else if (provider === "search_console") {
+    streams = [{ label: "חיפושים שהביאו אנשים לאתר", ...state(selected ? status : permission ? "unchecked" : "not_connected") }];
   } else {
     streams = [{ label: "כניסות לאתר ומקורות שלהן", ...state(selected ? status : "not_connected") }];
   }

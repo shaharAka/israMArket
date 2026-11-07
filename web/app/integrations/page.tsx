@@ -1,8 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import Link from "next/link";
-import { Copy, useCopy } from "@/components/language/LanguageProvider";
+import { Copy, useCopy, useLanguage } from "@/components/language/LanguageProvider";
 import {
   AppShell,
   Button,
@@ -19,6 +19,7 @@ import { connectionJourney, type ConnectionJourney } from "@/components/integrat
 import { TrackingSetupGuide } from "@/components/integrations/TrackingSetupGuide";
 import { MetaConnection } from "@/components/integrations/MetaConnection";
 import { TikTokConnection } from "@/components/integrations/TikTokConnection";
+import { SearchConsoleConnection } from "@/components/integrations/SearchConsoleConnection";
 import { connectionRecommendation, type ConnectionKey } from "@/components/integrations/connectionRecommendation";
 import { PendingLinks } from "@/components/integrations/PendingLinks";
 import { SourceReadState, sourcePresentation } from "@/components/integrations/SourceReadState";
@@ -77,31 +78,21 @@ const CODE_CHIP = "rounded-md bg-[var(--paper)] px-1.5 py-0.5 font-mono text-[12
  */
 export default function IntegrationsPage() {
   const t = useCopy();
+  const { locale } = useLanguage();
   const [data, setData] = useState<IntegrationsPayload | null>(null);
   const [business, setBusiness] = useState<Business | null>(null);
   const [demo] = useState(() => typeof window !== "undefined" && isDemo());
-  const [error, setError] = useState(() => {
-    if (typeof window === "undefined") return "";
-    return new URLSearchParams(window.location.search).get("error") || "";
-  });
-  const [successNote, setSuccessNote] = useState(() => {
-    if (typeof window === "undefined") return "";
-    const params = new URLSearchParams(window.location.search);
-    if (params.get("ga4") === "connected") {
-      // The one place that says consent was granted; the row below only asks for the site.
-      return "הגישה לגוגל אושרה. נשאר לבחור את האתר.";
-    }
-    if (params.get("meta") === "connected") {
-      return "התחברתם לפייסבוק. נשאר רק לבחור את הדף העסקי. אם הוא מקושר לאינסטגרם, גם החשבון ייבחר איתו.";
-    }
-    return "";
-  });
+  const [error, setError] = useState("");
+  const [successNote, setSuccessNote] = useState("");
+  const [connectionLoadFailed, setConnectionLoadFailed] = useState(false);
+  const [loadingConnections, setLoadingConnections] = useState(true);
   const [secret, setSecret] = useState("");
   const [webhookUrl, setWebhookUrl] = useState("");
   const [setup, setSetup] = useState<SetupPayload | null>(null);
   // Fragments are not sent during server rendering. Read them after mount so
   // hydration cannot close the consent-return row before its data arrives.
   const [expanded, setExpanded] = useState<ConnectionKey | null | undefined>(undefined);
+  const anchoredHash = useRef("");
 
   // Selection still needs the owner's confirmation, even when only one site is listed.
   const [selectedGa4Property, setSelectedGa4Property] = useState("");
@@ -115,54 +106,66 @@ export default function IntegrationsPage() {
   const [whatsapp, setWhatsapp] = useState<WhatsappPayload | null>(null);
 
   const reload = useCallback(async (forceLive = false) => {
-    await endpoints
-      .integrations(forceLive)
-      .then((integrationsRes) => {
-        setData(integrationsRes);
-        const sites = integrationsRes.integrations.find(item => item.provider === "ga4")?.properties;
-        if (sites?.length === 1) setSelectedGa4Property(sites[0].property_id);
-      })
-      .catch((err: unknown) => {
-        setError(err instanceof Error ? err.message : "לא הצלחנו לטעון את החיבורים.");
-      });
-
-    await whatsappEndpoints
-      .get()
-      .then(setWhatsapp)
-      .catch(() => {
-        // The row shows its own empty state; the other connections still load.
-      });
-
-    await endpoints.setup().then(setSetup).catch(() => { setSetup(null); });
-
-    await endpoints
-      .business()
-      .then((bizRes) => {
-        if (bizRes.business) {
-          setBusiness(bizRes.business);
-          setWebsiteInput(bizRes.business.website_url || "");
-        }
-      })
-      .catch(() => {
-        // Business not yet enrolled or non-blocking
-      });
+    setLoadingConnections(true);
+    const [connections, account, links, progress] = await Promise.allSettled([
+      endpoints.integrations(forceLive), endpoints.business(), whatsappEndpoints.get(), endpoints.setup(),
+    ]);
+    // Commit website context with the cards: a connected source must not briefly
+    // ask the owner to add the website while another sequential request is pending.
+    if (account.status === "fulfilled" && account.value.business) {
+      setBusiness(account.value.business);
+      setWebsiteInput(account.value.business.website_url || "");
+    }
+    if (connections.status === "fulfilled") {
+      setConnectionLoadFailed(false);
+      setData(connections.value);
+      const sites = connections.value.integrations.find(item => item.provider === "ga4")?.properties;
+      setSelectedGa4Property(sites?.length === 1 ? sites[0].property_id : "");
+    } else {
+      setConnectionLoadFailed(true);
+      setError(connections.reason instanceof Error ? connections.reason.message : "לא הצלחנו לטעון את החיבורים.");
+    }
+    if (links.status === "fulfilled") setWhatsapp(links.value);
+    if (progress.status === "fulfilled") setSetup(progress.value);
+    setLoadingConnections(false);
   }, []);
 
   useEffect(() => {
     let active = true;
-    const key = window.location.hash.slice(1);
-    if (["website", "whatsapp", "ga4", "meta", "tiktok"].includes(key)) {
-      queueMicrotask(() => { if (active) setExpanded(key as ConnectionKey); });
-    }
-    reload().catch((err) =>
-      setError(err instanceof Error ? err.message : "לא הצלחנו לטעון את החיבורים.")
-    );
-    return () => { active = false; };
+    const params = new URLSearchParams(window.location.search);
+    queueMicrotask(() => {
+      if (!active) return;
+      setError(params.get("error") || "");
+      if (params.get("ga4") === "connected") setSuccessNote("הגישה לגוגל אושרה. נשאר לבחור את האתר.");
+      if (params.get("meta") === "connected") setSuccessNote("התחברתם לפייסבוק. נשאר רק לבחור את הדף העסקי. אם הוא מקושר לאינסטגרם, גם החשבון ייבחר איתו.");
+      reload().catch((err) => setError(err instanceof Error ? err.message : "לא הצלחנו לטעון את החיבורים."));
+    });
+    const followHash = () => {
+      const key = window.location.hash.slice(1);
+      if (["website", "whatsapp", "ga4", "meta", "tiktok", "search_console"].includes(key)) {
+        queueMicrotask(() => { if (active) setExpanded(key as ConnectionKey); });
+      }
+    };
+    followHash();
+    window.addEventListener("hashchange", followHash);
+    return () => { active = false; window.removeEventListener("hashchange", followHash); };
   }, [reload]);
+
+  useEffect(() => {
+    if (!data || !expanded || window.location.hash !== `#${expanded}` || anchoredHash.current === expanded) return;
+    const frame = requestAnimationFrame(() => {
+      // Keep the mobile connection picker in view. Desktop can jump straight to
+      // the requested card because it shows all cards in the same column.
+      if (window.matchMedia("(min-width: 640px)").matches) document.getElementById(expanded)?.scrollIntoView({ block: "start" });
+      anchoredHash.current = expanded;
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [data, expanded]);
 
   const ga4Item = data?.integrations.find((item) => item.provider === "ga4");
   const metaItem = data?.integrations.find((item) => item.provider === "meta");
   const tiktokItem = data?.integrations.find((item) => item.provider === "tiktok");
+  const searchItem = data?.integrations.find((item) => item.provider === "search_console");
   const tiktokStatus = tiktokItem?.status === "select_account" ? t("נשאר לבחור חשבון")
     : tiktokItem?.connected ? t(({ ready: "יש נתונים", empty: "עוד אין פעילות", partial: "יש נתונים חלקיים", reconnect: "צריך לחדש גישה", permission: "צריך לאשר גישה", unavailable: "הקריאה לא הושלמה" } as Record<string, string>)[tiktokItem.tiktok_data?.source_readiness.status || ""] || "עוד לא נבדק")
     : data?.tiktok_ready ? t("לא מחובר") : t("עדיין לא זמין");
@@ -192,7 +195,7 @@ export default function IntegrationsPage() {
       return;
     }
     try {
-      const { url } = await endpoints.ga4Start(chooseAccount);
+      const { url } = await endpoints.ga4Start(chooseAccount, locale);
       window.location.href = url;
     } catch (err) {
       setError(err instanceof Error ? err.message : t("לא הצלחנו להתחיל את החיבור לגוגל"));
@@ -269,12 +272,27 @@ export default function IntegrationsPage() {
   }
 
   const recommendation = connectionRecommendation(business, setup, data, Boolean(whatsapp?.number_e164));
-  const primaryKey = recommendation?.key || null;
+  const primaryKey = expanded || recommendation?.key || null;
+  const showRecommendation = recommendation && (!expanded || expanded === recommendation.key);
   // Providers the server cannot offer yet, and that are not already connected (the demo's are).
   const unavailableCount = data && !demo ? [!data.ga4_ready && !ga4Connected, !data.meta_ready && !metaConnected, !data.tiktok_ready && !tiktokItem?.connected].filter(Boolean).length : 0;
-  const activeKey = expanded === undefined ? primaryKey : expanded;
+  const activeKey = expanded === undefined ? primaryKey || "website" : expanded;
+  const mobileKey = activeKey || "website";
+  const connectionChoices: { key: ConnectionKey; title: string; status: string }[] = [
+    { key: "website", title: t("האתר של העסק"), status: business?.website_url ? t("כתובת נשמרה") : t("לבחירה") },
+    { key: "whatsapp", title: t("קישור הוואטסאפ"), status: whatsapp?.number_e164 ? t("פעיל") : t("לבחירה") },
+    { key: "ga4", title: t("נתוני האתר"), status: ga4Item ? t(ga4Presentation.label || "עוד לא נבדק") : t("לא מחובר") },
+    { key: "search_console", title: t("החיפושים בגוגל"), status: searchItem && searchItem.status !== "disconnected" ? t(sourcePresentation(searchItem.source_readiness).label || "עוד לא נבדק") : t("לא מחובר") },
+    { key: "meta", title: t("פייסבוק ואינסטגרם"), status: metaItem ? t(sourcePresentation(metaItem.source_readiness).label || "עוד לא נבדק") : data?.meta_ready ? t("לא מחובר") : t("עדיין לא זמין") },
+    { key: "tiktok", title: t("טיקטוק"), status: tiktokStatus },
+  ];
 
   const connectionRows: Record<ConnectionKey, ReactNode> = {
+    search_console: (
+      <ConnectionSection source="search_console" title={t("החיפושים בגוגל")} status={searchItem && searchItem.status !== "disconnected" ? t(sourcePresentation(searchItem.source_readiness).label || "עוד לא נבדק") : t("לא מחובר")} account={searchItem?.display_name} open={activeKey === "search_console"} onOpen={setExpanded} journey={data ? connectionJourney("search_console", searchItem, Boolean(data.ga4_ready)) : undefined} primary={primaryKey === "search_console"}>
+        <SearchConsoleConnection item={searchItem} ready={Boolean(data?.ga4_ready)} website={business?.website_url || ""} demo={demo} primary={primaryKey === "search_console"} onChanged={() => reload(true)} />
+      </ConnectionSection>
+    ),
     tiktok: (
       <ConnectionSection source="tiktok" title={t("טיקטוק")} status={tiktokStatus} account={tiktokItem?.display_name} open={activeKey === "tiktok"} onOpen={setExpanded} journey={data ? connectionJourney("tiktok", tiktokItem, Boolean(data.tiktok_ready)) : undefined} primary={primaryKey === "tiktok"}>
         <TikTokConnection item={tiktokItem} ready={Boolean(data?.tiktok_ready)} demo={demo} primary={primaryKey === "tiktok"} businessId={business?.id} onChanged={() => reload(true)} />
@@ -502,8 +520,8 @@ export default function IntegrationsPage() {
           </ConnectionSection>
     ),
   };
-  const sourceOrder: ConnectionKey[] = ["website", "whatsapp", "ga4", "meta", "tiktok"];
-  if (primaryKey) { sourceOrder.splice(sourceOrder.indexOf(primaryKey), 1); sourceOrder.unshift(primaryKey); }
+  const sourceOrder: ConnectionKey[] = ["website", "whatsapp", "ga4", "search_console", "meta", "tiktok"];
+  if (recommendation) { sourceOrder.splice(sourceOrder.indexOf(recommendation.key), 1); sourceOrder.unshift(recommendation.key); }
 
   return (
     <AppShell>
@@ -526,7 +544,7 @@ export default function IntegrationsPage() {
               <Copy text="לעבור לעסק שלי" /></UIAction>
           </div>
         ) : (
-          <div className="mb-8 flex flex-wrap items-center justify-between gap-x-6 gap-y-1">
+          <div className="mb-5 flex flex-wrap items-center justify-between gap-x-6 gap-y-1 sm:mb-8">
             <p className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-[14px] text-[color:var(--ink-soft)]">
               <span className="font-semibold text-[color:var(--ink)]"><Copy text="העסק:" /></span>
               <span>{business?.name || t("עסק בלי שם")}</span>
@@ -548,9 +566,16 @@ export default function IntegrationsPage() {
         )}
 
         {business ? <PendingLinks key={business.id} business={business} onSaved={setBusiness} /> : null}
-        {error ? (
+        <nav aria-label={t("בחירת חיבור")} className="mb-5 grid grid-cols-2 gap-2 sm:hidden">
+          {connectionChoices.map(choice => <button key={choice.key} type="button" aria-pressed={mobileKey === choice.key} aria-controls={choice.key === "whatsapp" ? "whatsapp-connection" : choice.key} onClick={() => setExpanded(choice.key)} className={`min-h-[68px] min-w-0 rounded-xl px-3 py-2 text-start transition-colors ${mobileKey === choice.key ? "bg-[var(--primary-soft)] text-[var(--primary)] shadow-[inset_0_0_0_1px_var(--primary)]" : "bg-[var(--paper)] text-[var(--ink)] shadow-[inset_0_0_0_1px_var(--rule)]"}`}>
+            <span className="block text-[14px] font-medium leading-5">{choice.title}</span>
+            <span className="mt-1 block text-[12px] leading-4 text-[var(--ink-muted)]">{data ? choice.status : t("עוד לא נבדק")}</span>
+          </button>)}
+        </nav>
+        {error || connectionLoadFailed ? (
           <div className="mb-6">
-            <ErrorNote message={error} />
+            {error ? <ErrorNote message={error} /> : null}
+            {connectionLoadFailed ? <UIAction disabled={loadingConnections} onClick={() => { setError(""); void reload(true); }} className="mt-3"><Copy text="לטעון מחדש את החיבורים" /></UIAction> : null}
             {/* A failed Google or Facebook sign-in is almost always the wrong account or a
                 missing link between accounts, and the guide is exactly that answer. */}
             {errorHelp(error) === "google_analytics" ? (
@@ -568,22 +593,24 @@ export default function IntegrationsPage() {
           </div>
         ) : null}
 
-        {data || error ? <div className="mb-6 space-y-2">
-          {recommendation ? <>
+        {data || error ? <div className="mb-6 hidden space-y-2 sm:block">
+          {showRecommendation ? <>
             <p className="text-[13px] font-medium text-[var(--ink-muted)]"><Copy text="כדאי להתחיל כאן" /></p>
             {/* The open row right below already carries the title; say it only when it is closed. */}
             {activeKey !== primaryKey ? <h2 className="text-[20px] font-semibold text-[var(--ink)]">{t(recommendation.title)}</h2> : null}
             <p className="max-w-[42em] text-[15px] leading-6 text-[var(--ink-soft)]">{t(recommendation.why)}</p>
-          </> : <p className="text-[15px] leading-6 text-[var(--ink-soft)]">{unavailableCount === 3 ? t("החיבורים עוד לא זמינים. התוכנית ממשיכה בלעדיהם.") : unavailableCount ? t("חלק מהחיבורים עוד לא זמינים. התוכנית ממשיכה בלעדיהם.") : t("אפשר להמשיך בתוכנית. החיבורים זמינים כאן כשתצטרכו אותם.")}</p>}
+          </> : !expanded ? <p className="text-[15px] leading-6 text-[var(--ink-soft)]">{unavailableCount === 3 ? t("החיבורים עוד לא זמינים. התוכנית ממשיכה בלעדיהם.") : unavailableCount ? t("חלק מהחיבורים עוד לא זמינים. התוכנית ממשיכה בלעדיהם.") : t("אפשר להמשיך בתוכנית. החיבורים זמינים כאן כשתצטרכו אותם.")}</p> : null}
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
-            {recommendation && activeKey !== primaryKey && !["ga4", "meta", "tiktok"].includes(primaryKey || "") ? <UIAction onClick={() => setExpanded(primaryKey)}><Copy text="לפתוח את החיבור המומלץ" /></UIAction> : null}
-            <Link href={business?.owner_context?.research_journey && !business.onboarding_complete ? "/start?phase=after" : "/strategy"} className={recommendation ? TEXT_ACTION : BACK_TO_PLAN}><Copy text={business?.owner_context?.research_journey && !business.onboarding_complete ? t("לחזור לשאלות על העסק") : recommendation ? t("להמשיך בתוכנית ולחבר אחר כך") : t("לחזור לתוכנית")} /></Link>
+            {recommendation && activeKey !== primaryKey && !["ga4", "meta", "tiktok", "search_console"].includes(primaryKey || "") ? <UIAction onClick={() => setExpanded(primaryKey)}><Copy text="לפתוח את החיבור המומלץ" /></UIAction> : null}
+            <Link href={business?.owner_context?.research_journey && !business.onboarding_complete ? "/start?phase=after" : "/strategy"} className={primaryKey ? TEXT_ACTION : BACK_TO_PLAN}><Copy text={business?.owner_context?.research_journey && !business.onboarding_complete ? t("לחזור לשאלות על העסק") : primaryKey ? t("להמשיך בתוכנית ולחבר אחר כך") : t("לחזור לתוכנית")} /></Link>
           </div>
         </div> : null}
 
         <div className="space-y-4">
-          {sourceOrder.map(source => <div key={source}>{connectionRows[source]}</div>)}
+          {sourceOrder.map(source => <div key={source} className={source === mobileKey ? "" : "hidden sm:block"}>{data || source === "website" || source === "whatsapp" ? connectionRows[source] : <section id={source} aria-label={connectionChoices.find(choice => choice.key === source)?.title} />}</div>)}
         </div>
+
+        <Link href={business?.owner_context?.research_journey && !business.onboarding_complete ? "/start?phase=after" : "/strategy"} className={`mt-4 sm:hidden ${TEXT_ACTION}`}><Copy text="להמשיך בתוכנית ולחבר אחר כך" /></Link>
 
         {/* Technical, and only for the people who need it: no card, just a line that opens. */}
         <details className="group mt-10 border-t border-[var(--rule)]">
@@ -665,7 +692,7 @@ function ConnectionSection({ source, title, status, account, open, onOpen, child
   source: ConnectionKey; title: string; status: string; account?: string; open: boolean;
   onOpen: (value: ConnectionKey | null) => void; children: ReactNode; journey?: ConnectionJourney; primary?: boolean;
 }) {
-  if (journey) return <ConnectionJourneyCard id={source} title={title} account={account} status={status} journey={journey} open={open} primary={primary} onOpen={() => onOpen(open ? null : source)}>{children}</ConnectionJourneyCard>;
+  if (journey) return <ConnectionJourneyCard id={source} title={title} account={account} status={status} journey={journey} open={open} primary={primary} mobileNavigation onOpen={() => onOpen(open ? null : source)}>{children}</ConnectionJourneyCard>;
   return <details id={source === "whatsapp" ? "whatsapp-connection" : source} open={open} className="group/connection scroll-mt-20 border-b border-[var(--rule)]" onToggle={event => {
     if (event.currentTarget.open !== open) onOpen(event.currentTarget.open ? source : null);
   }}>

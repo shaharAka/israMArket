@@ -674,7 +674,7 @@ export default function PromotionPage() {
                           <Copy text="מה תרוויחו מחיבור נתוני החיפוש של גוגל" /></h3>
                         <p className="mt-1.5 max-w-[42em] text-[14px] leading-6 text-[color:var(--ink-soft)]">
                           <Copy text="זה כלי חינמי של גוגל (Search Console) שמראה באילו חיפושים האתר שלכם כבר מופיע, עם חשיפות, קליקים ומיקום ממוצע. אלה הנתונים האמיתיים היחידים על מה שמחפשים בגוגל. בלעדיהם יש לנו רק את הביטויים." /></p>
-                        <Link href="/integrations" className={`mt-4 ${QUIET_BUTTON}`}>
+                        <Link href="/integrations#search_console" className={`mt-4 ${QUIET_BUTTON}`}>
                           <Copy text="לעמוד החיבורים" /></Link>
                       </div>
                     ) : null}

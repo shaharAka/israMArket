@@ -18,6 +18,7 @@ export function sourcePresentation(state?: SourceReadiness | MetaSourceReadiness
   const status = checking ? "reading" : state?.status;
   const label = {
     choose_property: "נשאר לבחור אתר", no_properties: "לא נמצאו אתרים", unchecked: "עוד לא נבדק",
+    choose_site: "נשאר לבחור אתר", no_sites: "האתר לא מופיע בחשבון", website_required: "נשאר להוסיף אתר",
     reading: "בודקים נתונים", ready: "יש נתונים", empty: "עוד אין פעילות",
     reconnect: "צריך לחדש גישה", unavailable: "הקריאה לא הושלמה",
     choose_assets: "נשאר לבחור חשבון", no_assets: "לא נמצאו חשבונות", partial: "יש נתונים חלקיים",
@@ -35,7 +36,7 @@ export function checkedDate(value?: string | null, formatLocale = "he-IL") {
 /** Actual source state; the design workshop reuses the same presentation. */
 export function SourceReadState({ state, checking = false, onRetry, onReconnect, primary = false, resultsHref = "/performance", provider = "ga4" }: {
   state: SourceReadiness | MetaSourceReadiness;
-  provider?: "ga4" | "meta";
+  provider?: "ga4" | "meta" | "search_console";
   checking?: boolean;
   onRetry: () => void;
   onReconnect: () => void;
@@ -50,7 +51,7 @@ export function SourceReadState({ state, checking = false, onRetry, onReconnect,
   const note = state.note_he === "נתונים לדוגמה בלבד, ללא קריאה מחשבון אמיתי." ? "" : state.note_he;
   const date = checkedDate(state.last_success_at, formatLocale);
   const sections = provider === "meta" ? (state as MetaSourceReadiness).sections : undefined;
-  const renew = ["reconnect", "no_properties", "no_assets", "permission", "link_instagram"].includes(status) ||
+  const renew = ["reconnect", "no_properties", "no_sites", "no_assets", "permission", "link_instagram"].includes(status) ||
     (status === "partial" && Object.values(sections || {}).some(row => ["reconnect", "permission", "link_instagram"].includes(row.recovery_status || row.status)));
   const retry = ["unchecked", "unavailable", "empty", "partial"].includes(status) && !renew;
   // Full width, also inside the Meta row's start-aligned grid, so the expand's rule spans the card.

@@ -1,6 +1,6 @@
 import type { Business, IntegrationsPayload, SetupPayload } from "@/lib/api";
 
-export type ConnectionKey = "website" | "whatsapp" | "ga4" | "meta" | "tiktok";
+export type ConnectionKey = "website" | "whatsapp" | "ga4" | "meta" | "tiktok" | "search_console";
 export type ConnectionRecommendation = { key: ConnectionKey; title: string; why: string };
 
 /** The saved plan chooses the sources. A public link never counts as permission. */
@@ -11,6 +11,7 @@ export function connectionRecommendation(business: Business | null, setup: Setup
   const ga4 = data.integrations.find(item => item.provider === "ga4");
   const meta = data.integrations.find(item => item.provider === "meta");
   const tiktok = data.integrations.find(item => item.provider === "tiktok");
+  const search = data.integrations.find(item => item.provider === "search_console");
   const googleNeeded = items.some(item => item.key === "google" && item.status !== "soon");
   const metaNeeded = items.some(item => item.key === "instagram" && item.status !== "soon");
   const metaTitle = items.find(item => item.key === "instagram")?.title || "נתוני הפרסום והפוסטים";
@@ -19,6 +20,7 @@ export function connectionRecommendation(business: Business | null, setup: Setup
 
   // An unfinished consent return comes first, even after a subsequent plan change.
   if (data.tiktok_ready && tiktok?.status === "select_account") return { key: "tiktok", title: "לאשר את חשבון הטיקטוק", why: "נלמד מהסרטונים של העסק כדי לדייק את הפוסטים הבאים." };
+  if (search?.status === "select_site") return { key: "search_console", title: "לחבר את החיפושים בגוגל", why: "נראה באילו חיפושים האתר מופיע ומה מביא אליו אנשים." };
   if (ga4?.status === "select_property" && ga4.properties?.length) return { key: "ga4", title: "לבחור את האתר", why: googleWhy };
   if (["select_page", "select_assets"].includes(meta?.status || "")) return { key: "meta", title: "לבחור את הדף העסקי", why: metaWhy };
   if (googleNeeded && ga4?.external_id && ["unchecked", "reconnect", "unavailable"].includes(ga4.source_readiness?.status || "")) {

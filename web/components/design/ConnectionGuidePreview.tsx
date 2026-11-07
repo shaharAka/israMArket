@@ -10,7 +10,7 @@ import { connectionJourney, type JourneyProvider } from "@/components/integratio
 import type { IntegrationsPayload } from "@/lib/api";
 
 type Scenario = "missing" | "consent" | "no_properties" | "empty" | "partial" | "ready" | "reconnect" | "unavailable";
-const NAMES = { ga4: "נתוני האתר בגוגל", meta: "פייסבוק ואינסטגרם", tiktok: "טיקטוק" };
+const NAMES = { ga4: "נתוני האתר בגוגל", meta: "פייסבוק ואינסטגרם", tiktok: "טיקטוק", search_console: "החיפושים בגוגל" };
 
 /** Review the actual customer components with local-only source states. No provider requests. */
 export function ConnectionGuidePreview() {
@@ -20,7 +20,7 @@ export function ConnectionGuidePreview() {
   const [open, setOpen] = useState(false);
   const pending = scenario === "missing" || scenario === "consent" || scenario === "no_properties";
   const item: IntegrationsPayload["integrations"][number] | undefined = scenario === "missing" ? undefined : {
-    provider, status: pending ? provider === "ga4" ? "select_property" : provider === "meta" ? "select_assets" : "select_account" : "connected",
+    provider, status: pending ? provider === "ga4" ? "select_property" : provider === "search_console" ? "select_site" : provider === "meta" ? "select_assets" : "select_account" : "connected",
     connected: !pending, display_name: "נעה · עיצוב", external_id: pending ? "" : "review-only-account",
     ad_account_id: !pending && provider === "meta" ? "review-only-ads" : "",
     source_readiness: { status: scenario === "consent" ? "unchecked" : scenario === "unavailable" ? "unchecked" : scenario,
@@ -30,7 +30,7 @@ export function ConnectionGuidePreview() {
     tiktok_data: { source_readiness: { status: pending ? "unchecked" : scenario, note_he: "", last_success_at: !pending ? "2026-10-17T08:32:22" : undefined }, profile: { display_name: "נעה · עיצוב" }, complete: scenario !== "partial", measurement: "cumulative_public_video_counts", videos: [] },
   };
   const journey = connectionJourney(provider, item, scenario !== "unavailable");
-  const guideProvider = provider === "ga4" ? "google" : provider;
+  const guideProvider = provider === "ga4" || provider === "search_console" ? "google" : provider;
   return <main className="app-blue min-h-screen bg-[var(--canvas)] px-4 py-8 text-[var(--ink)]">
     <div className="mx-auto max-w-[760px] space-y-6">
       <header className="flex flex-wrap items-center justify-between gap-3"><h1 className="text-[28px] font-semibold"><Copy text="החיבורים, צעד אחר צעד" /></h1><Link href="/design/connections" className="text-[14px] text-[var(--primary)]"><Copy text="ללוח החיבורים" /></Link></header>

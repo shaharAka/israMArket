@@ -52,3 +52,14 @@ test("TikTok uses its own snapshot and never promises advertising or website mea
   assert.equal(result.checkedAt, "2026-10-17T08:32:22");
   assert.equal(result.streams.length, 1);
 });
+test("Search Console permission and site selection stand on their own", () => {
+  const pending = { ...item("choose_site"), provider: "search_console", status: "select_site", connected: false, external_id: "" };
+  assert.deepEqual(journey("search_console", pending, true).steps, ["done", "current", "waiting"]);
+  assert.equal(journey("search_console", pending, true).action, "לבחור את האתר");
+  assert.equal(journey("search_console", { ...item(), provider: "search_console" }, true).streams[0].label, "חיפושים שהביאו אנשים לאתר");
+});
+test("Search Console without a matching property offers account recovery", () => {
+  const pending = { ...item("no_sites"), provider: "search_console", status: "select_site", connected: false, external_id: "" };
+  assert.equal(journey("search_console", pending, true).action, "לבחור חשבון גוגל אחר");
+  assert.equal(journey("search_console", pending, true).usable, false);
+});

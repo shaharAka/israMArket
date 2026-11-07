@@ -9,9 +9,9 @@ import { checkedDate } from "./SourceReadState";
 import type { ConnectionJourney } from "./connectionJourney";
 
 /** מטרה: לראות מה כבר מחובר ומה עושים עכשיו, בלי לפתוח הוראות כדי להבין את המצב. */
-export function ConnectionJourneyCard({ id, title, account, status, journey, open, onOpen, primary = false, children }: {
+export function ConnectionJourneyCard({ id, title, account, status, journey, open, onOpen, primary = false, mobileNavigation = false, children }: {
   id: string; title: string; account?: string; status: string; journey: ConnectionJourney;
-  open: boolean; onOpen: () => void; primary?: boolean; children: ReactNode;
+  open: boolean; onOpen: () => void; primary?: boolean; mobileNavigation?: boolean; children: ReactNode;
 }) {
   const t = useCopy();
   const { locale } = useLanguage();
@@ -36,7 +36,7 @@ export function ConnectionJourneyCard({ id, title, account, status, journey, ope
       </div>)}
     </dl>
     {journey.checkedAt ? <p className="mt-2 text-[12px] text-[var(--ink-muted)]">{t("נקרא ב־{arg_0}", { arg_0: checkedDate(journey.checkedAt, LOCALE_META[locale].formatLocale) })}</p> : null}
-    <div className="mt-3"><UIAction variant={!open && primary ? "primary" : "text"} onClick={onOpen} aria-expanded={open} aria-controls={`${id}-connection-body`}>
+    <div className={mobileNavigation ? "mt-3 hidden sm:block" : "mt-3"}><UIAction variant={!open && primary ? "primary" : "text"} onClick={onOpen} aria-expanded={open} aria-controls={`${id}-connection-body`}>
       {open ? t("לסגור את שלבי החיבור") : t(journey.action)}
     </UIAction></div>
     <div id={`${id}-connection-body`} hidden={!open} className="mt-2 border-t border-[var(--rule)] pt-4">{children}</div>

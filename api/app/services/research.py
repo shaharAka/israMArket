@@ -1852,7 +1852,9 @@ def readiness(db: Session, business: Business) -> dict:
     sites, _ = _competitor_sites(business)
     meta_connected = instagram_signal.meta_context(business) is not None
     ga4 = next((i for i in business.integrations if i.provider == "ga4" and i.status == "connected"), None)
-    console = bool(ga4 and keywords.search_console_scope_granted((loads(ga4.extra_json, {}) or {}).get("scopes")))
+    from app.services import search_console
+    console_item = search_console.ensure_legacy(db, business)
+    console = bool(console_item and search_console.public_state(console_item, business.website_url).get("status") in {"ready", "empty"})
     synced = db.query(InstagramPost).filter(InstagramPost.business_id == business.id).count()
     snaps = db.query(PerformanceSnapshot).filter(PerformanceSnapshot.business_id == business.id).count()
     competitor_needs = ([] if handles else ["competitor_handles"]) + ([] if sites else ["competitor_websites"])
