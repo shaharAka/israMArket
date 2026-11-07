@@ -1,8 +1,8 @@
 """Onboarding v2 revision 6: the baseline, the lever and the calculated 3-month target.
 
 `goal_numbers.suggest` is deterministic (no model), so every figure here is checked
-against the published ranges it must come from (cost_model = Kan Media, google_cost =
-Rulers) or against a labelled planning assumption.
+against published Meta costs or against a labelled planning assumption. Google Ads
+performance stays unestimated until the owner checks a forecast in their own account.
 """
 import _test_env  # noqa: F401  (must come before any `app` import)
 
@@ -153,31 +153,33 @@ class ArchitectMathTest(unittest.TestCase):
         # 6 × 0.1..0.2 = 0.6..1.2 a month; ×3 = 1.8..3.6 ≈ 2-4 clients; × 25,000 = 45,000..90,000.
         self.assertIn("עוד 0.6-1.2 לקוחות בחודש, כ-2-4 ב-3 החודשים (כ-45,000-90,000 ₪)", math_he[2])
 
-    def test_the_google_numbers_and_the_capacity(self):
+    def test_google_does_not_turn_a_budget_choice_into_personal_cost_or_result_estimates(self):
         plan = google_cost.plan_from_budget(5000, "home", ARCHITECT["offerings"], "services")
-        self.assertEqual(plan.industry_key, "renovation")
-        self.assertEqual(plan.expected_conversions, (13, 35))  # 5,000/11×3% .. 5,000/7×5%
-        self.assertEqual(plan.cost_per_conversion, (140, 367))  # 7/5% .. 11/3%
-        self.assertEqual(len(self.result["math_he"]), 3)  # the cost comparison lives in the unit economics
-        budget = self.result["budget_he"]
-        self.assertIn("13-35 פניות נוספות", budget)
-        self.assertIn("2.6-7 לקוחות", budget)  # 13×20% .. 35×20%
-        self.assertIn("יותר ממה שיש לכם מקום", budget)
-        unit = self.result["unit_economics_he"]
-        self.assertIn("700-1,835 ₪", unit)  # 140/20% .. 367/20%
-        self.assertIn("25,000 ₪", unit)
-        self.assertIn("כמה נשאר לכם", unit)
-        self.assertEqual(self.result["sources"][0]["url"], google_cost.SOURCE_URL)  # no margin given: no verdict invented
+        self.assertIsNone(plan.expected_clicks)
+        self.assertIsNone(plan.expected_conversions)
+        self.assertIsNone(plan.cost_per_conversion)
+        self.assertIsNone(plan.minimum_viable_budget)
+        self.assertIsNone(plan.management_fee)
+        self.assertNotIn("budget_he", self.result)
+        self.assertNotIn("unit_economics_he", self.result)
+        self.assertFalse(any(source["url"] == google_cost.LEGACY_AGENCY_SOURCE_URL for source in self.result["sources"]))
+        self.assertFalse(any("דמי ניהול" in line or "מינימום" in line for line in self.result["assumptions_he"]))
         self.assertIsNone(self.result["payback"])
-        self.assertEqual(self.result["sources"][0]["url"], google_cost.SOURCE_URL)
 
     def test_new_customers_are_capped_by_capacity(self):
         result = goals.suggest(draft(ARCHITECT, lever={"primary": "new_customers"}), TODAY)
-        suggestion = result["suggestion"]
-        self.assertEqual(suggestion["kind"], "clients")
-        self.assertEqual((suggestion["min"], suggestion["max"]), (2, 2))  # 2.6-7 capped at 2
-        self.assertIn("יש מקום רק לעוד 2", result["math_he"][2])
+        # Without a Google forecast, a budget choice cannot be turned into paid clients.
+        self.assertIsNone(result["suggestion"])
+        self.assertEqual(result["recommended_lever"], "close_more")
+        self.assertNotIn("קליקים", " ".join(result["math_he"]))
         full = goals.suggest(draft(ARCHITECT, lever={"primary": "new_customers"},
+                                   baseline={**ARCHITECT["baseline"], "capacity_more": "none"}), TODAY)
+        self.assertIsNone(full["suggestion"])
+        self.assertEqual(full["recommended_lever"], "bigger_basket")
+        self.assertIn("אין מקום", full["qualitative_he"])
+
+    def test_owner_capacity_caps_a_baseline_based_close_rate_scenario(self):
+        full = goals.suggest(draft(ARCHITECT, lever={"primary": "close_more"},
                                    baseline={**ARCHITECT["baseline"], "capacity_more": "none"}), TODAY)
         self.assertIsNone(full["suggestion"])
         self.assertEqual(full["recommended_lever"], "bigger_basket")
@@ -221,13 +223,12 @@ class BakeryAndUnknownsTest(unittest.TestCase):
         self.assertIn("כ-360-720 ₪", back["math_he"][2])
         self.assertIn("budget_he", back)  # the budget goes to those who already bought
 
-    def test_unmatched_industry_uses_the_general_row_and_says_so(self):
+    def test_unmatched_industry_does_not_insert_a_google_agency_estimate(self):
         result = goals.suggest(draft(ARCHITECT, business_type="other", offerings="ייעוץ לחברות בתחום הלוגיסטיקה",
                                      lever={"primary": "new_customers"}), TODAY)
         joined = " ".join(result["assumptions_he"])
-        # Consulting is a sector signal (professional) but no industry row: the general price.
-        self.assertIn("השתמשנו במחיר הכללי", joined)
-        self.assertIn("6-12 ₪", joined)
+        self.assertNotIn("מחיר הכללי", joined)
+        self.assertNotIn("6-12 ₪", joined)
 
 
 class SourcesTest(unittest.TestCase):

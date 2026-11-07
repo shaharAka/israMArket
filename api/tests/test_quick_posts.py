@@ -49,6 +49,23 @@ class QuickPostsTest(RewriteTestCase):
         self.assertEqual(month_posts.posts_status(strategy), {str(w): "pending" for w in range(1, 5)})
         self.assertEqual(self.business.onboarding_complete, 0)
 
+    def test_tiktok_and_linkedin_create_manual_export_drafts_in_their_native_formats(self):
+        # Creation saves the owner's copy only; neither destination starts paid text or
+        # image generation. TikTok still needs the owner to supply a clip in the editor.
+        for destination, expected_format in (("tiktok", "reel"), ("linkedin", "image")):
+            body = self.request(destination=destination, text=f"Owner copy for {destination}.")
+            with mock.patch("app.services.strategy.lite_json", side_effect=AssertionError("paid call")), \
+                 mock.patch("app.routers.strategy.generate_for_post", side_effect=AssertionError("image call")):
+                response = self.create(body)
+            self.assertEqual(response.status_code, 200, response.text)
+            saved = response.json()["post"]
+            self.assertEqual(saved["format"], expected_format)
+            self.assertEqual(saved["channel"], destination)
+            self.assertEqual(saved["primary_outlet"], destination)
+            self.assertEqual(saved["outlets"], [destination])
+            self.assertEqual(saved["caption"], body["text"])
+            self.assertIsNone(saved.get("video_url"))
+
     def test_retry_returns_same_draft_even_after_editor_changes_it(self):
         body = self.request()
         first = self.create(body).json()
@@ -168,7 +185,7 @@ class QuickPostsTest(RewriteTestCase):
         response = self.create(self.request(content_language=None))
         self.assertEqual(response.json()["post"]["content_language"], "ru")
         self.assertEqual(self.create(self.request(text="  ")).status_code, 422)
-        self.assertEqual(self.create(self.request(destination="linkedin")).status_code, 422)
+        self.assertEqual(self.create(self.request(destination="pinterest")).status_code, 422)
 
     def test_request_ids_are_scoped_to_each_business(self):
         body = self.request()

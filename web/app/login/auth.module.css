@@ -20,6 +20,8 @@
 .barRow {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  gap: 16px;
   height: 68px;
 }
 

@@ -3,12 +3,10 @@
 import Link from "next/link";
 import { useCopy, Copy } from "@/components/language/LanguageProvider";
 import { WhatsNewLink } from "@/components/language/WhatsNewLink";
-import { useEffect, useState } from "react";
 import { AppShell, PageHeader, useLogOut } from "@/components/AppShell";
 import { CARD, GROUP_LABEL, LIST_ROW, ROW_CHEVRON, ROW_ICON } from "@/components/account/setupStyles";
 import { IconCamera } from "@/components/instagram/SourceLink";
 import { BrandLink } from "@/components/BrandLink";
-import { endpoints } from "@/lib/api";
 import {
   IconCalendar,
   IconChevron,
@@ -68,22 +66,14 @@ const GROUPS: { title: string; rows: Row[] }[] = [
 
 export default function BusinessPage() {
   const t = useCopy();
-  const [businessName, setBusinessName] = useState("");
   const logOut = useLogOut();
-
-  useEffect(() => {
-    endpoints
-      .business()
-      .then((res) => setBusinessName(res.business?.name ?? ""))
-      .catch(() => undefined);
-  }, []);
 
   return (
     <AppShell>
       <div className="mx-auto max-w-[720px]">
-        {/* The business's name is the title; its brand sits beside it, as a way in. */}
+        {/* Name the destination clearly; the shell keeps the business identity in view. */}
         <PageHeader
-          title={businessName || t("העסק שלי")}
+          title={t("כלי העסק")}
           action={
             <BrandLink className="-mx-1 font-semibold !text-[color:var(--ink)] hover:!bg-[var(--paper)] hover:shadow-[var(--shadow-card)]" />
           }

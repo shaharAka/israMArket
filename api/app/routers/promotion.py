@@ -1,11 +1,10 @@
-"""Promotion basics for Google: what it would cost, and which terms are worth having.
+"""Google Ads planning guidance, observed search terms, and the free local profile.
 
-Two endpoints, both scoped to the caller's business and both grounded in published data
-or in the owner's own Google account:
+Two endpoints, both scoped to the caller's business:
 
-* `GET /promotion/google` — the cost plan (ranges only, from the Rulers data in
-  `services/google_cost.py`) plus the Google Business Profile checklist for the free
-  local surface. Deterministic, no network.
+* `GET /promotion/google` — the owner's saved marketing budget, official Google Ads
+  planning references, and the Google Business Profile checklist. It does not forecast
+  ad performance or read a Google Ads account. Deterministic, no network.
 * `GET /promotion/keywords` — real query phrases from Google autocomplete, enriched with
   the queries the site already ranks for when Search Console is connected. Cached, so a
   UI that re-renders cannot hammer Google.

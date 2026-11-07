@@ -25,14 +25,7 @@ from app.main import app
 from app.models import Business, Integration, User
 from app.routers import promotion as promotion_router
 from app.services import google_cost, keywords
-from app.services.google_cost import (
-    CPC_TIERS,
-    INDUSTRIES_BY_KEY,
-    SECTORS,
-    match_industry,
-    plan_for_business,
-    plan_from_budget,
-)
+from app.services.google_cost import plan_for_business, plan_from_budget
 from app.services.jsonutil import dumps
 
 
@@ -59,207 +52,54 @@ BUSINESS = {
 }
 
 
-# --- 1. industry mapping -------------------------------------------------------------
+# --- 1. Google forecasts remain in the owner's Google Ads account -----------------
 
 
-class IndustryMappingTest(unittest.TestCase):
-    def test_real_product_business_types_land_on_the_right_row(self):
-        cases = [
-            ("מאפייה / קפה / מסעדה", "חלות ולחמים", "food"),
-            ("חנות פיזית / קמעונאות", "בגדים ונעליים", "fashion"),
-            ("סטודיו לאימון / ספורט", "אימוני כוח", "education"),
-            ("הדרכות, קורסים וחינוך", "קורס צילום", "education"),
-            ("תיירות ואירוח", "צימרים בגליל", "tourism"),
-            ("קליניקה, יופי ובריאות", "פיזיותרפיה", "health"),
-            ("שירותים מקצועיים (עו\"ד, רו\"ח, ייעוץ)", "ייצוג בתביעות", "legal"),
-            ("עיצוב / אדריכלות / נדל״ן", "תיווך דירות", "real_estate"),
-        ]
-        for business_type, offerings, expected in cases:
-            with self.subTest(business_type=business_type):
-                industry, matched = match_industry(business_type, offerings)
-                self.assertIsNotNone(industry)
-                self.assertEqual(industry.key, expected)
-                self.assertTrue(matched, "matching must be explainable")
-
-    def test_matched_keywords_are_reported(self):
-        industry, matched = match_industry("מוסך", "טיפולים וצמיגים")
-        self.assertEqual(industry.key, "automotive")
-        self.assertIn("מוסך", matched)
-
-    def test_ambiguous_evidence_does_not_drift_to_the_cheapest_row(self):
-        """"חנות פיזית / קמעונאות" alone names no category: it must not silently become
-        fashion (the cheapest CPC row) or B2B (the priciest)."""
-        industry, matched = match_industry("חנות פיזית / קמעונאות", "")
-        self.assertIsNone(industry)
-        self.assertEqual(matched, [])
-
-    def test_documented_default_is_the_middle_tier_not_an_extreme(self):
-        plan = plan_from_budget(10_000, "עסק אחר", "משהו שלא מופיע בטבלה")
-        self.assertEqual(plan.industry_key, "general")
-        self.assertEqual(plan.cpc_range, CPC_TIERS["medium"])
-        cheapest = INDUSTRIES_BY_KEY["fashion"].cpc
-        priciest = INDUSTRIES_BY_KEY["b2b_tech"].cpc
-        self.assertNotEqual(plan.cpc_range, cheapest)
-        self.assertNotEqual(plan.cpc_range, priciest)
-        self.assertTrue(any("רצועת הביניים" in warning for warning in plan.warnings))
-
-    def test_unmatched_industry_reports_no_conversion_estimate(self):
-        plan = plan_from_budget(10_000, "עסק אחר", "משהו שלא מופיע בטבלה")
+class NoPersonalGoogleForecastTest(unittest.TestCase):
+    def test_plan_keeps_the_owner_budget_and_leaves_all_market_estimates_empty(self):
+        plan = plan_for_business(BUSINESS)
+        self.assertEqual(plan.monthly_budget_ils, BUSINESS["monthly_budget_ils"])
+        self.assertEqual(plan.industry_key, "food")
+        self.assertIsNone(plan.cpc_range)
+        self.assertIsNone(plan.expected_clicks)
         self.assertIsNone(plan.conversion_rate_range)
         self.assertIsNone(plan.expected_conversions)
         self.assertIsNone(plan.cost_per_conversion)
         self.assertIsNone(plan.minimum_viable_budget)
+        self.assertIsNone(plan.management_fee)
+        self.assertIsNone(plan.setup_fee)
+        self.assertIsNone(plan.total_monthly_ils)
+        self.assertIsNone(plan.first_month_total_ils)
+        self.assertEqual(plan.warnings, [])
 
-    def test_a_category_signal_gives_an_online_store_the_ecommerce_sector(self):
-        """An online store with no priced category still gets the eCommerce rate and
-        floor — the sector is known even when the CPC row is not."""
-        plan = plan_from_budget(10_000, "חנות אונליין (אי-קומרס)", "מוצרי חשמל")
-        self.assertEqual(plan.industry_key, "general")
-        self.assertEqual(plan.sector_key, "ecommerce")
-        self.assertEqual(plan.conversion_rate_range, SECTORS["ecommerce"]["conversion_rate"])
-        self.assertEqual(plan.minimum_viable_budget, SECTORS["ecommerce"]["minimum_budget"])
-
-    def test_b2b_tech_has_a_published_floor_and_no_published_rate(self):
-        plan = plan_from_budget(20_000, "סטארטאפ", "פלטפורמת SaaS")
-        self.assertEqual(plan.industry_key, "b2b_tech")
-        self.assertEqual(plan.sector_key, "tech")
-        self.assertEqual(plan.minimum_viable_budget, (15_000, 25_000))
-        self.assertIsNone(plan.conversion_rate_range)
-        self.assertIsNone(plan.expected_conversions)
-        self.assertTrue(any("לא מפרסם בו איזה חלק מהקליקים" in warning for warning in plan.warnings))
-
-    def test_plan_for_business_reads_the_stored_payload(self):
-        plan = plan_for_business(BUSINESS)
-        self.assertEqual(plan.industry_key, "food")
-        self.assertEqual(plan.monthly_budget_ils, 10_000)
-
-
-# --- 2. ranges, hand-checked ---------------------------------------------------------
-
-
-class RangeTest(unittest.TestCase):
-    def test_renovation_example_is_hand_checked(self):
-        """10,000 ₪ · CPC 7-11 ₪ · CR 3-5%
-        clicks = 10,000/11 .. 10,000/7 = 909 .. 1,428
-        conversions = 909x3% .. 1,428x5% = 27 .. 71
-        cost per conversion = 7/5% .. 11/3% = 140 .. 367
-        """
-        plan = plan_from_budget(10_000, "שיפוצים ובנייה", "שיפוצים לדירות")
-        self.assertEqual(plan.cpc_range, (7.0, 11.0))
-        self.assertEqual(plan.expected_clicks, (909, 1428))
-        self.assertEqual(plan.conversion_rate_range, (0.03, 0.05))
-        self.assertEqual(plan.expected_conversions, (27, 71))
-        self.assertEqual(plan.cost_per_conversion, (140, 367))
-
-    def test_source_example_falls_inside_our_range(self):
-        """The article's own worked example for renovations is 180-300 ₪ per lead at an
-        average CPC of 9 ₪. Using the whole CPC range must contain it, not contradict it."""
-        plan = plan_from_budget(10_000, "שיפוצים ובנייה", "שיפוצים")
-        self.assertLessEqual(plan.cost_per_conversion[0], 180)
-        self.assertGreaterEqual(plan.cost_per_conversion[1], 300)
-
-    def test_cost_per_conversion_is_derived_from_the_published_ranges(self):
-        plan = plan_from_budget(10_000, "שיפוצים ובנייה", "שיפוצים")
-        self.assertEqual(
-            plan.cost_per_conversion,
-            (round(plan.cpc_range[0] / plan.conversion_rate_range[1]),
-             round(plan.cpc_range[1] / plan.conversion_rate_range[0])),
-        )
-        self.assertTrue(any("נגזרה מהטווחים שפורסמו" in line for line in plan.assumptions))
-
-    def test_every_computed_number_is_a_range(self):
-        for budget in (0, 1_000, 5_000, 10_000, 40_000):
-            for business_type, offerings in (
-                ("מאפייה", "חלות"),
-                ("עורך דין", "דיני עבודה"),
-                ("חנות אונליין (אי-קומרס)", "מוצרי חשמל"),
-                ("עסק אחר", "משהו"),
-            ):
-                with self.subTest(budget=budget, business_type=business_type):
-                    plan = plan_from_budget(budget, business_type, offerings)
-                    for value in (
-                        plan.expected_clicks,
-                        plan.expected_conversions,
-                        plan.cost_per_conversion,
-                    ):
-                        if value is None:
-                            continue
-                        self.assertEqual(len(value), 2)
-                        self.assertLessEqual(value[0], value[1])
-
-    def test_zero_budget_does_not_crash_and_says_so(self):
-        plan = plan_from_budget(0, "מאפייה", "חלות")
-        self.assertEqual(plan.monthly_budget_ils, 0)
-        self.assertTrue(any("לא הוגדר תקציב" in warning for warning in plan.warnings))
-        self.assertFalse(any("גוגל צריך" in warning for warning in plan.warnings))
-
-    def test_fees_are_separate_line_items(self):
-        plan = plan_from_budget(10_000, "מאפייה", "חלות")
-        self.assertEqual(plan.setup_fee, (1_500, 4_000))
-        self.assertEqual(plan.management_fee["percent_amount_ils"], (1_500, 2_000))
-        self.assertEqual(plan.management_fee["flat_range_ils"], (2_000, 8_000))
-        self.assertGreater(plan.total_monthly_ils[1], plan.monthly_budget_ils)
-        self.assertGreater(plan.first_month_total_ils[0], plan.total_monthly_ils[0])
-        self.assertTrue(any("ניהול" in line for line in plan.assumptions))
-
-    def test_no_search_volume_is_claimed_anywhere(self):
-        plan = plan_from_budget(10_000, "מאפייה", "חלות")
-        self.assertFalse(hasattr(plan, "search_volume"))
-        self.assertTrue(any("נפחי חיפוש" in line for line in plan.assumptions))
-
-    def test_to_dict_is_json_serialisable(self):
-        payload = plan_from_budget(10_000, "מאפייה", "חלות").to_dict()
-        self.assertEqual(payload["industry_key"], "food")
-        self.assertIn("warnings", payload)
-        json.dumps(payload, ensure_ascii=False)
-
-
-# --- 3. warnings ---------------------------------------------------------------------
-
-
-class WarningTest(unittest.TestCase):
-    def test_below_minimum_budget_names_the_trap(self):
+    def test_plan_does_not_compare_or_classify_the_owner_as_a_campaign(self):
         plan = plan_from_budget(3_000, "שיפוצים ובנייה", "שיפוצים")
-        self.assertEqual(plan.minimum_viable_budget, (5_000, 8_000))
-        trap = [w for w in plan.warnings if "מלכודת" in w]
-        self.assertEqual(len(trap), 1)
-        self.assertIn("3,000", trap[0])
-        self.assertIn("5,000-8,000", trap[0])
+        self.assertEqual(plan.monthly_budget_ils, 3_000)
+        self.assertIsNone(plan.sector_key)
+        self.assertIsNone(plan.sector_label)
+        self.assertIsNone(plan.minimum_viable_budget)
+        self.assertEqual(plan.channel_comparison, {})
 
-    def test_budget_in_the_lower_half_of_the_published_floor_is_flagged(self):
-        plan = plan_from_budget(6_000, "שיפוצים ובנייה", "שיפוצים")
-        self.assertTrue(any("בחלק התחתון" in warning for warning in plan.warnings))
-        self.assertFalse(any("מלכודת" in warning for warning in plan.warnings))
-
-    def test_no_budget_warning_when_the_budget_clears_the_floor(self):
-        plan = plan_from_budget(12_000, "שיפוצים ובנייה", "שיפוצים")
-        self.assertFalse(any("מינימום שפורסם למגזר" in warning for warning in plan.warnings))
-
-    def test_learning_phase_warning_when_even_the_best_case_is_short(self):
-        # Lawyer, 5,000 ₪: clicks 178-277, conversions 8-22 — below 30 even optimistically.
-        plan = plan_from_budget(5_000, "שירותים משפטיים", "עורך דין")
-        self.assertEqual(plan.expected_conversions, (8, 22))
-        learning = [w for w in plan.warnings if "ללמוד" in w]
-        self.assertEqual(len(learning), 1)
-        self.assertIn("איסוף נתונים", learning[0])
-        self.assertIn("החזר על ההוצאה", learning[0])
-
-    def test_learning_phase_warning_when_the_range_straddles_thirty(self):
-        plan = plan_from_budget(10_000, "שירותים משפטיים", "עורך דין")
-        self.assertEqual(plan.expected_conversions, (17, 44))
-        self.assertTrue(any("חוצה את סף" in warning for warning in plan.warnings))
-
-    def test_no_learning_warning_when_the_range_clears_the_threshold(self):
-        plan = plan_from_budget(20_000, "חנות אונליין (אי-קומרס)", "בגדים")
-        self.assertEqual(plan.industry_key, "fashion")
-        self.assertGreaterEqual(plan.expected_conversions[0], 30)
-        self.assertFalse(any("ללמוד" in warning for warning in plan.warnings))
-
-    def test_prompt_block_forbids_inventing_numbers(self):
+    def test_prompt_directs_to_google_forecast_and_forbids_agency_assumptions(self):
         block = google_cost.prompt_block(plan_from_budget(10_000, "מאפייה", "חלות"))
-        self.assertIn("אסור להמציא", block)
         self.assertIn("Keyword Planner", block)
-        self.assertIn("טווח CPC", block)
+        self.assertIn("Never infer", block)
+        for forbidden in ("CPC", "minimum", "agency/setup fees"):
+            self.assertIn(forbidden, block)
+        for unsupported in ("15%-20%", "Rulers"):
+            self.assertNotIn(unsupported, block)
+
+    def test_only_official_google_sources_are_returned(self):
+        plan = plan_from_budget(10_000, "מאפייה", "חלות")
+        self.assertIn("support.google.com/google-ads", plan.source)
+        self.assertIn("support.google.com/google-ads", google_cost.BUDGET_SOURCE_URL)
+        self.assertNotIn("rulers.co.il", json.dumps(plan.to_dict(), ensure_ascii=False))
+        json.dumps(plan.to_dict(), ensure_ascii=False)
+
+    def test_profile_guidance_uses_business_label_without_cost_claims(self):
+        profile = google_cost.business_profile_guidance(BUSINESS)
+        self.assertEqual(profile["suggested_category_hint"], "אוכל ושתייה")
+        self.assertFalse(any("מינימום" in step["why"] for step in profile["steps"]))
 
 
 # --- 4. autocomplete -----------------------------------------------------------------
@@ -684,7 +524,10 @@ class PromotionEndpointTest(unittest.TestCase):
         self.assertEqual(first.status_code, 200)
         body = first.json()
         self.assertEqual(body["plan"]["industry_key"], "food")
-        self.assertEqual(body["plan"]["expected_clicks"], first.json()["plan"]["expected_clicks"])
+        self.assertIsNone(body["plan"]["expected_clicks"])
+        self.assertIsNone(body["plan"]["minimum_viable_budget"])
+        self.assertIsNone(body["plan"]["management_fee"])
+        self.assertIn("support.google.com/google-ads", body["plan"]["source"])
         self.assertEqual(body["plan"]["warnings"], second.json()["plan"]["warnings"])
         self.assertEqual(body["business_profile"]["steps"][0]["id"], "claim")
         self.assertEqual(body["plan"]["source"], google_cost.SOURCE_URL)

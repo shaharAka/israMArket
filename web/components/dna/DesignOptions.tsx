@@ -72,7 +72,14 @@ export function DesignOptions({
     }).outcome;
   };
   // As it will be saved: "רק התמונה" turns the words off (the server's text-mode rule).
-  const withDesign = (c: DesignChoice): RoadmapPost => ({ ...post, has_overlay: c.mode !== "photo_only", design: { ...post.design, composition: c.composition, text_mode: c.mode } });
+  const withDesign = (c: DesignChoice): RoadmapPost => ({
+    ...post,
+    has_overlay: c.mode !== "photo_only",
+    ...(c.mode !== "photo_only" && !(post.overlay_headline || post.overlay_text || "").trim()
+      ? { overlay_headline: post.title.slice(0, 200), overlay_text: post.title.slice(0, 200) }
+      : {}),
+    design: { ...post.design, composition: c.composition, text_mode: c.mode },
+  });
   const current = resolveDesign(post, dna);
   const currentOutcome = outcomeOf(post);
 

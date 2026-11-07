@@ -11,6 +11,7 @@ import { ApiError } from "@/lib/api";
 import ui from "@/components/posts/chrome.module.css";
 import { IconArrowLeft, IconChevron, IconPlus, IconTrash } from "@/lib/icons";
 import { foundations, type FeaturedItem, type FeaturedPayload, type FeaturedKind, type FeaturedRecommendation, type FeaturedReason } from "@/lib/trial";
+import { enoughFeaturedTopics, maySavePartialTopics } from "@/lib/featuredTopicProgress";
 import { toast } from "@/lib/ui";
 
 export function TopicsStep({ embedded = false, onNext, onPendingChange }: { embedded?: boolean; onNext?: () => void; onPendingChange?: (pending: boolean) => void }) {
@@ -59,7 +60,8 @@ export function TopicsStep({ embedded = false, onNext, onPendingChange }: { embe
     finally { setSaving(false); }
   }
   const full = Boolean(data && items.length >= data.max);
-  const enough = Boolean(data && items.length >= data.min);
+  const enough = Boolean(data && enoughFeaturedTopics(items.length, data.min));
+  const canSavePartial = Boolean(embedded && data && maySavePartialTopics(items.length, data.min, dirty));
   const service = data?.business_model !== "products";
   const recommendations = data?.recommendations.filter(rec => !items.some(item => item.name === rec.name)) ?? [];
   return <><div className="mx-auto max-w-[760px]">
@@ -120,7 +122,7 @@ export function TopicsStep({ embedded = false, onNext, onPendingChange }: { embe
       {missingExample ? <p role="status" className={`${ui.help} mt-4`}><Copy text="לפני השמירה, תארו דוגמה אמיתית לעבודה או לסיפור הלקוח שבחרתם." /></p> : null}
       {invalid ? <p role="alert" className={`${ui.error} mt-4`}><Copy text="לכל נושא צריך שם שונה ולא ריק." /></p> : null}
       <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2">
-        <button type="button" onClick={() => { if (embedded && !dirty && enough) onNext?.(); else void save(); }} disabled={saving || (!dirty && !embedded) || (embedded && (!enough || Boolean(draft.trim()))) || invalid || missingExample} className="drawn-button inline-flex min-h-12 w-full items-center justify-center bg-[var(--primary)] px-6 text-[15px] text-white enabled:hover:bg-[var(--primary-dark)] sm:w-auto">{saving ? t("שומרים…") : embedded ? t("לתמונות שמתאימות לנושאים") : t("לשמור את הרשימה")}</button>
+        <button type="button" onClick={() => { if (embedded && !dirty && enough) onNext?.(); else void save(); }} disabled={saving || (!dirty && !embedded) || (embedded && ((!dirty && !enough) || (!enough && !canSavePartial) || Boolean(draft.trim()))) || invalid || missingExample} className="drawn-button inline-flex min-h-12 w-full items-center justify-center bg-[var(--primary)] px-6 text-[15px] text-white enabled:hover:bg-[var(--primary-dark)] sm:w-auto">{saving ? t("שומרים…") : embedded ? enough ? t("לתמונות שמתאימות לנושאים") : t("לשמור את הרשימה") : t("לשמור את הרשימה")}</button>
         {!embedded && !dirty && enough ? <Link href="/dashboard" className={ui.link}><Copy text="לצעד הבא" /><IconArrowLeft data-forward="" /></Link> : null}
       </div>
       <p className={`${ui.help} mt-3`}>{enough ? t("הסדר קובע מאיפה מתחילים. אפשר לשנות בהמשך.") : data.min > 1 ? t("צריך לפחות {arg_0} נושאים. אפשר לשמור ולהשלים אחר כך.", { arg_0: data.min }) : t("מספיק נושא אחד להתחלה.")}</p>

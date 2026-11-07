@@ -276,7 +276,8 @@ def logo_url_of(business) -> str:
     stored = loads(getattr(business, "scraped_profile_json", "") or "", {}) or {}
     brand = stored.get("brand_language") or {}
     raw = stored.get("raw") or {}
-    return str(brand.get("logo_url") or raw.get("logo_url") or "").strip()
+    # An explicit removal must not resurrect the logo from an old site scan.
+    return str((brand.get("logo_url") if "logo_url" in brand else raw.get("logo_url")) or "").strip()
 
 
 def _now() -> str:

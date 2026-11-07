@@ -69,7 +69,9 @@ def create(db: Session, business: Business, request) -> tuple[Strategy, int]:
     post = {"uid": connected_posts.new_uid(), "creation_source": "quick",
             "create_request_id": request_id, "create_request_hash": fingerprint,
             "owner_brief": request.text, "content_language": language,
-            "week": 0, "date_hint": "", "format": "image",
+            # TikTok starts as a reel draft and needs an owner-provided clip before
+            # export; LinkedIn uses the existing image-card export path.
+            "week": 0, "date_hint": "", "format": "reel" if request.destination == "tiktok" else "image",
             "title": request.title or request.text.strip().splitlines()[0][:300],
             "caption": request.text, "hook": "", "cta": "", "angle": "",
             "calendar_tie": "", "goal_fit": "", "primary_outlet": request.destination,

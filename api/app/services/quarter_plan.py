@@ -256,7 +256,7 @@ def _presence(draft: OnboardingDraft) -> str | None:
 
 
 def _cost_blocks(draft: OnboardingDraft, frame: dict) -> tuple[str, str]:
-    """The published cost ranges for this budget (Meta and Google), for the prompt."""
+    """Available evidence for paid media; Google remains unforecast until owner checks it."""
     if draft.model == "saas":
         note = "אין כאן מקור מאומת לעלות רכישת משתמש למוצר התוכנה הזה ולשוק שלו. התקציב שנמסר הוא תקרה לניסוי, לא תחזית הרשמות או הכנסה."
         return note, note
@@ -274,19 +274,13 @@ def _unlock_facts(draft: OnboardingDraft) -> str:
     """The thresholds a "what budget would unlock" line may quote."""
     if draft.model == "saas":
         return "ניסוי בתשלום דורש קודם בחירת קהל, אירוע הרשמה/שימוש ומדידת תוצאות. אין נתוני עלות מאומתים למוצר ולשוק האלה."
-    plan = google_cost.plan_from_budget(
-        0, draft.business_type, draft.offerings, draft.model, presence_type=_presence(draft)
-    )
     lines = [
         f"- פרסום ממומן באינסטגרם ובפייסבוק: מתחת ל-{cost_model.RETARGETING_ONLY_BELOW_NIS:,} ₪ בחודש "
         "עדיף לפרסם רק למי שכבר מכיר אתכם. שלב הבדיקה לפי המקור: "
         f"{cost_model.STAGE_VALIDATION_NIS[0]:,}-{cost_model.STAGE_VALIDATION_NIS[1]:,} ₪ בחודש.",
+        "- פרסום בחיפוש בגוגל: אין לנו תחזית מהחשבון שלכם או בסיס לקבוע תקציב מינימום. "
+        "אם גוגל רלוונטי, בעל העסק יבדוק תחזית במתכנן מילות המפתח של Google Ads עם מילות המפתח והגדרות הקמפיין שלו.",
     ]
-    if plan.minimum_viable_budget:
-        lines.append(
-            f"- פרסום בחיפוש בגוגל: תקציב מינימום שפורסם לתחום: "
-            f"{plan.minimum_viable_budget[0]:,}-{plan.minimum_viable_budget[1]:,} ₪ בחודש."
-        )
     return "\n".join(lines)
 
 
@@ -296,6 +290,7 @@ def sources(frame: dict, model: str = "products") -> tuple[list[str], list[dict]
     items = [
         {"title": "Kan Media: כמה עולה פרסום באינסטגרם ובפייסבוק לחנות בישראל", "url": cost_model.SOURCE_URL},
         {"title": google_cost.SOURCE_TITLE, "url": google_cost.SOURCE_URL},
+        {"title": google_cost.BUDGET_SOURCE_TITLE, "url": google_cost.BUDGET_SOURCE_URL},
     ]
     return [f"{item['title']}" for item in items], items
 
@@ -939,12 +934,6 @@ def parse_plan(parsed: dict, draft: OnboardingDraft, scan: dict | None, insights
             f"לפי {frame['exact_ils']:,} ₪ בחודש, כמו שכתבתם." if frame["exact_ils"] is not None
             else f"לפי כ-{frame['monthly_ils']:,} ₪ בחודש, לפי הטווח שבחרתם ({frame['label_he']})."
         )
-        unpriced = google_cost.unpriced_field_label(draft.business_type, draft.offerings)
-        google_spend = any(line["channel_key"] == "google_ads" for month in budget_months for line in month["lines"])
-        if unpriced and google_spend and google_cost.match_industry(draft.business_type, draft.offerings)[0] is None:
-            budget["basis_he"] += (
-                f" לתחום {unpriced} אין מחיר לקליק בגוגל בטבלה שפורסמה, אז בגוגל הערכנו לפי רצועת הביניים."
-            )
     for month in budget_months:
         for line in month["lines"]:
             money.update(str(v) for v in line["ils_range"])

@@ -496,7 +496,7 @@ def owner_changes(before: dict, after: dict, current: dict) -> dict:
 
 
 def save_post(db: Session, strategy: Strategy, index: int, before: dict, after: dict,
-              merge: Callable[[dict, dict, dict], dict] = owner_changes) -> dict:
+              merge: Callable[[dict, dict, dict], dict] = owner_changes, *, require_target: bool = False) -> dict:
     """Write one post of the month in one short write, and never the others.
 
     The month's row is taken first (a no-op UPDATE starts the write), then read as it is
@@ -510,6 +510,8 @@ def save_post(db: Session, strategy: Strategy, index: int, before: dict, after: 
     roadmap = dict(extra.get("roadmap") or {})
     posts = list(roadmap.get("posts") or [])
     if not (0 <= index < len(posts)) or not isinstance(posts[index], dict):
+        if require_target:
+            raise IndexError
         db.commit()
         return after
     posts[index] = merge(before, after, posts[index])

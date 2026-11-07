@@ -28,15 +28,15 @@ export function CampaignOverview({ strategy }: { strategy: StrategyPayload }) {
   const format=new Intl.DateTimeFormat(locale,{day:"numeric",month:"short"});
   const period=`${format.format(new Date(strategy.year,strategy.month-1,1))} – ${format.format(new Date(strategy.year,strategy.month,0))}`;
   return <section className={styles.overview} aria-label={t("הקמפיין כחלק מהתוכנית")}>
-    <header><span>{new Intl.DateTimeFormat(locale,{month:"long",year:"numeric"}).format(new Date(strategy.year,strategy.month-1,1))}<span className={styles.period}>{period}</span></span><Link href="/strategy">{t("לתוכנית המלאה")}</Link></header>
-    <dl>
-      {goals.length ? <div><dt>{t("המטרות של החודש")}</dt><dd>{goals.slice(0,2).map(value=><p dir="auto" key={value}>{value}</p>)}</dd></div> : null}
-      <div><dt>{t("תקציב שיווק מתוכנן")}</dt><dd>{budget ? new Intl.NumberFormat(locale,{style:"currency",currency:"ILS",maximumFractionDigits:0}).format(budget) : t(brief ? "לא הוגדר תקציב" : "התקציב מופיע בתוכנית המלאה")}</dd><Link href="/decisions">{t("לעריכת התקציב")}</Link></div>
-      {audiences.length ? <div><dt>{t("למי פונים")}</dt><dd>{audiences.slice(0,3).map(value=><p dir="auto" key={value}>{value}</p>)}</dd></div> : null}
+    <header><div className={styles.monthTitle}><strong>{new Intl.DateTimeFormat(locale,{month:"long",year:"numeric"}).format(new Date(strategy.year,strategy.month-1,1))}</strong><span className={styles.period}>{period}</span></div><Link href="/strategy">{t("לתוכנית המלאה")}</Link></header>
+    <dl className={styles.overviewFacts}>
+      {goals.length ? <div className={styles.goalFacts}><dt>{t("המטרות של החודש")}</dt><dd>{goals.map(value=><p dir="auto" key={value}>{value}</p>)}</dd></div> : null}
+      <div className={styles.budgetFacts}><dt>{t("תקציב שיווק מתוכנן")}</dt><dd>{budget ? new Intl.NumberFormat(locale,{style:"currency",currency:"ILS",maximumFractionDigits:0}).format(budget) : t(brief ? "לא הוגדר תקציב" : "התקציב מופיע בתוכנית המלאה")}</dd><Link href="/decisions">{t("לעריכת התקציב")}</Link></div>
+      {audiences.length ? <div className={styles.audienceFacts}><dt>{t("למי פונים")}</dt><dd>{audiences.slice(0,3).map(value=><p dir="auto" key={value}>{value}</p>)}</dd></div> : null}
     </dl>
     {hypothesis || measures.length ? <div className={styles.monthTest}>
-      {hypothesis ? <div><h2>{t("מה נבדוק החודש")}</h2><p dir="auto">{hypothesis}</p>{assessment?.evidence_he ? <p className={styles.assessment} dir="auto">{assessment.evidence_he}</p> : null}</div> : null}
-      {measures.length ? <div><h2>{t("המדדים של הפוסטים")}</h2><p>{measures.slice(0,3).join(" · ")}</p></div> : null}
+      {hypothesis ? <div className={styles.hypothesis}><h2>{t("מה נבדוק החודש")}</h2><p dir="auto">{hypothesis}</p>{assessment?.evidence_he ? <p className={styles.assessment} dir="auto">{t(assessment.evidence_he)}</p> : null}</div> : null}
+      {measures.length ? <div className={styles.measures}><h2>{t("המדדים של הפוסטים")}</h2><p>{measures.slice(0,3).join(" · ")}</p><p className={styles.assessment}>{t("כדי לבחור מה להמשיך לפרסם, השוו פוסטים לפי אותו מדד ובאותה תקופה.")}</p><Link href="/help#campaign-results">{t("איך יודעים אם הקמפיין עובד?")}</Link></div> : null}
     </div> : null}
     <footer><span>{t("{arg_0} מתוך {arg_1} פוסטים פורסמו",{arg_0:published,arg_1:posts.length})}</span><Link href="/performance">{t("לתוצאות ולהוצאה בפועל")}</Link></footer>
   </section>;

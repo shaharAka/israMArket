@@ -178,7 +178,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       ? null
       : { href: setupHref, label: "חזרה להגדרה" }
     : BUSINESS_UTILITIES.some(route => underRoute(pathname, route))
-      ? { href: "/business", label: "העסק שלי" }
+      ? { href: "/business", label: "כלי העסק" }
       : activeTab && pathname !== activeTab.href
       ? { href: activeTab.href, label: activeTab.label }
       : null;
@@ -229,8 +229,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               onClick={logOut}
               className="inline-flex min-h-11 cursor-pointer items-center px-2 text-sm text-[color:var(--ink-soft)] underline underline-offset-4"
             ><Copy text="יציאה" /></button>
-          ) : back?.href === "/business" ? null : (
-            <Link href="/business" className="inline-flex min-h-11 items-center rounded-lg px-2.5 text-[13px] font-medium text-[color:var(--ink-soft)] hover:bg-[var(--soft)]"><Copy text="העסק שלי" /></Link>
+          ) : back?.href === "/business" || pathname === "/business" ? null : (
+            <Link href="/business" className="inline-flex min-h-11 items-center rounded-lg px-2.5 text-[13px] font-medium text-[color:var(--ink-soft)] hover:bg-[var(--soft)]"><Copy text="כלי העסק" /></Link>
           )}
         </div>
       </header>
@@ -269,7 +269,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           )}
         </nav>
 
-        {!inSetup && <div className="px-3 pb-1"><BrandLink /></div>}
+        {!inSetup && <div className="px-3 pb-1"><BrandLink /><Link href="/business" aria-current={pathname === "/business" ? "page" : undefined} className="flex min-h-11 items-center rounded-lg px-3 text-[13px] font-medium text-[color:var(--ink-soft)] hover:bg-[var(--soft)] aria-[current=page]:text-[color:var(--primary)]"><Copy text="כלי העסק" /></Link></div>}
 
         <div className="m-3 mt-1 flex items-center justify-between gap-2 rounded-2xl bg-[var(--soft)] p-2">
           <Link

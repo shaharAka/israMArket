@@ -1,4 +1,5 @@
 from typing import Literal, TypedDict
+import re
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, EmailStr, Field, HttpUrl, field_validator, model_validator
@@ -151,7 +152,7 @@ class PostCreateIn(BaseModel):
     client_ref: UUID
     text: str = Field(min_length=1, max_length=4000)
     title: str = Field(default="", max_length=300)
-    destination: Literal["instagram", "facebook", "whatsapp"] = "instagram"
+    destination: Literal["instagram", "facebook", "whatsapp", "tiktok", "linkedin"] = "instagram"
     content_language: Literal["he", "en", "ar", "ru"] | None = None
 
     @field_validator("text")
@@ -164,14 +165,17 @@ class PostCreateIn(BaseModel):
 
 class PostUpdateIn(BaseModel):
     post_index: int = Field(ge=0, le=500)
+    post_uid: str | None = Field(default=None, max_length=100)
     title: str = Field(min_length=1, max_length=300)
     format: Literal["reel", "carousel", "image", "story"]
     hook: str = Field(default="", max_length=500)
     caption: str = Field(default="", max_length=4000)
+    # Optional compare-and-swap for recovered owner copy, checked under the row lock.
+    expected_caption: str | None = Field(default=None, max_length=4000)
     cta: str = Field(default="", max_length=500)
     overlay_text: str = Field(default="", max_length=200)
     date_hint: str = Field(default="", max_length=50)
-    primary_outlet: Literal["instagram", "facebook", "whatsapp", "tiktok"] = "instagram"
+    primary_outlet: Literal["instagram", "facebook", "whatsapp", "tiktok", "linkedin"] = "instagram"
     outlets: list[str] = Field(default_factory=lambda: ["instagram", "facebook"])
     has_overlay: bool = True
     overlay_headline: str = Field(default="", max_length=200)
@@ -325,23 +329,23 @@ class BrandSwatchIn(BaseModel):
 
 
 class TypographyIn(BaseModel):
-    primary: str = Field(min_length=1, max_length=200)
-    mood: str = Field(min_length=1, max_length=400)
+    primary: str = Field(max_length=200)
+    mood: str = Field(max_length=400)
 
 
 class BrandLanguageIn(BaseModel):
     business_name: str = Field(min_length=1, max_length=160)
-    palette: list[BrandSwatchIn] = Field(min_length=1, max_length=8)
+    palette: list[BrandSwatchIn] = Field(max_length=8)
     typography: TypographyIn
-    visual_style: str = Field(min_length=4, max_length=800)
-    photography: str = Field(min_length=4, max_length=800)
-    voice: str = Field(min_length=4, max_length=800)
-    voice_examples: list[str] = Field(min_length=1, max_length=8)
-    do_say: list[str] = Field(min_length=1, max_length=16)
-    dont_say: list[str] = Field(min_length=1, max_length=16)
-    messaging: list[str] = Field(min_length=1, max_length=12)
+    visual_style: str = Field(max_length=800)
+    photography: str = Field(max_length=800)
+    voice: str = Field(max_length=800)
+    voice_examples: list[str] = Field(max_length=8)
+    do_say: list[str] = Field(max_length=16)
+    dont_say: list[str] = Field(max_length=16)
+    messaging: list[str] = Field(max_length=12)
     offers_seen: list[str] = Field(default_factory=list, max_length=16)
-    audience: str = Field(min_length=2, max_length=400)
+    audience: str = Field(max_length=400)
     logo_description: str = Field(default="", max_length=400)
     # The logo file's address. None = keep the one the scan found; "" = no logo. It is
     # downloaded through the SSRF guard after the save (services/brand_logo.py).
@@ -353,7 +357,8 @@ class BrandLanguageIn(BaseModel):
         if value is None:
             return None
         cleaned = value.strip()
-        if cleaned and not cleaned.lower().startswith(("https://", "http://")):
+        local_copy = re.fullmatch(r"/backend/media/[0-9]+/logo-[a-f0-9]+\.png", cleaned)
+        if cleaned and not local_copy and not cleaned.lower().startswith(("https://", "http://")):
             raise ValueError("כתובת הלוגו צריכה להתחיל ב-https://")
         return cleaned
 

@@ -343,7 +343,7 @@ export function resolveDna(dna?: BrandDna | null, brand?: BrandLanguage | null):
       useLogo: sig.use_logo !== false,
       logoUrl,
       logoOn: isLogoGround(sig.logo_on) ? sig.logo_on : "light",
-      logoColors: Array.isArray(sig.logo_colors) ? (sig.logo_colors.map((x) => normalizeHex(x)).filter(Boolean) as string[]) : [],
+      logoColors: Array.isArray(sig.logo_colors) ? (sig.logo_colors.filter((x): x is string => typeof x === "string").map((x) => normalizeHex(x)).filter(Boolean) as string[]) : [],
     },
     mix: mixOf(src.mix),
     copy: {

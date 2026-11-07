@@ -31,7 +31,6 @@ import { dateRange } from "@/lib/dates";
 import { markSeen } from "@/lib/trial";
 import { IconArrowLeft, IconChart, IconChevron } from "@/lib/icons";
 import { FAMILY_HE, whatsappEndpoints, type WhatsappPayload } from "@/lib/whatsapp";
-import styles from "./performance.module.css";
 
 const METRIC_LABELS: Record<string, { label: string; note: string }> = {
   sessions: { label: "כניסות לאתר", note: "כמה פעמים נכנסו לאתר" },
@@ -143,7 +142,9 @@ type PostResultsView = { items: MeasuredPost[]; waiting: number };
 
 function postResults(payload: PerformancePayload): PostResultsView | null {
   const data = payload.measured_posts;
-  if (!data || (!data.items?.length && !data.waiting)) return null;
+  // An absent field means this older/incomplete payload did not report post results;
+  // an explicitly present empty list is a real measured state and gets its own message.
+  if (!data) return null;
   return { items: data.items || [], waiting: data.waiting || 0 };
 }
 
@@ -243,8 +244,8 @@ function PostResults({ results }: { results: PostResultsView }) {
 
   return (
     <section aria-labelledby="posts-heading">
-      <h2 id="posts-heading" className="text-[13px] font-semibold text-[color:var(--ink-muted)]">
-        <Copy text="אילו פוסטים הצליחו" /></h2>
+      <h2 id="posts-heading" className="text-lg font-bold tracking-tight text-[color:var(--ink)]">
+        <Copy text="מה מדדנו בפוסטים?" /></h2>
       {visible.length ? (
         <ul className="mt-2 divide-y divide-[var(--rule)] border-y border-[var(--rule)]">
           {visible.map((item, index) => (
@@ -316,10 +317,6 @@ function Answer({ payload }: { payload: PerformancePayload }) {
       <h2 className="mt-2 max-w-[30em] text-[21px] font-bold leading-[1.4] tracking-tight text-balance text-[color:var(--ink)] sm:text-[24px]">
         {sentence}
       </h2>
-      <dl className="mt-6 grid grid-cols-2 gap-px overflow-hidden rounded-[16px] bg-[var(--rule)] shadow-[var(--shadow-card)]">
-        <BigNumber label={t("פעולות חשובות באתר")} value={conversions !== undefined ? formatMetricValue("conversions", conversions) : undefined} />
-        <BigNumber label={t("כניסות לאתר")} value={sessions !== undefined ? formatMetricValue("sessions", sessions) : undefined} />
-      </dl>
       {conversions !== undefined ? (
         <p className="mt-3 max-w-[46em] text-[13px] leading-6 text-[color:var(--ink-muted)]"><Copy text="אלה הפעולות שסומנו כחשובות במדידה של האתר. כדי לדעת אם הן פניות או הזמנות, צריך לבדוק מה בדיוק נספר." /></p>
       ) : null}
@@ -328,19 +325,6 @@ function Answer({ payload }: { payload: PerformancePayload }) {
 }
 
 /** One cell of a stat strip: the label, then the number, big and tabular (the landing's KPI row). */
-function BigNumber({ label, value }: { label: string; value?: string }) {
-  return (
-    <div className="bg-[var(--paper)] px-5 py-5 sm:px-7 sm:py-6">
-      <dt className="text-[13px] font-medium text-[color:var(--ink-muted)]">{label}</dt>
-      {value !== undefined ? (
-        <dd className="metric-number mt-2 text-[34px] font-bold leading-none tracking-tight text-[color:var(--ink)] sm:text-[44px]">{value}</dd>
-      ) : (
-        <dd className="mt-3 text-[15px] font-semibold text-[color:var(--ink-muted)]"><Copy text="לא נמדד" /></dd>
-      )}
-    </div>
-  );
-}
-
 /**
  * What we cannot measure right now — on the face of the page, never inside a fold. A
  * missing source is the reason a number is absent, and the owner should not have to open
@@ -1194,65 +1178,51 @@ export default function PerformancePage() {
 
         <ErrorNote message={t(error)} />
 
-        {!hasProposal ? <div className="mb-8 empty:hidden">{checkIn}</div> : null}
+        {!data ? <div className="mb-8 empty:hidden">{checkIn}</div> : null}
 
         {data ? (
-          <div className="space-y-10 sm:space-y-12">
-            <div className="space-y-4">
+          <div className="space-y-8 sm:space-y-10">
+            <section aria-labelledby="goal-heading" className="space-y-3">
+              <h2 id="goal-heading" className="text-lg font-bold tracking-tight text-[color:var(--ink)]">
+                <Copy text="האם התקדמנו ליעד?" />
+              </h2>
               <SourceDataNotice payload={data} />
-              {!hasProposal ? available ? <Answer payload={data} /> : !serviceResults?.enabled ? <NoSnapshotYet payload={data} postTaps={postTaps} /> : null : null}
+              {available ? <Answer payload={data} /> : !serviceResults?.enabled ? <NoSnapshotYet payload={data} postTaps={postTaps} /> : !serviceResults.report ? <p className="text-[15px] text-[var(--ink-soft)]"><Copy text="עוד לא נמדד" /></p> : null}
               {planMeasure ? (
                 <p className="text-[14px] leading-6 text-[color:var(--ink-soft)]">
-                  <Copy text="בתוכנית:" /><span className="font-semibold text-[color:var(--ink)]">{planMeasure}</span>.{" "}
+                  <Copy text="היעד שנבחר בתוכנית:" /><span className="font-semibold text-[color:var(--ink)]">{planMeasure}</span>.{" "}
                   <Link href="/strategy" className="inline-flex min-h-11 items-center align-middle font-semibold text-[color:var(--primary)] hover:underline hover:underline-offset-4">
                     <Copy text="לתוכנית" /></Link>
                 </p>
               ) : null}
-            </div>
+            </section>
             {available && !hasProposal && !serviceResults?.enabled ? <MeasurementGaps payload={data} /> : null}
-            {hasProposal && recommendation ? <FindingCard payload={recommendation} primary={!serviceEditing} /> : null}
-            {hasProposal && serviceResults?.enabled ? <details className="group/check-in border-y border-[var(--rule)]">
-              <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 text-[15px] font-semibold text-[color:var(--ink)] [&::-webkit-details-marker]:hidden">
-                <Copy text="הדיווח שלכם על פניות ולקוחות" /><IconChevron className="h-[18px] w-[18px] -rotate-90 text-[color:var(--ink-muted)] transition-transform group-open/check-in:rotate-90" />
-              </summary>
-              <div className="pb-4">{checkIn}</div>
-            </details> : null}
-            {serviceResults?.enabled ? <MeasurementGaps payload={data} ownerReport /> : null}
+            <section aria-labelledby="next-heading" className="space-y-4">
+              <h2 id="next-heading" className="text-lg font-bold tracking-tight text-[color:var(--ink)]"><Copy text="מה כדאי לעשות עכשיו?" /></h2>
+              {hasProposal && recommendation ? <FindingCard payload={recommendation} primary={!serviceEditing} /> : null}
+              {!hasProposal ? checkIn : null}
+              {hasProposal && serviceResults?.enabled ? checkIn : null}
+              {serviceResults?.enabled ? <MeasurementGaps payload={data} ownerReport /> : null}
+              <SourceReportLimits payload={data} />
+            </section>
             {results ? <PostResults results={results} /> : null}
-            <SourceReportLimits payload={data} />
-            <div className="divide-y divide-[var(--rule)] border-y border-[var(--rule)]">
-              {/* One row per source: the summary, then all of its numbers one fold down. With no
-                  proposal the summary already leads the page, so the row holds just the numbers. */}
-              {available && (hasProposal || siteNumbers) ? <Expand title={t("נתוני האתר")}>{hasProposal ? <Answer payload={data} /> : null}<TrafficMetrics payload={data} folded={hasProposal} /></Expand> : null}
-              {available && (data.meta?.ads || data.meta?.tracking) ? <Expand title={t("המודעות והמעקב באתר")}><MetaAdsSummary ads={data.meta?.ads} tracking={data.meta?.tracking} /></Expand> : null}
-              {account ? <Expand title={t("החשבון באינסטגרם")}><InstagramAccountBlock account={account} /><AccountMetrics account={account} /></Expand> : null}
-              {results && comparablePosts(results.items.filter(item => item.metric === leadingMetric(results.items))) ? <Expand title={t("השוואת תוצאות הפוסטים")}><PostComparison results={results} /></Expand> : null}
-              {whatsapp ? <Expand title={t("לחיצות על וואטסאפ")}><WhatsappClicks data={whatsapp} /></Expand> : null}
-            </div>
-
-            {/* Two folded rows from the plan side, drawn as one hairline list (each carries
-                its own top and bottom rule; the overlap keeps it to one line between). */}
-            <div className={`${styles.planRows} empty:hidden [&>*+*]:-mt-px`}>
-              <ResearchSection />
-              <PerformanceHypotheses />
-            </div>
-
-            <div className="divide-y divide-[var(--rule)] border-y border-[var(--rule)]">
-              {available && (hasVerdict || hasFriction) ? (
-                <Expand title={t("מה הצליח ומה לשפר")}>
-                  <div className="space-y-6">
-                    <ContentVerdict payload={data} />
-                    <Friction payload={data} />
-                  </div>
-                </Expand>
-              ) : available && hasFriction ? (
-                <Expand title={t("מה עוצר אנשים")}>
-                  <Friction payload={data} />
-                </Expand>
-              ) : null}
-              {data.audiences ? <AudienceBreakdown data={data.audiences} /> : null}
-              <Method data={data.audiences} />
-            </div>
+            <details className="group/technical border-y border-[var(--rule)]">
+              <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 py-3 text-[15px] font-semibold text-[color:var(--ink)] [&::-webkit-details-marker]:hidden">
+                <Copy text="נתונים נוספים ופרטי המדידה" /><Chevron />
+              </summary>
+              <div className="space-y-8 pb-6 pt-2">
+                {available && siteNumbers ? <section><h3 className="mb-2 font-semibold"><Copy text="נתוני האתר" /></h3><TrafficMetrics payload={data} folded /></section> : null}
+                {available && (data.meta?.ads || data.meta?.tracking) ? <section><h3 className="mb-2 font-semibold"><Copy text="המודעות והמעקב באתר" /></h3><MetaAdsSummary ads={data.meta?.ads} tracking={data.meta?.tracking} /></section> : null}
+                {account ? <section><h3 className="mb-2 font-semibold"><Copy text="החשבון באינסטגרם" /></h3><InstagramAccountBlock account={account} /><AccountMetrics account={account} /></section> : null}
+                {results && comparablePosts(results.items.filter(item => item.metric === leadingMetric(results.items))) ? <PostComparison results={results} /> : null}
+                {whatsapp ? <WhatsappClicks data={whatsapp} /> : null}
+                {available && (hasVerdict || hasFriction) ? <section className="space-y-6"><h3 className="font-semibold"><Copy text="מה הצליח ומה לשפר" /></h3><ContentVerdict payload={data} />{hasFriction ? <Friction payload={data} /> : null}</section> : null}
+                {data.audiences ? <AudienceBreakdown data={data.audiences} /> : null}
+                <Method data={data.audiences} />
+                <ResearchSection />
+                <PerformanceHypotheses />
+              </div>
+            </details>
           </div>
         ) : null}
       </div>

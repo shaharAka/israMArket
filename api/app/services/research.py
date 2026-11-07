@@ -719,9 +719,18 @@ def _uses_research_journey(business) -> bool:
 def _without_agency_cost_insights(insights: list[dict]) -> list[dict]:
     # Evidence origins are persisted by clean_insights. Drop the whole derived
     # insight: keeping its text after deleting a citation would retain the claim.
-    sources = {unquote(source).rstrip("/") for source in (google_cost.SOURCE_URL, cost_model.SOURCE_URL)}
+    sources = {unquote(source).rstrip("/") for source in (google_cost.LEGACY_AGENCY_SOURCE_URL, cost_model.SOURCE_URL)}
     return [item for item in insights if not any(
         unquote(str(entry.get("origin") or "")).rstrip("/") in sources
+        for entry in item.get("evidence") or []
+    )]
+
+
+def _without_google_agency_cost_insights(insights: list[dict]) -> list[dict]:
+    """Remove old Rulers-derived Google price claims, including from saved research."""
+    source = unquote(google_cost.LEGACY_AGENCY_SOURCE_URL).rstrip("/")
+    return [item for item in insights if not any(
+        unquote(str(entry.get("origin") or "")).rstrip("/") == source
         for entry in item.get("evidence") or []
     )]
 
@@ -853,17 +862,6 @@ def gather_search(db: Session, business: Business, ctx: dict) -> tuple[list[dict
             "אין לנו את החיפושים שהאתר שלכם כבר מופיע בהם (קליקים, חשיפות, מיקום): " + (console_note or keywords.SEARCH_CONSOLE_MISSING_NOTE),
             origin="Google Search Console",
         )
-
-    if not _uses_research_journey(business):
-        plan = google_cost.plan_for_business(payload)
-        if plan.cpc_range:
-            out.add(
-                "estimate",
-                f"הערכה, לא נתון שלכם: לפי טבלה מפורסמת של סוכנות ישראלית, קליק בגוגל בתחום \"{plan.industry_label}\" "
-                f"עולה בערך {plan.cpc_range[0]:g}–{plan.cpc_range[1]:g} ₪.",
-                origin=google_cost.SOURCE_URL,
-                data={"industry": plan.industry_key, "cpc_range": list(plan.cpc_range), "tier": plan.industry_tier},
-            )
 
     volume_note = (
         "אין לנו כמה אנשים מחפשים כל ביטוי (אין גישה לכלי תכנון המילים של גוגל), ולכן אין כאן מספרי חיפושים."
@@ -1536,6 +1534,7 @@ def _plan_context(db: Session, business: Business) -> str:
 
 
 def insights_prompt(db: Session, business: Business, findings: list[dict], sources: dict, previous: list[dict]) -> str:
+    previous = _without_google_agency_cost_insights(previous)
     if _uses_research_journey(business):
         previous = _without_agency_cost_insights(previous)
     audiences = [row.name for row in getattr(business, "audiences", []) or []]
@@ -1906,6 +1905,7 @@ def research_prompt_block(business, db: Session | None = None) -> str:
         if not run or (datetime.utcnow() - run.created_at) > timedelta(days=PROMPT_MAX_AGE_DAYS):
             return ""
         insights = (loads(run.insights_json, {}) or {}).get("items") or []
+        insights = _without_google_agency_cost_insights(insights)
         if exclude_agency_costs:
             insights = _without_agency_cost_insights(insights)
         if not insights:

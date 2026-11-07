@@ -51,6 +51,9 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
       try { saved = localStorage.getItem(STORAGE_KEY); } catch { /* Restricted storage is optional. */ }
       const requested = new URLSearchParams(window.location.search).get("lang");
       const locale = isLocale(requested) ? requested : isLocale(saved) ? saved : "he";
+      // A language-specific entry link is an explicit interface choice too. Remember
+      // it before an internal link drops the query, so refresh does not revert language.
+      if (isLocale(requested)) { try { localStorage.setItem(STORAGE_KEY, requested); } catch { /* This visit still uses the link's language. */ } }
       void choose(locale, false);
     }, 0);
     return () => { window.clearTimeout(timer); activeRequests.version++; };
