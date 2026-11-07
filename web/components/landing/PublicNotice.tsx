@@ -13,7 +13,7 @@ export function PublicNotice({ title, lead, actions }: { title: string; lead: st
     <div className={styles.page}>
       <header className={styles.nav}>
         <div className={`${styles.wrap} ${styles.navRow}`}>
-          <Link href="/" className={styles.brand} aria-label="ישראמארקט, לעמוד הראשי">
+          <Link href="/" className={styles.brand} aria-label="isramarket, לעמוד הראשי">
             <ProductWordmark />
           </Link>
         </div>

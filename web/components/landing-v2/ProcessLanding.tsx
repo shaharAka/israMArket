@@ -24,7 +24,6 @@ import "./showcase.css";
 
 /** The arrival route informs signup. Hover previews are owned by each section. */
 export function ProcessLanding({ initialPath, identity }: { initialPath?: ExamplePath; identity?: IdentityDirection }) {
-  const t = useCopy();
   const { locale } = useLanguage();
   const [palette, setPalette] = useState("punch");
   const [role, setRole] = useState<ProcessRole | null>(() => defaultProcessRole(initialPath));
@@ -49,7 +48,7 @@ export function ProcessLanding({ initialPath, identity }: { initialPath?: Exampl
   const start = `/start?lang=${locale}${selected ? `&model=${selected.path}&segment=${selected.segment}` : ""}`;
   return <div className={`lv2 lv2-site ${styles.page} ${siteClean.variable} ${artSerif.variable} ${siteSerif.variable}`} data-business={selected?.path ?? "all"} data-process-role={role ?? "all"} data-hero-type="modern" data-design="signal-punch" data-palette={palette}>
     <header className={`lv2-nav ${styles.header}`}><div className={`lv2-wrap lv2-nav-row ${styles.headerRow}`}>
-      <Link href="/" className="lv2-brand" aria-label={t("ישראמארקט")}><BrandWordmark direction={identity} /></Link>
+      <Link href="/" className="lv2-brand" aria-label="isramarket"><BrandWordmark direction={identity} /></Link>
       <div className={`lv2-nav-end ${styles.headerActions}`}><ProductUtilities inline /><Link href={`/login?lang=${locale}`} className="lv2-login"><Copy text="להיכנס" /></Link><Link href={start} className="lv2-btn-quiet"><TrialCtaLabel /></Link></div>
     </div></header>
     <main>
@@ -66,7 +65,7 @@ export function ProcessLanding({ initialPath, identity }: { initialPath?: Exampl
         <Question text="אפשר לבטל?"><CancellationAnswer /></Question>
       </div></section>
     </main>
-    <footer className="lv2-foot"><div className="lv2-wrap lv2-foot-row"><span><Copy text="ישראמארקט" /></span><Link href={`/security?lang=${locale}`}><Copy text="אבטחה ופרטיות" /></Link><Link href={`/terms?lang=${locale}`}><Copy text="תנאי שימוש" /></Link></div></footer>
+    <footer className="lv2-foot"><div className="lv2-wrap lv2-foot-row"><span>isramarket</span><Link href={`/security?lang=${locale}`}><Copy text="אבטחה ופרטיות" /></Link><Link href={`/terms?lang=${locale}`}><Copy text="תנאי שימוש" /></Link></div></footer>
     <DeletedNotice />
   </div>;
 }

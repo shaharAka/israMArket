@@ -14,7 +14,7 @@ const inter = Inter({ variable: "--font-inter", subsets: ["latin", "cyrillic"], 
 const arabic = IBM_Plex_Sans_Arabic({ variable: "--font-arabic", weight: ["400", "500", "600", "700"], subsets: ["arabic"], display: "swap", preload: false });
 
 export const metadata: Metadata = {
-  title: "ישראמארקט — שיווק לעסקים קטנים",
+  title: "isramarket — שיווק לעסקים קטנים",
   description:
     "תוכנית שיווק אישית לעסקים קטנים בישראל: כל שבוע הצעד הבא ופוסטים מוכנים בסגנון שלכם, ואחר כך בודקים מה הצליח ומעדכנים את התוכנית.",
 };

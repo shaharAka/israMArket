@@ -14,7 +14,7 @@ export default function GlobalError({ retry }: { error: Error & { digest?: strin
   return (
     <html lang="he" dir="rtl">
       <head>
-        <title>לא הצלחנו לטעון את האתר · ישראמארקט</title>
+        <title>לא הצלחנו לטעון את האתר · isramarket</title>
         <meta name="robots" content="noindex" />
       </head>
       <body

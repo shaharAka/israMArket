@@ -25,7 +25,7 @@ const UNAVAILABLE = `<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<title>הקישור לא נפתח · ישראמארקט</title>
+<title>הקישור לא נפתח · isramarket</title>
 <style>
   body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #f6f7fb;
          color: #14203a; font-family: system-ui, -apple-system, "Segoe UI", Arial, sans-serif; }
@@ -41,7 +41,7 @@ const UNAVAILABLE = `<!doctype html>
 </head>
 <body><main><span class="mark" aria-hidden="true"></span><h1>הקישור לא נפתח כרגע</h1>
 <p>כנראה תקלה רגעית אצלנו. נסו שוב בעוד דקה.</p>
-<a href="/">לעמוד הבית של ישראמארקט</a></main></body>
+<a href="/">לעמוד הבית של isramarket</a></main></body>
 </html>`;
 
 function unavailable(request: NextRequest) {
