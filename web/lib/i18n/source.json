@@ -1848,13 +1848,13 @@
     "references": [
       {
         "file": "api/app/routers/campaign.py",
-        "line": 68,
+        "line": 70,
         "kind": "literal",
         "purpose": "validation"
       },
       {
         "file": "api/app/services/campaign_revisions.py",
-        "line": 289,
+        "line": 292,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -2740,7 +2740,7 @@
       },
       {
         "file": "api/app/services/campaign_revisions.py",
-        "line": 316,
+        "line": 319,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -10654,7 +10654,7 @@
     "references": [
       {
         "file": "api/app/services/campaign_video.py",
-        "line": 68,
+        "line": 107,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -17975,7 +17975,7 @@
     "references": [
       {
         "file": "api/app/services/campaign_video.py",
-        "line": 230,
+        "line": 281,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -18973,7 +18973,7 @@
     "references": [
       {
         "file": "api/app/services/campaign_video.py",
-        "line": 70,
+        "line": 109,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -23458,7 +23458,7 @@
     "references": [
       {
         "file": "api/app/services/campaign_video.py",
-        "line": 58,
+        "line": 97,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -30358,7 +30358,7 @@
     "references": [
       {
         "file": "api/app/services/campaign_video.py",
-        "line": 77,
+        "line": 116,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -31897,7 +31897,7 @@
     "references": [
       {
         "file": "api/app/services/campaign_revisions.py",
-        "line": 264,
+        "line": 267,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -43195,7 +43195,7 @@
     "references": [
       {
         "file": "api/app/services/campaign_revisions.py",
-        "line": 114,
+        "line": 116,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -49856,7 +49856,7 @@
     "references": [
       {
         "file": "api/app/services/campaign_video.py",
-        "line": 203,
+        "line": 254,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -53650,7 +53650,7 @@
     "references": [
       {
         "file": "api/app/services/campaign_revisions.py",
-        "line": 210,
+        "line": 213,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -62591,7 +62591,7 @@
     "references": [
       {
         "file": "api/app/services/campaign_revisions.py",
-        "line": 296,
+        "line": 299,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -67073,7 +67073,7 @@
       },
       {
         "file": "api/app/services/campaign_video.py",
-        "line": 160,
+        "line": 199,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -70545,7 +70545,7 @@
     "references": [
       {
         "file": "api/app/routers/campaign.py",
-        "line": 45,
+        "line": 47,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -72437,6 +72437,24 @@
         "line": 82,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_9723d6be2cd1a03c": {
+    "source": "בחרו סרטון באורך {arg_0} עד {arg_1} שניות.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/campaign_revisions.py",
+        "line": 108,
+        "kind": "template",
+        "purpose": "validation"
+      },
+      {
+        "file": "api/app/services/campaign_video.py",
+        "line": 203,
+        "kind": "template",
+        "purpose": "validation"
       }
     ]
   },
@@ -75414,7 +75432,7 @@
     "references": [
       {
         "file": "api/app/services/campaign_video.py",
-        "line": 137,
+        "line": 176,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -80985,7 +81003,7 @@
     "references": [
       {
         "file": "api/app/services/campaign_video.py",
-        "line": 109,
+        "line": 148,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -81755,13 +81773,13 @@
     "references": [
       {
         "file": "api/app/services/campaign_video.py",
-        "line": 116,
+        "line": 155,
         "kind": "literal",
         "purpose": "validation"
       },
       {
         "file": "api/app/services/campaign_video.py",
-        "line": 125,
+        "line": 164,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -83161,6 +83179,18 @@
         "file": "web/components/plan/MonthPlanOverview.tsx",
         "line": 43,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_ae76e920cd5c35f8": {
+    "source": "Unbounded video request",
+    "language": "en",
+    "references": [
+      {
+        "file": "api/app/services/campaign_video.py",
+        "line": 64,
+        "kind": "literal",
+        "purpose": "validation"
       }
     ]
   },
@@ -94139,7 +94169,7 @@
     "references": [
       {
         "file": "api/app/services/campaign_video.py",
-        "line": 62,
+        "line": 101,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -95061,7 +95091,7 @@
     "references": [
       {
         "file": "api/app/services/campaign_revisions.py",
-        "line": 255,
+        "line": 258,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -95685,7 +95715,7 @@
     "references": [
       {
         "file": "api/app/services/campaign_video.py",
-        "line": 52,
+        "line": 91,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -96400,13 +96430,13 @@
     "references": [
       {
         "file": "api/app/services/campaign_revisions.py",
-        "line": 280,
+        "line": 283,
         "kind": "literal",
         "purpose": "validation"
       },
       {
         "file": "api/app/services/campaign_revisions.py",
-        "line": 283,
+        "line": 286,
         "kind": "literal",
         "purpose": "validation"
       }

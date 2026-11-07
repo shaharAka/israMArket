@@ -1,6 +1,7 @@
 """Actual MP4 finishing plus offline paid-request/tenant boundary tests."""
 import _test_env  # noqa: F401
 import base64
+import contextlib
 import io
 import json
 import shutil
@@ -99,7 +100,9 @@ class VideoTest(unittest.TestCase):
             self.assertFalse(any(stream["codec_type"]=="audio" for stream in streams))
         settle.assert_called_once()
         self.assertEqual(settle.call_args.kwargs["state"],"succeeded")
-        self.assertAlmostEqual(settle.call_args.kwargs["cost_usd"],.0365)
+        self.assertEqual(body["model"],"gemini-omni-1.2-flash")
+        # Omni 1.2: $1.50/M input, $12/M video output (thoughts priced as video).
+        self.assertAlmostEqual(settle.call_args.kwargs["cost_usd"],.0255)
 
     def test_overlay_rejects_remote_urls_dimensions_and_invalid_bytes(self):
         for value in ("https://example.com/overlay.png", "data:image/png;base64,bm90cG5n"):
@@ -130,9 +133,14 @@ class VideoTest(unittest.TestCase):
         self.assertIsNone(exc); self.assertEqual(result,b"new")
         reserve.assert_called_once(); client.__enter__.return_value.post.assert_called_once()
         body=client.__enter__.return_value.post.call_args.kwargs["json"]
-        self.assertEqual(body["generation_config"]["max_output_tokens"],55000)
-        self.assertEqual(body["response_format"],{"type":"video","aspect_ratio":"9:16","resolution":"720p"})
+        self.assertEqual(body["model"],"gemini-omni-1.2-flash")
+        # Five seconds at 5,792 video tokens/s plus thought headroom; an explicit duration.
+        self.assertEqual(body["generation_config"]["max_output_tokens"],5*5792+8000)
+        self.assertEqual(body["response_format"],{"type":"video","aspect_ratio":"9:16","resolution":"720p","duration":"5s"})
         self.assertNotIn("duration_seconds",body["generation_config"]["video_config"])
+        self.assertIn("5-second", body["input"][-1]["text"])
+        self.assertEqual(reserve.call_args.kwargs["model"],"gemini-omni-1.2-flash")
+        self.assertEqual(reserve.call_args.kwargs["ceiling"],video.ceiling("gemini-omni-1.2-flash",5))
         self.assertFalse(body["store"]); self.assertEqual(settle.call_args.kwargs["state"],"succeeded")
 
     def test_ambiguous_failure_is_held_not_retried_or_refunded(self):
@@ -143,14 +151,95 @@ class VideoTest(unittest.TestCase):
             self.assertEqual(settle.call_args.kwargs["state"],"unknown")
 
     def test_definite_rejection_is_not_paid_retry(self):
-        _result,exc,client,reserve,settle=self.run_provider(status=400)
+        # Without a fallback model: one submission, settled as failed, nothing else.
+        with mock.patch.object(video.get_settings(),"video_fallback_model",""):
+            _result,exc,client,reserve,settle=self.run_provider(status=400)
         self.assertEqual(exc.status_code,502); self.assertEqual(settle.call_args.kwargs["state"],"failed")
-        settle.assert_called_once()
+        settle.assert_called_once(); client.__enter__.return_value.post.assert_called_once()
 
     def test_allowance_refusal_precedes_network(self):
         with mock.patch.object(video,"available",return_value=True), mock.patch.object(video.httpx,"Client") as client, \
              mock.patch.object(video.media_allowances,"reserve",side_effect=HTTPException(429,"limit")):
             with self.assertRaises(HTTPException): video.generate(None,SimpleNamespace(id=1),{},None,"","request")
             client.assert_not_called()
+
+    def run_sequence(self, responses=(), *, error=None, seconds=5, fallback=None):
+        """generate() against queued provider answers [(status, json)], every call mocked."""
+        client = mock.MagicMock()
+        client.__enter__.return_value.post.side_effect = error or [
+            SimpleNamespace(status_code=code, json=lambda body=body: body) for code, body in responses]
+        settings = (mock.patch.object(video.get_settings(), "video_fallback_model", fallback)
+                    if fallback is not None else contextlib.nullcontext())
+        with mock.patch.object(video,"available",return_value=True), mock.patch.object(video.httpx,"Client",return_value=client), \
+             mock.patch.object(video.media_allowances,"reserve",return_value="attempt") as reserve, \
+             mock.patch.object(video.media_allowances,"settle") as settle, \
+             mock.patch.object(video,"finish_bytes",side_effect=lambda data,**kw:data), settings:
+            try:
+                result=video.generate(None,SimpleNamespace(id=1),{"title":"Verified product"},None,"Quiet scene","request-1",seconds=seconds)
+                exc=None
+            except HTTPException as e: result=None; exc=e
+        bodies = [call.kwargs["json"] for call in client.__enter__.return_value.post.call_args_list]
+        return result,exc,bodies,reserve,settle
+
+    def test_refusal_falls_back_once_to_1_1_within_its_own_length_and_reservation(self):
+        done={"id":"fallback","status":"completed","usage":{"total_input_tokens":600,"total_output_tokens":57920},
+              "steps":[{"type":"model_output","content":[{"type":"video","mime_type":"video/mp4","data":base64.b64encode(b"old").decode()}]}]}
+        result,exc,bodies,reserve,settle=self.run_sequence([(400,{"error":{"code":"invalid_request"}}),(200,done)], seconds=15)
+        self.assertIsNone(exc); self.assertEqual(result,b"old")
+        first,second=bodies
+        self.assertEqual((first["model"],first["response_format"]["duration"]),("gemini-omni-1.2-flash","15s"))
+        # 1.1 accepts at most 10 s: the same request, shortened, with its own budget.
+        self.assertEqual((second["model"],second["response_format"]["duration"]),("gemini-omni-1.1-flash","10s"))
+        self.assertEqual(second["generation_config"]["max_output_tokens"],10*5792+8000)
+        self.assertEqual(first["input"][-1]["text"].replace("15-second","10-second"),second["input"][-1]["text"])
+        self.assertEqual([c.kwargs["key"] for c in reserve.call_args_list],["request-1","request-1:fallback"])
+        self.assertEqual([c.kwargs["ceiling"] for c in reserve.call_args_list],
+                         [video.ceiling("gemini-omni-1.2-flash",15),video.ceiling("gemini-omni-1.1-flash",10)])
+        self.assertEqual([c.kwargs["state"] for c in settle.call_args_list],["failed","succeeded"])
+        self.assertEqual(settle.call_args.kwargs["expected_key"],"request-1:fallback")
+        self.assertAlmostEqual(settle.call_args.kwargs["cost_usd"],(600*1.5+57920*17.5)/1e6)
+
+    def test_fallback_refusal_ends_after_two_submissions(self):
+        _r,exc,bodies,reserve,settle=self.run_sequence([(429,{}),(400,{})])
+        self.assertEqual(exc.status_code,502); self.assertEqual(len(bodies),2)
+        self.assertEqual([c.kwargs["state"] for c in settle.call_args_list],["failed","failed"])
+
+    def test_no_fallback_for_a_rejected_key_or_an_ambiguous_outcome(self):
+        # 401 fails on every model; a timeout or 5xx may have generated and billed a clip.
+        for responses,error in (([(401,{})],None),([(503,{})],None),((),RuntimeError("timeout"))):
+            _r,exc,bodies,reserve,settle=self.run_sequence(responses,error=error)
+            self.assertEqual(exc.status_code,502); self.assertEqual(len(bodies),1)
+            reserve.assert_called_once(); settle.assert_called_once()
+
+    def test_length_is_bounded_by_the_model_before_any_reservation(self):
+        for seconds in (2,16):
+            _r,exc,bodies,reserve,_s=self.run_sequence(seconds=seconds)
+            self.assertEqual(exc.status_code,422); reserve.assert_not_called(); self.assertEqual(bodies,[])
+        with mock.patch.object(video.get_settings(),"video_model","gemini-omni-1.1-flash"):
+            _r,exc,bodies,reserve,_s=self.run_sequence(seconds=15)
+        self.assertEqual(exc.status_code,422); reserve.assert_not_called()
+        self.assertEqual(video.max_seconds(),15)
+
+    def test_every_allowed_model_and_length_fits_the_video_reservation_bound(self):
+        # media_allowances.reserve rejects a video ceiling above US$1.20.
+        for name,(longest,_price) in video.VIDEO_MODELS.items():
+            for seconds in range(video.MIN_SECONDS,longest+1):
+                self.assertLessEqual(video.ceiling(name,seconds),1_200_000)
+                self.assertLessEqual(video.ceiling(name,min(seconds,5),edit=True),1_200_000)
+        # 15 s on 1.2 reserves for its full 86,880 video tokens; the default 5 s far less.
+        self.assertEqual(video.ceiling("gemini-omni-1.2-flash",15),1_156_560)
+        self.assertEqual(video.default_ceiling(),461_520)
+        with self.assertRaises(ValueError): video.ceiling("gemini-omni-1.1-flash",11)
+        with self.assertRaises(ValueError): video.ceiling("veo-unknown",5)
+
+    def test_unknown_model_names_leave_video_unavailable(self):
+        settings=video.get_settings()
+        with mock.patch.object(settings,"campaign_video_enabled",True), mock.patch.object(settings,"gemini_api_key","k"), \
+             mock.patch.object(video.shutil,"which",return_value="/bin/true"):
+            self.assertTrue(video.available())
+            with mock.patch.object(settings,"video_model","gemini-omni-9-flash"):
+                self.assertFalse(video.available()); self.assertIsNone(video.default_ceiling())
+            with mock.patch.object(settings,"video_fallback_model","not-a-video-model"):
+                self.assertEqual(video.fallback_model(),"")
 
 if __name__ == "__main__": unittest.main()

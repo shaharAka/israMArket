@@ -104,6 +104,8 @@ def create(db, business, strategy, *, request_id, uids, kind, instruction, optio
             raise HTTPException(422, "בחרו פוסט אחד לסרטון.")
         if kind == "video_edit" and not instruction:
             raise HTTPException(422, "כתבו מה תרצו לשנות בסרטון.")
+        if kind == "video" and options.get("seconds") and not campaign_video.MIN_SECONDS <= options["seconds"] <= campaign_video.max_seconds():
+            raise HTTPException(422, f"בחרו סרטון באורך {campaign_video.MIN_SECONDS} עד {campaign_video.max_seconds()} שניות.")
         campaign_video.clean_overlay(options.get("overlay_png", ""))
         if kind in {"video_edit", "finish"}:
             asset_id = options.get("asset_id") or selected[0].get("video_raw_asset_id") or selected[0].get("video_asset_id")
@@ -183,7 +185,8 @@ def propose(db, business, strategy, post, kind, instruction, request_key, option
             source_data = video.finish_bytes(path.read_bytes(), start=options.get("start",0), end=options.get("end"),
                                             max_duration=5 if kind == "video_edit" else 30)
         if kind != "finish":
-            source_data = video.generate(db, business, target, dna, instruction, request_key, source_data=source_data)
+            source_data = video.generate(db, business, target, dna, instruction, request_key, source_data=source_data,
+                                         seconds=options.get("seconds") or video.DEFAULT_SECONDS)
             raw = video.store(db, business_id, revision_id, source_data, target.get("title", ""))
             raw_asset_id = raw.id
         overlay = video.clean_overlay(options.get("overlay_png", ""))
