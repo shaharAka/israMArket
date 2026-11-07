@@ -3,12 +3,15 @@
 import { IdentityMark } from "@/components/landing-v2/IdentityMark";
 import { Copy, useCopy } from "@/components/language/LanguageProvider";
 import { WhatsNewLink } from "@/components/language/WhatsNewLink";
+import { ProductUtilities } from "@/components/language/ProductUtilities";
+import { APP_TABS } from "@/lib/appNavigation";
+import shellStyles from "./app-shell.module.css";
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { ApiError, endpoints, isDemo } from "@/lib/api";
-import { IconArrowRight, IconChart, IconHome, IconImage, IconCalendar, IconLogout, IconStore, IconMegaphone } from "@/lib/icons";
+import { IconArrowRight, IconChart, IconHome, IconCalendar, IconLogout, IconStore, IconMegaphone } from "@/lib/icons";
 import { BusinessLogo } from "@/components/brand/BusinessLogo";
 import { BrandLink } from "@/components/BrandLink";
 import { TrialWelcome } from "@/components/trial/Welcome";
@@ -23,11 +26,11 @@ type Tab = {
   label: string;
   icon: (props: { className?: string }) => React.ReactElement;
   /** Every route that lives under this tab, so the tab stays lit on its sub-pages. */
-  owns: string[];
+  owns: readonly string[];
 };
 
 /**
- * The whole app, in five views. The same five on the phone's bottom bar and the desktop
+ * The whole app, in four views. The same four on the phone's bottom bar and the desktop
  * sidebar, so the owner learns one map.
  *
  * It used to be nine, and the phone only had room for five: the quarterly plan, the
@@ -36,21 +39,8 @@ type Tab = {
  * not a daily task is a business utility. The calendar belongs to the plan; the
  * campaign is its own workspace for the sequence and coordinated creative revisions.
  */
-export const TABS: Tab[] = [
-  { href: "/campaign", label: "קמפיין", icon: IconMegaphone, owns: ["/campaign"] },
-  {
-    href: "/strategy",
-    label: "מטרות ותוכנית",
-    icon: IconStore,
-    // `/baseline`: the plan's starting numbers, the week-1 measurement step (Revision 8).
-    owns: ["/strategy", "/plan", "/decisions", "/calendar", "/promotion", "/instagram", "/baseline"],
-  },
-  // The week-2 raw materials the posts are written from: photos, the products to feature
-  // and the style check (Revision 8).
-  { href: "/posts", label: "פוסטים", icon: IconImage, owns: ["/posts", "/assets", "/featured", "/voice"] },
-  { href: "/performance", label: "תוצאות", icon: IconChart, owns: ["/performance", "/recommendations"] },
-  { href: "/dashboard", label: "השבוע", icon: IconHome, owns: ["/dashboard"] },
-];
+const TAB_ICONS = { home: IconHome, campaign: IconMegaphone, plan: IconStore, results: IconChart };
+export const TABS: Tab[] = APP_TABS.map(tab => ({ ...tab, icon: TAB_ICONS[tab.icon] }));
 
 // `/security` is public (the landing links to it) and has no shell.
 const BUSINESS_UTILITIES = ["/brand", "/integrations", "/account", "/billing", "/help", "/support", "/updates"];
@@ -79,7 +69,7 @@ export function tabFor(pathname: string): Tab | null {
  * `/account` and `/billing` too: they belong to the account, not the business. Paying,
  * changing a password or deleting the account must not require finishing the wizard.
  */
-const FIRST_RUN_ROUTES = ["/posts", "/integrations", "/onboarding", "/start", "/login", "/signup", "/decisions", "/strategy", "/account", "/billing", "/help", "/support", "/updates"];
+const FIRST_RUN_ROUTES = ["/campaign", "/posts", "/integrations", "/onboarding", "/start", "/login", "/signup", "/decisions", "/strategy", "/account", "/billing", "/help", "/support", "/updates"];
 
 /** Log out from anywhere: the sidebar, the business hub, the wizard's top bar. */
 export function useLogOut() {
@@ -197,23 +187,23 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         {back ? (
           <Link
             href={back.href}
-            className="inline-flex min-h-11 min-w-11 items-center gap-1.5 rounded-md px-2 text-[15px] font-bold text-[color:var(--ink)] active:bg-[var(--primary-soft)]"
+            title={t(back.label)}
+            className="inline-flex min-h-11 min-w-0 flex-1 items-center gap-1.5 rounded-md px-2 text-[15px] font-bold text-[color:var(--ink)] active:bg-[var(--primary-soft)]"
           >
             <IconArrowRight className="h-5 w-5 shrink-0 locale-arrow" />
-            <span><Copy text={back.label} /></span>
+            <span className="truncate"><Copy text={back.label} /></span>
           </Link>
         ) : (
-          <Link href={inSetup ? setupHref : "/campaign"} className="flex min-h-11 min-w-0 items-center gap-2 px-2">
+          <Link href={inSetup ? setupHref : "/campaign"} className="flex min-h-11 min-w-0 flex-1 items-center gap-2 px-2">
             {businessName ? <BusinessLogo src={businessLogo} name={businessName} color={businessColor} className="h-7 w-7 shrink-0" /> : <span className="product-wordmark !text-[16px]" dir="ltr"><IdentityMark direction="open" /><span className="sr-only">isramarket</span></span>}
             {/* The owner's business, not ours: "ישראמארקט / לחם …" truncated the one
                 word they would recognise. */}
-            <span className="min-w-0 truncate text-[15px] font-semibold text-[color:var(--ink)]">
-              {businessName || t("ישראמארקט")}
-            </span>
+            {businessName ? <span className="min-w-0 truncate text-[15px] font-semibold text-[color:var(--ink)]">{businessName}</span> : null}
           </Link>
         )}
-        <div className="flex shrink-0 items-center gap-2">
-          <WhatsNewLink iconOnly />
+        <div className="flex shrink-0 items-center gap-1">
+          <div className={shellStyles.mobileLanguage}><ProductUtilities inline /></div>
+          {!inSetup ? <WhatsNewLink iconOnly showLabel /> : null}
           {inSetup && businessName ? <Link href="/posts" className="inline-flex min-h-11 items-center px-2 text-sm text-[var(--ink-soft)]"><Copy text="הפוסטים" /></Link> : null}
           {demo ? (
             <span
@@ -230,7 +220,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               className="inline-flex min-h-11 cursor-pointer items-center px-2 text-sm text-[color:var(--ink-soft)] underline underline-offset-4"
             ><Copy text="יציאה" /></button>
           ) : back?.href === "/business" || pathname === "/business" ? null : (
-            <Link href="/business" className="inline-flex min-h-11 items-center rounded-lg px-2.5 text-[13px] font-medium text-[color:var(--ink-soft)] hover:bg-[var(--soft)]"><Copy text="כלי העסק" /></Link>
+            <Link href="/business" aria-label={t("כלי העסק")} title={t("כלי העסק")} className="inline-flex h-11 w-11 items-center justify-center rounded-lg text-[color:var(--ink-soft)] hover:bg-[var(--soft)]"><IconStore className="h-5 w-5" /></Link>
           )}
         </div>
       </header>
@@ -306,7 +296,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       {inSetup ? null : (
         <nav
           aria-label={t("ניווט ראשי")}
-          className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 border-t border-[var(--rule)] bg-[var(--paper)]/95 pb-[env(safe-area-inset-bottom)] pr-[env(safe-area-inset-right)] pl-[env(safe-area-inset-left)] backdrop-blur-md md:hidden"
+          className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-4 border-t border-[var(--rule)] bg-[var(--paper)]/95 pb-[env(safe-area-inset-bottom)] pr-[env(safe-area-inset-right)] pl-[env(safe-area-inset-left)] backdrop-blur-md md:hidden"
         >
           {TABS.map((tab) => {
             const active = activeTab?.href === tab.href;
@@ -325,7 +315,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 >
                   <Icon className="nav-icon h-[22px] w-[22px]" />
                 </span>
-                <span><Copy text={tab.href === "/strategy" ? "התוכנית" : tab.label} /></span>
+                <span><Copy text={tab.label} /></span>
               </Link>
             );
           })}

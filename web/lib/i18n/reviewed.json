@@ -1184,6 +1184,26 @@
       "en": "For temporary delivery failures, we make up to three delivery attempts. Your plan and recommendations stay saved even when the receiving system is unavailable.",
       "ar": "عند تعثّر التسليم مؤقتًا، نجري ما يصل إلى ثلاث محاولات تسليم. تبقى خطتكم وتوصياتكم محفوظة حتى إن كان النظام المستقبِل غير متاح.",
       "ru": "При временном сбое мы делаем до трёх попыток доставки. План и рекомендации остаются сохранёнными, даже если принимающая система недоступна."
+    },
+    "m_5c1a7cacc57e8631": {
+      "en": "Audience and measurement",
+      "ar": "الجمهور والقياس",
+      "ru": "Аудитория и измерение"
+    },
+    "m_2793c9f79927436f": {
+      "en": "Your campaign is home to your posts",
+      "ar": "الحملة هي موطن منشوراتكم",
+      "ru": "Кампания — главное место для постов"
+    },
+    "m_ce60b9bd90878dbf": {
+      "en": "Desktop and phone now share the same four destinations: This week, Campaign, Plan and Results. From the campaign, open a post to edit or create your own.",
+      "ar": "تظهر على الكمبيوتر والهاتف الوجهات الأربع نفسها: هذا الأسبوع، والحملة، والخطة، والنتائج. من الحملة يمكنكم فتح منشور للتعديل أو إنشاء منشور خاص بكم.",
+      "ru": "На компьютере и телефоне теперь одни и те же четыре раздела: «Неделя», «Кампания», «План» и «Результаты». Из кампании можно открыть пост для редактирования или создать свой."
+    },
+    "m_7f0d28738ea49a77": {
+      "en": "On your phone, choose the language in the header. A clear button opens the next post for review; audience, measurement and generation allowance details stay close at hand.",
+      "ar": "على الهاتف، يمكنكم اختيار اللغة من شريط العنوان. يفتح زر واضح المنشور التالي للمراجعة، وتبقى تفاصيل الجمهور والقياس وحصة الإنشاء قريبة من العمل.",
+      "ru": "На телефоне выбор языка находится в верхней строке. Заметная кнопка открывает следующий пост для проверки, а сведения об аудитории, измерениях и лимите генерации доступны рядом с рабочей областью."
     }
   },
   "numberForms": {

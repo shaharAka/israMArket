@@ -20,6 +20,7 @@ import { loadCampaignWorkspace } from "@/lib/campaignRecovery";
 import { signInUrl } from "@/lib/authNavigation";
 import { LOCALE_META } from "@/lib/i18n/locales";
 import { CampaignVideoOverlay, CampaignVideoPreview } from "./CampaignVideo";
+import { IconChevron } from "@/lib/icons";
 import styles from "./campaign.module.css";
 
 const REVISION_LABEL: Record<RevisionKind, string> = { text: "הנוסח", layout: "קומפוזיציה אחרת", image: "התמונה", video: "סרטון חדש", video_edit: "שינוי בסרטון", finish: "סרטון שיש לכם" };
@@ -256,16 +257,21 @@ export function CampaignTimeline() {
   }
   return <div className={styles.workspace}>
     <header className={styles.heading}>
-      <div><Link href="/posts" className={styles.textAction}>{t("כל הפוסטים")}</Link>
-        <h1>{t("הקמפיין שלכם")}</h1>
+      <div><h1>{t("הקמפיין שלכם")}</h1>
         <p>{strategy?.business_name}</p>
       </div>
-      {allowance ? <div className={styles.balance} aria-label={t("המכסה שנותרה")}>
+      <div className={styles.headingActions}>
+        <Link href={`/posts?create=1&from=campaign&week=${visibleWeek || 0}&lang=${locale}`} className={styles.textAction}>{t("ליצור פוסט משלכם")}</Link>
+        <Link href="/assets" className={styles.textAction}>{t("התמונות והסרטונים שלכם")}</Link>
+      {allowance ? <details className={styles.quota}>
+        <summary>{t("המכסה שנותרה")}<IconChevron className={styles.disclosureIcon}/></summary>
+        <div className={styles.balance}>
         <span>{t("{arg_0} תמונות", { arg_0: allowance.images.remaining })}</span>
         <span>{t("{arg_0} סרטונים", { arg_0: allowance.videos.remaining })}</span>
         {allowance.resets_at ? <span>{t("מתחדש ב־{arg_0}", { arg_0: new Date(allowance.resets_at).toLocaleDateString(LOCALE_META[locale].formatLocale, { day: "numeric", month: "short" }) })}</span> : null}
-        <Link href="/assets">{t("התמונות והסרטונים שלכם")}</Link>
-      </div> : null}
+        </div>
+      </details> : null}
+      </div>
     </header>
     {error ? <div className={styles.error} role="alert">{t(error)} <button disabled={refreshing} onClick={() => void reload()}>{t("לטעון שוב")}</button></div> : null}
     {unavailable.length && posts.length ? <div className={styles.error} role="status">
@@ -281,7 +287,7 @@ export function CampaignTimeline() {
       </section> : <section className={styles.nextTask} aria-label={t("הצעד הבא בקמפיין")}>
         <div><h2>{t(next.action === "review" ? "הפוסט הבא שמחכה לכם" : next.action === "publish" ? "פוסט מוכן לפרסום" : "אין פוסטים שמחכים לכם עכשיו")}</h2>
           <p dir="auto">{nextPost ? `${nextPost.title}${ownerNeedsOf(nextPost)[0]?.text ? ` · ${t(ownerNeedsOf(nextPost)[0].text)}` : ""}` : t("אפשר לראות את התוצאות ולבחור את הצעד הבא.")}</p></div>
-        <Link className={styles.textAction} href={nextPost ? `/posts?post=${next.index}&from=campaign&week=${postWeek(nextPost)}` : "/performance"}>{t(next.action === "review" ? "לבדוק ולאשר" : next.action === "publish" ? "לפתוח לפרסום" : "לראות תוצאות")}</Link>
+        <Link className={selecting ? styles.textAction : styles.primary} href={nextPost ? `/posts?post=${next.index}&from=campaign&week=${postWeek(nextPost)}` : "/performance"}>{t(next.action === "review" ? "לבדוק ולאשר" : next.action === "publish" ? "לפתוח לפרסום" : "לראות תוצאות")}</Link>
       </section>}
       <a href="#campaign-weeks" className={styles.textAction}>{t("לפוסטים של השבוע")}</a>
       {ready && strategy ? <CampaignOverview strategy={strategy}/> : null}

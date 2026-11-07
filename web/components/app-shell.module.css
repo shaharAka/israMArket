@@ -1,0 +1,10 @@
+.mobileLanguage { flex-shrink: 0; }
+.mobileLanguage :global(.product-utilities-inline [role="alert"]) {
+  position: fixed;
+  inset-inline: 16px;
+  top: calc(64px + env(safe-area-inset-top));
+  min-width: 0;
+  max-width: 480px;
+  margin-inline: auto;
+  overflow-wrap: anywhere;
+}

@@ -1,0 +1,118 @@
+[
+  {
+    "lang": "he",
+    "headerHeight": 56,
+    "languageChoices": 1,
+    "navigation": [
+      [],
+      [
+        {
+          "href": "/dashboard",
+          "text": "השבוע"
+        },
+        {
+          "href": "/campaign",
+          "text": "קמפיין"
+        },
+        {
+          "href": "/strategy",
+          "text": "התוכנית"
+        },
+        {
+          "href": "/performance",
+          "text": "תוצאות"
+        }
+      ]
+    ],
+    "overflow": false,
+    "selectedWeek": "שבוע 33 פוסטים",
+    "width": 390
+  },
+  {
+    "lang": "en",
+    "headerHeight": 56,
+    "languageChoices": 1,
+    "navigation": [
+      [],
+      [
+        {
+          "href": "/dashboard",
+          "text": "This week"
+        },
+        {
+          "href": "/campaign",
+          "text": "Campaign"
+        },
+        {
+          "href": "/strategy",
+          "text": "The marketing plan"
+        },
+        {
+          "href": "/performance",
+          "text": "Results"
+        }
+      ]
+    ],
+    "overflow": false,
+    "selectedWeek": "Week 33 posts",
+    "width": 390
+  },
+  {
+    "lang": "ar",
+    "headerHeight": 56,
+    "languageChoices": 1,
+    "navigation": [
+      [],
+      [
+        {
+          "href": "/dashboard",
+          "text": "هذا الأسبوع"
+        },
+        {
+          "href": "/campaign",
+          "text": "الحملة"
+        },
+        {
+          "href": "/strategy",
+          "text": "الخطة التسويقية"
+        },
+        {
+          "href": "/performance",
+          "text": "النتائج"
+        }
+      ]
+    ],
+    "overflow": false,
+    "selectedWeek": "الأسبوع 33 منشورات",
+    "width": 390
+  },
+  {
+    "lang": "ru",
+    "headerHeight": 56,
+    "languageChoices": 1,
+    "navigation": [
+      [],
+      [
+        {
+          "href": "/dashboard",
+          "text": "На этой неделе"
+        },
+        {
+          "href": "/campaign",
+          "text": "Кампания"
+        },
+        {
+          "href": "/strategy",
+          "text": "Маркетинговый план"
+        },
+        {
+          "href": "/performance",
+          "text": "Результаты"
+        }
+      ]
+    ],
+    "overflow": false,
+    "selectedWeek": "Неделя 33 постов",
+    "width": 390
+  }
+]
