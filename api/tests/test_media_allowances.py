@@ -178,6 +178,26 @@ class MediaCapsTest(unittest.TestCase):
         self.assertEqual(status["videos"]["included"], 2)
         self.assertFalse(status["videos"]["generation_available"])
 
+    def test_video_ceilings_follow_model_and_length_within_the_period_budget(self):
+        from app.services import campaign_video as video
+        with mock.patch.object(video, "available", return_value=True):
+            status = caps.status(self.db, self.user, NOW)["videos"]
+            self.assertTrue(status["generation_available"])
+            # Two 15 s Omni 1.2 clips fit the US$3 period at their full ceilings; the 1.1
+            # fallback at its 10 s maximum is accepted by the per-request bound too.
+            long_clip = video.ceiling("gemini-omni-1.2-flash", 15)
+            first = self.reserve("long-1", ceiling=long_clip)
+            caps.settle(self.db, first, state="failed")  # a refusal keeps its ceiling
+            fallback = self.reserve("long-1:fallback", ceiling=video.ceiling("gemini-omni-1.1-flash", 10))
+            caps.settle(self.db, fallback, state="succeeded", cost_usd=1.017995)  # measured 10 s 1.1 clip
+            self.assertEqual((self.row().used, self.row().committed_microusd), (1, long_clip + 1_017_995))
+            # The period then has US$0.82 left: a default 5 s clip still fits, another 15 s does not.
+            self.assertTrue(caps.status(self.db, self.user, NOW)["videos"]["generation_available"])
+            with self.assertRaises(CodedError):
+                self.reserve("long-2", ceiling=long_clip)
+            caps.settle(self.db, self.reserve("short", ceiling=video.default_ceiling()), state="succeeded", cost_usd=0.36)
+            self.assertEqual(self.row().used, 2)
+
     def test_workspace_deletion_does_not_refund_account_usage(self):
         caps.settle(self.db, self.reserve(), state="succeeded", cost_usd=0.1)
         self.db.delete(self.biz)

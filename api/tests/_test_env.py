@@ -61,6 +61,11 @@ os.environ["IMAGE_EDIT_PROVIDER"] = "muse"
 os.environ["IMAGE_FALLBACK_MODEL"] = "gemini-3.1-flash-image"
 os.environ["GEMINI_IMAGE_MODEL"] = "gemini-3.1-flash-image"
 os.environ["GEMINI_IMAGE_SIZE"] = "1K"
+# Campaign video at the code defaults too: Omni 1.2 with 1.1 as the refusal fallback. Video
+# stays off unless a test enables it and mocks the provider (tests/test_campaign_video.py).
+os.environ["CAMPAIGN_VIDEO_ENABLED"] = "false"
+os.environ["VIDEO_MODEL"] = "gemini-omni-1.2-flash"
+os.environ["VIDEO_FALLBACK_MODEL"] = "gemini-omni-1.1-flash"
 # Images go to Muse first. META_MODEL_API_KEY is blank above, so Muse fails before any
 # request; tests that exercise the routing patch services/muse_image.py.
 # Post images are prepared by a background job (services/image_jobs.py). In tests it runs

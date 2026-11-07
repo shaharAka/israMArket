@@ -1,7 +1,8 @@
 import { api, type RoadmapPost, type StrategyPayload } from "@/lib/api";
 
 export type RevisionKind = "text" | "layout" | "image" | "video" | "video_edit" | "finish";
-export type VideoOptions = { asset_id?: number; start?: number; end?: number; overlay_png?: string; overlay_headline?: string };
+/** `seconds`: a new generated clip's length (3-15 s, default 5; the server checks the model's maximum). */
+export type VideoOptions = { asset_id?: number; start?: number; end?: number; overlay_png?: string; overlay_headline?: string; seconds?: number };
 export type CampaignRevision = {
   id: string; strategy_id: number; kind: RevisionKind; instruction: string;
   state: "working" | "ready" | "failed" | "kept" | "undone" | "discarded";

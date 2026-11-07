@@ -39,10 +39,17 @@ these image/video units. Prepaid credit purchases remain separate work in #191.
 
 Direct Google video is off unless `CAMPAIGN_VIDEO_ENABLED=true` and the Gemini key and
 FFmpeg/FFprobe are available. Activation requires the scoped provider canary. This path
-requests and normalizes a **five-second 720p vertical clip**, with one submission, no
-fallback and no paid retry. The output-token budget is 55,000 and each request reserves
-a conservative $1.20 ceiling. Verified token usage settles cost; unknown outcomes retain
-the reservation. A user-supplied model, provider URL, price or settlement is never accepted.
+requests and normalizes a **720p vertical clip of 5 seconds by default**; a new clip may ask
+for 3–15 seconds (`options.seconds`), checked against the configured model's verified
+maximum. `VIDEO_MODEL` is Omni 1.2 Flash (up to 15 s, about $0.07/s). Only a definitive
+refusal (4xx other than 401, nothing generated) sends the same request once to
+`VIDEO_FALLBACK_MODEL` (Omni 1.1, up to 10 s, about $0.10/s) under its own reservation;
+timeouts and ambiguous output never fall back, and nothing is retried. The explicit
+duration fixes the output: the token budget is seconds × 5,792 plus 8,000, and the
+reservation prices that whole budget at the model's video rate (1.2: $0.46 for 5 s, $1.16
+for 15 s). Verified token usage settles cost; unknown outcomes retain the reservation. A
+user-supplied model, provider URL, price or settlement is never accepted. Benchmark:
+[Omni 1.2](omni-1.2-benchmark-2026-11-07.md).
 
 ## Finishing and export
 
