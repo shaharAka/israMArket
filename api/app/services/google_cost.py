@@ -1,36 +1,10 @@
-"""Google Ads cost basics for the Israeli market.
+"""Google Ads planning guidance without agency-derived personal forecasts.
 
-The product already prices Meta. Google was a blank: an owner could be told what a
-Facebook campaign costs and nothing about what a search campaign costs, which terms are
-worth bidding on, or that the local surface in Google is free.
-
-Every figure here is a published Israeli market range, not a guess. Source: Rulers
-(רולרס), an Israeli agency, published the CPC / conversion-rate / minimum-budget data
-from the campaigns they run —
-https://www.rulers.co.il/blog/how-much-does-a-successful-google-ads-campaign-really-cost-in-israel/
-
-    CPC by industry       2-30 NIS per click, in three published tiers
-    conversion rate       eCommerce 1.5-2.5%, local services (renovation) 3-5%,
-                          professional services (lawyer) 5-8%
-    minimum media budget  eCommerce 8,000-12,000, local services 5,000-8,000,
-                          B2B/professional 10,000-15,000, startups/tech 15,000-25,000 NIS
-    management            15-20% of media budget, or 2,000-8,000 NIS/month flat
-    one-time setup        1,500-4,000 NIS
-    learning phase        Google needs 30-50 conversions/month to optimise
-
-Because these are RANGES, every derived number is a range too, and each plan carries the
-assumptions it was built on. A single confident figure would be the same lie the Meta
-cost model was written to replace, just better sourced.
-
-Two things this module deliberately refuses to do:
-
-* It will not invent a conversion rate. The source publishes rates for three sectors
-  only. A business it cannot place in one of those sectors (B2B/tech is the published
-  minimum budget without a published conversion rate) gets a CPC range, clicks, and a
-  warning that the rest is unknown — not a made-up number.
-* It will not invent search volume. There is no Keyword Planner access here, so the plan
-  says nothing about how many people search. The click range is the upper bound of what
-  the budget can buy, no more.
+The owner chooses the campaign budget. A useful search forecast depends on that
+campaign's keywords and settings, so this app does not infer clicks, conversions, costs,
+or a minimum from business category or a third-party agency table. Owners can review
+Google's Keyword Planner forecast and choose the daily budget in their own Google Ads
+account. No Google Ads account is read or changed here.
 """
 
 from __future__ import annotations
@@ -40,11 +14,14 @@ from dataclasses import asdict, dataclass
 from app.services import business_fields
 from app.services.business_model import CONVERSION_UNIT, normalise_model
 
-SOURCE_URL = (
+LEGACY_AGENCY_SOURCE_URL = (
     "https://www.rulers.co.il/blog/"
     "how-much-does-a-successful-google-ads-campaign-really-cost-in-israel/"
 )
-SOURCE_TITLE = "רולרס — כמה באמת עולה קמפיין Google Ads מוצלח בישראל?"
+SOURCE_URL = "https://support.google.com/google-ads/answer/7337243?hl=he"
+SOURCE_TITLE = "Google Ads — שימוש במתכנן מילות המפתח"
+BUDGET_SOURCE_URL = "https://support.google.com/google-ads/answer/6385083?hl=he"
+BUDGET_SOURCE_TITLE = "Google Ads — בחירת תקציב יומי ממוצע"
 
 # --- published Israeli market ranges -------------------------------------------------
 # The three CPC tiers the source groups its industries into.
@@ -325,12 +302,11 @@ class GooglePlan:
     expected_conversions: tuple[int, int] | None
     cost_per_conversion: tuple[int, int] | None
     minimum_viable_budget: tuple[int, int] | None
-    # Fees are separate line items so the owner sees the true cost of the month, the way
-    # the Meta model refuses to assume management is free.
-    management_fee: dict
-    setup_fee: tuple[int, int]
-    total_monthly_ils: tuple[int, int]
-    first_month_total_ils: tuple[int, int]
+    # Agency fees are unknown unless the owner supplies a quote.
+    management_fee: dict | None
+    setup_fee: tuple[int, int] | None
+    total_monthly_ils: tuple[int, int] | None
+    first_month_total_ils: tuple[int, int] | None
     warnings: list[str]
     assumptions: list[str]
     source: str
@@ -486,202 +462,45 @@ def plan_from_budget(
     business_model: str | None = None,
     presence_type: str | None = None,
 ) -> GooglePlan:
-    """The Google plan for a budget, with every derived number kept as a range."""
+    """Describe the owner's chosen budget and the official path to a real forecast.
+
+    The old Rulers table supplied campaign and agency averages, but those do not
+    establish this business's Google Ads costs or minimum. Keep the payload fields for
+    client compatibility, and deliberately leave every unobserved metric empty.
+    """
     budget = max(int(monthly_budget_ils or 0), 0)
-    industry, matched = match_industry(business_type, offerings)
-    online_shop = presence_type == "online_only" and normalise_model(business_model) != "services"
-    sector_key = match_sector(business_type, offerings, industry, online_shop=online_shop)
-    sector = SECTORS.get(sector_key or "") or None
-
-    warnings: list[str] = []
-    assumptions: list[str] = []
-
-    if industry is not None:
-        cpc_range: tuple[float, float] | None = industry.cpc
-        industry_key, industry_label, tier = industry.key, industry.label, industry.tier
-    else:
-        cpc_range = CPC_TIERS[DEFAULT_CPC_TIER]
-        industry_key, industry_label, tier = UNMATCHED_KEY, UNMATCHED_LABEL, DEFAULT_CPC_TIER
-        unpriced = unpriced_field_label(business_type, offerings)
-        why = (
-            f"לתחום '{unpriced}' אין שורה בטבלת המחירים שפורסמה, וב'מה העסק מציע' אין מילים "
-            "של תחום אחר מהטבלה."
-            if unpriced
-            else "לא זיהינו את התחום שלכם בטבלת המחירים שפורסמה, כי ב'סוג העסק' וב'מה העסק מציע' "
-            "אין מילים שאנחנו מכירים."
-        )
-        warnings.append(
-            f"{why} המחיר לקליק שלמטה הוא רצועת הביניים של המקור "
-            f"({CPC_TIERS[DEFAULT_CPC_TIER][0]:.0f}-{CPC_TIERS[DEFAULT_CPC_TIER][1]:.0f} ₪), "
-            "לא המחיר של תחום מסוים: לא הזול ולא היקר בטבלה. כתבו את התחום המדויק "
-            "(למשל אופנה ואקססוריז, שיפוצים ובנייה, ביטוח ופיננסים) כדי לקבל טווח אמיתי."
-        )
-
-    # --- clicks ---------------------------------------------------------------------
-    clicks: tuple[int, int] | None = None
-    if cpc_range and budget:
-        clicks = (int(budget / cpc_range[1]), int(budget / cpc_range[0]))
-    elif cpc_range:
-        clicks = (0, 0)
-
-    # --- conversions ----------------------------------------------------------------
-    conversion_rate = sector["conversion_rate"] if sector else None
-    conversions: tuple[int, int] | None = None
-    cost_per_conversion: tuple[int, int] | None = None
-    if conversion_rate and cpc_range and budget:
-        # conversions = clicks x rate. Derived on the unrounded click count, and the
-        # cheapest conversion is the cheapest click at the best rate — so the range
-        # spans the whole published CPC and CR ranges rather than an average of them.
-        conversions = (
-            int(budget / cpc_range[1] * conversion_rate[0]),
-            int(budget / cpc_range[0] * conversion_rate[1]),
-        )
-        cost_per_conversion = (
-            round(cpc_range[0] / conversion_rate[1]),
-            round(cpc_range[1] / conversion_rate[0]),
-        )
-    elif conversion_rate:
-        conversions = (0, 0)
-        cost_per_conversion = (
-            round(cpc_range[0] / conversion_rate[1]) if cpc_range else None,
-            round(cpc_range[1] / conversion_rate[0]) if cpc_range else None,
-        )
-
-    minimum_budget = sector["minimum_budget"] if sector else None
-
-    # --- warnings the owner needs ---------------------------------------------------
-    if budget <= 0:
-        warnings.append(
-            "לא הוגדר תקציב חודשי, ולכן אין מה לתכנן מול גוגל. הזינו תקציב מדיה חודשי, "
-            "ונראה כמה קליקים ופניות הוא יכול להביא ומה עולה כל פנייה."
-        )
-    elif minimum_budget:
-        if budget < minimum_budget[0]:
-            warnings.append(
-                f"התקציב החודשי ({budget:,} ₪) נמוך מהמינימום שפורסם למגזר "
-                f"'{sector['label']}' ({minimum_budget[0]:,}-{minimum_budget[1]:,} ₪). "
-                "מתחת למינימום הזה המקור מתאר מלכודת: אין מספיק נתונים → המערכת של גוגל לא "
-                "לומדת → התוצאות גרועות → התקציב נשרף מהר → ויש עוד פחות נתונים. "
-                "עדיף לחכות לתקציב מתאים, או לשים את הסכום הזה במקומות שלא תלויים בלמידה "
-                "של גוגל: קידום האתר בחיפוש בלי לשלם, פוסטים ורשתות חברתיות."
-            )
-        elif budget < minimum_budget[1]:
-            warnings.append(
-                f"התקציב החודשי ({budget:,} ₪) נמצא בחלק התחתון של טווח המינימום שפורסם "
-                f"למגזר '{sector['label']}' ({minimum_budget[0]:,}-{minimum_budget[1]:,} ₪). "
-                "זו התחלה צפופה: פחות מקום לטעויות, ופחות נתונים שגוגל לומד מהם."
-            )
-
-    if budget > 0 and conversions is not None:
-        floor = LEARNING_CONVERSIONS_PER_MONTH[0]
-        ceiling = LEARNING_CONVERSIONS_PER_MONTH[1]
-        if conversions[1] < floor:
-            warnings.append(
-                f"בתקציב הזה צפויות {conversions[0]:,}-{conversions[1]:,} פניות או הזמנות בחודש, "
-                f"פחות מ-{floor} גם בתרחיש הטוב. גוגל צריך {floor}-{ceiling} כאלה בחודש "
-                "כדי ללמוד ולהשתפר. לכן בשלב הזה המטרה היא איסוף נתונים ובניית מדידה, "
-                "לא החזר על ההוצאה. אל תבנו על החזר בתקופה הזו."
-            )
-        elif conversions[0] < floor:
-            warnings.append(
-                f"מספר הפניות וההזמנות הצפוי ({conversions[0]:,}-{conversions[1]:,} בחודש) חוצה את סף "
-                f"ה-{floor} שגוגל צריך כדי ללמוד. בתרחיש הזהיר עדיין אין מספיק נתונים, "
-                "והקמפיין נשאר בשלב למידה. תכננו את החודש כאיסוף נתונים, לא כחודש שצריך להחזיר את ההוצאה."
-            )
-
-    if sector is None:
-        warnings.append(
-            "לא שייכנו את העסק לאף אחד מהמגזרים שפורסמו (חנות אונליין, שירותים מקומיים, "
-            "שירותים מקצועיים, סטארטאפים וטכנולוגיה), ולכן אין כאן הערכה של כמה פניות יגיעו "
-            "וכמה תעלה כל אחת. את זה אפשר לדעת רק מקמפיין אמיתי או מנתוני האתר שלכם."
-        )
-    elif conversion_rate is None:
-        warnings.append(
-            f"המקור מפרסם תקציב מינימום למגזר '{sector['label']}', אבל לא מפרסם בו איזה חלק "
-            "מהקליקים הופך לפניות. לכן אין כאן הערכה של כמה פניות יגיעו וכמה תעלה כל אחת: "
-            "מספר כזה היה מומצא. את זה אפשר למדוד רק בקמפיין שלכם."
-        )
-
-    # --- fee line items -------------------------------------------------------------
-    percent_amount = (int(budget * MANAGEMENT_PERCENT[0]), int(budget * MANAGEMENT_PERCENT[1]))
-    management_fee = {
-        "percent_range": MANAGEMENT_PERCENT,
-        "percent_label": f"{MANAGEMENT_PERCENT[0] * 100:.0f}%-{MANAGEMENT_PERCENT[1] * 100:.0f}% מתקציב המדיה",
-        "percent_amount_ils": percent_amount,
-        "flat_range_ils": MANAGEMENT_FLAT_ILS,
-        "note": (
-            "המקור מביא שתי דרכים לתמחר דמי ניהול: אחוז מתקציב המדיה, או סכום קבוע בחודש. "
-            "הצגנו את שתיהן, ולא בחרנו בשבילכם."
-        ),
-    }
-    management_low = min(percent_amount[0], MANAGEMENT_FLAT_ILS[0])
-    management_high = max(percent_amount[1], MANAGEMENT_FLAT_ILS[1])
-    total_monthly = (budget + management_low, budget + management_high)
-    first_month = (total_monthly[0] + SETUP_FEE_ILS[0], total_monthly[1] + SETUP_FEE_ILS[1])
-
-    # --- assumptions ----------------------------------------------------------------
-    if industry is not None:
-        assumptions.append(
-            f"מחיר לקליק בתחום '{industry.label}': {industry.cpc[0]:g}-{industry.cpc[1]:g} ₪ "
-            f"(הרצועה ה{TIER_LABELS[industry.tier]} של המקור)"
-        )
-    else:
-        assumptions.append(
-            f"לא זיהינו תחום, ולכן המחיר לקליק הוא הרצועה ה{TIER_LABELS[DEFAULT_CPC_TIER]} של המקור: "
-            f"{CPC_TIERS[DEFAULT_CPC_TIER][0]:g}-{CPC_TIERS[DEFAULT_CPC_TIER][1]:g} ₪"
-        )
-    if sector and conversion_rate:
-        assumptions.append(
-            f"במגזר '{sector['label']}', {_percent_range(conversion_rate)} מהקליקים הופכים "
-            f"ל{unit_plural(sector['conversion_unit'])}. זה השיעור שפורסם למגזר, לא מדידה של העסק שלכם"
-        )
-    if minimum_budget:
-        assumptions.append(
-            f"תקציב המדיה המינימלי שפורסם למגזר '{sector['label']}': "
-            f"{minimum_budget[0]:,}-{minimum_budget[1]:,} ₪ בחודש"
-        )
-    assumptions += [
-        f"גוגל צריך {LEARNING_CONVERSIONS_PER_MONTH[0]}-{LEARNING_CONVERSIONS_PER_MONTH[1]} "
-        "פניות או הזמנות בחודש כדי ללמוד ולהשתפר. מתחת לזה הוא לא באמת משתפר",
-        "העלות לכל פנייה נגזרה מהטווחים שפורסמו (המחיר לקליק חלקי אחוז הקליקים שהופכים לפניות), "
-        "ולא נמדדה אצלכם. המקור מחשב עם מחיר ממוצע לקליק, ואנחנו עם כל הטווח, ולכן הטווח "
-        "כאן רחב יותר מהדוגמאות במאמר",
-        f"דמי ניהול: {MANAGEMENT_PERCENT[0] * 100:.0f}%-{MANAGEMENT_PERCENT[1] * 100:.0f}% "
-        f"מתקציב המדיה, או {MANAGEMENT_FLAT_ILS[0]:,}-{MANAGEMENT_FLAT_ILS[1]:,} ₪ בחודש. "
-        f"הקמה חד-פעמית: {SETUP_FEE_ILS[0]:,}-{SETUP_FEE_ILS[1]:,} ₪",
-        "התקציב שהזנתם הוא תקציב המדיה בלבד, כלומר מה שמשלמים לגוגל על המודעות. דמי הניהול וההקמה מפורטים בנפרד, "
-        "ולכן העלות האמיתית בחודש גבוהה יותר",
-        "אין לנו גישה לכלי תכנון המילים של גוגל, ואין לנו נפחי חיפוש. מספר הקליקים הוא "
-        "המקסימום שהתקציב יכול לקנות, לא תחזית של כמה אנשים מחפשים",
-        "הכרטיס של העסק בגוגל (Google Business Profile) הוא בחינם, ולא נכלל בתקציב הזה",
-    ]
-
+    resolved = business_fields.resolve_field(business_type, offerings)
+    industry_key = resolved.key if resolved else UNMATCHED_KEY
+    industry_label = business_fields.field_label(industry_key) if resolved else "לא סווג"
     return GooglePlan(
         monthly_budget_ils=budget,
         industry_key=industry_key,
         industry_label=industry_label,
-        industry_tier=tier,
-        matched_keywords=matched,
-        sector_key=sector_key,
-        sector_label=sector["label"] if sector else None,
-        cpc_range=cpc_range,
-        expected_clicks=clicks,
-        conversion_rate_range=conversion_rate,
-        expected_conversions=conversions,
-        cost_per_conversion=cost_per_conversion,
-        minimum_viable_budget=minimum_budget,
-        management_fee=management_fee,
-        setup_fee=SETUP_FEE_ILS,
-        total_monthly_ils=total_monthly,
-        first_month_total_ils=first_month,
-        warnings=warnings,
-        assumptions=assumptions,
+        industry_tier="",
+        matched_keywords=[],
+        sector_key=None,
+        sector_label=None,
+        cpc_range=None,
+        expected_clicks=None,
+        conversion_rate_range=None,
+        expected_conversions=None,
+        cost_per_conversion=None,
+        minimum_viable_budget=None,
+        management_fee=None,
+        setup_fee=None,
+        total_monthly_ils=None,
+        first_month_total_ils=None,
+        warnings=[],
+        assumptions=[
+            "התקציב שמוצג הוא הסכום שבעל העסק בחר; גוגל מאפשרת לבחור ולשנות תקציב יומי ממוצע לכל קמפיין.",
+            "תחזית שימושית דורשת מילות מפתח והגדרות הקמפיין בחשבון Google Ads. לא חיברנו את החשבון ולא חישבנו תחזית לעסק.",
+            "דמי ניהול והקמה תלויים בהצעה של ספק שבעל העסק בחר; לא הנחנו מחיר לסוכנות.",
+        ],
         source=SOURCE_URL,
         source_title=SOURCE_TITLE,
-        conversion_unit=(sector["conversion_unit"] if sector else CONVERSION_UNIT[normalise_model(business_model)]),
-        channel_comparison=CHANNEL_COMPARISON,
+        conversion_unit="",
+        channel_comparison={},
     )
-
 
 def plan_for_business(business: dict) -> GooglePlan:
     """The endpoint / prompt entry point: takes the business payload as the app stores it."""
@@ -882,66 +701,14 @@ def business_profile_guidance(business: dict) -> dict:
 # --- prompt block --------------------------------------------------------------------
 
 def prompt_block(plan: GooglePlan) -> str:
-    """The compact Google block for the monthly plan prompt.
-
-    Small on purpose: this is a signal that search promotion exists and what it costs,
-    not a second strategy document. It carries the same refusal as the cost model — no
-    search volumes exist here, so none may appear.
-    """
-    industry_line = f"תחום שזוהה לטבלת המחירים: {plan.industry_label}"
-    if plan.matched_keywords:
-        industry_line += f" (מילות מפתח שזוהו: {', '.join(plan.matched_keywords[:4])})"
-
-    if plan.cpc_range:
-        cpc_line = f"טווח CPC לתחום: {plan.cpc_range[0]:g}-{plan.cpc_range[1]:g} ₪ לקליק"
-    else:
-        cpc_line = "טווח CPC לתחום: לא ידוע"
-
-    lines = [industry_line, cpc_line]
-    if plan.expected_clicks:
-        lines.append(f"טווח קליקים מהתקציב ({plan.monthly_budget_ils:,} ₪): "
-                     f"{plan.expected_clicks[0]:,}-{plan.expected_clicks[1]:,}")
-    if plan.conversion_rate_range:
-        lines.append(
-            f"שיעור המרה ({unit_label(plan.conversion_unit)}) במגזר {plan.sector_label}: "
-            f"{plan.conversion_rate_range[0] * 100:.1f}%-{plan.conversion_rate_range[1] * 100:.1f}%"
-            + (
-                f" · טווח המרות צפוי: {plan.expected_conversions[0]:,}-{plan.expected_conversions[1]:,} בחודש"
-                if plan.expected_conversions
-                else ""
-            )
-        )
-    else:
-        lines.append(
-            "אין שיעור המרה שפורסם למגזר הזה — אסור להמציא מספר המרות או עלות לפנייה בגוגל."
-        )
-    if plan.minimum_viable_budget:
-        lines.append(
-            f"תקציב מינימום שפורסם למגזר: {plan.minimum_viable_budget[0]:,}-{plan.minimum_viable_budget[1]:,} ₪"
-        )
-    lines.append(
-        "ניהול 15%-20% מתקציב המדיה או 2,000-8,000 ₪ בחודש, והקמה 1,500-4,000 ₪ חד-פעמית — "
-        "הצג אותם כשורה נפרדת, הניהול אינו כלול בתקציב"
-    )
-    lines.append(
-        f"גוגל צריך {LEARNING_CONVERSIONS_PER_MONTH[0]}-{LEARNING_CONVERSIONS_PER_MONTH[1]} "
-        "המרות בחודש כדי ללמוד"
-    )
-    lines.append("המשטח החינמי שרלוונטי לעסק מקומי: פרופיל עסק בגוגל (ביקורות, שעות, תמונות, פוסטים)")
-
-    warning_block = ""
-    if plan.warnings:
-        warning_block = "\nאזהרות שחייבות להופיע בתוכנית אם היא מזכירה גוגל:\n" + "\n".join(
-            f"- {w}" for w in plan.warnings
-        )
-
+    """Prompt guidance: do not turn a chosen budget into an ungrounded forecast."""
     return (
-        "חיפוש בגוגל (Google Ads) — טווחים שפורסמו, לא הערכות:\n"
-        + "\n".join(f"- {line}" for line in lines)
-        + warning_block
-        + "\nחובה: אין לנו נפחי חיפוש (אין גישה ל-Keyword Planner). אסור להמציא מספר חיפושים "
-        "חודשי, נפח, CPC או שיעור המרה, ואסור להמציא נתוני Search Console.\n"
-        "אם החיפוש הממומן מתאים לעסק — שלב אותו בתוכנית החודשית בערוץ נפרד מגוגל, עם "
-        "התקציב שהוא גוזל מהערוצים האחרים. אם הוא לא מתאים (למשל קהל שאינו מחפש, או תקציב "
-        "מתחת למינימום) — כתוב זאת במפורש והצע את החלופה. המקור ממליץ על מיקס, לא על ערוץ אחד."
+        "Google Ads: use only the monthly amount the owner supplied as their own budget choice. "
+        "This app has no Google Ads campaign forecast or account data. Never infer or state CPC, "
+        "clicks, impressions, conversions, cost per lead, a sector minimum, learning threshold, "
+        "or agency/setup fees from business type or third-party benchmarks. If a Google Ads "
+        "forecast matters to the plan, direct the owner to Google's Keyword Planner with their "
+        "actual keywords and campaign settings; label that result as Google's forecast for the "
+        "chosen configuration, not a promise or this business's measured history. Agency fees "
+        "must come from a quote the owner provides."
     )

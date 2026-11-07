@@ -8,9 +8,9 @@ import { foundations } from "@/lib/trial";
 import ui from "./chrome.module.css";
 
 // English purpose: turn the owner's timely idea/text into a saved draft, then edit it.
-// Main message: write what this post should say. Main action: open the existing editor.
+// Main message: choose a channel and prepare its format for manual publishing. Main action: open the editor.
 export type QuickPostDraft = {
-  text: string; destination: "instagram" | "facebook" | "whatsapp"; language: ContentLanguage;
+  text: string; destination: "instagram" | "facebook" | "whatsapp" | "tiktok" | "linkedin"; language: ContentLanguage;
   changedLanguage: boolean; requestId: string; pending: Parameters<typeof endpoints.createPost>[0] | null;
 };
 export function QuickPost({ open, onCancel, onCreated, draft, onDraftChange }: {
@@ -21,7 +21,7 @@ export function QuickPost({ open, onCancel, onCreated, draft, onDraftChange }: {
   const t = useCopy();
   const id = useId();
   const [text, setText] = useState(() => draft?.text ?? "");
-  const [destination, setDestination] = useState<"instagram" | "facebook" | "whatsapp">(() => draft?.destination ?? "instagram");
+  const [destination, setDestination] = useState<QuickPostDraft["destination"]>(() => draft?.destination ?? "instagram");
   const [language, setLanguage] = useState<ContentLanguage>(() => draft?.language ?? "he");
   const changedLanguage = useRef(draft?.changedLanguage ?? false);
   const requestId = useRef(draft?.requestId ?? "");
@@ -69,16 +69,21 @@ export function QuickPost({ open, onCancel, onCreated, draft, onDraftChange }: {
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
         <div><label htmlFor={`${id}-destination`} className="mb-2 block text-sm font-medium">{t("איפה הפוסט יופיע?")}</label>
-          <select id={`${id}-destination`} className={ui.field} disabled={busy} value={destination} onChange={event => setDestination(event.target.value as typeof destination)}>
+          <select id={`${id}-destination`} className={ui.field} disabled={busy} value={destination} onChange={event => setDestination(event.target.value as QuickPostDraft["destination"])}>
             <option value="instagram">{t("אינסטגרם")}</option><option value="facebook">{t("פייסבוק")}</option>
-            <option value="whatsapp">{t("וואטסאפ")}</option>
+            <option value="whatsapp">{t("וואטסאפ")}</option><option value="tiktok">{t("טיקטוק")}</option>
+            <option value="linkedin">{t("לינקדאין")}</option>
           </select></div>
         <div><label htmlFor={`${id}-language`} className="mb-2 block text-sm font-medium">{t("שפת הפוסט")}</label>
           <select id={`${id}-language`} className={ui.field} disabled={busy} value={language} dir="auto" onChange={event => { changedLanguage.current = true; setLanguage(event.target.value as ContentLanguage); }}>
             {CONTENT_LANGUAGES.map(code => <option key={code} value={code} lang={code}>{CONTENT_LANGUAGE_NAMES[code]}</option>)}
           </select></div>
       </div>
-      <p className="text-sm text-[var(--ink-soft)]">{t("בעורך תוכלו להוסיף תמונה, לשפר את הטקסט ולבחור מתי לפרסם.")}</p>
+      <p className="text-sm text-[var(--ink-soft)]">{t(destination === "tiktok"
+        ? "הטיוטה תישמר כסרטון. בעורך תוכלו לצרף סרטון שלכם ולהוריד אותו לפרסום ידני בטיקטוק."
+        : destination === "linkedin"
+          ? "הטיוטה תישמר כפוסט תמונה. בעורך תוכלו להוסיף תמונה, לערוך את הנוסח ולהוריד את החומרים לפרסום ידני בלינקדאין."
+          : "בעורך תוכלו להוסיף תמונה, לערוך את הנוסח ולהוריד את החומרים לפרסום.")}</p>
       {error ? <p role="alert" className={ui.error}>{t(error)}</p> : null}
       {savedConflict ? <button type="button" className={`${ui.link} min-h-11`} disabled={busy} onClick={async () => {
         if (!pending.current) return;

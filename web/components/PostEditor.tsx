@@ -80,6 +80,7 @@ import {
   IconUsers,
 } from "@/lib/icons";
 import { toast } from "@/lib/ui";
+import { usePostCaptionDraft } from "@/lib/usePostCaptionDraft";
 import { useTrial, type TrialPayload } from "@/lib/trial";
 import { EditorIcon } from "@/components/posts/EditorIcon";
 import { PhotoPlaceholder } from "@/components/posts/PhotoPlaceholder";
@@ -251,7 +252,7 @@ export function PostEditor({
 }: {
   posts: RoadmapPost[];
   /** The month the posts belong to, for the week's focus when a post has no plan link. */
-  strategy?: Pick<StrategyPayload, "roadmap" | "weekly_breakdown" | "brand_dna" | "business_name"> | null;
+  strategy?: Pick<StrategyPayload, "id" | "roadmap" | "weekly_breakdown" | "brand_dna" | "business_name"> | null;
   brandLanguage?: BrandLanguage | null;
   initialIndex?: number;
   onStrategyUpdated?: (strategy: StrategyPayload) => void;
@@ -298,7 +299,6 @@ export function PostEditor({
   const isDesktop = useIsDesktop();
   const closeSection = useCallback(() => setActive(null), []);
   // An unsaved edit of the caption; `null` when the box shows what is stored.
-  const [captionDraft, setCaptionDraft] = useState<string | null>(null);
   const [savingCaption, setSavingCaption] = useState(false);
   // Which instruction is being written (a chip's label or OWN_WORDS), the owner's own words,
   // and the server's word when the post stayed as it was ("מה המחיר?").
@@ -405,6 +405,9 @@ export function PostEditor({
   const imageLocked = imageBusy !== null || designerBusy || assetBusyId !== null || uploadingPhoto;
 
   const currentPost = posts[selectedIndex];
+  const captionWork = usePostCaptionDraft(strategy?.id, currentPost?.uid, currentPost ? primaryOutletOf(currentPost) : "", currentPost ? captionFor(currentPost, primaryOutletOf(currentPost)) : "");
+  const captionDraft = captionWork.value;
+  const setCaptionDraft = captionWork.change;
   const currentWaLink = postWaLink?.index === selectedIndex && postWaLink.uid === currentPost?.uid && postWaLink.cta === (currentPost?.cta || "") ? postWaLink.link : null;
 
   if (!currentPost) {
@@ -429,6 +432,23 @@ export function PostEditor({
   );
 
   async function handleExportCard() {
+    if (currentPost.video_url) {
+      setExporting(true);
+      try {
+        const response = await fetch(currentPost.video_url, { credentials: "same-origin" });
+        if (!response.ok) throw new Error();
+        const blob = await response.blob();
+        if (!blob.type.startsWith("video/")) throw new Error();
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url; link.download = `post-${currentPost.uid || selectedIndex}.${blob.type.includes("quicktime") ? "mov" : blob.type.includes("webm") ? "webm" : "mp4"}`;
+        link.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+        toast(t("הסרטון הורד. את הכיתוב מעתיקים בנפרד."));
+      } catch { toast(t("לא הצלחנו להוריד את הסרטון. נסו שוב.")); }
+      finally { setExporting(false); }
+      return;
+    }
+    if (channelOf(currentPost) === "tiktok") { toast(t("הוסיפו סרטון לפני ההורדה לטיקטוק.")); return; }
     const node = exportRef.current;
     if (!node) {
       toast(t("הכרטיס עוד לא מוכן להורדה."));
@@ -575,7 +595,7 @@ export function PostEditor({
       onStrategyUpdated?.(result.strategy);
       setShowAssets(false);
       setSuggestions(null);
-      toast(t("התמונה שלכם נכנסה לפוסט."));
+      toast(t(asset.kind === "video" ? "הסרטון שלכם נכנס לפוסט." : "התמונה שלכם נכנסה לפוסט."));
     } catch (err) {
       // Kept apart from `assetsError`: a failed attach must not blank out the grid the
       // owner is choosing from.
@@ -587,7 +607,7 @@ export function PostEditor({
 
   async function uploadPhoto(file: File | undefined) {
     if (!file || imageLocked) return;
-    if (!file.type.startsWith("image/")) { setPhotoUploadError(t("בחרו קובץ תמונה. סרטונים אפשר להוסיף דרך התמונות שלי.")); return; }
+    if (channelOf(currentPost) === "tiktok" ? !file.type.startsWith("video/") : !/^(image|video)\//.test(file.type)) { setPhotoUploadError(t(channelOf(currentPost) === "tiktok" ? "בחרו סרטון לפרסום בטיקטוק." : "בחרו קובץ תמונה או סרטון.")); return; }
     const postIndex = selectedIndex;
     setUploadingPhoto(true); setPhotoUploadError(""); setImageError("");
     try {
@@ -596,7 +616,7 @@ export function PostEditor({
       const result = await endpoints.attachPostAsset(postIndex, uploaded.asset.id);
       setPosts(result.strategy.roadmap.posts); onStrategyUpdated?.(result.strategy);
       setShowAssets(false); setSuggestions(null);
-      toast(t("התמונה נוספה לפוסט. אפשר לבדוק אותה בתצוגה."));
+      toast(t(file.type.startsWith("video/") ? "הסרטון נוסף לפוסט. אפשר לבדוק אותו בתצוגה." : "התמונה נוספה לפוסט. אפשר לבדוק אותה בתצוגה."));
     } catch (err) {
       setPhotoUploadError(err instanceof Error ? err.message : t("לא הצלחנו להוסיף את התמונה. אם ההעלאה הסתיימה, אפשר לבחור אותה מהתמונות שלי."));
     } finally { setUploadingPhoto(false); if (photoInput.current) photoInput.current.value = ""; }
@@ -683,6 +703,8 @@ export function PostEditor({
   }
 
   async function approveCurrentPost() {
+    if (captionWork.dirty) { setActive("text"); return; }
+    if (channelOf(currentPost) === "tiktok" && !currentPost.video_url) { openLibrary(); return; }
     setApproving(true);
     try {
       const result = await endpoints.approvePost(selectedIndex);
@@ -704,6 +726,7 @@ export function PostEditor({
 
   /** One instruction: a chip's words, or the owner's own (`key` says which is busy). */
   async function requestRewrite(instruction: string, key: string) {
+    if (captionWork.dirty) { setActive("text"); toast(t("שמרו או בטלו את עריכת הנוסח לפני יצירת גרסה נוספת.")); return; }
     const text = instruction.replace(/\s+/g, " ").trim().slice(0, MAX_INSTRUCTION);
     if (!text || rewriting !== null) return;
     setRewriting(key);
@@ -845,6 +868,7 @@ export function PostEditor({
 
   /** Another post, through the page when it owns the URL. */
   function goTo(index: number) {
+    if (captionWork.dirty && !captionWork.durable && !window.confirm(t("לא הצלחנו לשמור את הטיוטה במכשיר. לעזוב בלי לשמור את הנוסח?"))) return;
     if (onNavigate) onNavigate(index);
     else selectPost(index);
   }
@@ -858,7 +882,7 @@ export function PostEditor({
   const isPreparingImage = imageBusy === selectedIndex;
   // The server's image job is making this post's image (or it is next in line).
   const jobPreparing = Boolean(currentPost.uid && imagesWaiting?.includes(currentPost.uid));
-  const cardNeedsPhoto = postNeedsPhoto(currentPost);
+  const cardNeedsPhoto = channel === "tiktok" || postNeedsPhoto(currentPost);
   // Posts created before provenance tracking have no image_source. Every legacy path
   // generated its image, so "generated" is the accurate label — not "no image yet", which
   // was plainly wrong for a card that visibly had one. A photo-free card is the exception:
@@ -870,11 +894,11 @@ export function PostEditor({
   // turns the provenance badge into something the owner can actually recognise. Keyed on
   // the label above too: switching to an AI image leaves the old `image_asset_id` behind,
   // and a stale id must never label a generated picture as the owner's own.
-  const currentAssetId = imageSourceKey === "asset" ? currentPost.image_asset_id ?? null : null;
+  const currentAssetId = currentPost.video_url && currentPost.video_source === "asset" ? currentPost.video_asset_id ?? null : imageSourceKey === "asset" ? currentPost.image_asset_id ?? null : null;
   const currentAsset = currentAssetId
     ? (assets ?? []).find((asset) => asset.id === currentAssetId) ?? null
     : null;
-  const libraryEmpty = assets !== null && assets.length === 0;
+  const libraryEmpty = assets !== null && !assets.some(asset => channel !== "tiktok" || asset.kind === "video");
   // The post carries the audience it serves. `audience_name` is what the plan wrote;
   // when a post arrived without one, the loaded list still knows the name of the id, so
   // the control never shows a raw number.
@@ -931,17 +955,17 @@ export function PostEditor({
   // Visual Image Media Slot — the card itself renders inside CardStage.
   function renderMediaSlot() {
     if (currentPost.video_url) return <div><video src={currentPost.video_url} controls playsInline style={{ width: "100%", aspectRatio: "9/16", objectFit: "contain", background: "#111" }} aria-label={currentPost.title} /><a href={currentPost.video_url} download className="inline-flex min-h-11 items-center text-[var(--primary)]">{t("להוריד את הסרטון")}</a></div>;
-    const photoFree = !postNeedsPhoto(currentPost);
-    if (!currentPost.image_url && !photoFree) {
+    const photoFree = channel !== "tiktok" && !postNeedsPhoto(currentPost);
+    if (channel === "tiktok" || (!currentPost.image_url && !photoFree)) {
       return (
         <div style={{ aspectRatio: `${previewSize.w} / ${previewSize.h}` }} className={editorStyles.placeholder}>
           {isPreparingImage || uploadingPhoto || jobPreparing ? <ResultLoading label={t("מכינים את התמונה…")} artwork /> : <>
-          <PhotoPlaceholder />
-          <h3>{t("כאן נכנסת תמונה מהעסק")}</h3>
-          <p>{t("צילום ברור של המוצר, המקום או האנשים שלכם. עדיף באור טבעי, בלי כיתוב מעל.")}</p></>}
+          {channel === "tiktok" ? <EditorIcon kind="video" className="h-16 w-16 text-[var(--ink-muted)]" /> : <PhotoPlaceholder />}
+          <h3>{t(channel === "tiktok" ? "כאן יופיע הסרטון שלכם" : "כאן נכנסת תמונה מהעסק")}</h3>
+          <p>{t(channel === "tiktok" ? "הוסיפו סרטון מהמכשיר או מהספרייה. את הנוסח תוכלו לערוך ולהעתיק לטיקטוק." : "צילום ברור של המוצר, המקום או האנשים שלכם. עדיף באור טבעי, בלי כיתוב מעל.")}</p></>}
           {imageError && <p role="alert">{t(imageError)}</p>}
           <button type="button" disabled={imageLocked} onClick={openLibrary}>
-            <Copy text="לבחור מהתמונות שלי" /><IconArrowLeft className="h-4 w-4" />
+            {channel === "tiktok" ? t("לבחור סרטון") : t("לבחור מהתמונות שלי")}<IconArrowLeft className="h-4 w-4" />
           </button>
         </div>
       );
@@ -1020,13 +1044,13 @@ export function PostEditor({
       <div>
         <MediaAllowanceNote refreshKey={`${currentPost.uid}:${currentPost.image_url}:${imageBusy}`} />
         <p className="text-sm leading-6 text-[color:var(--ink-soft)]">
-          {IMAGE_SOURCE_LABELS[imageSourceKey]}
+          {currentPost.video_url ? t(currentPost.video_source === "asset" ? "הסרטון שלכם" : "סרטון שנוצר ב-AI") : t(IMAGE_SOURCE_LABELS[imageSourceKey])}
           {currentAsset ? t(" · {arg_0}", { arg_0: currentAsset.description || t("תמונה בלי תיאור") }) : ""}
         </p>
 
         {cardNeedsPhoto && <div className={editorStyles.photoGuide}>
-          <h3 className={ui.groupTitle}>{currentPost.image_url ? t("להחליף את התמונה") : t("1. בוחרים תמונה מהעסק")}</h3>
-          <p className={ui.help}><Copy text="בחרו צילום של מה שהפוסט מדבר עליו. השאירו קצת מרווח סביב הנושא כדי שיתאים גם לחיתוך אנכי." />
+          <h3 className={ui.groupTitle}>{channel === "tiktok" ? t("הסרטון שלכם לטיקטוק") : currentPost.image_url ? t("להחליף את התמונה") : t("1. בוחרים תמונה מהעסק")}</h3>
+          <p className={ui.help}>{channel === "tiktok" ? t("העלו סרטון מהמכשיר או בחרו סרטון מהספרייה. הנוסח נשמר בנפרד להעתקה לטיקטוק.") : t("בחרו צילום של מה שהפוסט מדבר עליו. השאירו קצת מרווח סביב הנושא כדי שיתאים גם לחיתוך אנכי.")}
         </p>
           <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
             <button type="button" disabled={imageLocked} onClick={() => photoInput.current?.click()} className={ui.button}>
@@ -1040,7 +1064,7 @@ export function PostEditor({
           </div>
           {photoUploadError && <p role="alert" className={`${ui.error} mt-3`}>{t(photoUploadError)}</p>}
         </div>}
-        <details className={editorStyles.photoOptions}>
+        {channel !== "tiktok" && <details className={editorStyles.photoOptions}>
           <summary className={`${ui.summary} text-sm font-semibold text-[color:var(--ink-soft)] hover:text-[color:var(--ink)]`}>
             <span className="flex-1"><Copy text="תמונה מהאתר או יצירה ב-AI" />
         </span>
@@ -1055,7 +1079,7 @@ export function PostEditor({
         </button>
             <button type="button" disabled={imageLocked} onClick={() => void prepareImage(selectedIndex, true)} className={ui.link}>{isPreparingImage ? t("יוצרים תמונה…") : t("ליצור לפי העיצוב")}</button>
           </div>
-        </details>
+        </details>}
 
         {showAssets ? (
           <div className={`${ui.inset} mt-4 p-4`}>
@@ -1093,10 +1117,10 @@ export function PostEditor({
               <p className={`${ui.error} mt-3`}>{t(assetsError)}</p>
             ) : libraryEmpty ? (
               <div className={`${ui.card} mt-3 px-4 py-6 text-center`}>
-                <p className="text-sm font-semibold text-[color:var(--ink)]"><Copy text="עוד אין לכם כאן תמונות" />
+                <p className="text-sm font-semibold text-[color:var(--ink)]">{channel === "tiktok" ? t("עוד אין לכם כאן סרטונים") : t("עוד אין לכם כאן תמונות")}
         </p>
                 <p className={`${ui.help} mx-auto mt-1 max-w-xs`}>
-                  <Copy text="להוספת צילום לחצו על ״להעלות מהמכשיר״ למעלה. אפשר גם להוסיף סרטון או קישור או תנו לנו לקרוא את האתר." />
+                  {channel === "tiktok" ? t("להוספת סרטון, בחרו ״להעלות מהמכשיר״ למעלה.") : t("להוספת צילום לחצו על ״להעלות מהמכשיר״ למעלה. אפשר גם להוסיף סרטון או קישור או תנו לנו לקרוא את האתר.")}
         </p>
                 <Link href="/assets" className={`${ui.button} mt-4`}>
                   <EditorIcon kind="photo" />
@@ -1108,6 +1132,7 @@ export function PostEditor({
                 <div className="mt-3">
                   <button
                     type="button"
+                    hidden={channel === "tiktok"}
                     disabled={suggesting || imageLocked}
                     onClick={() => void suggestAssetsForPost()}
                     className={`${ui.button} w-full`}
@@ -1177,7 +1202,7 @@ export function PostEditor({
                   <Copy text="כל התמונות שלכם. לחיצה מכניסה את התמונה לפוסט:" />
         </p>
                 <ul className="mt-2 grid grid-cols-2 gap-2.5 sm:grid-cols-3">
-                  {(assets ?? []).map((asset) => {
+                  {(assets ?? []).filter(asset => channel !== "tiktok" || asset.kind === "video").map((asset) => {
                     const inPost = currentAssetId === asset.id;
                     return (
                       <li key={asset.id}>
@@ -1342,7 +1367,7 @@ export function PostEditor({
     );
   }
 
-  const downloadDisabled = exporting || (!currentPost.image_url && postNeedsPhoto(currentPost));
+  const downloadDisabled = exporting || (channel === "tiktok" ? !currentPost.video_url : !currentPost.video_url && !currentPost.image_url && postNeedsPhoto(currentPost));
 
   /* ------------------------------------------------------------------ *
    * The steps behind the quiet links. Each holds the tools that belong *
@@ -1396,7 +1421,7 @@ export function PostEditor({
         <div className="pb-5">
           <div className="-mt-2 flex items-center justify-between gap-2">
             <label htmlFor="post-caption" className={ui.groupTitle}>
-              <Copy text="הנוסח ל" />{channelLabel}
+              {t("הנוסח ל{arg_0}", { arg_0: channelLabel })}
             </label>
             <button type="button" onClick={copyCaption} className={ui.link}>
               <IconCopy />
@@ -1411,6 +1436,7 @@ export function PostEditor({
               lang={currentPost.content_language || "he"}
               value={draft}
               rows={5}
+              maxLength={4000}
               disabled={savingCaption}
               onChange={(event) => setCaptionDraft(event.target.value)}
               className={`${ui.field} mt-1`}
@@ -1556,7 +1582,7 @@ export function PostEditor({
     return (
       <div>
         {renderImageTools()}
-        <div className="mt-4 border-t border-[var(--rule)] pt-2">
+        {channel !== "tiktok" && <div className="mt-4 border-t border-[var(--rule)] pt-2">
           <button
             type="button"
             aria-expanded={showDesigner}
@@ -1574,7 +1600,7 @@ export function PostEditor({
             </span>
           </button>
           {showDesigner ? renderDesignerPanel() : null}
-        </div>
+        </div>}
       </div>
     );
   }
@@ -1682,11 +1708,12 @@ export function PostEditor({
   /** THE one dark button, by state: להעלות תמונה → לאשר → לפרסם. "פרסמתי" is the publish
    *  step's own action; after it nothing more is asked. */
   function renderPrimary() {
+    if (captionWork.dirty) return <button type="button" onClick={() => setActive("text")} className={primaryClass}><Copy text="להשלים את עריכת הנוסח" /></button>;
     if (photoNeeded) {
       return (
         <button type="button" disabled={imageLocked} onClick={() => photoInput.current?.click()} className={primaryClass}>
           <EditorIcon kind="photo" className="h-5 w-5" />
-          {uploadingPhoto ? t("מעלים את התמונה…") : t("להעלות תמונה")}
+          {channel === "tiktok" ? (uploadingPhoto ? t("מעלים את הסרטון…") : t("להעלות סרטון")) : uploadingPhoto ? t("מעלים את התמונה…") : t("להעלות תמונה")}
         </button>
       );
     }
@@ -1696,7 +1723,7 @@ export function PostEditor({
           type="button"
           disabled={
             approving ||
-            (!currentPost.image_url && cardNeedsPhoto) ||
+            (!currentPost.image_url && !currentPost.video_url && cardNeedsPhoto) ||
             imageLocked ||
             Boolean(imageError)
           }
@@ -1786,7 +1813,7 @@ export function PostEditor({
         text,
         // The plan asked for the owner's own photo, but the post already has a picture: the
         // owner may decide it is good enough. Never a dead end.
-        ...(currentPost.image_url || !cardNeedsPhoto
+        ...(channel !== "tiktok" && (currentPost.image_url || !cardNeedsPhoto)
           ? [
               {
                 key: "approve",
@@ -1803,7 +1830,7 @@ export function PostEditor({
       text,
       {
         key: "photo",
-        label: cardNeedsPhoto ? (currentPost.image_url ? t("להחליף תמונה") : t("לבחור תמונה")) : t("לשנות עיצוב"),
+        label: channel === "tiktok" ? t(currentPost.video_url ? "להחליף סרטון" : "לבחור סרטון") : cardNeedsPhoto ? (currentPost.image_url ? t("להחליף תמונה") : t("לבחור תמונה")) : t("לשנות עיצוב"),
         icon: <EditorIcon kind="photo" className={icon} />,
         onClick: () => openStep("photo"),
       },
@@ -1956,7 +1983,7 @@ export function PostEditor({
 
   return (
     <div className={`${editorStyles.editor} mx-auto max-w-5xl`}>
-      <input ref={photoInput} type="file" accept="image/*" aria-label={t("להעלות תמונה לפוסט")} hidden onChange={e => void uploadPhoto(e.target.files?.[0])} />
+      <input ref={photoInput} type="file" accept={channel === "tiktok" ? "video/mp4,video/webm,video/quicktime" : "image/*,video/mp4,video/webm,video/quicktime"} aria-label={t(channel === "tiktok" ? "להעלות סרטון לפוסט" : "להעלות תמונה לפוסט")} hidden onChange={e => void uploadPhoto(e.target.files?.[0])} />
 
       {/* Where this post sits in the plan, its title and its state. */}
       <PostWorkspace header={<>
@@ -1965,7 +1992,7 @@ export function PostEditor({
             {onClose ? (
               <button
                 type="button"
-                onClick={onClose}
+                onClick={() => { if (!captionWork.dirty || captionWork.durable || window.confirm(t("לא הצלחנו לשמור את הטיוטה במכשיר. לעזוב בלי לשמור את הנוסח?"))) onClose(); }}
                 className={`${ui.link} ${ui.linkQuiet} group -ms-1 shrink-0 px-1 text-[13px]`}
               >
                 <IconArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" />
@@ -1993,6 +2020,7 @@ export function PostEditor({
           {currentPost.title}
         </h1>
         <ContentLanguageNote language={currentPost.content_language} reason={currentPost.language_reason} />
+        {captionWork.dirty ? <p role="status" className="mt-2 text-sm leading-6 text-[var(--ink-soft)]">{captionWork.changedElsewhere ? t("הפוסט השמור עודכן מאז שהתחלתם לערוך. הטיוטה שלכם נשמרה בנפרד; בדקו אותה לפני השמירה.") : captionWork.restored ? t("חזרנו לטיוטת הנוסח שלכם. היא עוד לא נשמרה בפוסט.") : captionWork.durable ? t("טיוטת הנוסח נשמרת במכשיר. שמרו אותה כדי לעדכן את הפוסט.") : t("הנוסח עדיין בעריכה. שמרו אותו לפני היציאה.")}</p> : null}
         <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 md:mt-2">
           <span className={ui.status} data-status={stage}>
             {t(LIFECYCLE_LABEL[stage])}

@@ -26,7 +26,7 @@ export function CampaignBrief({ post, audience, dna }: { post: RoadmapPost; audi
   ].filter(([, value]) => value?.trim());
   if (!rows.length && !dna) return null;
   return <section aria-label={t("הפוסט בתוכנית")} className="mb-5">
-    <h2 className="mb-3 text-[17px] font-semibold text-[var(--ink)]">{t("הפוסט בתוכנית")}</h2>
+    {rows.length > 0 && <h2 className="mb-3 text-[17px] font-semibold text-[var(--ink)]">{t("הפוסט בתוכנית")}</h2>}
     <dl className="space-y-3">
       {rows.map(([label, value]) => <div key={label} className="grid grid-cols-[5.5rem_1fr] gap-3 text-[14px] leading-6">
         <dt className="text-[var(--ink-muted)]">{label}</dt><dd dir="auto" className="text-start text-[var(--ink)]">{value}</dd>

@@ -1,0 +1,94 @@
+{
+  "date": "2026-11-07",
+  "branch": "codex/persona-release-fixes",
+  "base": "418110c71bf18c73e1850cbc812123052134144d",
+  "status": "Implementation batch verified locally; not merged or deployed; broad quality target remains open",
+  "fixes": {
+    "F01": "Account/plan/post/channel-scoped caption recovery, explicit save/discard, reload/conflict tests; browser campaign→editor→draft→campaign→restore→save→reload passed.",
+    "F02": "Visible support-assisted sign-in recovery; email/back destination retained and focus moved to heading. This is not automatic email reset.",
+    "F03": "Campaign next task precedes brief, all goals visible, card opens editor, explicit capped batch mode; phone next action at y=410px.",
+    "F04": "Owned logo upload/select/remove with explicit preview/save; raster validation and ownership; existing posts preserved. Browser reload exposed and verified fix for signature color schema.",
+    "F05": "Removed agency-derived personal CPC, conversions, minimum-budget verdicts and fees from promotion, research/planning prompts and goal suggestions. Official Google planning links; no Google Ads forecast integration claimed.",
+    "F06": "Results organized around goal, measured evidence and next decision; deeper source details secondary; unknown results stay unknown.",
+    "F07": "Locale-aware raw numeric entry, field-specific validation and translated errors. Browser 3,000 → invalid text → language switch → corrected 3,000 → next passed.",
+    "F08": "Software primary action correctly names connections.",
+    "F09": "Nonempty partial topic list can be saved without advancing until minimum is met.",
+    "F10": "Explicit business-tools hub on desktop and phone; settings/account links remain available.",
+    "F11": "TikTok reel and LinkedIn image draft creation and saved captions; manual publishing; TikTok requires real video, can attach owned clip and download MP4. No automatic publication/analytics grant implied.",
+    "F12": "Reusable test-only five-persona SQLite fixture server; authenticated save/reload, identity, unknown measurements, expired trial, exhausted quota and failed job checks."
+  },
+  "checks": {
+    "api_suite": {
+      "passed": 1655,
+      "duration_seconds": 113.221
+    },
+    "web": "Production build, TypeScript, lint and four-language catalog/formatter checks passed",
+    "catalogs": "9,648 source messages in each of HE/EN/AR/RU; runtime source IDs and placeholder checks passed",
+    "behavior_scripts": [
+      "caption recovery",
+      "campaign navigation and manual-channel evidence (15 checks)",
+      "logo renderer malformed evidence",
+      "locale measurements and partial topics (4 tests)",
+      "existing connection/tracked-link/task continuity (36 tests)",
+      "landing/research/finding/analytics/campaign/trial checks"
+    ]
+  },
+  "browser": {
+    "mode": "Synthetic isolated local accounts; no live customer state",
+    "personas_exercised_in_browser": [
+      "designer",
+      "software",
+      "fundraising"
+    ],
+    "all_five_authenticated_api_journeys": true,
+    "dimensions": [
+      "1440×1000 requested desktop",
+      "390×844 requested phone"
+    ],
+    "locales": [
+      "he",
+      "en",
+      "ar",
+      "ru"
+    ],
+    "no_horizontal_overflow_in_checked_views": true,
+    "caption_language_preserved_across_ar_ru_ui": true,
+    "keyboard": "Bottom-sheet Shift+Tab/Tab focus wrap and Escape/focus return verified; no full screen-reader certification",
+    "media": "Existing original clip attached to TikTok draft, approved locally and downloaded as MP4; no paid generation or external publication",
+    "screenshots": [
+      "campaign-desktop.png",
+      "campaign-phone.png",
+      "editor-ar-phone.png",
+      "editor-ru-phone.png",
+      "metrics-error-en-phone.png",
+      "nonprofit-expired-ru-phone.png",
+      "results-phone.png",
+      "software-campaign-en-phone.png",
+      "unavailable-generation-ru-phone.png"
+    ],
+    "screenshot_note": "Captures were made during the bounded verification pass; final one-line copy/localization fixes followed some captures."
+  },
+  "quality": {
+    "target": 40,
+    "max_score": 40,
+    "baseline": 21,
+    "independent_luna_assessments": [
+      27,
+      31
+    ],
+    "parent_provisional": 31,
+    "confirmed_new_p0_p1": 0,
+    "limitation": "Scoped source/screenshot reviews and synthetic journeys, not recruited-user research or complete real-provider validation. No claim of 40/40."
+  },
+  "open_release_gates": [
+    "Claude lane product/design sign-off per repository ownership",
+    "Filled-content and broader context/help polish before final Impeccable release review",
+    "Real-account provider/access edge cases where required; synthetic fixtures are not provider approval"
+  ],
+  "cleanup": {
+    "browser_tabs_closed": true,
+    "viewport_reset": true,
+    "web_dev_stopped": true,
+    "fixture_api_stopped_and_temp_db_removed": true
+  }
+}

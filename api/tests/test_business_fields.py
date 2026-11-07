@@ -203,40 +203,16 @@ class DraftTest(unittest.TestCase):
 
 
 class CostMappingTest(unittest.TestCase):
-    def test_each_field_lands_on_its_published_row(self):
+    def test_google_plan_keeps_the_business_field_but_does_not_estimate_costs(self):
         for field in bf.fields():
             with self.subTest(field=field.key):
                 plan = google_cost.plan_from_budget(5_000, field.key, "")
-                expected = field.cost_industry or google_cost.UNMATCHED_KEY
-                self.assertEqual(plan.industry_key, expected)
-
-    def test_the_owners_words_still_decide_first(self):
-        industry, _ = google_cost.match_industry("home", "ריהוט וכלי בית")
-        self.assertEqual(industry.key, "home_garden")
-        industry, _ = google_cost.match_industry("professional", "סוכנות ביטוח ופנסיה")
-        self.assertEqual(industry.key, "insurance_finance")
-
-    def test_a_field_without_a_row_says_so(self):
-        plan = google_cost.plan_from_budget(5_000, "pets", "")
-        self.assertEqual(plan.cpc_range, google_cost.CPC_TIERS["medium"])
-        self.assertTrue(any("לתחום 'חיות מחמד' אין שורה" in w for w in plan.warnings))
-        other = google_cost.plan_from_budget(5_000, "other", "")
-        self.assertFalse(any("אין שורה" in w for w in other.warnings))
-
-    def test_an_online_only_shop_is_priced_as_ecommerce(self):
-        plan = google_cost.plan_from_budget(10_000, "fashion", "חזיות", "products", presence_type="online_only")
-        self.assertEqual(plan.sector_key, "ecommerce")
-        shop = google_cost.plan_from_budget(10_000, "fashion", "חזיות", "products", presence_type="brick_and_mortar")
-        self.assertEqual(shop.sector_key, "ecommerce")  # the fashion row itself is eCommerce
-        food = google_cost.plan_from_budget(10_000, "food", "", "products", presence_type="online_only")
-        self.assertEqual(food.sector_key, "ecommerce")
-        services = google_cost.plan_from_budget(10_000, "beauty", "", "services", presence_type="online_only")
-        self.assertEqual(services.sector_key, "local_services")
-
-    def test_old_labels_price_as_before(self):
-        self.assertEqual(google_cost.match_industry("מאפייה / קפה / מסעדה", "")[0].key, "food")
-        plan = google_cost.plan_from_budget(10_000, "חנות אונליין (אי-קומרס)", "מוצרי חשמל")
-        self.assertEqual(plan.sector_key, "ecommerce")
+                self.assertEqual(plan.industry_key, field.key)
+                self.assertIsNone(plan.cpc_range)
+                self.assertIsNone(plan.expected_clicks)
+                self.assertIsNone(plan.expected_conversions)
+                self.assertIsNone(plan.minimum_viable_budget)
+                self.assertIsNone(plan.management_fee)
 
 
 class MigrationTest(unittest.TestCase):

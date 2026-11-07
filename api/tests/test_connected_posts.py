@@ -874,7 +874,7 @@ class OldPostsTest(ConnectedTestCase):
         ], core=old_core)
         posts = self.current_posts()
         first, second = posts
-        self.assertEqual(first["channel"], "instagram")
+        self.assertEqual(first["channel"], "tiktok")
         self.assertEqual(first["plan_link"], {"goal": "חודש ישן", "week": 1, "week_focus": "פתיחה"})
         self.assertEqual(first["why_line"], "בשביל חודש ישן.")
         self.assertIsNone(first["mix_type"])

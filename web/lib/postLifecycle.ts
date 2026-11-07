@@ -52,10 +52,11 @@ function isPublished(post: RoadmapPost) {
  */
 export function ownerNeedsOf(post: RoadmapPost): PostOwnerNeed[] {
   if (post.approval_status === "approved" || isPublished(post)) return [];
+  if (channelOf(post) === "tiktok" && !post.video_url) return [{ kind: "photo", text: "סרטון לפרסום בטיקטוק" }];
   const needs = (post.owner_needs ?? []).filter(
     (need) => (need?.kind === "photo" || need?.kind === "fact") && typeof need.text === "string" && need.text.trim()
   );
-  if (cardDrawsPhoto(post) && !post.image_url && !needs.some((need) => need.kind === "photo")) {
+  if (cardDrawsPhoto(post) && !post.video_url && !post.image_url && !needs.some((need) => need.kind === "photo")) {
     return [{ kind: "photo", text: "תמונה שמתאימה לפוסט" }, ...needs];
   }
   return needs;
@@ -90,6 +91,8 @@ export const CHANNEL_LABEL: Record<PostChannel, string> = {
   instagram: "אינסטגרם",
   facebook: "פייסבוק",
   whatsapp: "וואטסאפ",
+  tiktok: "טיקטוק",
+  linkedin: "לינקדאין",
 };
 
 /** The plan's channel; for an older post, its primary outlet (TikTok had no channel of
@@ -97,7 +100,7 @@ export const CHANNEL_LABEL: Record<PostChannel, string> = {
 export function channelOf(post: RoadmapPost): PostChannel {
   if (post.channel && post.channel in CHANNEL_LABEL) return post.channel;
   const outlet = post.primary_outlet;
-  return outlet === "facebook" || outlet === "whatsapp" ? outlet : "instagram";
+  return outlet && outlet in CHANNEL_LABEL ? outlet as PostChannel : "instagram";
 }
 
 /* ---- The number ------------------------------------------------------------------- */
@@ -124,6 +127,8 @@ export function formatCount(value: number) {
 export function metricLabel(post: RoadmapPost): string {
   const measure = post.measure;
   if (!measure) return "";
+  // Manual-only destinations have no connected reach read in this product yet.
+  if (["tiktok", "linkedin"].includes(channelOf(post)) && measure.metric === "reach" && !hasResult(post.results)) return "";
   return measure.label_he?.trim() || METRIC_LABEL[measure.metric] || "";
 }
 

@@ -17,8 +17,7 @@ import {
   type PromotionQuickWin,
   type PublishBrief,
 } from "@/lib/api";
-import { formatNis } from "@/lib/budget";
-import { IconBell, IconCheck, IconChevron, IconCopy, IconEye, IconLink } from "@/lib/icons";
+import { IconCheck, IconChevron, IconCopy, IconEye, IconLink } from "@/lib/icons";
 import { copyText } from "@/lib/ui";
 import { GbpConfirm } from "@/components/trial/GbpConfirm";
 
@@ -27,46 +26,6 @@ const oneDecimal = new Intl.NumberFormat("he-IL", { maximumFractionDigits: 1 });
 
 function messageOf(err: unknown, fallback: string) {
   return err instanceof Error && err.message ? err.message : fallback;
-}
-
-function isRange(value: unknown): value is [number, number] {
-  return (
-    Array.isArray(value) &&
-    value.length === 2 &&
-    value.every((part) => typeof part === "number" && Number.isFinite(part))
-  );
-}
-
-/**
- * Every figure on this screen arrives as a range, and stays one.
- *
- * A range the backend sent as `null` renders as a sentence instead of a number: the
- * published source does not have that figure, and filling the gap with something
- * confident is exactly the failure this screen exists to avoid. The formatters below
- * only ever read the two ends the API sent.
- */
-function nisRange(value: unknown): string | null {
-  if (!isRange(value)) return null;
-  return `${whole.format(Math.round(value[0]))}–${formatNis(value[1])}`;
-}
-
-/** For prices where the decimals are the point: ₪3.5 a click must not render as ₪4. */
-function nisRangePrecise(value: unknown): string | null {
-  if (!isRange(value)) return null;
-  const part = (amount: number) =>
-    Number.isInteger(amount) ? whole.format(amount) : oneDecimal.format(amount);
-  return `${part(value[0])}–${part(value[1])} ₪`;
-}
-
-function countRange(value: unknown): string | null {
-  if (!isRange(value)) return null;
-  return `${whole.format(Math.round(value[0]))}–${whole.format(Math.round(value[1]))}`;
-}
-
-function percentRange(value: unknown): string | null {
-  if (!isRange(value)) return null;
-  const asPercent = (part: number) => `${oneDecimal.format(Math.round(part * 1000) / 10)}%`;
-  return `${asPercent(value[0])}–${asPercent(value[1])}`;
 }
 
 function singlePercent(value: number | undefined): number | undefined {
@@ -97,13 +56,13 @@ function Figure({ children, strong = false }: { children: ReactNode; strong?: bo
 const INTENT_META: Record<KeywordIntent, { label: string; why: string; accent?: boolean; className: string }> = {
   transactional: {
     label: "כוונת קנייה",
-    why: "מחפשים לקנות או להזמין עכשיו. אלה המילים ששוות כסף בפרסום.",
+    why: "מחפשים לקנות או להזמין עכשיו. אם שוקלים מודעה, בדקו את הביטוי במתכנן של Google Ads.",
     accent: true,
     className: "",
   },
   local: {
     label: "מקומי",
-    why: "מחפשים עסק באזור. אליהם מגיעים דרך הכרטיס בגוגל והמפות, בחינם.",
+    why: "מחפשים עסק באזור. אפשר לבדוק את נתוני הכרטיס והאתר שלכם לפני שבוחרים איך לקדם.",
     accent: true,
     className: "",
   },
@@ -114,17 +73,17 @@ const INTENT_META: Record<KeywordIntent, { label: string; why: string; accent?: 
   },
   branded: {
     label: "חיפוש לפי שם",
-    why: "מחפשים אתכם בשם. על אלה כמעט לא צריך לשלם, כי הכרטיס והאתר כבר מופיעים.",
+    why: "מחפשים אתכם בשם. בדקו את נתוני האתר והכרטיס לפני שמחליטים אם לפרסם על הביטוי.",
     className: "bg-[var(--soft)] text-[color:var(--ink)]",
   },
   informational: {
     label: "מידע",
-    why: "לומדים נושא, לא קונים. בדרך כלל לא שווה לקנות את הקליקים האלה.",
+    why: "לומדים נושא, ולא בהכרח מתכוונים לקנות. כוונת החיפוש לבדה לא אומרת אם מודעה משתלמת.",
     className: "bg-[var(--soft)] text-[color:var(--ink-muted)]",
   },
   general: {
     label: "כללי",
-    why: "לא ברור מה המחפשים רוצים. אפשר לכתוב על זה פוסטים, אבל לא לשלם על זה במודעות.",
+    why: "לא ברור מה המחפשים רוצים. כדאי להבין את הביטוי לפני שמחליטים איך לקדם אותו.",
     className: "bg-[var(--soft)] text-[color:var(--ink-muted)]",
   },
 };
@@ -165,59 +124,6 @@ function IntentChip({ intent, label }: { intent: KeywordIntent; label?: string }
 }
 
 /**
- * Plain Hebrew for the backend's own sentences.
- *
- * The warnings and assumptions are written by `google_cost.py` and still carry the
- * trade's shorthand — ROAS, CPC, SEO, "דאטה", "לאפטם". Nothing here changes a figure or
- * drops a clause: each term is swapped for the plain words it stands for (UI-RULES rule
- * 4), so the caveat reaches an owner who has never heard the acronym. Ordered longest
- * first, so a phrase is rewritten before the bare term inside it.
- */
-const PLAIN_TERMS: [RegExp, string][] = [
-  [/לא כ-ROAS/g, "לא כחודש שצריך להחזיר את ההוצאה"],
-  [/אומדן המרות או עלות להמרה/g, "הערכה של מספר הפניות וההזמנות או של העלות לפנייה"],
-  [/רצועת ה-CPC/g, "רצועת מחירים"],
-  [/רצועת CPC/g, "רצועת מחירים"],
-  [/CPC ממוצע/g, "מחיר ממוצע לקליק"],
-  [/ה-CPC/g, "המחיר לקליק"],
-  [/ROAS/g, "ההחזר על ההוצאה"],
-  [/CPC לתחום/g, "מחיר לקליק בתחום"],
-  [/CPC/g, "המחיר לקליק"],
-  [/\(SEO, /g, "(קידום האתר בחיפוש בלי לשלם, "],
-  [/SEO/g, "קידום האתר בחיפוש בלי לשלם"],
-  [/ל-Keyword Planner/g, "לכלי תכנון המילים של גוגל"],
-  [/Keyword Planner/g, "כלי תכנון המילים של גוגל"],
-  [/ולרימרקטינג/g, "ולפנייה חוזרת למי שכבר ביקר"],
-  [/רימרקטינג/g, "פנייה חוזרת למי שכבר ביקר"],
-  [/ולאפטם/g, "ולהשתפר"],
-  [/לאפטם/g, "להשתפר"],
-  [/ותאפטם/g, "ותשתפר"],
-  [/אופטימיזציה אמיתית/g, "שיפור אמיתי"],
-  // "האלגוריתם ... לא לומד" is masculine; "המערכת" broke the agreement, Google does not.
-  [/האלגוריתם של גוגל/g, "גוגל"],
-  [/בלמידה של אלגוריתם/g, "בלמידה של גוגל"],
-  [/על מיקס:/g, "על שילוב:"],
-  [/מטא\/אינסטגרם/g, "אינסטגרם ופייסבוק"],
-  [/איקומרס/g, "חנויות אונליין"],
-  [/נשאר אפילו פחות דאטה/g, "נשארים אפילו פחות נתונים"],
-  [/דאטה/g, "נתונים"],
-  [/טווח ההמרות הצפוי/g, "מספר הפניות וההזמנות הצפוי מהמודעות"],
-  [/עלות להמרה/g, "עלות לפנייה"],
-  [/שיעור ההמרה/g, "שיעור הפונים"],
-  [/טווח ההמרה/g, "טווח שיעור הפונים"],
-  [/שיעור המרה/g, "שיעור הפונים"],
-  [/ההמרות/g, "הפניות וההזמנות"],
-  [/המרות/g, "פניות או הזמנות"],
-  // A range like "24-64" inside a Hebrew sentence flips its brackets and dash; isolating
-  // it left-to-right keeps the digits in the order they were written.
-  [/(\d[\d,.]*)-(\d[\d,.]*)/g, "\u2066$1–$2\u2069"],
-];
-
-function plain(text: string): string {
-  return PLAIN_TERMS.reduce((out, [pattern, words]) => out.replace(pattern, words), text);
-}
-
-/**
  * The disclosure mark: a real chevron (DESIGN-STANDARD §4), down when closed and up when
  * open. An icon rather than a "‹" glyph: rule 7 counts `main.innerText`, and a text glyph
  * is counted as a word on every closed expand. Every fold on this page is a direct
@@ -240,9 +146,8 @@ const QUIET_BUTTON =
 /**
  * Detail on demand — the whole restructuring of this page rests on this one control.
  *
- * The answer, the budget warning and the one thing we are asking for stay on the face;
- * the evidence behind them (the rest of the ranges, the fee lines, the method, the full
- * keyword lists and the checklist) opens from here. It is a native `<details>`, so the
+ * The budget guidance and the one thing we are asking for stay on the face; the full
+ * keyword lists and the checklist open from here. It is a native `<details>`, so the
  * closed content is out of the reading order and out of the measured page height while
  * staying one click — and one screen reader — away.
  */
@@ -272,55 +177,6 @@ function Expand({
 /** A group heading inside an expand: 13px, muted, a hairline list under it. */
 function GroupTitle({ children, className = "" }: { children: ReactNode; className?: string }) {
   return <h3 className={`text-[13px] font-semibold text-[color:var(--ink-muted)] ${className}`}>{children}</h3>;
-}
-
-/** One range in the cost break-down, with the reasoning that produced it underneath. */
-function CostRow({ label, value, basis }: { label: string; value: string | null; basis: string }) {
-  return (
-    <div className="py-4">
-      <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-        <span className="text-[15px] font-medium text-[color:var(--ink)]">{label}</span>
-        {value ? (
-          <span className="text-lg font-bold tracking-tight tabular-nums text-[color:var(--ink)]">
-            <Figure>{value}</Figure>
-          </span>
-        ) : (
-          <span className="text-[13px] font-medium text-[color:var(--ink-muted)]"><Copy text="המקור לא מפרסם את הנתון הזה" /></span>
-        )}
-      </div>
-      <p className="mt-1 max-w-[42em] text-[13px] leading-6 text-[color:var(--ink-muted)]">{basis}</p>
-    </div>
-  );
-}
-
-function FeeRow({
-  label,
-  amount,
-  children,
-  emphasis,
-}: {
-  label: string;
-  amount: string | null;
-  children?: ReactNode;
-  emphasis?: boolean;
-}) {
-  return (
-    <li className="flex flex-wrap items-start justify-between gap-3 py-4">
-      <div className="min-w-0 max-w-md">
-        <span className={`text-[15px] ${emphasis ? "font-semibold" : "font-medium"} text-[color:var(--ink)]`}>{label}</span>
-        {children ? <span className="mt-1 block text-[13px] leading-6 text-[color:var(--ink-muted)]">{children}</span> : null}
-      </div>
-      <div className="text-left">
-        {amount ? (
-          <span className={`block ${emphasis ? "text-lg" : "text-[15px]"} font-bold tracking-tight tabular-nums text-[color:var(--ink)]`}>
-            <Figure>{amount}</Figure>
-          </span>
-        ) : (
-          <span className="text-[13px] font-medium text-[color:var(--ink-muted)]"><Copy text="לא נמסר" /></span>
-        )}
-      </div>
-    </li>
-  );
 }
 
 /**
@@ -422,15 +278,8 @@ function SourceLine({
 }
 
 /**
- * Promotion (קידום) — the Google side of the plan, restructured around the one question
- * the owner actually asks: what would Google cost me, and is my budget enough?
- *
- * That answer, the budget warning and the single ask stay on the face. Everything that
- * proves it — the rest of the ranges, the fee lines, the method and the source, the full
- * keyword lists and the eleven-step profile checklist — sits behind an expand. Nothing
- * was removed to make room: no invented numbers, ranges stay ranges, a range the backend
- * sent as `null` stays a sentence, the autocomplete phrases never grow a volume column,
- * and the source link is still one click away.
+ * Promotion (קידום) — the owner's budget choice, an official path to a Google forecast,
+ * real Search Console observations, and the free local business profile.
  */
 export default function PromotionPage() {
   const t = useCopy();
@@ -454,7 +303,7 @@ export default function PromotionPage() {
         setPromotionError("");
       })
       .catch((err) => {
-        if (active) setPromotionError(messageOf(err, "לא הצלחנו לחשב כמה עולה לפרסם בגוגל"));
+        if (active) setPromotionError(messageOf(err, "לא הצלחנו לטעון הנחיות לתכנון בגוגל"));
       });
     return () => {
       active = false;
@@ -535,49 +384,7 @@ export default function PromotionPage() {
   const demo = isDemo();
 
   const budget = plan?.monthly_budget_ils;
-  const floor = plan?.minimum_viable_budget;
-  // Comparing the owner's budget with the floor the backend names is arithmetic on two
-  // published figures, not a new figure — and it is the one comparison that decides
-  // whether this campaign can run at all.
-  // The page's one answer, in words: is Google worth it at this budget. It is the same
-  // comparison as before — the budget against the published floor — said as a sentence
-  // an owner can act on, with the reason (the floor itself) directly under it.
-  const floorFigureText = nisRange(floor);
-  const floorStatus =
-    typeof budget === "number" && isRange(floor)
-      ? budget < floor[0]
-        ? {
-            verdict: t("עוד לא כדאי לפרסם בגוגל."),
-            reason: t("בפחות מזה, לפי המקור, לגוגל אין מספיק נתונים כדי ללמוד, והכסף נגמר בלי תוצאות."),
-            tone: "warn" as const,
-          }
-        : budget < floor[1]
-          ? {
-              verdict: t("אפשר להתחיל לפרסם בגוגל, אבל בזהירות."),
-              reason: t("אתם בתחתית הטווח. אפשר להתחיל, אבל יש פחות מקום לטעויות."),
-              tone: "neutral" as const,
-            }
-          : {
-              verdict: t("יש מקום לנסות פרסום בגוגל."),
-              reason: t("התקציב שלכם מעליו, ולכן יש מקום גם ללמוד וגם לטעות."),
-              tone: "good" as const,
-            }
-      : null;
-
-  const budgetFigure = typeof budget === "number" ? `${whole.format(Math.round(budget))} ₪` : null;
-  const cpcFigure = nisRangePrecise(plan?.cpc_range);
-  const floorFigure = floorFigureText;
-  const totalFigure = nisRange(plan?.total_monthly_ils);
-  const firstMonthFigure = nisRange(plan?.first_month_total_ils);
-  // The budget verdict is already a line of its own, so the warning line shows the first
-  // warning that says something new. All of them, in the backend's order, are one expand
-  // below — nothing is dropped.
-  const warnings = plan?.warnings ?? [];
-  const extraWarning =
-    warnings.find((warning, index) => index > 0 && !warning.includes(t("נמוך מהמינימום"))) ??
-    warnings.find((warning) => !warning.includes(t("נמוך מהמינימום"))) ??
-    null;
-
+  const budgetFigure = typeof budget === "number" && budget > 0 ? `${whole.format(Math.round(budget))} ₪` : null;
   const positionRange = thresholds?.quick_win_position;
   const minImpressions = thresholds?.quick_win_min_impressions;
   const periodDays = kwSources?.search_console?.period?.days;
@@ -596,12 +403,11 @@ export default function PromotionPage() {
       <div className="mx-auto max-w-3xl">
         <SectionHeader section="business" title={t("קידום בגוגל")} />
 
-        {demo ? <p className="-mt-3 mb-5 text-[13px] text-[color:var(--ink-muted)]"><Copy text="בדמו המחירים והמילים לדוגמה." /></p> : null}
+        {demo ? <p className="-mt-3 mb-5 text-[13px] text-[color:var(--ink-muted)]"><Copy text="בדמו נתוני העסק והמילים לדוגמה." /></p> : null}
 
-        {/* ---------- the answer, its reason, and the one ask ---------- */}
-        {/* One card with depth, not a tinted panel: the answer is the page's one object. */}
-        <section aria-label={t("התשובה בקצרה")} className="paper px-5 py-6 sm:px-8 sm:py-8">
-          {promotionLoading ? <LoadingMark label={t("מחשבים כמה יעלה לפרסם בגוגל…")} /> : null}
+        {/* ---------- budget ownership and the official forecast ---------- */}
+        <section aria-label={t("תכנון פרסום בגוגל")} className="paper px-5 py-6 sm:px-8 sm:py-8">
+          {promotionLoading ? <LoadingMark label={t("טוענים הנחיות לתכנון בגוגל…")} /> : null}
 
           {promotionError ? (
             <ErrorPanel
@@ -616,253 +422,43 @@ export default function PromotionPage() {
 
           {!promotionLoading && !promotionError && !plan ? (
             <p className="text-[15px] leading-7 text-[color:var(--ink-soft)]">
-              <Copy text="לא קיבלנו תוכנית קידום מהשרת, ולא נמציא מספרים במקומה. אפשר לנסות שוב." /></p>
+              <Copy text="לא קיבלנו מהשרת את הנחיות הפרסום. נסו שוב מאוחר יותר." /></p>
           ) : null}
 
           {plan ? (
-            <div>
-              <h2 className="max-w-[28em] text-[21px] font-bold leading-[1.4] tracking-tight text-balance text-[color:var(--ink)] sm:text-[24px]">
-                {budgetFigure ? (
-                  <>
-                    {t("בתקציב של ")}
-                    <Figure>{budgetFigure}</Figure>
-                    {t(" בחודש, ")}
-                  </>
-                ) : null}
-                {floorStatus ? floorStatus.verdict : t("זו עלות הפרסום בגוגל בתחום {arg_0}.", { arg_0: plan.industry_label })}
+            <div className="max-w-[44em]">
+              <h2 className="text-[21px] font-bold leading-[1.4] tracking-tight text-balance text-[color:var(--ink)] sm:text-[24px]">
+                <Copy text="את תקציב Google Ads אתם בוחרים בחשבון שלכם" />
               </h2>
-
-              <p className="mt-3 max-w-[42em] text-[15px] leading-7 text-[color:var(--ink-soft)]">
-                {totalFigure ? (
-                  <>
-                    {t("בפועל זה ")}
-                    <Figure strong>{totalFigure}</Figure>
-                    {t(" בחודש, עם דמי הניהול. ")}
-                  </>
-                ) : (
-                  t("המקור לא מפרסם עלות חודשית כוללת. ")
-                )}
-                {cpcFigure ? (
-                  <>
-                    {t("כל כניסה לאתר מהמודעה עולה ")}
-                    <Figure strong>{cpcFigure}</Figure>
-                    {"."}
-                  </>
-                ) : (
-                  t("המקור לא מפרסם מחיר לכניסה בתחום הזה, ולכן אין כאן מספר.")
-                )}{" "}
-                <Link
-                  href="/decisions"
-                  className="font-semibold whitespace-nowrap text-[color:var(--primary)] hover:underline hover:underline-offset-4"
-                >
-                  <Copy text="לשנות את התקציב" /></Link>
+              <p className="mt-3 text-[15px] leading-7 text-[color:var(--ink-soft)]">
+                {budgetFigure ? <><Copy text="תקציב השיווק החודשי שהגדרתם אצלנו:" />{" "}<Figure strong>{budgetFigure}</Figure>{". "}</> : null}
+                <Copy text="זה לא סכום שמוקצה אוטומטית ל-Google Ads. לא חיברנו את חשבון המודעות שלכם, ולכן לא נציג תחזית קליקים, פניות או עלות." />
               </p>
-
-              {floorStatus ? (
-                <p
-                  className={`mt-3 max-w-[42em] text-[15px] leading-7 ${
-                    floorStatus.tone === "warn"
-                      ? "text-[color:var(--danger)]"
-                      : floorStatus.tone === "good"
-                        ? "text-[color:var(--primary)]"
-                        : "text-[color:var(--ink)]"
-                  }`}
+              <p className="mt-3 text-[15px] leading-7 text-[color:var(--ink-soft)]">
+                <Copy text="כדי לבדוק תחזית לקמפיין שלכם, הכניסו את מילות המפתח וההגדרות שלכם במתכנן מילות המפתח של Google Ads. זו תחזית של Google לתוכנית שבחרתם, לא נתון שנמדד אצלכם." />
+              </p>
+              <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2">
+                <a
+                  href="https://support.google.com/google-ads/answer/7337243?hl=he"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="drawn-button inline-flex min-h-12 items-center justify-center bg-[var(--primary)] px-6 py-3 text-center text-[15px] leading-6 text-white hover:bg-[var(--primary-dark)]"
                 >
-                  <span className="font-semibold">
-                    {t("המינימום שפורסם לתחום: ")}
-                    {floorFigure ? <Figure>{floorFigure}</Figure> : null}
-                    {t(" בחודש. ")}
-                  </span>
-                  {floorStatus.reason}
-                </p>
-              ) : null}
-
-              {/* A warning, so the sun (DESIGN-STANDARD §1): the budget line above keeps
-                  the danger tone; two red paragraphs in a row read as an error. */}
-              {extraWarning ? (
-                <p className="mt-5 flex items-start gap-3 rounded-[12px] bg-[var(--sand)] px-4 py-3 text-[14px] leading-6 text-[color:var(--sand-dark)]">
-                  <IconBell className="mt-0.5 h-[18px] w-[18px] shrink-0" />
-                  <span>{plain(extraWarning)}</span>
-                </p>
-              ) : null}
-
-              {!keywordsLoading && !keywordsError ? (
-                <div className="mt-6">
-                  <Link
-                    href="/integrations"
-                    className="drawn-button inline-flex min-h-12 w-full items-center justify-center bg-[var(--primary)] px-6 py-3 text-center text-[15px] leading-6 text-white hover:bg-[var(--primary-dark)] sm:w-auto"
-                  >
-                    {searchConsoleConnected
-                      ? t("לחבר את נתוני האתר: מה קורה אחרי הקליק")
-                      : t("לחבר את גוגל: באילו חיפושים אתם כבר מופיעים")}
-                  </Link>
-                </div>
-              ) : null}
+                  <Copy text="לפתוח את מדריך מתכנן מילות המפתח" />
+                </a>
+                <a
+                  href="https://support.google.com/google-ads/answer/6385083?hl=he"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex min-h-11 items-center gap-2 text-[14px] font-semibold text-[color:var(--primary)] hover:underline hover:underline-offset-4"
+                >
+                  <IconLink className="h-4 w-4 shrink-0" />
+                  <Copy text="איך לבחור תקציב יומי" />
+                </a>
+              </div>
             </div>
           ) : null}
         </section>
-
-        {/* ---------- every figure and every warning, one level down ---------- */}
-        {plan ? (
-          <section aria-label={t("כל המספרים והאזהרות")} className="mt-4 divide-y divide-[var(--rule)] border-b border-[var(--rule)]">
-            {(plan.assumptions?.length ||
-              plan.warnings?.length ||
-              plan.channel_comparison?.recommendation ||
-              plan.source) ? (
-              <Expand title={t("כל המספרים והחישובים")}>
-                <div className="space-y-8">
-                  <div>
-                    <GroupTitle><Copy text="הטווחים, כל אחד עם החישוב שלו" /></GroupTitle>
-                    <div className="mt-2 divide-y divide-[var(--rule)] border-y border-[var(--rule)]">
-                      <CostRow
-                        label={t("כמה עולה כל כניסה מהמודעה (קליק)")}
-                        value={cpcFigure}
-                        basis={t("מה שמשלמים לגוגל על כל אדם שלוחץ על המודעה ונכנס. המחיר נקבע לכל חיפוש בנפרד, ולכן הוא טווח ולא מספר אחד.")}
-                      />
-                      <CostRow
-                        label={t("כניסות בחודש")}
-                        value={countRange(plan.expected_clicks)}
-                        basis={t("התקציב חלקי המחיר לכניסה. זה הגבול העליון של מה שהתקציב יכול לקנות, לא תחזית של כמה אנשים מחפשים.")}
-                      />
-                      <CostRow
-                        label={t("כמה מהנכנסים פונים או מזמינים")}
-                        value={percentRange(plan.conversion_rate_range)}
-                        basis={
-                          plan.sector_label
-                            ? t("זה השיעור שפורסם למגזר ״{arg_0}״. הוא לא נמדד באתר שלכם.", { arg_0: plan.sector_label })
-                            : t("זה השיעור שפורסם למגזר שלכם. הוא לא נמדד באתר שלכם.")
-                        }
-                      />
-                      <CostRow
-                        label={plan.conversion_unit ? t("פניות או הזמנות בחודש ({arg_0})", { arg_0: plan.conversion_unit }) : t("פניות או הזמנות בחודש")}
-                        value={countRange(plan.expected_conversions)}
-                        basis={t("הכניסות כפול שיעור הפונים. זו הערכה לפי טווחים, לא הבטחה. בשפת המקצוע: המרות.")}
-                      />
-                      <CostRow
-                        label={t("כמה עולה להביא פנייה אחת")}
-                        value={nisRange(plan.cost_per_conversion)}
-                        basis={t("המחיר לכניסה חלקי שיעור הפונים. אם זה יותר ממה שאתם מרוויחים על מכירה, גוגל לא משתלמת, וכדאי לדעת את זה מראש.")}
-                      />
-                      <CostRow
-                        label={t("המינימום שפורסם למגזר")}
-                        value={floorFigure}
-                        basis={t("תקציב המינימום שפורסם למגזר. מתחתיו אין לגוגל מספיק נתונים כדי ללמוד ולהשתפר.")}
-                      />
-                    </div>
-                    {plan.matched_keywords?.length ? (
-                      <p className="mt-4 flex flex-wrap items-center gap-1.5 text-[13px] text-[color:var(--ink-muted)]">
-                        <span className="font-medium"><Copy text="זיהינו את התחום לפי:" /></span>
-                        {plan.matched_keywords.map((word) => (
-                          <span key={word} className={`${PILL} bg-[var(--soft)] text-[color:var(--ink-soft)]`}>
-                            {word}
-                          </span>
-                        ))}
-                      </p>
-                    ) : null}
-                  </div>
-                  <div>
-                    <GroupTitle><Copy text="מה עוד משלמים, חוץ מתקציב המדיה" /></GroupTitle>
-                    <p className="mt-1 max-w-[42em] text-[13px] leading-6 text-[color:var(--ink-muted)]">
-                      <Copy text="תקציב המדיה הולך לגוגל עצמה. כאן העלויות של העבודה סביבו, בנפרד, כדי שתראו כמה החודש עולה באמת ולא רק את המספר שנשמע טוב." /></p>
-                    <ul className="mt-3 divide-y divide-[var(--rule)] border-y border-[var(--rule)]">
-                      <FeeRow label={t("דמי ניהול בחודש")} amount={nisRange(plan.management_fee?.percent_amount_ils)}>
-                        {plan.management_fee?.percent_label ? (
-                          <span className="block">
-                            <Figure>{plan.management_fee.percent_label}</Figure>
-                            {nisRange(plan.management_fee?.flat_range_ils) ? (
-                              <>
-                                {" "}
-                                <Copy text="או תשלום חודשי קבוע של" />{" "}
-                                <Figure>{nisRange(plan.management_fee?.flat_range_ils)}</Figure>
-                              </>
-                            ) : null}
-                          </span>
-                        ) : null}
-                        {plan.management_fee?.note ? (
-                          <span className="mt-1 block">{plan.management_fee.note}</span>
-                        ) : null}
-                      </FeeRow>
-                      <FeeRow label={t("הקמה חד־פעמית")} amount={nisRange(plan.setup_fee)}>
-                        <Copy text="העבודה עד שהמודעות עולות לאוויר. משלמים עליה פעם אחת, לא כל חודש." /></FeeRow>
-                      <FeeRow
-                        label={t("עלות חודשית כוללת (מדיה + ניהול)")}
-                        amount={nisRange(plan.total_monthly_ils)}
-                        emphasis
-                      >
-                        <Copy text="זה מה שיוצא בפועל בכל חודש, ולא רק מה שהולך לגוגל." /></FeeRow>
-                      <FeeRow label={t("החודש הראשון (כולל הקמה)")} amount={firstMonthFigure} emphasis>
-                        <Copy text="החודש הראשון הוא תמיד היקר ביותר. אם הוא לא מסתדר לכם בתזרים, עדיף לדחות את ההתחלה." /></FeeRow>
-                    </ul>
-                  </div>
-
-                  <div>
-                    <GroupTitle><Copy text="מה עומד מאחורי המספרים" /></GroupTitle>
-
-                    {plan.assumptions?.length ? (
-                      <ul className="mt-3 space-y-2.5">
-                        {plan.assumptions.map((assumption, index) => (
-                          <li
-                            key={`${assumption.slice(0, 24)}-${index}`}
-                            className="flex max-w-[42em] items-start gap-3 text-[14px] leading-6 text-[color:var(--ink-soft)]"
-                          >
-                            <span aria-hidden className="mt-[9px] h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--primary)]" />
-                            {plain(assumption)}
-                          </li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <p className="mt-3 text-[14px] leading-6 text-[color:var(--ink-soft)]">
-                        <Copy text="לא קיבלנו מהשרת את ההנחות שמאחורי החישוב. בלעדיהן אי אפשר לדעת מה הטווח כולל." /></p>
-                    )}
-
-                    {plan.channel_comparison?.recommendation ? (
-                      <p className="mt-5 max-w-[42em] rounded-[12px] bg-[var(--soft)] px-4 py-3 text-[14px] leading-6 text-[color:var(--ink-soft)]">
-                        <span className="font-semibold text-[color:var(--ink)]"><Copy text="ולא רק גוגל:" /></span>
-                        {plain(plan.channel_comparison.recommendation)}
-                      </p>
-                    ) : null}
-
-                    {plan.source ? (
-                      <a
-                        href={plan.source}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="mt-4 inline-flex min-h-11 items-center gap-2 text-[14px] font-semibold text-[color:var(--primary)] hover:underline hover:underline-offset-4"
-                      >
-                        <IconLink className="h-4 w-4 shrink-0" />
-                        {plan.source_title || t("המקור שממנו נלקחו טווחי המחירים")}
-                      </a>
-                    ) : null}
-                  </div>
-                </div>
-              </Expand>
-            ) : null}
-
-            {plan.warnings?.length ? (
-              <Expand
-                title={
-                  plan.warnings.length === 1
-                    ? t("אזהרה לקרוא לפני שמתחילים")
-                    : t("{arg_0} אזהרות לקרוא לפני שמתחילים", { arg_0: plan.warnings.length })
-                }
-              >
-                <ol aria-label={t("אזהרות לפני שמתחילים")} className="divide-y divide-[var(--rule)] border-y border-[var(--rule)]">
-                  {plan.warnings.map((warning, index) => (
-                    <li key={`${warning.slice(0, 24)}-${index}`} className="flex gap-3 py-3.5">
-                      <span
-                        aria-hidden
-                        className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[var(--danger-soft)] text-xs font-semibold tabular-nums text-[color:var(--danger)]"
-                      >
-                        {index + 1}
-                      </span>
-                      <span className="max-w-[42em] text-[14px] leading-6 text-[color:var(--ink)]">{plain(warning)}</span>
-                    </li>
-                  ))}
-                </ol>
-              </Expand>
-            ) : null}
-          </section>
-        ) : null}
 
         {/* ---------- the terms worth targeting ---------- */}
         <section aria-labelledby="keywords-heading" className="mt-12">
@@ -933,7 +529,7 @@ export default function PromotionPage() {
                 <Expand title={t("כל {arg_0} המילים, ומאיפה כל אחת באה", { arg_0: moreTerms })}>
                   <div className="space-y-8">
                     <p className="max-w-[42em] text-[14px] leading-6 text-[color:var(--ink-soft)]">
-                      <Copy text="אלה חיפושים שבהם האתר שלכם כבר מופיע, קרוב לעמוד הראשון." />{typeof periodDays === "number" ? t(" הנתונים מ-{arg_0} הימים האחרונים.", { arg_0: periodDays }) : null} <Copy text="שיפור הכותרת או הטקסט בעמוד יכול לקדם אותם בלי לשלם על קליק." />{isRange(positionRange) && typeof minImpressions === "number" ? (
+                      <Copy text="אלה חיפושים שבהם האתר שלכם כבר מופיע, קרוב לעמוד הראשון." />{typeof periodDays === "number" ? t(" הנתונים מ-{arg_0} הימים האחרונים.", { arg_0: periodDays }) : null} <Copy text="שיפור הכותרת או הטקסט בעמוד יכול לקדם אותם בלי לשלם על קליק." />{positionRange && typeof minImpressions === "number" ? (
                         <>
                           {" "}
                           <Copy text="בחרנו לפי מיקום" /><Figure>{`${oneDecimal.format(positionRange[0])}–${oneDecimal.format(positionRange[1])}`}</Figure>{" "}

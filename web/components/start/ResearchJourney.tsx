@@ -22,6 +22,7 @@ import { IdentityMark } from "@/components/landing-v2/IdentityMark";
 import { BuildReview, REVIEW_PATHS } from "./BuildReview";
 import { BUSINESS_EXAMPLES } from "@/components/landing-v2/businessExamples";
 import { inferField } from "@/lib/businessFields";
+import { parseMeasurementInput, updateFieldError } from "@/lib/localeNumber";
 import { googleErrorFromLocation } from "@/lib/googleAuth";
 import styles from "./start.module.css";
 import form from "./form.module.css";
@@ -142,7 +143,7 @@ export function ResearchJourney() {
   if (!flow) return <p className="p-8"><Copy text="טוענים…" /></p>;
   const journey = flow.draft.research_journey!; const steps = sequence(journey); const index = steps.indexOf(journey.step);
   const stage = journey.phase === "before" ? 0 : journey.step === "build" ? 3 : ["metrics", "detail"].includes(journey.step) ? 2 : 1;
-  const common: StepProps = { tip: <OnboardingTip journey={journey} />, flow, update, setDraft, next: () => void advance(), reflection: null, focus: true, direction, nextLabel: ({ name: "לספר על העסק", offer: "לספר מה מייחד אתכם", different: journey.segment === "fundraising" ? "מי יתמוך בעשייה שלכם?" : "מי הלקוחות שלכם?", audiences: "להוסיף אתר ופרופילים", discovery: "להמשיך לפתיחת החשבון", software_offer: "מה המוצר פותר?", software: "איך לקוחות מוצאים אתכם?", sources: "להמשיך לחיבורים", connections: "מה ייחשב הצלחה?", metrics: "עוד שאלה קצרה", detail: "להמשיך לבניית התוכנית" } as Record<string, string>)[journey.step], notice: error ? <p role="alert" className={form.error}>{error}</p> : undefined };
+  const common: StepProps = { tip: <OnboardingTip journey={journey} />, flow, update, setDraft, next: () => void advance(), reflection: null, focus: true, direction, nextLabel: ({ name: "לספר על העסק", offer: "לספר מה מייחד אתכם", different: journey.segment === "fundraising" ? "מי יתמוך בעשייה שלכם?" : "מי הלקוחות שלכם?", audiences: "להוסיף אתר ופרופילים", discovery: "להמשיך לפתיחת החשבון", software_offer: "מה המוצר פותר?", software: "להמשיך לחיבורים", sources: "להמשיך לחיבורים", connections: "מה ייחשב הצלחה?", metrics: "עוד שאלה קצרה", detail: "להמשיך לבניית התוכנית" } as Record<string, string>)[journey.step], notice: error ? <p role="alert" className={form.error}>{error}</p> : undefined };
   async function move(step: string, back = false) {
     const current = latest.current!; const j = current.draft.research_journey!;
     const next = { ...current, step, seen: [...new Set([...current.seen, j.step])], draft: { ...current.draft, research_journey: { ...j, step } } };
@@ -239,21 +240,83 @@ function DiscoveryStep(props: StepProps & { after: boolean; mock: boolean; onRep
 }
 
 function MetricsStep(props: StepProps & { onChange: (patch: Partial<Journey>) => void }) {
-  const t = useCopy();
+  const t = useCopy(); const { locale } = useLanguage();
   const j = props.flow.draft.research_journey!; const segment = j.segment;
   const choices = METRICS[segment]; const metric = j.metric ?? choices[0].key;
   const baselineLabel = { purchases: "כמה הזמנות הושלמו באתר ב-30 הימים האחרונים?", store_sales: "כמה קניות היו בחנות ב-30 הימים האחרונים?", qualified_inquiries: "כמה פניות התאימו לשירות שלכם ב-30 הימים האחרונים?", booked_work: "כמה עבודות או פגישות נסגרו ב-30 הימים האחרונים?", paid_accounts: "כמה לקוחות התחילו לשלם ב-30 הימים האחרונים?", demos: "כמה הדגמות עם לקוחות מתאימים התקיימו ב-30 הימים האחרונים?", trials: "כמה התנסויות חדשות התחילו ב-30 הימים האחרונים?", donations: "כמה תרומות קיבלתם ב-30 הימים האחרונים?", recurring_donors: "כמה תורמים קבועים הצטרפו ב-30 הימים האחרונים?" }[metric];
   const values: Observation[] = [j.observations.find(x => x.key === "outcomes") ?? { key: "outcomes", status: "unknown", unit: "count", period: "last_30_days", source: "owner" }, j.observations.find(x => x.key === "marketing_budget") ?? { key: "marketing_budget", status: "unknown", unit: "ILS", period: "per_month", source: "owner" }];
   function observations(next: Observation[]) { return [...j.observations.filter(value => value.key === "order_value"), ...next]; }
-  const [error, setError] = useState("");
+  const [rawInputs, setRawInputs] = useState<Record<string, string>>({});
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const inputKey = (value: Observation, bound: "lower" | "upper") => `${value.key}-${bound}`;
   function change(index: number, value: Observation) { props.onChange({ metric, observations: observations(values.map((x, i) => i === index ? value : x)) }); }
-  return <StepShell {...props} title="מה ייחשב הצלחה בשבילכם?" why="" primary="להמשיך" onPrimary={() => { if (!values.every(observationValid)) { setError("הזינו מספרים חיוביים או אפס. כמות צריכה להיות מספר שלם, ובטווח המספר השני צריך להיות גדול מהראשון או שווה לו."); return; } props.onChange({ metric, observations: observations(values) }); props.next(); }}>
+  function validationError(value: Observation, bound: "lower" | "upper"): string | null {
+    if (value.status === "unknown") return null;
+    const number = bound === "lower" ? value.lower : value.upper;
+    if (typeof number !== "number" || !Number.isFinite(number) || number < 0 || number > 1e9) return "הזינו מספר תקין בין 0 ל-1,000,000,000.";
+    if (value.unit === "count" && !Number.isInteger(number)) return "הזינו מספר שלם.";
+    if (bound === "upper" && value.status === "range" && typeof value.lower === "number" && number < value.lower) return "המספר הגבוה צריך להיות גדול מהנמוך או שווה לו.";
+    return null;
+  }
+  function setMeasurement(index: number, bound: "lower" | "upper", text: string) {
+    const value = values[index]; const key = inputKey(value, bound);
+    setRawInputs(previous => ({ ...previous, [key]: text }));
+    if (!text.trim()) {
+      setFieldErrors(previous => { const next = { ...previous }; delete next[key]; return next; });
+      change(index, { ...value, [bound]: null });
+      return;
+    }
+    const parsed = parseMeasurementInput(text, locale, value.unit);
+    const message = parsed.error === "integer" ? "הזינו מספר שלם." : parsed.error ? "הזינו מספר תקין בין 0 ל-1,000,000,000." : null;
+    if (message) {
+      setFieldErrors(previous => updateFieldError(previous, key, message));
+      return;
+    }
+    const updated = { ...value, [bound]: parsed.value! };
+    setFieldErrors(previous => {
+      let next = updateFieldError(previous, key, null);
+      if (updated.status === "range" && updated.lower != null && updated.upper != null) {
+        const upperKey = inputKey(updated, "upper");
+        const upperRawError = bound === "lower" && Object.hasOwn(rawInputs, upperKey)
+          ? parseMeasurementInput(rawInputs[upperKey], locale, updated.unit).error
+          : null;
+        const upperError = upperRawError === "integer" ? "הזינו מספר שלם." : upperRawError ? "הזינו מספר תקין בין 0 ל-1,000,000,000." : validationError(updated, "upper");
+        next = updateFieldError(next, upperKey, upperError);
+      }
+      return next;
+    });
+    change(index, updated);
+  }
+  function clearMeasurementErrors(index: number) {
+    const value = values[index]; const keys = [inputKey(value, "lower"), inputKey(value, "upper")];
+    setRawInputs(previous => { const next = { ...previous }; keys.forEach(key => delete next[key]); return next; });
+    setFieldErrors(previous => keys.reduce((next, key) => updateFieldError(next, key, null), previous));
+  }
+  function submit() {
+    const nextErrors: Record<string, string> = {};
+    values.forEach(value => {
+      if (value.status === "unknown") return;
+      const lowerKey = inputKey(value, "lower");
+      const lowerError = validationError(value, "lower");
+      if (lowerError) nextErrors[lowerKey] = lowerError;
+      if (value.status === "range") {
+        const upperKey = inputKey(value, "upper"); const upperError = validationError(value, "upper");
+        if (upperError) nextErrors[upperKey] = upperError;
+      }
+      // Existing saved data is also checked; unknown observations remain deliberately valid.
+      if (!observationValid(value) && !lowerError && value.status === "exact") nextErrors[lowerKey] = "הזינו מספר תקין בין 0 ל-1,000,000,000.";
+    });
+    const allErrors = { ...fieldErrors, ...nextErrors };
+    setFieldErrors(allErrors);
+    if (Object.keys(allErrors).length) return;
+    props.onChange({ metric, observations: observations(values) }); props.next();
+  }
+  return <StepShell {...props} title="מה ייחשב הצלחה בשבילכם?" why="" primary="להמשיך" onPrimary={submit}>
     <fieldset><legend className="sr-only"><Copy text="התוצאה שהכי חשובה לכם כרגע" /></legend><div className="flex flex-wrap gap-2">{choices.map(item => <button key={item.key} type="button" className={form.chip} aria-pressed={metric === item.key} onClick={() => props.onChange({ metric: item.key, observations: j.observations.filter(x => x.key !== "outcomes") })}><Copy text={item.label} /></button>)}</div></fieldset>
     <TextInput id="campaign-location" label="באיזה אזור או מדינה תרצו לפרסם?" placeholder="למשל: חיפה והסביבה, כל ישראל או ארצות הברית" value={props.flow.draft.city ?? ""} onChange={city => props.setDraft({ city })} maxLength={80} />
     {values.map((value, i) => <fieldset key={value.key} className="space-y-3 border-t border-[var(--rule)] pt-5"><legend className={form.label}><Copy text={i === 0 ? baselineLabel : "כמה תרצו להשקיע בפרסום בחודש?"} /></legend>
-      <div className="flex flex-wrap gap-2">{[{ key: "unknown", label: "לא יודעים כרגע" }, { key: "exact", label: "יש לי מספר" }, { key: "range", label: "יש לי טווח" }].map(option => <button key={option.key} type="button" className={form.chip} aria-pressed={value.status === option.key} onClick={() => change(i, { ...value, status: option.key as Observation["status"], lower: null, upper: null })}><Copy text={option.label} /></button>)}</div>
-      {value.status !== "unknown" ? <div className="grid gap-3 sm:grid-cols-2"><TextInput id={`metric-${i}-lower`} label={t(value.status === "range" ? "המספר הנמוך בטווח" : value.unit === "ILS" ? "סכום בשקלים" : "מספר")} value={value.lower == null ? "" : String(value.lower)} onChange={text => change(i, { ...value, lower: text.trim() ? Number(text) : null })} inputMode={value.unit === "count" ? "numeric" : "decimal"} dir="ltr" />{value.status === "range" ? <TextInput id={`metric-${i}-upper`} label={t("המספר הגבוה בטווח")} value={value.upper == null ? "" : String(value.upper)} onChange={text => change(i, { ...value, upper: text.trim() ? Number(text) : null })} inputMode={value.unit === "count" ? "numeric" : "decimal"} dir="ltr" /> : null}</div> : null}
+      <div className="flex flex-wrap gap-2">{[{ key: "unknown", label: "לא יודעים כרגע" }, { key: "exact", label: "יש לי מספר" }, { key: "range", label: "יש לי טווח" }].map(option => <button key={option.key} type="button" className={form.chip} aria-pressed={value.status === option.key} onClick={() => { clearMeasurementErrors(i); change(i, { ...value, status: option.key as Observation["status"], lower: null, upper: null }); }}><Copy text={option.label} /></button>)}</div>
+      {value.status !== "unknown" ? <div className="grid gap-3 sm:grid-cols-2"><TextInput id={`metric-${i}-lower`} label={t(value.status === "range" ? "המספר הנמוך בטווח" : value.unit === "ILS" ? "סכום בשקלים" : "מספר")} value={Object.hasOwn(rawInputs, inputKey(value, "lower")) ? rawInputs[inputKey(value, "lower")] : value.lower == null ? "" : String(value.lower)} onChange={text => setMeasurement(i, "lower", text)} note={fieldErrors[inputKey(value, "lower")] ? <p role="alert" className={form.error}><Copy text={fieldErrors[inputKey(value, "lower")]} /></p> : undefined} inputMode={value.unit === "count" ? "numeric" : "decimal"} dir="ltr" />{value.status === "range" ? <TextInput id={`metric-${i}-upper`} label={t("המספר הגבוה בטווח")} value={Object.hasOwn(rawInputs, inputKey(value, "upper")) ? rawInputs[inputKey(value, "upper")] : value.upper == null ? "" : String(value.upper)} onChange={text => setMeasurement(i, "upper", text)} note={fieldErrors[inputKey(value, "upper")] ? <p role="alert" className={form.error}><Copy text={fieldErrors[inputKey(value, "upper")]} /></p> : undefined} inputMode={value.unit === "count" ? "numeric" : "decimal"} dir="ltr" /> : null}</div> : null}
     </fieldset>)}
-    {error ? <p role="alert" className={form.error}>{error}</p> : null}
   </StepShell>;
 }

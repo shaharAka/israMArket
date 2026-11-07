@@ -8,6 +8,7 @@ import { AppShell, PageHeader } from "@/components/AppShell";
 import { SetupNotice } from "@/components/account/SetupNotice";
 import { BrandStyle } from "@/components/brand/BrandStyle";
 import { BusinessLogo } from "@/components/brand/BusinessLogo";
+import { LogoManager } from "@/components/brand/LogoManager";
 import { SwatchFan } from "@/components/brand/SwatchFan";
 import { UIAction } from "@/components/design/Controls";
 import { endpoints, type BrandLanguage, type Business } from "@/lib/api";
@@ -66,6 +67,13 @@ export default function BrandPage() {
       {/* The identity and its colours are one object: one card, a hairline between them. */}
       <div className={styles.card}>
         <div className={styles.identity}><BusinessLogo src={draft.logo_url} name={draft.business_name || business.name} color={draft.palette[0]?.hex} className={styles.logo} /><div><h2>{draft.business_name || business.name}</h2><p>{draft.logo_url ? t("הלוגו של העסק") : t("עדיין אין לוגו שמור לעסק")}</p></div></div>
+        <LogoManager key={draft.logo_url || ""} value={draft.logo_url || ""} onSaved={(logo_url, updatedBusiness) => {
+          setSaved(current => current ? { ...current, logo_url } : current);
+          setDraft(current => current ? { ...current, logo_url } : current);
+          setBusiness(updatedBusiness);
+          window.dispatchEvent(new Event("isramarket-brand-change"));
+          setNote(t("הלוגו נשמר ויופיע בפוסטים הבאים."));
+        }} />
         <section className={styles.colors} aria-labelledby="brand-colors"><div className={styles.heading}><h2 id="brand-colors"><Copy text="הצבעים שלכם" /></h2><SwatchFan colors={draft.palette.map(item => item.hex)} className={styles.fan} /></div><p className={styles.note}><Copy text="לחצו על צבע כדי לערוך. אלה צבעי העסק והפוסטים שלו." /></p>
           <div className={styles.palette}>{draft.palette.map((item,i) => <label key={`${item.role}-${i}`}><input type="color" aria-label={t("לערוך {arg_0}", { arg_0: roles[item.role] })} disabled={busy} value={safeHex(item.hex)} onChange={e => edit({ palette:draft.palette.map((swatch,j) => j===i ? {...swatch,hex:e.target.value} : swatch) })} /><strong>{item.name || roles[item.role]}</strong><span>{roles[item.role]}</span></label>)}</div>
           {!draft.palette.length && <UIAction variant="secondary" onClick={() => edit({palette:[{hex:"#ffffff",role:"primary",name:t("צבע ראשי")}]})}><Copy text="לבחור צבע לעסק" /></UIAction>}

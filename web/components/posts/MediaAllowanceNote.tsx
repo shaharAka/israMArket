@@ -25,7 +25,7 @@ export function MediaAllowanceNote({ refreshKey }: { refreshKey: string }) {
   const images = allowance.images;
   const reset = allowance.resets_at ? new Date(allowance.resets_at).toLocaleDateString(locale, { day: "numeric", month: "short", timeZone: "Asia/Jerusalem" }) : "";
   return <aside className="mb-4 border-b border-[var(--rule)] pb-3 text-[13px] leading-6 text-[var(--ink-soft)]" aria-live="polite">
-    <p className="font-medium text-[var(--ink)]">{t("אפשר ליצור עוד {arg_0} תמונות מתוך מכסה של {arg_1}", { arg_0: images.remaining, arg_1: images.included })}</p>
+    <p className="font-medium text-[var(--ink)]">{images.generation_available ? t("אפשר ליצור עוד {arg_0} תמונות מתוך מכסה של {arg_1}", { arg_0: images.remaining, arg_1: images.included }) : t(images.remaining === 0 ? "מכסת התמונות נוצלה" : "יצירת תמונות אינה זמינה כרגע")}</p>
     {images.generation_available ? <p>{t("כל יצירה או שינוי של תמונה בעזרת AI נספרים במכסה.")}</p>
       : <Link href="/assets" className="inline-flex min-h-11 items-center text-[var(--primary)]">{t("לבחור תמונה שכבר יש לכם")}</Link>}
     {reset ? <p>{t("המכסה מתחדשת ב־{arg_0}", { arg_0: reset })}</p> : null}

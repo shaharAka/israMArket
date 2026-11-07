@@ -42,7 +42,9 @@ from app.services.whatsapp import post_cta_is_whatsapp, post_key_for, uid_post_s
 log = logging.getLogger(__name__)
 
 MIX_TYPES = MIX_TYPE_KEYS
-CHANNELS = POST_CHANNELS
+# TikTok and LinkedIn are owner-selected manual export destinations. They remain outside
+# POST_CHANNELS so a generated marketing plan cannot claim to plan those channels.
+CHANNELS = (*POST_CHANNELS, "tiktok", "linkedin")
 LIFECYCLES = ("needs_owner", "ready", "approved", "published", "measured")
 METRICS = ("whatsapp_clicks", "site_visits", "saves", "reach")
 METRIC_LABEL_HE = {
@@ -53,7 +55,7 @@ METRIC_LABEL_HE = {
 }
 # The key in `results` that holds each measure's number.
 RESULT_KEY = {"whatsapp_clicks": "whatsapp_clicks", "site_visits": "visits", "saves": "saves", "reach": "reach"}
-CHANNEL_HE = {"instagram": "אינסטגרם", "facebook": "פייסבוק", "whatsapp": "וואטסאפ"}
+CHANNEL_HE = {"instagram": "אינסטגרם", "facebook": "פייסבוק", "whatsapp": "וואטסאפ", "tiktok": "טיקטוק", "linkedin": "לינקדאין"}
 FORMAT_HE = {"reel": "ריל", "carousel": "קרוסלה", "image": "תמונה אחת", "story": "סטורי"}
 COMPARE_LABEL_HE = "בפוסט דומה"
 INFORMED_PREFIX_HE = "עודכן לפי מה שהצליח אצלכם: "
@@ -246,7 +248,7 @@ def plan_channels(core: dict | None, week) -> list[str]:
     networks = []
     for item in seed.get("channels") or []:
         network = str((item or {}).get("network") or (item or {}).get("key") or "").lower()
-        if network in CHANNELS and network not in networks:
+        if network in POST_CHANNELS and network not in networks:
             networks.append(network)
     return networks
 
@@ -347,7 +349,9 @@ def owner_needs(post: dict) -> list[dict]:
     if _is_approved(post) or _is_published(post):
         return []
     needs: list[dict] = []
-    if post_needs_photo(post):
+    if post.get("primary_outlet") == "tiktok" and not post.get("video_url"):
+        needs.append({"kind": "photo", "text": "סרטון לפרסום בטיקטוק"})
+    elif post_needs_photo(post):
         has_image = bool(_clean(post.get("video_url") or post.get("image_url"), 800))
         own = has_image and str(post.get("video_source") or post.get("image_source") or "") in OWNER_PHOTO_SOURCES
         chose_ai = has_image and (str(post.get("image_preference") or "") == "ai" or post.get("video_source") == "generated")
@@ -839,7 +843,7 @@ def finish_written(items: list[dict], business: dict, core: dict | None) -> list
         channel = str(item.get("primary_outlet") or "").lower()
         captions = item.get("outlet_captions") if isinstance(item.get("outlet_captions"), dict) else {}
         # A post the owner chose at /start keeps the channel it was shown with.
-        if allowed and channel not in allowed and not item.get("chosen_at_signup"):
+        if allowed and channel not in allowed and not item.get("chosen_at_signup") and item.get("creation_source") != "quick":
             channel = allowed[0]
             # The writer also wrote a copy for the plan's channel; that is this post now.
             if _clean(captions.get(channel), 2200):

@@ -12,20 +12,17 @@ Where each number comes from, and nothing else:
 - The owner's own answers (orders, average sale, inquiries, close rate, capacity, how
   much is left from a sale). A range chip is computed at its middle (an open top range
   at its floor, as the budget does) and the text says "כ-".
-- The published Israeli cost ranges already in the product: Meta in `cost_model`
-  (Kan Media: CPM, CPC, cost per purchase for Israeli e-commerce) and Google in
-  `google_cost` (Rulers: CPC by industry, conversion rate by sector, minimum budgets,
-  learning thresholds, fees). Their sources travel with every figure.
+- The published Israeli Meta cost ranges in `cost_model` (Kan Media: CPM, CPC, cost
+  per purchase for Israeli e-commerce). Google Ads costs are not inferred from agency
+  averages: the owner can review a forecast in Google's Keyword Planner.
 - Planning assumptions where no published number exists (how much a bundle lifts the
   average sale, how many more inquiries a faster reply closes). Each one is conservative,
   labelled "הנחת עבודה" in the text, and never presented as a benchmark.
 
 Which market figure applies: a shop that sells online is priced on Meta (the source is
-Israeli e-commerce on Meta, and its cost per purchase is published); a service business
-or a shop that wants people in the store is priced on Google search (the source publishes
-a click price per industry and a conversion rate per sector). When the industry is not in
-the table the general click price is used and the text says so; when the sector has no
-published conversion rate there is no results estimate at all, only clicks.
+Israeli e-commerce on Meta, and its cost per purchase is published). For Google Ads, no
+industry-based prices or performance forecasts are supplied because the app has no
+Google Ads campaign or account data.
 
 The budget is the money for the ads themselves ("זה הסכום לפרסום עצמו", as the budget
 screen says): management and setup are not taken out of it, they are named separately.
@@ -403,7 +400,7 @@ class Paid:
     channel_he: str
     channel_short: str                        # "באינסטגרם ובפייסבוק" / "בגוגל", for a math line
     budget: int
-    cpc: tuple[float, float]
+    cpc: tuple[float, float] | None
     clicks: tuple[int, int] | None
     impressions: tuple[int, int] | None
     results: tuple[int, int] | None           # purchases (Meta) or inquiries (Google)
@@ -451,54 +448,17 @@ def paid_estimate(draft, budget: int) -> Paid:
             source=META_SOURCE,
         )
 
-    presence = getattr(draft, "presence_type", None) or ("online_only" if draft.grow_where == "online" else None)
-    plan = google_cost.plan_from_budget(budget, draft.business_type, draft.offerings, draft.model, presence_type=presence)
-    matched = plan.industry_key != google_cost.UNMATCHED_KEY
-    warnings = []
-    if not matched:
-        warnings.append(
-            f"לא מצאנו את התחום שלכם בטבלה של המקור, אז השתמשנו במחיר הכללי שלו: "
-            f"{_g(plan.cpc_range[0])}-{_g(plan.cpc_range[1])} ₪ לקליק."
-        )
-    if plan.conversion_rate_range is None:
-        warnings.append("לתחום הזה לא פורסם כמה מהקליקים הופכים לפניות, אז אין הערכה של כמה פניות יגיעו.")
-    low_min = plan.minimum_viable_budget
-    if budget and low_min:
-        if budget < low_min[0]:
-            warnings.append(
-                f"התקציב נמוך מהמינימום שפורסם ל{plan.sector_label} ({low_min[0]:,}-{low_min[1]:,} ₪). "
-                "מתחת לזה גוגל לומד לאט, והתוצאות בדרך כלל חלשות."
-            )
-        elif budget < low_min[1]:
-            warnings.append(
-                f"התקציב בחלק התחתון של המינימום שפורסם ל{plan.sector_label} ({low_min[0]:,}-{low_min[1]:,} ₪). "
-                "אין הרבה מקום לטעויות."
-            )
-    if budget and plan.expected_conversions and plan.expected_conversions[1] < google_cost.LEARNING_CONVERSIONS_PER_MONTH[0]:
-        low, high = google_cost.LEARNING_CONVERSIONS_PER_MONTH
-        warnings.append(f"גוגל צריך {low}-{high} פניות בחודש כדי ללמוד. החודש הראשון הוא איסוף נתונים.")
-    lines = [
-        f"מחיר לקליק בגוגל בתחום '{plan.industry_label}': {_g(plan.cpc_range[0])}-{_g(plan.cpc_range[1])} ₪ (רולרס)."
-        if matched else
-        f"מחיר לקליק בגוגל כשהתחום לא בטבלה: {_g(plan.cpc_range[0])}-{_g(plan.cpc_range[1])} ₪, הרצועה האמצעית של המקור (רולרס)."
-    ]
-    if plan.conversion_rate_range:
-        low, high = plan.conversion_rate_range
-        lines.append(f"ב{plan.sector_label}, {_g(low * 100)}%-{_g(high * 100)}% מהקליקים הופכים לפניות (רולרס).")
-    lines.append(
-        f"דמי ניהול, אם סוכנות מנהלת: {google_cost.MANAGEMENT_PERCENT[0] * 100:.0f}%-{google_cost.MANAGEMENT_PERCENT[1] * 100:.0f}% "
-        f"מהתקציב או {google_cost.MANAGEMENT_FLAT_ILS[0]:,}-{google_cost.MANAGEMENT_FLAT_ILS[1]:,} ₪ בחודש, והקמה "
-        f"{google_cost.SETUP_FEE_ILS[0]:,}-{google_cost.SETUP_FEE_ILS[1]:,} ₪. הם לא כלולים בתקציב (רולרס)."
-    )
-    cost = plan.cost_per_conversion if plan.cost_per_conversion and all(plan.cost_per_conversion) else None
     return Paid(
         channel="google", channel_he="פרסום בחיפוש בגוגל", channel_short="בחיפוש בגוגל",
-        budget=budget, cpc=plan.cpc_range,
-        clicks=plan.expected_clicks if budget else None, impressions=None,
-        results=plan.expected_conversions if budget and plan.expected_conversions else None,
-        cost_per_result=cost, rate=plan.conversion_rate_range, result_he="פניות",
-        industry_label=plan.industry_label, industry_matched=matched, sector_label=plan.sector_label,
-        warnings=warnings, lines=lines, source=GOOGLE_SOURCE,
+        budget=budget, cpc=None, clicks=None, impressions=None, results=None,
+        cost_per_result=None, rate=None, result_he="פניות", industry_label="לא חושב",
+        industry_matched=False, sector_label=None, warnings=[],
+        lines=[
+            "אין לנו נתוני חשבון Google Ads או תחזית שהוגדרה למילות המפתח של העסק. לא ננחש מחיר, קליקים או פניות.",
+            "כדי לבדוק תחזית, השתמשו במתכנן מילות המפתח של Google Ads עם המילים והגדרות הקמפיין שלכם. התקציב נשאר לבחירתכם.",
+            "דמי ניהול והקמה תלויים בהצעה של הספק שבחרתם, ולכן לא הוספנו אותם.",
+        ],
+        source=GOOGLE_SOURCE,
     )
 
 
@@ -818,7 +778,7 @@ def suggest(draft, today: date | None = None) -> dict:
     if line:
         math_he.append(line)
 
-    if lever in {"new_customers", "fill_quiet"} and budget and paid.clicks:
+    if lever in {"new_customers", "fill_quiet"} and budget and paid.clicks and paid.cpc:
         uses_paid = True
         sources.append(paid.source)
         clicks = f"{_rng(*paid.clicks)} קליקים ({_g(paid.cpc[0])}-{_g(paid.cpc[1])} ₪ לקליק)"

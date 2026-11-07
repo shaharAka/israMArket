@@ -190,7 +190,9 @@ class QuarterContractTest(QuarterTestCase):
         self.assertEqual(budget["monthly_ils"], 0)
         self.assertTrue(all(month["lines"] == [] for month in budget["months"]))
         self.assertTrue(budget["unlock_he"])
-        self.assertEqual(len(budget["sources_he"]), 2)
+        self.assertTrue(budget["sources_he"])
+        self.assertFalse(any("rulers.co.il" in item.get("url", "") for item in budget["sources"]))
+        self.assertTrue(any("support.google.com/google-ads/" in item.get("url", "") for item in budget["sources"]))
         kinds = {c["key"]: (c["kind"], c["starts_month"]) for c in body["channels"]}
         self.assertEqual(kinds, {"instagram": ("existing", 1), "gbp": ("new", 2)})
         status = {i["key"]: i["status"] for i in body["integrations"]}

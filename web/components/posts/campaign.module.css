@@ -26,7 +26,9 @@
 @media(max-width:580px) { .weekLayout .cards { grid-template-columns: 1fr; } .weekBrief dl { grid-template-columns: 1fr; } }
 .card { border-radius: 16px; box-shadow: var(--shadow-card); background: var(--paper); min-width: 0; overflow: hidden; }
 .card[data-active="true"] { outline: 2px solid var(--primary); outline-offset: 3px; }
-.select { display: block; width: 100%; text-align: start; cursor: pointer; }
+.card[data-focus="true"] { outline: 2px solid var(--primary); outline-offset: 3px; }
+.select { display: block; width: 100%; text-align: start; cursor: pointer; color: inherit; text-decoration: none; }
+.select > .cardBody { padding-bottom: 16px; }
 .select:focus-visible, .choices button:focus-visible { outline: 3px solid var(--primary); outline-offset: -3px; }
 .thumbnail { display: block; background: var(--soft); padding: 16px 24px; max-height: 220px; overflow: hidden; }
 .thumbnail > div { max-width: 148px; margin-inline: auto; }
@@ -34,6 +36,21 @@
 .select:disabled { cursor: default; }
 .selectionBar { position: sticky; bottom: 16px; z-index: 5; display: flex; justify-content: space-between; align-items: center; gap: 24px; padding: 12px 16px; border-radius: 14px; background: var(--paper); box-shadow: var(--shadow-card); font-size: 14px; margin-bottom: 24px; }
 .selectionBar .primary { width: auto; }
+.selectionActions { display: flex; align-items: center; gap: 12px; }
+.selectionCancel { min-height: 44px; padding-inline: 8px; color: var(--primary); font-size: 14px; }
+.timelineTools { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-block: 4px 12px; }
+.timelineTools p { color: var(--ink-soft); font-size: 14px; }
+.nextTask { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 4px 0 24px; margin-bottom: 24px; border-bottom: 1px solid var(--rule); }
+.nextTask h2 { font-size: 20px; font-weight: 500; line-height: 1.5; }
+.nextTask p { margin-top: 6px; color: var(--ink-soft); font-size: 14px; line-height: 1.6; }
+.nextTask .textAction { flex-shrink: 0; }
+@media(max-width:580px) {
+  .selectionBar { bottom: calc(80px + env(safe-area-inset-bottom)); align-items: start; flex-direction: column; gap: 8px; }
+  .selectionActions { width: 100%; flex-wrap: wrap; justify-content: space-between; }
+  .selectionActions .primary { flex: 1 1 auto; }
+  .nextTask { flex-direction: column; align-items: stretch; gap: 10px; padding-bottom: 20px; }
+  .timelineTools { align-items: start; }
+}
 .cardBody { display: flex; flex-direction: column; gap: 6px; padding: 16px 16px 0; }
 .cardBody strong { font-size: 16px; font-weight: 600; }
 .cardBody > span { font-size: 13px; color: var(--ink-soft); line-height: 1.6; }
@@ -145,6 +162,7 @@
 .studio {background:var(--paper);padding:28px;border:0;border-radius:16px;box-shadow:var(--shadow-card);margin-bottom:28px;scroll-margin-top:80px}
 .studioHeading {grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;gap:16px}
 .studioHeading h2 {font-size:19px;font-weight:600}
+.selectedCount {margin-top:3px;color:var(--ink-muted);font-size:13px}
 .studioHeading a {font-size:14px;color:var(--primary);min-height:44px;display:inline-flex;align-items:center}
 .direction {background:var(--sage-soft);border-radius:12px;padding:16px;margin-bottom:20px}
 .direction h3 {font-size:14px;font-weight:600;color:var(--sage-dark);margin-bottom:5px}

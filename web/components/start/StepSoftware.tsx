@@ -15,7 +15,7 @@ export function StepSoftware(props: StepProps) {
   const value = flow.draft.software ?? EMPTY;
   const [error, setError] = useState("");
   const set = (patch: Partial<SoftwareContext>) => { setError(""); setDraft({ software: { ...value, ...patch } }); };
-  return <StepShell {...props} title="מה המוצר פותר, ולמי?" primary="מה מיוחד במוצר שלכם" why="נבנה תוכנית לפי שלב המוצר והדרך שבה לקוחות מתחילים להשתמש בו." onPrimary={() => {
+  return <StepShell {...props} title="מה המוצר פותר, ולמי?" primary="להמשיך" why="נבנה תוכנית לפי שלב המוצר והדרך שבה לקוחות מתחילים להשתמש בו." onPrimary={() => {
     if (value.problem.trim().length < 3 || value.buyer.trim().length < 3) { setError("ספרו בקצרה איזו בעיה אתם פותרים ולמי. את השאר אפשר להשלים בהמשך."); return; }
     next();
   }}>

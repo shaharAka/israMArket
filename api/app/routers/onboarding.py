@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 
 from app.db import get_db
 from app.deps import get_current_user
-from app.models import Business, Strategy, User
+from app.models import Asset, Business, Strategy, User
 from app.schemas import BrandLanguageIn, OnboardingIn, PaletteIn, WebsiteScanIn
 from app.services import connected_posts, design_dna, generation_jobs, image_jobs, month_posts
 from app.services.audiences import attach_audiences
@@ -33,7 +33,7 @@ from app.services.onboarding_draft import (
 from app.services.preview import cached_scan
 from app.services.quarter_plan import QuarterPlanIn
 from app.services.strategy_reveal import SamplePostIn, StrategyIn
-from app.services import content_language, quick_posts
+from app.services import brand_logo, content_language, quick_posts
 from app.services.jsonutil import dumps, loads
 from app.services.scraper import fetch_photo_candidates, image_alt_for
 from app.routers.strategy import serialize_strategy, upsert_generated_strategy
@@ -344,6 +344,8 @@ def save_brand_language(
     # What the form does not carry stays as the scan found it: the logo's address (unless
     # the owner gave one), the social links and the card photo.
     previous = stored.get("brand_language") or {}
+    if (body.logo_url or "").startswith("/backend/media/") and body.logo_url != previous.get("logo_url"):
+        raise HTTPException(status_code=422, detail="לבחירת לוגו חדש, בחרו תמונה מהקבצים שלכם.")
     if brand.get("logo_url") is None:
         brand["logo_url"] = previous.get("logo_url") or ""
     for key in ("social_links", "card_photo_url", "source"):
@@ -360,6 +362,72 @@ def save_brand_language(
     if background_tasks is not None:
         background_tasks.add_task(design_dna.refresh_after_scan, db.get_bind(), business.id)
     return {"business": _business_payload(business), "scan": stored}
+
+
+class LogoSelectionIn(BaseModel):
+    asset_id: int | None = Field(..., gt=0, strict=True)
+
+
+@router.post("/logo")
+def save_brand_logo(body: LogoSelectionIn, user: User = Depends(get_current_user), db: Session = Depends(get_db)) -> dict:
+    """An owned raster asset, normalized locally. No URL fetch, model call or post rewrite."""
+    from app.services.assets import business_folder
+    from app.services.colors import image_size
+
+    business = db.query(Business).filter(Business.user_id == user.id).order_by(Business.id.desc()).first()
+    if not business:
+        raise HTTPException(status_code=404, detail="עוד לא הגדרתם עסק")
+    record = None
+    public = ""
+    if body.asset_id is not None:
+        asset = db.query(Asset).filter(Asset.id == body.asset_id, Asset.business_id == business.id).first()
+        if not asset:
+            raise HTTPException(status_code=404, detail="לא מצאנו את הקובץ הזה")
+        if asset.kind != "image" or asset.mime not in {"image/png", "image/jpeg", "image/webp"}:
+            raise HTTPException(status_code=422, detail="אפשר לבחור לוגו מסוג PNG, JPG או WebP.")
+        from pathlib import Path
+        if Path(asset.filename).name != asset.filename:
+            raise HTTPException(status_code=404, detail="לא מצאנו את הקובץ הזה")
+        try:
+            with (business_folder(business.id) / asset.filename).open("rb") as stream:
+                content = stream.read(5 * 1024 * 1024 + 1)
+        except OSError:
+            raise HTTPException(status_code=404, detail="לא מצאנו את הקובץ הזה") from None
+        if len(content) > 5 * 1024 * 1024:
+            raise HTTPException(status_code=422, detail="הלוגו צריך להיות קטן מ־5MB.")
+        normalized = brand_logo.normalise(content, asset.mime)
+        if normalized is None:
+            raise HTTPException(status_code=422, detail="לא הצלחנו לקרוא את התמונה. בחרו קובץ לוגו אחר.")
+        png, reading = normalized
+        filename, public = brand_logo.store_png(business.id, png)
+        width, height = image_size(png) or (0, 0)
+        record = {"source_url": public, "status": "ok", "public_url": public, "filename": filename,
+                  "width": width, "height": height, "checked_at": datetime.utcnow().isoformat(), **reading}
+    stored = loads(business.scraped_profile_json, {}) or {}
+    previous = stored.get("brand_language") or {
+        "business_name": business.name, "palette": [], "typography": {"primary": "", "mood": ""},
+        "visual_style": "", "photography": "", "voice": "", "voice_examples": [], "do_say": [],
+        "dont_say": [], "messaging": [], "offers_seen": [], "audience": "", "logo_description": "",
+    }
+    previous["logo_url"] = public
+    stored["brand_language"] = previous
+    business.scraped_profile_json = dumps(stored)
+    business.brand_logo_json = dumps(record) if record else ""
+    # Change only the signature, without paying to redesign the owner's brand.
+    dna = design_dna.load_dna(business)
+    if dna:
+        signature = dict(dna.get("signature") or {})
+        signature.update({"use_logo": bool(record), "logo_url": public,
+                          "logo_on": (record or {}).get("logo_on", "any"), "logo_colors": [item["hex"] for item in (record or {}).get("colors", []) if isinstance(item, dict) and isinstance(item.get("hex"), str)]})
+        if record and signature.get("kind") not in {"corner_mark", "footer_band"}:
+            signature["kind"] = "corner_mark"
+        dna["signature"] = signature
+        design_dna.store_dna(business, dna)
+    business.updated_at = datetime.utcnow()
+    db.commit()
+    db.refresh(business)
+    # Old files remain intact: previously exported/approved material is never replaced.
+    return {"business": _business_payload(business)}
 
 
 @router.post("/palette")

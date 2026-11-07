@@ -628,20 +628,20 @@ class RunTest(DbCase):
         def insight(title, origin, kind="estimate"):
             return {"title": title, "text": title, "plan_change": title, "confidence": "weak",
                     "evidence": [{"origin": origin, "kind": kind}], "source_labels_he": ["חיפושים בגוגל"]}
-        agency_google = insight("old agency cpc", research.google_cost.SOURCE_URL)
+        agency_google = insight("old agency cpc", research.google_cost.LEGACY_AGENCY_SOURCE_URL)
         agency_meta = insight("old agency roas", research.cost_model.SOURCE_URL)
         # A mixed insight retains a measured citation but still contains an agency
         # estimate. Removing just the citation would keep the unsupported claim.
         mixed = insight("mixed derived forecast", "Google Search Console", "fact")
-        mixed["evidence"].append({"origin": research.google_cost.SOURCE_URL, "kind": "estimate"})
+        mixed["evidence"].append({"origin": research.google_cost.LEGACY_AGENCY_SOURCE_URL, "kind": "estimate"})
         measured = insight("measured clicks", "Google Search Console", "fact")
         saved = [agency_google, agency_meta, mixed, measured]
         self.db.add(ResearchRun(business_id=self.business.id, status="done", created_at=datetime.utcnow(),
                                 insights_json=dumps({"items": saved})))
         self.db.commit()
-        # Legacy businesses retain their existing behavior.
+        # Old Google agency estimates are removed for legacy and new businesses.
         legacy = research.research_prompt_block(self.business, self.db)
-        self.assertIn("old agency cpc", legacy)
+        self.assertNotIn("old agency cpc", legacy)
         self.assertIn("old agency roas", legacy)
         self.business.scraped_profile_json = dumps({"owner_context": {"research_journey": {"version": 1}}})
         self.db.commit()
@@ -662,7 +662,7 @@ class RunTest(DbCase):
         self.business.scraped_profile_json = dumps({"owner_context": {"research_journey": {}}})
         self.db.add(ResearchRun(business_id=self.business.id, status="done", created_at=datetime.utcnow(),
                                 insights_json=dumps({"items": [{"title": "unsupported", "text": "forecast",
-                                    "evidence": [{"origin": research.google_cost.SOURCE_URL}]}]})))
+                                    "evidence": [{"origin": research.google_cost.LEGACY_AGENCY_SOURCE_URL}]}]})))
         self.db.commit()
         self.assertEqual(research.research_prompt_block(self.business, self.db), "")
 

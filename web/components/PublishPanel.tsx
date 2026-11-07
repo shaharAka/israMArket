@@ -28,6 +28,8 @@ import ui from "@/components/posts/chrome.module.css";
 const COMPOSER_HREF: Record<Exclude<PostChannel, "whatsapp">, string> = {
   instagram: "https://www.instagram.com/",
   facebook: "https://www.facebook.com/",
+  tiktok: "https://www.tiktok.com/tiktokstudio/upload",
+  linkedin: "https://www.linkedin.com/feed/",
 };
 
 export type PublishPanelProps = {
@@ -113,6 +115,7 @@ export function PublishPanel({
   // permitted" from the stored Meta grant — never from a flag in the app.
   useEffect(() => {
     let active = true;
+    if (channel !== "instagram" && channel !== "facebook") return;
     endpoints
       .publishCapability()
       .then((result) => {
@@ -128,7 +131,7 @@ export function PublishPanel({
     return () => {
       active = false;
     };
-  }, []);
+  }, [channel]);
 
   const [waLink, setWaLink] = useState<WhatsappPostLink | null>(null);
   const [linkLoading, setLinkLoading] = useState(true);
@@ -247,7 +250,7 @@ export function PublishPanel({
   const linkField = channel === "whatsapp" ? null : (
     <div className={out ? "" : "mt-4"}>
       <label htmlFor="post-published-url" className={`${ui.help} block`}>
-        {published ? t("הקישור לפוסט") : t("להדביק קישור לפוסט, כדי לראות גם כמה ראו")}
+        {published ? t("הקישור לפוסט") : t(channel === "instagram" ? "להדביק קישור לפוסט, כדי לראות גם כמה ראו" : "הקישור לפוסט שפרסמתם")}
       </label>
       <div className="mt-1.5 flex flex-col gap-2 sm:flex-row">
         <input
@@ -313,7 +316,7 @@ export function PublishPanel({
         <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
           <button type="button" disabled={exportDisabled} onClick={onExportCard} className={ui.button}>
             <IconImage />
-            {exporting ? t("מורידים את הכרטיס…") : t("להוריד את הכרטיס")}
+            {post.video_url ? (exporting ? t("מורידים את הסרטון…") : t("להוריד את הסרטון")) : exporting ? t("מורידים את הכרטיס…") : t("להוריד את הכרטיס")}
           </button>
           {channel === "whatsapp" && (!needsWhatsapp || messageLink) ? (
             <a href={whatsappShareUrl(whatsappText(caption))} target="_blank" rel="noopener noreferrer" className={ui.button}>
@@ -334,7 +337,7 @@ export function PublishPanel({
         <p className={`${ui.help} mt-3`}>
           {channel === "whatsapp"
             ? t("וואטסאפ ייפתח עם הכיתוב והקישור, מוכנים לשליחה.")
-            : t("ב{arg_0} אי אפשר למלא כיתוב מבחוץ: מורידים את הכרטיס, מעתיקים את הכיתוב ומדביקים באפליקציה.", { arg_0: channelLabel })}
+            : t("הורידו את התמונה או הסרטון, העתיקו את הכיתוב והעלו אותם ב{arg_0}.", { arg_0: channelLabel })}
         </p>
       </section>
 
@@ -457,7 +460,7 @@ export function PublishPanel({
       ) : null}
 
       {/* ---- why there is no publish button ---- */}
-      <section className="pt-5">
+      {channel === "instagram" || channel === "facebook" ? <section className="pt-5">
         <h3 className="text-sm font-semibold leading-6 text-[var(--ink-soft)]">
           {capability?.auto_publish
             ? t("יש הרשאה לפרסום אוטומטי")
@@ -505,7 +508,7 @@ export function PublishPanel({
             ) : null}
           </details>
         )}
-      </section>
+      </section> : <p className={`${ui.help} pt-5`}>{t("החומרים מוכנים לפרסום ידני. העלאת הפוסט מתבצעת בחשבון שלכם.")}</p>}
     </div>
   );
 }

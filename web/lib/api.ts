@@ -1,4 +1,5 @@
 import { consumeSignupEvent } from "./siteAnalytics";
+import { clearCaptionDrafts } from "./postCaptionDraft";
 import { demoCampaign } from "./campaignDemo";
 import type { ContentLanguage } from "./content-language";
 import type { OnboardingDraft } from "./draft";
@@ -1854,53 +1855,21 @@ const DEMO_GOOGLE_PROMOTION: GooglePromotionPayload = {
     matched_keywords: ["מאפייה", "קפה", "בית קפה"],
     sector_key: "local_services",
     sector_label: "שירותים מקומיים",
-    cpc_range: [3.5, 5.5],
-    expected_clicks: [818, 1285],
-    conversion_rate_range: [0.03, 0.05],
-    expected_conversions: [24, 64],
-    cost_per_conversion: [70, 183],
-    minimum_viable_budget: [5000, 8000],
-    management_fee: {
-      percent_range: [0.15, 0.2],
-      percent_label: "15%-20% מתקציב המדיה",
-      percent_amount_ils: [675, 900],
-      flat_range_ils: [2000, 8000],
-      note: "המקור מביא שתי דרכים לתמחר דמי ניהול: אחוז מתקציב המדיה, או סכום קבוע בחודש. הצגנו את שתיהן, ולא בחרנו בשבילכם.",
-    },
-    setup_fee: [1500, 4000],
-    total_monthly_ils: [5175, 12500],
-    first_month_total_ils: [6675, 16500],
-    warnings: [
-      "התקציב החודשי (4,500 ₪) נמוך מהמינימום שפורסם למגזר 'שירותים מקומיים' (5,000-8,000 ₪). מתחת למינימום הזה המקור מתאר מלכודת: אין מספיק נתונים → המערכת של גוגל לא לומדת → התוצאות גרועות → התקציב נשרף מהר → ויש עוד פחות נתונים. עדיף לחכות לתקציב מתאים, או לשים את הסכום הזה במקומות שלא תלויים בלמידה של גוגל: קידום האתר בחיפוש בלי לשלם, פוסטים ורשתות חברתיות.",
-      "מספר הפניות וההזמנות הצפוי (24-64 בחודש) חוצה את סף ה-30 שגוגל צריך כדי ללמוד. בתרחיש הזהיר עדיין אין מספיק נתונים, והקמפיין נשאר בשלב למידה. תכננו את החודש כאיסוף נתונים, לא כחודש שצריך להחזיר את ההוצאה.",
-    ],
-    assumptions: [
-      "מחיר לקליק בתחום 'מזון ומשקאות': 3.5-5.5 ₪ (הרצועה הנמוכה של המקור)",
-      "במגזר 'שירותים מקומיים', 3.0%-5.0% מהקליקים הופכים לפניות. זה השיעור שפורסם למגזר, לא מדידה של העסק שלכם",
-      "גוגל צריך 30-50 פניות או הזמנות בחודש כדי ללמוד ולהשתפר. מתחת לזה הוא לא באמת משתפר",
-      "דמי ניהול: 15%-20% מתקציב המדיה, או 2,000-8,000 ₪ בחודש. הקמה חד-פעמית: 1,500-4,000 ₪",
-      "התקציב שהזנתם הוא תקציב המדיה בלבד, כלומר מה שמשלמים לגוגל על המודעות. דמי הניהול וההקמה מפורטים בנפרד, ולכן העלות האמיתית בחודש גבוהה יותר",
-      "אין לנו גישה לכלי תכנון המילים של גוגל, ואין לנו נפחי חיפוש. מספר הקליקים הוא המקסימום שהתקציב יכול לקנות, לא תחזית של כמה אנשים מחפשים",
-    ],
-    source: "https://www.rulers.co.il/blog/how-much-does-a-successful-google-ads-campaign-really-cost-in-israel/",
-    source_title: "רולרס — כמה באמת עולה קמפיין Google Ads מוצלח בישראל?",
+    cpc_range: null,
+    expected_clicks: null,
+    conversion_rate_range: null,
+    expected_conversions: null,
+    cost_per_conversion: null,
+    minimum_viable_budget: null,
+    management_fee: null,
+    setup_fee: null,
+    total_monthly_ils: null,
+    first_month_total_ils: null,
+    warnings: [], assumptions: [],
+    source: "https://support.google.com/google-ads/answer/7337243",
+    source_title: "Google Ads — Keyword Planner",
     conversion_unit: "פנייה",
-    channel_comparison: {
-      google: {
-        label: "מודעות בגוגל",
-        intent: "מי שמחפש כבר רוצה לקנות: אנשים מחפשים בדיוק את מה שאתם מציעים",
-        downside: "קליק עולה יותר מאשר בפייסבוק ובאינסטגרם",
-        timing: "תוצאות מיד",
-      },
-      meta: {
-        label: "פייסבוק ואינסטגרם",
-        cpc_ils: [1.5, 8.0],
-        intent: "מי שגולל פחות מחפש לקנות: המודעה קוטעת אותו באמצע משהו אחר",
-        upside: "קליק זול יותר, ואפשר לכוון לפי גיל, מקום ותחומי עניין",
-      },
-      recommendation:
-        "המקור ממליץ לשלב: גוגל למי שכבר מחפש לקנות, ופייסבוק ואינסטגרם כדי שיכירו אתכם ולפנות שוב למי שכבר ביקר. לא לשים את כל התקציב במקום אחד.",
-    },
+    channel_comparison: {},
   },
   business_profile: {
     title: "הכרטיס של העסק בגוגל (Google Business Profile)",
@@ -3066,6 +3035,15 @@ async function demoResolve<T>(path: string, options: RequestInit = {}): Promise<
       scan: DEMO_BUSINESS.scraped_profile,
     } as T;
   }
+  if (path === "/onboarding/logo" && method === "POST") {
+    const body = JSON.parse(String(options.body || "{}")) as { asset_id: number | null };
+    const asset = body.asset_id === null ? null : DEMO_ASSETS.find(asset => asset.id === body.asset_id && asset.kind === "image" && ["image/png", "image/jpeg", "image/webp"].includes(asset.mime));
+    if (body.asset_id !== null && !asset) throw new ApiError("לא מצאנו את הקובץ הזה", 404);
+    DEMO_BRAND.logo_url = asset?.url || "";
+    DEMO_BUSINESS.brand_language = DEMO_BRAND;
+    if (DEMO_BUSINESS.brand_dna) DEMO_BUSINESS.brand_dna = { ...DEMO_BUSINESS.brand_dna, signature: { ...DEMO_BUSINESS.brand_dna.signature, use_logo: Boolean(asset), logo_url: asset?.url || "", ...(asset ? { kind: "corner_mark" as const } : {}) } };
+    return { business: DEMO_BUSINESS } as T;
+  }
   if (path === "/onboarding/brand" && method === "POST") {
     const body = JSON.parse(String(options.body || "{}")) as BrandLanguage;
     Object.assign(DEMO_BRAND, body);
@@ -3124,7 +3102,7 @@ async function demoResolve<T>(path: string, options: RequestInit = {}): Promise<
     const index = found?.index ?? POSTS.length;
     if (!found) {
       POSTS.push({ uid: crypto.randomUUID().replaceAll("-", "").slice(0, 10), creation_source: "quick", owner_brief: body.text,
-        week: 0, date_hint: "", format: "image", title: body.text.trim().split("\n")[0].slice(0, 300), caption: body.text,
+        week: 0, date_hint: "", format: body.destination === "tiktok" ? "reel" : "image", title: body.text.trim().split("\n")[0].slice(0, 300), caption: body.text,
         hook: "", cta: "", angle: "", calendar_tie: "", goal_fit: "", content_language: body.content_language,
         primary_outlet: body.destination, channel: body.destination, outlets: [body.destination],
         outlet_captions: { [body.destination]: body.text }, has_overlay: false, approval_status: "review", image_source: "pending" });
@@ -3175,13 +3153,13 @@ async function demoResolve<T>(path: string, options: RequestInit = {}): Promise<
     if (!POSTS[index]) throw new ApiError("הפוסט לא נמצא", 404);
     const asset = DEMO_ASSETS.find((item) => item.id === body.asset_id);
     if (!asset) throw new ApiError("לא מצאנו את התמונה הזו", 404);
-    POSTS[index] = {
-      ...POSTS[index],
-      image_url: asset.url,
-      image_source: "asset",
-      image_asset_id: asset.id,
-      image_source_url: asset.source_url || "",
-      image_action: "asset",
+    if (POSTS[index].primary_outlet === "tiktok" && asset.kind !== "video") throw new ApiError("בחרו סרטון לפרסום בטיקטוק.", 422);
+    POSTS[index] = asset.kind === "video" ? {
+      ...POSTS[index], video_url: asset.url, video_source: "asset", approval_status: "review", approved_at: undefined,
+    } : {
+      ...POSTS[index], video_url: undefined, video_source: undefined,
+      image_url: asset.url, image_source: "asset", image_asset_id: asset.id,
+      image_source_url: asset.source_url || "", image_action: "asset",
       design: demoDesignFor(POSTS[index], asset.url),
     };
     DEMO_STRATEGY.roadmap.posts = POSTS;
@@ -3994,6 +3972,7 @@ export const endpoints = {
   deleteAccount: (confirm: { password?: string; confirm_email?: string }) =>
     api<{ ok: boolean }>("/auth/account", { method: "DELETE", body: JSON.stringify(confirm) }),
   logout: async () => {
+    clearCaptionDrafts();
     exitDemo();
     return api("/auth/logout", { method: "POST" });
   },
@@ -4013,6 +3992,7 @@ export const endpoints = {
       method: "POST",
       body: JSON.stringify({ website_url }),
     }),
+  saveBrandLogo: (asset_id: number | null) => api<{ business: Business }>("/onboarding/logo", { method: "POST", body: JSON.stringify({ asset_id }) }),
   saveBrand: (brand_language: BrandLanguage) =>
     api<{ business: Business; scan: ScanPayload }>("/onboarding/brand", {
       method: "POST",
@@ -4680,7 +4660,7 @@ export type RoadmapPost = {
   video_raw_asset_id?: number;
   video_source?: "asset" | "generated";
   image_url?: string;
-  primary_outlet?: "instagram" | "facebook" | "whatsapp" | "tiktok";
+  primary_outlet?: "instagram" | "facebook" | "whatsapp" | "tiktok" | "linkedin";
   outlets?: string[];
   metrics_to_watch?: string[];
   /** A specific, verifiable number for the card ("100 חלות כל שישי"). Beats vague claims. */
@@ -4696,6 +4676,8 @@ export type RoadmapPost = {
     instagram?: string;
     facebook?: string;
     whatsapp?: string;
+    tiktok?: string;
+    linkedin?: string;
   };
   utm?: {
     utm_source: string;
@@ -4767,7 +4749,7 @@ export type RoadmapPost = {
 };
 
 /** The channels a plan writes a post for. */
-export type PostChannel = "instagram" | "facebook" | "whatsapp";
+export type PostChannel = "instagram" | "facebook" | "whatsapp" | "tiktok" | "linkedin";
 
 export type PostRewriteTone = "direct" | "neighborhood" | "punchy" | "holiday" | "story";
 
@@ -5497,13 +5479,13 @@ export type PromotionManagementFee = {
 export type GooglePromotionPlan = {
   monthly_budget_ils: number;
   industry_key: string;
-  /** The matched Hebrew industry bucket, e.g. "מזון ומשקאות". */
+  /** Business field label; not an advertising price classification. */
   industry_label: string;
   industry_tier: string;
-  /** The words in the business profile that matched the industry — why this bucket. */
+  /** Legacy classification field; not used for pricing. */
   matched_keywords: string[];
   sector_key: string | null;
-  /** The sector whose published conversion rate was used. */
+  /** Legacy sector label; no sector conversion rate is inferred. */
   sector_label: string | null;
   cpc_range: PromotionRange | null;
   expected_clicks: PromotionRange | null;
@@ -5512,7 +5494,7 @@ export type GooglePromotionPlan = {
   expected_conversions: PromotionRange | null;
   cost_per_conversion: PromotionRange | null;
   minimum_viable_budget: PromotionRange | null;
-  management_fee: PromotionManagementFee;
+  management_fee: PromotionManagementFee | null;
   setup_fee: PromotionRange | null;
   /** Media + management for one month. */
   total_monthly_ils: PromotionRange | null;
@@ -5520,7 +5502,7 @@ export type GooglePromotionPlan = {
   first_month_total_ils: PromotionRange | null;
   warnings: string[];
   assumptions: string[];
-  /** Where the market ranges came from. */
+  /** Official planning documentation; not an account forecast. */
   source: string;
   source_title: string;
   /** What a "conversion" means for this business, e.g. "פנייה". */
