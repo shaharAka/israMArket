@@ -21,11 +21,11 @@ import { SourceReadState, sourcePresentation } from "@/components/integrations/S
 import {
   endpoints,
   exitDemo,
-  isDemo,
   type Business,
   type IntegrationsPayload,
   type SetupPayload,
 } from "@/lib/api";
+import { useIsDemo } from "@/lib/useDemo";
 import {
   IconCheck,
   IconChevron,
@@ -75,31 +75,32 @@ export default function IntegrationsPage() {
   const t = useCopy();
   const [data, setData] = useState<IntegrationsPayload | null>(null);
   const [business, setBusiness] = useState<Business | null>(null);
-  const [demo] = useState(() => typeof window !== "undefined" && isDemo());
-  const [error, setError] = useState(() => {
-    if (typeof window === "undefined") return "";
-    return new URLSearchParams(window.location.search).get("error") || "";
-  });
-  const [successNote, setSuccessNote] = useState(() => {
-    if (typeof window === "undefined") return "";
-    const params = new URLSearchParams(window.location.search);
-    if (params.get("ga4") === "connected") {
-      // The one place that says consent was granted; the row below only asks for the site.
-      return "הגישה לגוגל אושרה. נשאר לבחור את האתר.";
-    }
-    if (params.get("meta") === "connected") {
-      return "התחברתם לפייסבוק. נשאר רק לבחור את הדף העסקי. אם הוא מקושר לאינסטגרם, גם החשבון ייבחר איתו.";
-    }
-    return "";
-  });
+  // Browser-only state (demo flag, OAuth return query, #hash) is never read during the
+  // first render: the server cannot see it, and a different first render is React #418.
+  const demo = useIsDemo();
+  const [error, setError] = useState("");
+  const [successNote, setSuccessNote] = useState("");
   const [secret, setSecret] = useState("");
   const [webhookUrl, setWebhookUrl] = useState("");
   const [setup, setSetup] = useState<SetupPayload | null>(null);
-  const [expanded, setExpanded] = useState<ConnectionKey | null | undefined>(() => {
-    if (typeof window === "undefined") return undefined;
-    const key = window.location.hash.slice(1);
-    return ["website", "whatsapp", "ga4", "meta"].includes(key) ? key as ConnectionKey : undefined;
-  });
+  const [expanded, setExpanded] = useState<ConnectionKey | null | undefined>(undefined);
+  useEffect(() => {
+    // After hydration: the provider's return (?error, ?ga4/meta=connected) and a #section link.
+    const timer = window.setTimeout(() => {
+      const params = new URLSearchParams(window.location.search);
+      const returned = params.get("error");
+      if (returned) setError(returned);
+      if (params.get("ga4") === "connected") {
+        // The one place that says consent was granted; the row below only asks for the site.
+        setSuccessNote("הגישה לגוגל אושרה. נשאר לבחור את האתר.");
+      } else if (params.get("meta") === "connected") {
+        setSuccessNote("התחברתם לפייסבוק. נשאר רק לבחור את הדף העסקי. אם הוא מקושר לאינסטגרם, גם החשבון ייבחר איתו.");
+      }
+      const key = window.location.hash.slice(1);
+      if (["website", "whatsapp", "ga4", "meta"].includes(key)) setExpanded(key as ConnectionKey);
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, []);
 
   // Selection still needs the owner's confirmation, even when only one site is listed.
   const [selectedGa4Property, setSelectedGa4Property] = useState("");

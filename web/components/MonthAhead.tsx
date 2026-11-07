@@ -2,7 +2,8 @@
 
 import { Copy, useCopy } from "@/components/language/LanguageProvider";
 
-import { endpoints, isDemo, type MonthHorizon, type StrategyPayload } from "@/lib/api";
+import { endpoints, type MonthHorizon, type StrategyPayload } from "@/lib/api";
+import { useIsDemo } from "@/lib/useDemo";
 import { IconCalendar, IconRoute } from "@/lib/icons";
 import { SECTIONS } from "@/lib/sections";
 import { toast } from "@/lib/ui";
@@ -41,6 +42,7 @@ export function MonthAhead({
   variant?: "card" | "row" | "line";
 }) {
   const t = useCopy();
+  const demo = useIsDemo();
   // The next month is built on the server in the background (lib/useMonthBuild.ts): the
   // button starts it, and the progress survives leaving the page and coming back.
   const build = useMonthBuild({
@@ -89,7 +91,7 @@ export function MonthAhead({
             {next.next_in_progress && !busy ? t(" · נעצר באמצע") : ""}
           </p>
           <p className="text-xs leading-5 text-[var(--ink-muted)]">
-            {isDemo() ? t("בדמו עובדים על חודש אחד.") : t("נבנה ממה שאישרתם, בלי להמציא מספרים.")}
+            {demo ? t("בדמו עובדים על חודש אחד.") : t("נבנה ממה שאישרתם, בלי להמציא מספרים.")}
           </p>
           {error ? <p className="mt-1 text-sm text-[var(--danger)]">{error}</p> : null}
         </div>
@@ -128,7 +130,7 @@ export function MonthAhead({
             {next.next_in_progress && !busy ? t(" · נעצר באמצע") : ""}
           </p>
           <p className="mt-0.5 text-xs leading-5 text-[var(--ink-muted)]">
-            {isDemo() ? t("בדמו עובדים על חודש אחד.") : t("נבנה ממה שאישרתם, בלי להמציא מספרים.")}
+            {demo ? t("בדמו עובדים על חודש אחד.") : t("נבנה ממה שאישרתם, בלי להמציא מספרים.")}
           </p>
           {error ? <p className="mt-1 text-sm text-[var(--danger)]">{error}</p> : null}
         </div>
@@ -167,7 +169,7 @@ export function MonthAhead({
         <Copy text="לבנות את" />{next.next_month_name_he} <Copy text="לפי מה שאישרתם החודש" />{next.next_in_progress ? t(". נמשיך מאיפה שעצרנו") : ""}
       </p>
       <p className="mt-1 text-sm leading-6 text-[var(--ink-soft)]">
-        {isDemo()
+        {demo
           ? t("בדמו עובדים על חודש אחד. בחשבון אמיתי נבנה אותו מהפוסטים שאישרתם, ומהתוצאות אם יש.")
           : t("בלי להמציא מספרים. אם גוגל או אינסטגרם לא מחוברים, נבנה לפי התוכנית ומה שאישרתם.")}
       </p>

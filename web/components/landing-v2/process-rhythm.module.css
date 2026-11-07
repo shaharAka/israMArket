@@ -1,0 +1,66 @@
+/* Page rhythm for the Signal / Punch process landing (#206). Colour returns at two key
+   chapters (the campaign on punch orange, the price on graphite), two chapters change
+   layout, unavailable connectors say so, invented figures carry a visible example tag and
+   the FAQ uses the standard chevron. Kept apart from process-story.module.css. */
+
+/* ---- Example tag: beside every invented figure or example business ---------------- */
+.exampleTag { display: inline-flex; align-items: center; vertical-align: middle; padding: 1px 7px; border-radius: 999px; background: #20221c; color: #fff9f3; font-family: var(--font-site-clean), sans-serif; font-size: 10px; font-weight: 600; line-height: 1.5; letter-spacing: 0; white-space: nowrap; }
+
+/* ---- Connectors that are not available yet ------------------------------------------ */
+.soon { color: var(--ink-muted); }
+.soon > :global(.lv2-provider-logo) { filter: grayscale(1); opacity: .55; }
+.soon small { margin-inline-start: auto; padding: 2px 8px; border-radius: 999px; background: #f5ede4; color: #49463f; font-size: 11px; font-weight: 600; line-height: 1.4; white-space: nowrap; }
+@media (max-width: 700px) { .soon small { font-size: 9px; padding: 1px 6px; } }
+
+/* ---- Phone chapter: the site in a mobile browser, not a store app --------------------- */
+.browserBar { display: flex; align-items: center; justify-content: center; gap: 4px; height: 22px; margin-block: 4px; border-radius: 999px; background: #f1e9df; color: #49463f; font-family: var(--font-inter), sans-serif; font-size: 10px; letter-spacing: 0; }
+.browserBar svg { width: 10px; height: 10px; flex-shrink: 0; }
+
+/* ---- Chapter grounds ----------------------------------------------------------------- */
+/* Punch orange: the campaign. Body copy darkens to keep 4.5:1 on the orange. */
+[data-design] .chapter.chapter[data-ground="coral"] { background: #ff7957; --ink-soft: #20221c; --ink-muted: #3d2b22; }
+[data-design] .chapter.chapter[data-ground="coral"] > div:first-child > p:first-child { color: #3d2b22; }
+
+/* Graphite: the price. Only the copy column switches to light text; the illustration keeps
+   its own warm-white stage so the product UI reads as it does in the app. */
+[data-design] .chapter.chapter[data-ground="ink"] { background: #20221c; }
+[data-design] .chapter[data-ground="ink"] > div:first-child { color: #fff9f3; --ink: #fff9f3; --ink-soft: #eadfd3; --ink-muted: #cbbcae; --rule-dark: #fff9f340; }
+[data-design] .chapter[data-ground="ink"] > div:first-child > a { background: #ff7957; color: #20221c; }
+[data-design] .chapter.chapter[data-ground="ink"] > div:first-child > a:hover { background: #ffb89b; }
+[data-design] .chapter.chapter[data-ground="ink"] > div:last-child { background: #fff9f3 !important; border-radius: 24px; }
+[data-design] .chapter[data-ground="ink"] > div:first-child > a:focus-visible { outline-color: #ffb89b; }
+
+/* ---- Chapter layouts (tablet and desktop; phones always stack copy, then illustration) -- */
+@media (min-width: 701px) {
+  /* Stacked: a wide statement row above a full-width campaign gallery. */
+  [data-design] .chapter.chapter[data-layout="stacked"] { grid-template-columns: minmax(0, 1fr); row-gap: 32px; }
+  [data-design] .chapter[data-layout="stacked"] > div:first-child { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: clamp(40px, 5vw, 80px); align-items: start; padding-block: 0; }
+  [data-design] .chapter[data-layout="stacked"] > div:first-child > p:first-child { grid-column: 1; grid-row: 1; }
+  [data-design] .chapter[data-layout="stacked"] > div:first-child > h2 { grid-column: 1; grid-row: 2 / span 3; max-width: none; }
+  [data-design] .chapter[data-layout="stacked"] > div:first-child > p:nth-of-type(2) { grid-column: 2; grid-row: 2; margin-top: 0; max-width: 34em; }
+  [data-design] .chapter[data-layout="stacked"] > div:first-child > p:nth-of-type(3) { grid-column: 2; grid-row: 3; }
+  [data-design] .chapter[data-layout="stacked"] > div:first-child > a { grid-column: 2; grid-row: 4; justify-self: start; }
+  [data-design] .chapter.chapter[data-layout="stacked"] > div:last-child { width: 100%; max-width: 820px; justify-self: center; }
+
+  /* Mirrored: the illustration leads and the copy follows, on the other side. */
+  [data-design] .chapter.chapter[data-layout="mirrored"] { grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr); }
+  [data-design] .chapter[data-layout="mirrored"] > div:first-child { order: 2; }
+  [data-design] .chapter[data-layout="mirrored"] > div:last-child { order: 1; }
+}
+
+/* ---- Length: chapters end at their content ------------------------------------------- */
+/* With the action shown in two chapters only and shorter copy, a fixed 650px floor only added empty space. */
+@media (min-width: 701px) { [data-design] .chapter.chapter { min-height: 0; } }
+/* Phones: the goal card takes its own height instead of a fixed 410px stage. */
+@media (max-width: 700px) {
+  [data-design] .chapter.chapter[data-step="goals"] > div:last-child { height: auto; }
+  [data-design] .chapter[data-step="goals"] > div:last-child > div,
+  [data-design] .chapter[data-step="goals"] > div:last-child > div > div { position: relative; inset: auto; }
+}
+
+/* ---- FAQ: the standard chevron, down when closed and up when open --------------------- */
+.faq.faq summary { display: flex; align-items: center; justify-content: space-between; gap: 16px; list-style: none; }
+.faq summary::-webkit-details-marker { display: none; }
+.chevron { width: 18px; height: 18px; flex-shrink: 0; color: var(--ink-muted); transform: rotate(-90deg); transition: transform 200ms cubic-bezier(.2, .7, .2, 1); }
+.faq details[open] .chevron { transform: rotate(90deg); }
+@media (prefers-reduced-motion: reduce) { .chevron { transition: none; } }

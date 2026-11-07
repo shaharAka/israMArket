@@ -188,7 +188,9 @@ export function TextBlock({ text, dna, stacks }: { text: TextPlan; dna: Resolved
       }}
     >
       {sub?.above ? subEl : null}
-      <h2
+      {/* Artwork text, not a document heading: a page that shows several posts must not
+          repeat their headlines in its outline (or to screen readers) as section titles. */}
+      <p
         data-card-text="headline"
         data-card-lines={headline.lines}
         style={{
@@ -207,7 +209,7 @@ export function TextBlock({ text, dna, stacks }: { text: TextPlan; dna: Resolved
         }}
       >
         <HeadlineText text={headline.text} accent={text.accent} marked={headline.accentKey} />
-      </h2>
+      </p>
       {price ? (
         <p
           data-card-text="price"

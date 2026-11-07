@@ -2,13 +2,18 @@
 
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { Copy, useCopy, useLanguage } from "@/components/language/LanguageProvider";
-import { PROCESS_EXAMPLES, type ProcessRole } from "./processExamples";
+import { PROCESS_EXAMPLES, EXAMPLE_RESULTS, EXAMPLE_OUTCOME, type ProcessRole } from "./processExamples";
 import { PROCESS_CAMPAIGNS } from "./processCampaigns";
-import { CampaignArtwork } from "./ProcessCampaignArtwork";
+import Image from "next/image";
+import { CampaignArtwork, campaignPhoto } from "./ProcessCampaignArtwork";
 import { ProcessSocialPost } from "./ProcessSocialPost";
 import { useProcessSequence } from "./useProcessSequence";
 import { useCampaignReveal } from "./useCampaignReveal";
 import styles from "./qa-scenes.module.css";
+import rhythm from "./process-rhythm.module.css";
+
+/** The visible label on every invented example figure or business. */
+export function ExampleTag(){return <b className={rhythm.exampleTag}><Copy text="דוגמה"/></b>;}
 
 const BRIEF_TIMES=[900,4200] as const;
 const GROWTH_TIMES=[2400,2600,3000] as const;
@@ -25,25 +30,27 @@ export function CampaignClip({role,playing,detail=false}:{role:ProcessRole;playi
 export { QuestionnaireScene } from "./QuestionnaireDemo";
 /** Three inputs converge into coordinated campaign material; the layout never changes height. */
 export function HeroBriefScene({role,playing,reduced=false}:{role:ProcessRole;playing:boolean;reduced?:boolean}){
+  const {locale}=useLanguage();
   const {index}=useProcessSequence(BRIEF_TIMES,playing);const active=reduced?1:index;
   return <div className={styles.brief} data-brief-stage={active}>
     <div className={styles.briefInputs}>{["המטרה","הקהל","מה מייחד אתכם"].map(label=><div key={label}><small><Copy text={label}/></small></div>)}</div>
     <svg className={styles.briefConnector} viewBox="0 0 300 42" preserveAspectRatio="none" fill="none" aria-hidden="true"><g className={styles.briefConnectorBase}><path d="M50 1v10q0 9 10 9h80q10 0 10 10v11M150 1v40M250 1v10q0 9-10 9h-80q-10 0-10 10v11"/></g><g className={styles.briefConnectorDraw}><path pathLength="1" d="M50 1v10q0 9 10 9h80q10 0 10 10v11"/><path pathLength="1" d="M150 1v40"/><path pathLength="1" d="M250 1v10q0 9-10 9h-80q-10 0-10 10v11"/></g></svg>
-    <div className={styles.briefResult}><span><Copy text="הקמפיין שלכם"/></span><div>{[0,1,2].map(i=><div key={i}><CampaignArtwork role={role} index={i} support={i===1} ratio="4:5"/></div>)}</div></div>
+    <div className={styles.briefResult}><span><Copy text="הקמפיין שלכם"/></span><div>{[0,1,2].map(i=><div key={i}><Image src={campaignPhoto(role,i,locale)} alt="" width={240} height={300} sizes="120px" style={{display:"block",width:"100%",height:"100%",objectFit:"cover"}}/></div>)}</div></div>
   </div>;
 }
 export function CampaignMaterialsScene({role:requested,playing,compact=false}:{role:ProcessRole|null;playing:boolean;compact?:boolean}){
-  const t=useCopy();const {locale}=useLanguage();const role=requested??"online_shop",example=PROCESS_EXAMPLES[role];const channels=role==="software"?[2,0,3]:[2,0,1];
+  const t=useCopy();const {locale}=useLanguage();const role=requested??"online_shop",example=PROCESS_EXAMPLES[role];const channels=[2,0,1];
   const revealRef=useCampaignReveal(!compact,playing,`${role}:${locale}`);
-  return <div className={`${styles.materials} ${compact?styles.compact:""}`} data-campaign-materials><header><strong><Copy text="הקמפיין: {arg_0}" args={{arg_0:t(example.weeks[0])}}/></strong><span><Copy text={example.name}/></span></header><div ref={revealRef} className={styles.posts}>{channels.map((channel,i)=><div key={channel} className={styles.post}><ProcessSocialPost index={channel} name={example.name} caption={PROCESS_CAMPAIGNS[role][0].subline} video={i===2} material="campaign"><div className={styles.postMedia} data-campaign-media>{i===2?<CampaignClip role={role} playing={playing} detail={compact}/>:<CampaignArtwork role={role} index={0} support={i===0} ratio="4:5"/>}</div></ProcessSocialPost>{compact&&<span className={styles.platformName}>{["Facebook","TikTok","Instagram","LinkedIn"][channel]}</span>}</div>)}</div></div>;
+  return <div className={`${styles.materials} ${compact?styles.compact:""}`} data-campaign-materials><header><strong><Copy text="הקמפיין: {arg_0}" args={{arg_0:t(example.weeks[0])}}/></strong><span><Copy text={example.name}/> <ExampleTag/></span></header><div ref={revealRef} className={styles.posts}>{channels.map((channel,i)=><div key={channel} className={styles.post}><ProcessSocialPost index={channel} name={example.name} caption={["", PROCESS_CAMPAIGNS[role][0].title, PROCESS_CAMPAIGNS[role][1].headline][i]} video={i===2} material="campaign" hideName={compact}><div className={styles.postMedia} data-campaign-media>{i===2?<CampaignClip role={role} playing={playing} detail={compact}/>:<CampaignArtwork role={role} index={0} support={i===0} ratio="4:5"/>}</div></ProcessSocialPost>{compact&&<span className={styles.platformName}>{["Facebook","TikTok","Instagram","LinkedIn"][channel]}</span>}</div>)}</div></div>;
 }
 /** The changing metric stays anchored to the campaign material behind it. */
 export function CampaignGrowthScene({playing,reduced=false,compact=false,role="online_shop"}:{playing:boolean;reduced?:boolean;compact?:boolean;role?:ProcessRole}){
+  const {locale}=useLanguage();
   const {index}=useProcessSequence(GROWTH_TIMES,playing);const active=reduced?2:index;
-  const [count,setCount]=useState(12);const previous=useRef(12);
-  useEffect(()=>{const target=[12,24,38][active];if(!playing){return;}const start=performance.now(),from=Math.min(previous.current,target);let frame=0;const tick=(now:number)=>{const p=Math.min(1,(now-start)/1100);const value=Math.round(from+(target-from)*(1-Math.pow(1-p,3)));previous.current=value;setCount(value);if(p<1)frame=requestAnimationFrame(tick);};frame=requestAnimationFrame(tick);return()=>cancelAnimationFrame(frame);},[active,playing]);
-  const value=reduced?38:count;
-  const metric={online_shop:"הזמנות החודש",physical_shop:"הזמנות מראש",services:"פניות החודש",software:"הרשמות להתנסות",fundraising:"תרומות החודש"}[role];
+  const [count,setCount]=useState<number>(EXAMPLE_RESULTS.steps[0]);const previous=useRef<number>(EXAMPLE_RESULTS.steps[0]);
+  useEffect(()=>{const target=EXAMPLE_RESULTS.steps[active];if(!playing){return;}const start=performance.now(),from=Math.min(previous.current,target);let frame=0;const tick=(now:number)=>{const p=Math.min(1,(now-start)/1100);const value=Math.round(from+(target-from)*(1-Math.pow(1-p,3)));previous.current=value;setCount(value);if(p<1)frame=requestAnimationFrame(tick);};frame=requestAnimationFrame(tick);return()=>cancelAnimationFrame(frame);},[active,playing]);
+  const value=reduced?EXAMPLE_RESULTS.outcome:count;
+  const metric=EXAMPLE_OUTCOME[role].metric;
   const outcome={online_shop:"יותר הזמנות מהקמפיינים שלכם",physical_shop:"יותר אנשים מזמינים מראש",services:"יותר אנשים פונים אליכם",software:"יותר אנשים מתנסים במוצר",fundraising:"יותר אנשים תומכים בעשייה"}[role];
-  return <div className={`${styles.growth} ${compact?styles.compactGrowth:""}`} data-growth-stage={active}><header><strong><Copy text={outcome}/></strong></header><div className={styles.result}><strong>{value}</strong><span><Copy text={metric}/></span><small><Copy text="לעומת 12 בתחילת החודש"/></small></div><div className={styles.growthCampaigns}>{[0,1,2].map((i)=><div key={i} data-active={i===active} style={{"--growth-step":i} as CSSProperties}><div><CampaignArtwork role={role} index={i} support={i===1} ratio="1:1"/></div><span><Copy text={["קמפיין היכרות","קמפיין המשך","קמפיין חדש"][i]}/></span>{i<=active&&<Check/>}</div>)}</div><p><Copy text="רואים מה מתקדם, ומשפרים את הקמפיין הבא."/></p></div>;
+  return <div className={`${styles.growth} ${compact?styles.compactGrowth:""}`} data-growth-stage={active}><header><strong><Copy text={outcome}/></strong></header><div className={styles.result}><strong>{value}</strong><span><Copy text={metric}/></span><small><ExampleTag/> <Copy text="בחודש הקודם: {arg_0}" args={{arg_0:EXAMPLE_RESULTS.previous}}/></small></div><div className={styles.growthCampaigns}>{[0,1,2].map((i)=><div key={i} data-active={i===active} style={{"--growth-step":i} as CSSProperties}><div><Image src={campaignPhoto(role,i,locale)} alt="" width={240} height={240} sizes="160px" style={{display:"block",width:"100%",height:"100%",objectFit:"cover"}}/></div><span><Copy text={["קמפיין היכרות","קמפיין המשך","קמפיין חדש"][i]}/></span>{i<=active&&<Check/>}</div>)}</div></div>;
 }

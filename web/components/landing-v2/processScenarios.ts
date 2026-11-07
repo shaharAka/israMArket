@@ -8,7 +8,7 @@ export const PROCESS_GOALS: Record<ProcessRole, readonly [string, string, string
   online_shop: ["להגדיל את מספר ההזמנות שהושלמו באתר", "להחזיר קונים שנטשו את סל הקניות", "לעודד לקוחות לחזור לקנייה נוספת"],
   physical_shop: ["להביא יותר לקוחות לבקר בחנות", "להגדיל את מספר ההזמנות לאיסוף", "להחזיר לקוחות לקנייה נוספת"],
 };
-export const GENERAL_GOALS = ["להגיע ליותר אנשים שמתעניינים בפעילות שלך", "להפוך התעניינות לפניות, לקניות או לתרומות", "לעודד את מי שכבר מכירים אותך לחזור"] as const;
+export const GENERAL_GOALS = ["להגיע ליותר אנשים שמתעניינים בפעילות שלכם", "להפוך התעניינות לפניות, לקניות או לתרומות", "לעודד את מי שכבר מכירים אתכם לחזור"] as const;
 
 /** Public examples define what would count, never claim measured customer results. */
 export type GoalBrief = { label: string; measure: string; post: string };
