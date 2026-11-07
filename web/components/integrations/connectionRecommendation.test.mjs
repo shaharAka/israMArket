@@ -62,3 +62,18 @@ test("a read in progress is allowed to finish before asking to connect again", (
   const reading = { ...sources, integrations: [{ provider: "ga4", source_readiness: { status: "reading" } }, { provider: "meta", source_readiness: { status: "reading" } }] };
   assert.equal(recommend({ ...business, website_url: "https://example.com" }, setup, reading, true), null);
 });
+
+test("TikTok consent needs confirmation only when that customer can use the connector", () => {
+  const pending = { ...sources, tiktok_ready: true, integrations: [{ provider: "tiktok", status: "select_account" }] };
+  assert.equal(recommend(business, setup, pending, true).key, "tiktok");
+  assert.notEqual(recommend(business, setup, { ...pending, tiktok_ready: false }, true)?.key, "tiktok");
+});
+
+test("TikTok is recommended from an unfinished saved-plan checklist only", () => {
+  const planned = { groups: [{ items: [{ key: "tiktok", title: "נתוני הטיקטוק", done: false }] }] };
+  const ready = { ...sources, tiktok_ready: true };
+  assert.equal(recommend(business, planned, ready, true).key, "tiktok");
+  assert.equal(recommend(business, { groups: [] }, ready, true), null);
+  assert.equal(recommend(business, planned, { ...ready, tiktok_ready: false }, true), null);
+  assert.equal(recommend(business, { groups: [{ items: [{ ...planned.groups[0].items[0], done: true }] }] }, ready, true), null);
+});

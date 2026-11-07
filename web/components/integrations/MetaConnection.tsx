@@ -26,8 +26,8 @@ const EXAMPLE_ASSETS: MetaAssets = {
   scopes: ["ads_read"], errors: {},
 };
 
-export function MetaConnection({ item, ready, demo, website, onChanged, onDisconnect, primary = false }: {
-  primary?: boolean; item?: Item; ready: boolean; demo: boolean; website: string; onChanged: () => Promise<void>; onDisconnect?: () => void }) {
+export function MetaConnection({ item, ready, demo, website, onChanged, onDisconnect, primary = false, businessId }: {
+  businessId?: number; primary?: boolean; item?: Item; ready: boolean; demo: boolean; website: string; onChanged: () => Promise<void>; onDisconnect?: () => void }) {
   const t = useCopy();
   const [open, setOpen] = useState(false);
   const [stage, setStage] = useState<"connect" | "choose" | "done">("connect");
@@ -246,7 +246,7 @@ export function MetaConnection({ item, ready, demo, website, onChanged, onDiscon
           {account && <>
             <label className={styles.field}><Copy text="המעקב באתר (Meta Pixel)" /><select value={pixel} onChange={e => setPixel(e.target.value)} disabled={loadingPixels}><option value="">{loadingPixels ? t("מחפשים את המעקב…") : t("לבחור בהמשך")}</option>{pixels.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}</select></label>
             {pixelNote ? <p className={styles.hint}>{pixelNote}</p> : !loadingPixels && !pixels.length ? <p className={styles.hint}><Copy text="לא נמצא מעקב בחשבון הזה. תוכלו לחבר אותו דרך מערכת האתר; החיבור לפרסום לא תלוי בכך." /></p> : null}
-            {!loadingPixels && !pixels.length && <PixelSetupGuide onRefresh={() => { void chooseAccount(account); }} busy={busy} />}
+            {!loadingPixels && !pixels.length && <PixelSetupGuide businessId={businessId} onRefresh={() => { void chooseAccount(account); }} busy={busy} />}
           </>}
           {!account && <p className={styles.hint}><Copy text="כדי לבחור מעקב לאתר, בחרו גם את חשבון הפרסום שמקושר אליו. אפשר להמשיך בינתיים עם נתוני הדף." /></p>}
               </> : <>
@@ -264,7 +264,7 @@ export function MetaConnection({ item, ready, demo, website, onChanged, onDiscon
           {account && !pixel && <>
             <p className={styles.hint}><Copy text="נתוני המודעות מחוברים. כדי למדוד גם פעולות באתר, בחרו את המעקב של העסק." /></p>
             <UIAction variant="text" onClick={() => { setBusy(true); void loadAssets(); }}><Copy text="לבחור את המעקב שלי" /></UIAction>
-            <PixelSetupGuide onRefresh={() => { setBusy(true); void loadAssets(); }} busy={busy} />
+            <PixelSetupGuide businessId={businessId} onRefresh={() => { setBusy(true); void loadAssets(); }} busy={busy} />
           </>}
           {pixel && <div className={styles.tracking}>
             <h3><Copy text="האם המעקב באתר עובד?" /></h3>
@@ -275,7 +275,7 @@ export function MetaConnection({ item, ready, demo, website, onChanged, onDiscon
             {tracking && ["waiting", "site_unconfirmed"].includes(tracking.status) && website && <a href={website} target="_blank" rel="noopener noreferrer" className={styles.retry}><Copy text="לפתוח את האתר ולנסות שוב" /></a>}
             {tracking?.status === "wrong_site" && <UIAction variant="text" onClick={() => { setBusy(true); void loadAssets(); }}><Copy text="לבחור את המעקב של האתר שלי" /></UIAction>}
             {tracking && ["permission", "reconnect"].includes(tracking.status) && <UIAction variant="text" onClick={renewAccess}><Copy text="לחדש את הגישה למעקב" /></UIAction>}
-            {(!tracking || tracking.status === "waiting") && <PixelSetupGuide onRefresh={() => { setBusy(true); void loadAssets(); }} busy={busy} />}
+            {(!tracking || tracking.status === "waiting") && <PixelSetupGuide businessId={businessId} onRefresh={() => { setBusy(true); void loadAssets(); }} busy={busy} />}
             <details className={styles.trackingDetails}>
               <summary><Copy text="פרטי המעקב ושינוי הבחירה" /><IconChevron className={styles.disclosureIcon} /></summary>
               <div className={styles.setupBody}>

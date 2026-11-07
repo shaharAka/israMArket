@@ -20,7 +20,7 @@ from sqlalchemy.orm import Session
 from app.db import get_db
 from app.deps import get_current_user
 from app.models import Business, User
-from app.services import ga4, journey, meta, plan_connections
+from app.services import ga4, journey, meta, plan_connections, tiktok
 
 router = APIRouter(prefix="/setup", tags=["setup"])
 
@@ -177,6 +177,12 @@ def _setup_items(facts: journey.Facts) -> list[dict]:
                             "נוכל למדוד לחיצות לפנייה אליכם. לחיצה אינה הודעה או לקוח.",
                             "/integrations", "להכין את הקישור",
                             bool(facts.business and facts.business.whatsapp_number_e164)))
+    if plan_connections.needed(facts, "tiktok"):
+        connection = plan_connections.state(facts, "tiktok", available=bool(facts.business and tiktok.configured_for(facts.business.owner.email)))
+        item = _item("tiktok", connection["title"], connection["why"], "/integrations#tiktok", connection["action"], connection["status"] == "done")
+        if connection["status"] == "soon":
+            item["status"] = "soon"
+        result.append(item)
     return result
 
 

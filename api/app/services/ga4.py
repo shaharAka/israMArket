@@ -12,20 +12,16 @@ from app.config import get_settings
 
 GA4_SCOPES = [
     "https://www.googleapis.com/auth/analytics.readonly",
-    # Search Console is what lets the promotion endpoints show the queries the site
-    # already ranks for, with real clicks and impressions. `include_granted_scopes` in
-    # authorization_url means an existing connection re-consents incrementally instead
-    # of losing the Analytics grant it already has.
-    "https://www.googleapis.com/auth/webmasters.readonly",
     "openid",
     "email",
 ]
 
 
 class Ga4AccessError(RuntimeError):
-    def __init__(self, status: str):
+    def __init__(self, status: str, reason: str = ""):
         super().__init__("Google Analytics access unavailable")
         self.readiness_status = status
+        self.reason = reason
 
 
 def ga4_configured() -> bool:
@@ -39,8 +35,8 @@ def redirect_uri() -> str:
     return f"{get_settings().oauth_callback_base()}/integrations/ga4/callback"
 
 
-def authorization_url(state: str, login_hint: str = "") -> str:
-    """Google's consent screen for Analytics + Search Console.
+def authorization_url(state: str, login_hint: str = "", *, choose_account: bool = False, scopes: list[str] | None = None) -> str:
+    """Google's consent screen for one measurement source.
 
     Incremental authorization on top of "להמשיך עם Google": `login_hint` (the linked Google
     account id, or the account email) pre-selects the account the owner signed in with,
@@ -55,19 +51,19 @@ def authorization_url(state: str, login_hint: str = "") -> str:
         "client_id": settings.google_client_id,
         "redirect_uri": redirect,
         "response_type": "code",
-        "scope": " ".join(GA4_SCOPES),
+        "scope": " ".join(scopes or GA4_SCOPES),
         "access_type": "offline",
-        "prompt": "consent",
+        "prompt": "select_account consent" if choose_account else "consent",
         "include_granted_scopes": "true",
         "state": state,
     }
-    if login_hint:
+    if login_hint and not choose_account:
         params["login_hint"] = login_hint
     query = urlencode(params)
     return f"https://accounts.google.com/o/oauth2/v2/auth?{query}"
 
 
-def exchange_code(code: str) -> dict:
+def exchange_code(code: str, *, required_scope: str = GA4_SCOPES[0]) -> dict:
     settings = get_settings()
     redirect = redirect_uri()
     response = httpx.post(
@@ -84,6 +80,11 @@ def exchange_code(code: str) -> dict:
     if response.status_code >= 400:
         raise RuntimeError(f"לא הצלחנו להשלים את החיבור לגוגל: {response.text}")
     payload = response.json()
+    scopes = [scope for scope in (payload.get("scope") or "").split(" ") if scope]
+    # Granular consent can succeed with sign-in alone. Do not call that the wrong
+    # account, nor overwrite a previously working grant with unusable permission.
+    if "scope" in payload and required_scope not in scopes:
+        raise Ga4AccessError("reconnect", "analytics_permission_missing" if required_scope == GA4_SCOPES[0] else "search_permission_missing")
     if "refresh_token" not in payload:
         raise RuntimeError("גוגל לא נתן לנו הרשאה קבועה. חברו את גוגל מחדש ואשרו את כל ההרשאות.")
     expires = datetime.now(timezone.utc) + timedelta(seconds=int(payload.get("expires_in", 3600)))
@@ -93,7 +94,7 @@ def exchange_code(code: str) -> dict:
         "expires_at": expires,
         # What Google actually granted, which is not always what was asked for. Stored so
         # Search Console can be reported as "not granted" instead of failing silently.
-        "scopes": [scope for scope in (payload.get("scope") or "").split(" ") if scope],
+        "scopes": scopes,
         # `openid email` is in the scopes, so Google says which account granted this. Used
         # only to compare with the account the owner signs in with; never stored raw.
         "id_token": payload.get("id_token") or "",
@@ -108,7 +109,8 @@ def _credentials(access_token: str, refresh_token: str, expires_at: datetime | N
         token_uri="https://oauth2.googleapis.com/token",
         client_id=settings.google_client_id,
         client_secret=settings.google_client_secret,
-        scopes=GA4_SCOPES,
+        # Refresh the grant as issued; never request Analytics while refreshing a
+        # Search Console-only grant (or silently expand either source's access).
         expiry=expires_at.replace(tzinfo=None) if expires_at else None,
     )
     if not creds.valid:
@@ -119,8 +121,8 @@ def _credentials(access_token: str, refresh_token: str, expires_at: datetime | N
 def fresh_access_token(access_token: str, refresh_token: str, expires_at: datetime | None) -> str:
     """A currently valid access token, for any Google API this connection was granted.
 
-    Refreshes only when the stored token has expired, so the Search Console calls in
-    `keywords.py` can reuse the same stored connection as the GA4 reports.
+    Refreshes only when the stored token has expired. Analytics and Search Console
+    store their own grants; refreshing either never requests the other's scope.
     """
     return _credentials(access_token, refresh_token, expires_at).token
 

@@ -16,15 +16,16 @@ the response says which of the two it got.
 
 import threading
 import time
+from hashlib import sha256
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, HTTPException
+from sqlalchemy.orm import object_session
 
 from app.deps import get_business
 from app.models import Business
-from app.routers.integrations import tokens_for
-from app.services import ga4, keywords
+from app.services import keywords, search_console
 from app.services.google_cost import business_profile_guidance, plan_for_business
-from app.services.jsonutil import loads
+from app.services.jsonutil import loads, dumps
 from app.services.business_fields import field_label
 
 router = APIRouter(prefix="/promotion", tags=["promotion"])
@@ -33,7 +34,7 @@ router = APIRouter(prefix="/promotion", tags=["promotion"])
 # should not translate into traffic to Google on our behalf. In-process TTL is enough for
 # a single API instance; the payload is small and rebuildable.
 KEYWORD_CACHE_TTL_SECONDS = 900
-_KEYWORD_CACHE: dict[int, tuple[float, dict]] = {}
+_KEYWORD_CACHE: dict[int, tuple[float, dict, str]] = {}
 _KEYWORD_CACHE_LOCK = threading.Lock()
 
 
@@ -72,31 +73,19 @@ def _search_console(business: Business) -> tuple[dict | None, str]:
     The reason is Hebrew and user-facing: "not connected" and "connected but the Search
     Console permission was never granted" are different problems with different fixes.
     """
-    item = next((i for i in business.integrations if i.provider == "ga4"), None)
-    if not item or item.status != "connected" or not item.access_token_enc or not item.refresh_token_enc:
+    db = object_session(business)
+    if db is None:
         return None, keywords.SEARCH_CONSOLE_MISSING_NOTE
-
-    extra = loads(item.extra_json, {})
-    if not keywords.search_console_scope_granted(extra.get("scopes")):
-        return None, (
-            "גוגל מחובר, אבל בלי הרשאה ל-Search Console. חברו את גוגל מחדש ואשרו גם את "
-            "Search Console, ואז יופיעו כאן החיפושים שהאתר כבר מופיע בהם, עם קליקים, חשיפות "
-            "ומיקום אמיתיים."
-        )
-
+    item = search_console.ensure_legacy(db, business)
+    if not item or not item.access_token_enc:
+        return None, keywords.SEARCH_CONSOLE_MISSING_NOTE
     try:
-        access, refresh, expires = tokens_for(item)
-        token = ga4.fresh_access_token(access, refresh, expires)
+        state = search_console.read(db, item, business)
+        if state["status"] in {"ready", "empty"}:
+            return search_console.public_data(item, business.website_url), ""
+        return None, state["note_he"]
     except Exception:
-        return None, "לא הצלחנו לחדש את החיבור לגוגל, ולכן אין כרגע נתונים מ-Search Console. נסו לחבר את גוגל מחדש."
-
-    payload = keywords.search_console_queries(token, business.website_url or "")
-    if payload is None:
-        return None, (
-            "יש הרשאה ל-Search Console, אבל גוגל לא החזיר נתונים. אולי האתר לא מאומת "
-            "ב-Search Console, או שהוא לא הופיע בחיפוש ב-28 הימים האחרונים."
-        )
-    return payload, ""
+        return None, search_console.NOTES["unavailable"]
 
 
 def _build_keywords(business: Business) -> dict:
@@ -106,6 +95,20 @@ def _build_keywords(business: Business) -> dict:
         search_console=console,
         search_console_note=note,
     )
+
+
+def _cache_identity(business: Business) -> str:
+    db = object_session(business)
+    source_identity = None
+    if db is not None:
+        db.refresh(business)
+        item = search_console.ensure_legacy(db, business)
+        if item:
+            db.refresh(item)
+            source_identity = [item.id, item.external_id, item.access_token_enc, item.refresh_token_enc]
+    # Do not include read timestamps: a successful read updates those itself.
+    # Website/profile changes and replaced/revoked grants invalidate old decisions.
+    return sha256(dumps([_business_payload(business), source_identity]).encode()).hexdigest()
 
 
 @router.get("/google")
@@ -125,15 +128,20 @@ def keyword_ideas(
 ) -> dict:
     """Real query phrases, enriched with Search Console when it is connected."""
     business_id = business.id
+    identity = _cache_identity(business)
     if not refresh:
         with _KEYWORD_CACHE_LOCK:
             cached = _KEYWORD_CACHE.get(business_id)
-        if cached and cached[0] > time.time():
+        if cached and len(cached) == 3 and cached[0] > time.time() and cached[2] == identity:
             return {**cached[1], "cached": True}
 
     payload = _build_keywords(business)
+    if _cache_identity(business) != identity:
+        # A source/site changed while a provider request was in flight. Never
+        # cache that response under the replacement connection's identity.
+        raise HTTPException(409, "האתר או החיבור השתנו. נסו לעדכן שוב את הנתונים.")
     with _KEYWORD_CACHE_LOCK:
-        _KEYWORD_CACHE[business_id] = (time.time() + KEYWORD_CACHE_TTL_SECONDS, payload)
+        _KEYWORD_CACHE[business_id] = (time.time() + KEYWORD_CACHE_TTL_SECONDS, payload, identity)
     return {**payload, "cached": False}
 
 

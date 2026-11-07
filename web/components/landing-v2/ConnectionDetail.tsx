@@ -24,6 +24,7 @@ const VALUES = {
 export function ConnectionDetail({ provider }: { provider: ConnectionExampleKey }) {
   const connection = CONNECTION_EXAMPLES[provider];
   const planned = "planned" in connection && connection.planned;
+  const source = ({ "google-analytics": "ga4", "facebook-instagram": "meta", "ads-pixel": "meta", website: "website", whatsapp: "whatsapp", linkedin: "", tiktok: "tiktok" } as const)[provider];
   const { locale } = useLanguage();
   const t = useCopy();
   return <div className={`lv2 lv2-site ${siteClean.variable}`}>
@@ -33,7 +34,7 @@ export function ConnectionDetail({ provider }: { provider: ConnectionExampleKey 
         <div><div className="lv2-connection-pair"><ProviderLogo provider={provider} size={56} /><span aria-hidden="true">+</span><span className="lv2-wordmark" dir="ltr"><IdentityMark direction="open" /><span className="sr-only">isramarket</span></span></div>
           <p className="lv2-eyebrow"><Copy text={connection.short} /></p><h1 className="lv2-h2"><Copy text={connection.title} /></h1>
           <p className="lv2-lead"><Copy text={connection.benefit} /></p>
-          {planned ? <><p className="lv2-connection-availability"><Copy text={connection.availability} /></p><Link href={`/strategy?lang=${locale}`} className="lv2-btn lv2-value-cta"><Copy text="לתוכנית שלי" /></Link></> : <><Link href={`/integrations?lang=${locale}`} className="lv2-btn lv2-value-cta"><Copy text="לפתוח את החיבורים בחשבון" /></Link><p className="lv2-fine"><Copy text="החיבור מתחיל מתוך המערכת. אתם בוחרים למה לתת גישה." /></p></>}
+          {planned ? <><p className="lv2-connection-availability"><Copy text={connection.availability} /></p><Link href={`/strategy?lang=${locale}`} className="lv2-btn lv2-value-cta"><Copy text="לתוכנית שלי" /></Link></> : <><Link href={`/integrations?lang=${locale}#${source}`} className="lv2-btn lv2-value-cta"><Copy text="לפתוח את החיבורים בחשבון" /></Link><p className="lv2-fine"><Copy text="החיבור מתחיל מתוך המערכת. אתם בוחרים למה לתת גישה." /></p></>}
         </div>
         <div className="lv2-connection-art"><div className="lv2-connection-art-title"><ProviderLogo provider={provider} size={28} /><strong><Copy text="מהמידע שלכם, לצעד הבא בתוכנית" /></strong></div><ConnectionScreenshot src={connection.screenshot} alt={connection.alt} /></div>
       </section>

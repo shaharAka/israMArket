@@ -240,7 +240,7 @@ def load(db: Session, business: Business | None) -> Facts:
     stored = loads(business.scraped_profile_json, {}) if business.scraped_profile_json else {}
     integration_rows = db.query(Integration).filter(Integration.business_id == business.id).all()
     connected_rows = [(item.provider, item.updated_at) for item in integration_rows if item.status == CONNECTED]
-    from app.services import ga4_readiness, meta_readiness
+    from app.services import ga4_readiness, meta_readiness, tiktok_data
 
     connection_states = {}
     for item in integration_rows:
@@ -252,6 +252,11 @@ def load(db: Session, business: Business | None) -> Facts:
             connection_states[item.provider] = {"status": item.status, "granted": bool(item.access_token_enc),
                                                "selection": meta_readiness.selection(item),
                                                "readiness": meta_readiness.public_state(item)}
+        elif item.provider == "tiktok":
+            data = tiktok_data.public_data(item)
+            connection_states[item.provider] = {"status": item.status, "granted": bool(item.access_token_enc),
+                "selected": bool(item.external_id), "readiness": data["source_readiness"],
+                "has_numbers": any(any(row.get(key) is not None for key in ("view_count", "like_count", "comment_count", "share_count")) for row in data["videos"])}
     asset_times = [
         row[0]
         for row in db.query(Asset.created_at)
