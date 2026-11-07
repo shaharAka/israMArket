@@ -148,7 +148,7 @@ class Integration(Base):
 
 
 class WebhookDelivery(Base):
-    """One row per delivery attempt, so a failing endpoint is diagnosable."""
+    """One delivery result with its attempt count, without receiver response content."""
 
     __tablename__ = "webhook_deliveries"
 

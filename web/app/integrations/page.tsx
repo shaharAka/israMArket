@@ -22,7 +22,8 @@ import { TikTokConnection } from "@/components/integrations/TikTokConnection";
 import { SearchConsoleConnection } from "@/components/integrations/SearchConsoleConnection";
 import { connectionRecommendation, type ConnectionKey } from "@/components/integrations/connectionRecommendation";
 import { PendingLinks } from "@/components/integrations/PendingLinks";
-import { SourceReadState, sourcePresentation } from "@/components/integrations/SourceReadState";
+import { SourceReadState, sourcePresentation, checkedDate } from "@/components/integrations/SourceReadState";
+import { LOCALE_META } from "@/lib/i18n/locales";
 import {
   endpoints,
   exitDemo,
@@ -88,6 +89,9 @@ export default function IntegrationsPage() {
   const [loadingConnections, setLoadingConnections] = useState(true);
   const [secret, setSecret] = useState("");
   const [webhookUrl, setWebhookUrl] = useState("");
+  const [savingWebhook, setSavingWebhook] = useState(false);
+  const [deletingWebhook, setDeletingWebhook] = useState<number | null>(null);
+  const [webhookError, setWebhookError] = useState("");
   const [setup, setSetup] = useState<SetupPayload | null>(null);
   // Fragments are not sent during server rendering. Read them after mount so
   // hydration cannot close the consent-return row before its data arrives.
@@ -634,6 +638,11 @@ export default function IntegrationsPage() {
 
             <div className="flex flex-col gap-2.5 sm:flex-row">
               <input
+                aria-label={t("כתובת המערכת המקבלת")}
+                type="url"
+                autoCapitalize="none"
+                spellCheck={false}
+                disabled={savingWebhook || demo || !data}
                 value={webhookUrl}
                 onChange={(e) => setWebhookUrl(e.target.value)}
                 placeholder="https://your-crm-webhook-url.com"
@@ -644,20 +653,26 @@ export default function IntegrationsPage() {
                 size="md"
                 className="shrink-0 whitespace-nowrap"
                 variant="outline"
+                disabled={savingWebhook || demo || !data || !webhookUrl.trim()}
                 onClick={async () => {
-                  if (!webhookUrl) return;
-                  const created = await endpoints.createWebhook({
-                    url: webhookUrl,
-                    events: "recommendations,strategy",
-                  });
-                  setSecret(created.secret);
-                  setWebhookUrl("");
-                  await reload();
-                  toast(t("הכתובת נוספה"));
+                  if (!webhookUrl.trim() || savingWebhook || demo || !data) return;
+                  setSavingWebhook(true); setWebhookError("");
+                  try {
+                    const created = await endpoints.createWebhook({url: webhookUrl.trim(), events: "recommendations,strategy"});
+                    setSecret(created.secret);
+                    setData(previous => previous ? {...previous, webhooks: [...previous.webhooks, {
+                      id: created.id, url: created.url, events: created.events, created_at: created.created_at, last_delivery: null,
+                    }]} : previous);
+                    setWebhookUrl("");
+                    toast(t("הכתובת נוספה"));
+                  } catch (err) {
+                    setWebhookError(err instanceof Error ? t(err.message) : t("לא הצלחנו לשמור את הכתובת. נסו שוב."));
+                  } finally { setSavingWebhook(false); }
                 }}
               >
-                <Copy text="להוסיף את הכתובת" /></Button>
+                <Copy text={savingWebhook ? "שומרים…" : "להוסיף את הכתובת"} /></Button>
             </div>
+            {webhookError ? <ErrorNote message={webhookError} /> : null}
 
             {secret ? (
               <div className="rounded-xl bg-[var(--soft)] p-4 text-[13px] leading-6 text-[color:var(--ink)]">
@@ -672,16 +687,25 @@ export default function IntegrationsPage() {
                 <ul className={`${CARD} divide-y divide-[var(--rule)]`}>
                   {data.webhooks.map((hook) => (
                     <li key={hook.id} className="flex items-center justify-between gap-3 px-4 py-2">
-                      <span dir="ltr" className="min-w-0 truncate font-mono text-[12px] text-[color:var(--ink-soft)]">
-                        {hook.url}
-                      </span>
+                      <div className="min-w-0 py-2">
+                        <span dir="ltr" className="block truncate font-mono text-[12px] text-[color:var(--ink-soft)]">{hook.url}</span>
+                        <p className="mt-1 text-[13px] leading-5 text-[var(--ink-soft)]">{t(hook.last_delivery === undefined ? "מצב המסירה עוד לא נבדק." : !hook.last_delivery ? "הכתובת נשמרה. עדיין לא נשלחה אליה הודעה." : hook.last_delivery.ok ? "המערכת המקבלת אישרה את קבלת ההודעה." : "ההודעה האחרונה לא נמסרה. בדקו את הכתובת במערכת המקבלת.")}</p>
+                        {hook.last_delivery ? <p className="mt-1 text-[12px] tabular-nums text-[var(--ink-muted)]"><bdi>{checkedDate(hook.last_delivery.at, LOCALE_META[locale].formatLocale)}</bdi></p> : null}
+                      </div>
                       <button
                         type="button"
                         className={`${QUIET_ACTION} shrink-0 !text-[13px]`}
+                        disabled={deletingWebhook !== null || demo}
                         onClick={async () => {
-                          await endpoints.deleteWebhook(hook.id);
-                          await reload();
-                          toast(t("הכתובת נמחקה"));
+                          if (demo || deletingWebhook !== null) return;
+                          setDeletingWebhook(hook.id); setWebhookError("");
+                          try {
+                            await endpoints.deleteWebhook(hook.id);
+                            setData(previous => previous ? {...previous, webhooks: previous.webhooks.filter(item => item.id !== hook.id)} : previous);
+                            toast(t("הכתובת נמחקה"));
+                          } catch (err) {
+                            setWebhookError(err instanceof Error ? t(err.message) : t("לא הצלחנו להסיר את הכתובת. נסו שוב."));
+                          } finally { setDeletingWebhook(null); }
                         }}
                       >
                         <Copy text="למחוק את הכתובת" /></button>

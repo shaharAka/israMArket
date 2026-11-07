@@ -827,6 +827,7 @@ def _finish_structure(db: Session, business: Business, state: dict, scraped_prof
                 "posts": "pending",
             },
             db=db,
+            event_id=f"strategy:{strategy.id}:{business.updated_at.isoformat()}",
         )
     except Exception:
         # The month is stored; a failing webhook must not turn it into a failed job.

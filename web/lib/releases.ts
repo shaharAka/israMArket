@@ -5,6 +5,13 @@
 // Message: connect Instagram, paste the Story link, and see the count with its read date.
 export const RELEASES = [
   {
+    id: "2026-11-07-webhook-delivery", date: "2026-11-07",
+    title: "יודעים אם המידע הגיע למערכת שלכם",
+    summary: "בחיבור למערכות אחרות רואים אם הכתובת רק נשמרה, אם ההודעה התקבלה או אם המסירה נכשלה.",
+    detail: "אם המסירה נכשלת זמנית, נבצע עד שלושה ניסיונות מסירה. התוכנית וההמלצות נשמרות גם אם המערכת המקבלת אינה זמינה.",
+    href: "/integrations", action: "לפתוח את החיבורים",
+  },
+  {
     id: "2026-11-07-guided-source-recovery", date: "2026-11-07",
     title: "חיבור פשוט יותר לנתוני העסק",
     summary: "בטלפון בוחרים חיבור אחד ועובדים עליו. בכל חיבור רואים אם ניתנה גישה, נבחר החשבון והתקבלו נתונים.",

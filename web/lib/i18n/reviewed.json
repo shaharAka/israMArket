@@ -1124,6 +1124,66 @@
       "en": "Continue setting up your business",
       "ar": "متابعة إعداد نشاطكم التجاري",
       "ru": "Продолжить настройку бизнеса"
+    },
+    "m_07ce53758ce22aa2": {
+      "en": "Enter the receiving system’s full HTTPS address, without a username, password or # symbol.",
+      "ar": "أدخلوا عنوان HTTPS الكامل للنظام المستقبِل، من دون اسم مستخدم أو كلمة مرور أو علامة #.",
+      "ru": "Введите полный HTTPS-адрес принимающей системы без имени пользователя, пароля и символа #."
+    },
+    "m_a5e91b54da2cc9ff": {
+      "en": "This event type is not supported. Choose strategy or recommendations.",
+      "ar": "نوع الرسالة غير مدعوم. اختاروا strategy أو recommendations.",
+      "ru": "Этот тип сообщения не поддерживается. Выберите strategy или recommendations."
+    },
+    "m_7a99182a92d0a6b0": {
+      "en": "Receiving system address",
+      "ar": "عنوان النظام المستقبِل",
+      "ru": "Адрес принимающей системы"
+    },
+    "m_ff0109b1261ac948": {
+      "en": "We couldn’t save the address. Try again.",
+      "ar": "تعذّر حفظ العنوان. حاولوا مجددًا.",
+      "ru": "Не удалось сохранить адрес. Попробуйте снова."
+    },
+    "m_b46da0304b682849": {
+      "en": "We couldn’t remove the address. Try again.",
+      "ar": "تعذّر حذف العنوان. حاولوا مجددًا.",
+      "ru": "Не удалось удалить адрес. Попробуйте снова."
+    },
+    "m_7cb69b2d62f1a975": {
+      "en": "Address saved. No message has been sent to it yet.",
+      "ar": "تم حفظ العنوان. لم تُرسَل إليه أي رسالة بعد.",
+      "ru": "Адрес сохранён. Сообщения на него ещё не отправлялись."
+    },
+    "m_75659e7cbb03fe09": {
+      "en": "The receiving system acknowledged the message.",
+      "ar": "أكد النظام المستقبِل استلام الرسالة.",
+      "ru": "Принимающая система подтвердила получение сообщения."
+    },
+    "m_c3d52f907504f2db": {
+      "en": "The last message wasn’t delivered. Check the address in the receiving system.",
+      "ar": "لم يتم تسليم الرسالة الأخيرة. تحقّقوا من العنوان في النظام المستقبِل.",
+      "ru": "Последнее сообщение не доставлено. Проверьте адрес в принимающей системе."
+    },
+    "m_df50c9b3d3eb7eb9": {
+      "en": "Delivery status hasn’t been checked yet.",
+      "ar": "لم يتم التحقّق من حالة التسليم بعد.",
+      "ru": "Статус доставки ещё не проверен."
+    },
+    "m_47954ef5eda0c352": {
+      "en": "See whether your system received the information",
+      "ar": "اعرفوا إن كانت المعلومات قد وصلت إلى نظامكم",
+      "ru": "Узнайте, получила ли Ваша система информацию"
+    },
+    "m_b8dbc872c062845a": {
+      "en": "Connections to other systems now show whether the address is saved, the message was received or delivery failed.",
+      "ar": "في الربط بالأنظمة الأخرى، ترون إن كان العنوان محفوظًا فقط، أو تم استلام الرسالة، أو فشل التسليم.",
+      "ru": "В подключениях к другим системам видно, сохранён ли только адрес, получено ли сообщение или произошёл сбой доставки."
+    },
+    "m_658ba397d07b0eae": {
+      "en": "For temporary delivery failures, we make up to three delivery attempts. Your plan and recommendations stay saved even when the receiving system is unavailable.",
+      "ar": "عند تعثّر التسليم مؤقتًا، نجري ما يصل إلى ثلاث محاولات تسليم. تبقى خطتكم وتوصياتكم محفوظة حتى إن كان النظام المستقبِل غير متاح.",
+      "ru": "При временном сбое мы делаем до трёх попыток доставки. План и рекомендации остаются сохранёнными, даже если принимающая система недоступна."
     }
   },
   "numberForms": {
