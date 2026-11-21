@@ -9,6 +9,7 @@ export const PROCESS_ROLES = [
   { segment: "physical_shop", path: "products", label: "בעלי חנות פיזית" },
 ] as const;
 export type ProcessRole = typeof PROCESS_ROLES[number]["segment"];
+export const DEFAULT_PROCESS_EXAMPLE: ProcessRole = "physical_shop";
 export function isProcessRole(value: string | null): value is ProcessRole {
   return PROCESS_ROLES.some(role => role.segment === value);
 }

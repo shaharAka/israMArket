@@ -1,20 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { Fragment, useState } from "react";
+import { useState } from "react";
 import { Copy, useCopy, useLanguage } from "@/components/language/LanguageProvider";
 import { PROCESS_HERO } from "./processStory";
-import { PROCESS_EXAMPLES, EXAMPLE_OUTCOME, type ProcessRole } from "./processExamples";
+import { DEFAULT_PROCESS_EXAMPLE, PROCESS_EXAMPLES, type ProcessRole } from "./processExamples";
 import { useFeatureCycle } from "./useFeatureCycle";
 import { CampaignClip } from "./LandingQaScenes";
 import { TrialCtaLabel, TrialOfferNote } from "./TrialCtaLabel";
 import styles from "./signal-hero.module.css";
-
-/** Whole words preserve Hebrew/Arabic shaping. The original message remains intact. */
-export function ReactiveWords({ text }: { text: string }) {
-  const t = useCopy();
-  return t(text).split(" ").map((word, i) => <Fragment key={i}><span className={styles.word}>{word}</span>{" "}</Fragment>);
-}
 
 function Arrow(){const {locale}=useLanguage();return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><path d={locale==="he"||locale==="ar"?"M20 12H4m6-6-6 6 6 6":"M4 12h16m-6-6 6 6-6 6"}/></svg>;}
 
@@ -22,7 +16,7 @@ export function SignalHero({ start, role }: { start: string; role: ProcessRole |
   const { ref, playing, reduced } = useFeatureCycle(1);
   const [paused, setPaused] = useState(false);
   const t = useCopy();
-  const exampleRole = role ?? "online_shop";
+  const exampleRole = role ?? DEFAULT_PROCESS_EXAMPLE;
   const example = PROCESS_EXAMPLES[exampleRole];
 
   return <section className={styles.hero} aria-labelledby="process-title">
@@ -37,7 +31,6 @@ export function SignalHero({ start, role }: { start: string; role: ProcessRole |
       <figure className={styles.campaign}>
         <div ref={ref} className={styles.media}>
           <CampaignClip role={exampleRole} playing={playing && !paused} />
-          <div className={styles.credit}><Copy text="קמפיין לדוגמה" /> · <Copy text={example.name} /></div>
           {!reduced && <button type="button" className={styles.motion} onClick={() => setPaused(!paused)}
             aria-label={paused ? t("הפעלת הסרטון") : t("השהיית הסרטון")}>
             <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -46,8 +39,8 @@ export function SignalHero({ start, role }: { start: string; role: ProcessRole |
           </button>}
         </div>
         <figcaption>
-          <div><small><Copy text="המטרה" /></small><strong><Copy text={example.planTitle} /></strong></div>
-          <div><small><Copy text="מה מודדים" /></small><strong><Copy text={EXAMPLE_OUTCOME[exampleRole].metric} /></strong></div>
+          <strong><Copy text={example.weeks[2]} /></strong>
+          <span><Copy text={example.name} /> · <Copy text="קמפיין לדוגמה" /></span>
         </figcaption>
       </figure>
     </div>

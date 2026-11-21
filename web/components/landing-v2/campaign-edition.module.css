@@ -1,0 +1,119 @@
+.edition {
+  color: var(--paper);
+  min-width: 0;
+}
+.identity {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 18px;
+  padding-block-end: 14px;
+  margin-block-end: 16px;
+  border-bottom: 1px solid var(--dark-line);
+}
+.identity strong {
+  font-size: clamp(18px, 1.8vw, 25px);
+  line-height: 1.25;
+  font-weight: 600;
+}
+.identity > span {
+  color: var(--dark-copy);
+  font-size: 12px;
+}
+.formats {
+  display: grid;
+  grid-template-columns: minmax(0, 1.28fr) repeat(2, minmax(0, 1fr));
+  gap: clamp(8px, 1vw, 14px);
+  align-items: start;
+}
+.formats article {
+  overflow: hidden;
+  min-width: 0;
+  border-radius: 12px;
+}
+.channel {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 9px 10px;
+  font-size: 11px;
+  font-weight: 600;
+}
+.channel img {
+  flex: none;
+}
+.poster,
+.feed {
+  background: var(--paper);
+  color: var(--ink);
+}
+.posterImage,
+.feedImage {
+  position: relative;
+  background: var(--soft);
+}
+.posterImage {
+  aspect-ratio: 1.08;
+}
+.feedImage {
+  aspect-ratio: 1.26;
+}
+.posterImage img,
+.feedImage img {
+  object-fit: cover;
+}
+.poster p {
+  font-size: clamp(17px, 1.65vw, 24px);
+  font-weight: 700;
+  line-height: 1.18;
+  padding: 12px;
+  text-wrap: balance;
+}
+.feed p,
+.reel p {
+  font-size: 13px;
+  line-height: 1.5;
+  padding: 10px;
+}
+.reel {
+  background: var(--dark-raised);
+  color: var(--paper);
+}
+.reel .channel img {
+  border-radius: 3px;
+  padding: 2px;
+  background: var(--paper);
+}
+.film {
+  aspect-ratio: .78;
+  background: var(--dark-ground);
+}
+.film video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.film video[data-software=true] {
+  object-fit: contain;
+}
+@media (max-width: 700px) {
+  .formats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .poster {
+    grid-column: 1 / -1;
+  }
+  .posterImage {
+    aspect-ratio: 1.65;
+  }
+  .poster p {
+    font-size: 22px;
+    padding: 13px;
+  }
+  .feedImage,
+  .film {
+    aspect-ratio: 1;
+  }
+}

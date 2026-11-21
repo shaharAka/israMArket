@@ -1,16 +1,15 @@
 "use client";
 
 import { useEffect, useRef, useState, type CSSProperties } from "react";
-import { Copy, useCopy, useLanguage } from "@/components/language/LanguageProvider";
-import { PROCESS_EXAMPLES, EXAMPLE_RESULTS, EXAMPLE_OUTCOME, type ProcessRole } from "./processExamples";
+import { Copy, useLanguage } from "@/components/language/LanguageProvider";
+import { DEFAULT_PROCESS_EXAMPLE, PROCESS_EXAMPLES, EXAMPLE_RESULTS, EXAMPLE_OUTCOME, type ProcessRole } from "./processExamples";
 import { PROCESS_CAMPAIGNS } from "./processCampaigns";
 import Image from "next/image";
-import { CampaignArtwork, campaignPhoto } from "./ProcessCampaignArtwork";
-import { ProcessSocialPost } from "./ProcessSocialPost";
+import { campaignPhoto } from "./ProcessCampaignArtwork";
 import { useProcessSequence } from "./useProcessSequence";
-import { useCampaignReveal } from "./useCampaignReveal";
 import styles from "./qa-scenes.module.css";
 import rhythm from "./process-rhythm.module.css";
+import campaign from "./campaign-edition.module.css";
 
 /** The visible label on every invented example figure or business. */
 export function ExampleTag(){return <b className={rhythm.exampleTag}><Copy text="דוגמה"/></b>;}
@@ -20,12 +19,11 @@ const GROWTH_TIMES=[2400,2600,3000] as const;
 const CLIPS={services:["designer-human-motion-ai.mp4","designer-human-motion-poster.jpg"],online_shop:["kefel-fitting-room-campaign.mp4","kefel-fitting-room-poster.jpg"],physical_shop:["bakery-human-motion-ai.mp4","bakery-human-motion-poster.jpg"],fundraising:["community-human-motion-ai.mp4","community-human-motion-poster.jpg"]} as const;
 export function TargetIcon(){return <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="23" cy="25" r="18"/><circle cx="23" cy="25" r="11"/><circle cx="23" cy="25" r="4"/><path d="m23 25 17-17m-1-5v7h7"/></svg>;}
 function Check(){return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>;}
-export function CampaignClip({role,playing,detail=false}:{role:ProcessRole;playing:boolean;detail?:boolean}){
+export function CampaignClip({role,playing}:{role:ProcessRole;playing:boolean}){
   const {locale}=useLanguage();const ref=useRef<HTMLVideoElement>(null);
   const [src,poster]=role==="software"?[`maslul-project-demo-${locale}.mp4`,`maslul-project-demo-${locale}.jpg`]:CLIPS[role];
-  const path=detail&&role==="online_shop"?"kefel-linen-detail-campaign.mp4":src;
-  useEffect(()=>{const v=ref.current;if(!v)return;if(playing)void v.play().catch(()=>{});else v.pause();},[path,playing]);
-  return <video ref={ref} src={`/showcase/${path}`} poster={`/showcase/${poster}`} muted loop playsInline preload="metadata" data-software={role==="software"}/>;
+  useEffect(()=>{const v=ref.current;if(!v)return;if(playing)void v.play().catch(()=>{});else v.pause();},[src,playing]);
+  return <video ref={ref} src={`/showcase/${src}`} poster={`/showcase/${poster}`} muted loop playsInline preload="metadata" data-software={role==="software"}/>;
 }
 export { QuestionnaireScene } from "./QuestionnaireDemo";
 /** Three inputs converge into coordinated campaign material; the layout never changes height. */
@@ -38,10 +36,50 @@ export function HeroBriefScene({role,playing,reduced=false}:{role:ProcessRole;pl
     <div className={styles.briefResult}><span><Copy text="הקמפיין שלכם"/></span><div>{[0,1,2].map(i=><div key={i}><Image src={campaignPhoto(role,i,locale)} alt="" width={240} height={300} sizes="120px" style={{display:"block",width:"100%",height:"100%",objectFit:"cover"}}/></div>)}</div></div>
   </div>;
 }
-export function CampaignMaterialsScene({role:requested,playing,compact=false}:{role:ProcessRole|null;playing:boolean;compact?:boolean}){
-  const t=useCopy();const {locale}=useLanguage();const role=requested??"online_shop",example=PROCESS_EXAMPLES[role];const channels=[2,0,1];
-  const revealRef=useCampaignReveal(!compact,playing,`${role}:${locale}`);
-  return <div className={`${styles.materials} ${compact?styles.compact:""}`} data-campaign-materials><header><strong><Copy text="הקמפיין: {arg_0}" args={{arg_0:t(example.weeks[0])}}/></strong><span><Copy text={example.name}/> <ExampleTag/></span></header><div ref={revealRef} className={styles.posts}>{channels.map((channel,i)=><div key={channel} className={styles.post}><ProcessSocialPost index={channel} name={example.name} caption={["", PROCESS_CAMPAIGNS[role][0].title, PROCESS_CAMPAIGNS[role][1].headline][i]} video={i===2} material="campaign" hideName={compact}><div className={styles.postMedia} data-campaign-media>{i===2?<CampaignClip role={role} playing={playing} detail={compact}/>:<CampaignArtwork role={role} index={0} support={i===0} ratio="4:5"/>}</div></ProcessSocialPost>{compact&&<span className={styles.platformName}>{["Facebook","TikTok","Instagram","LinkedIn"][channel]}</span>}</div>)}</div></div>;
+function ChannelLabel({ channel }: { channel: "Instagram" | "Facebook" | "TikTok" | "LinkedIn" }) {
+  return <span className={campaign.channel} dir="ltr">
+    <Image src={`/connectors/${channel.toLowerCase()}.svg`} width={15} height={15} alt="" />
+    {channel}
+  </span>;
+}
+
+/** One campaign, with artwork, practical details and a short film for different feeds. */
+export function CampaignMaterialsScene({ role: requested, playing }: { role: ProcessRole | null; playing: boolean }) {
+  const { locale } = useLanguage();
+  const role = requested ?? DEFAULT_PROCESS_EXAMPLE;
+  const example = PROCESS_EXAMPLES[role];
+  const [, film, offer] = PROCESS_CAMPAIGNS[role];
+  const filmChannel = role === "software" ? "LinkedIn" : "TikTok";
+
+  return <div className={campaign.edition} data-campaign-materials>
+    <header className={campaign.identity}>
+      <strong><Copy text={example.weeks[2]} /></strong>
+      <span><Copy text={example.name} /> <ExampleTag /></span>
+    </header>
+    <div className={campaign.formats}>
+      <article className={campaign.poster} data-social-platform="Instagram">
+        <ChannelLabel channel="Instagram" />
+        <div className={campaign.posterImage} data-campaign-media>
+          <Image src={campaignPhoto(role, 2, locale)} alt="" fill sizes="(max-width: 700px) 90vw, 300px" />
+        </div>
+        <p><Copy text={offer.title} /></p>
+      </article>
+      <article className={campaign.feed} data-social-platform="Facebook">
+        <ChannelLabel channel="Facebook" />
+        <div className={campaign.feedImage} data-campaign-media>
+          <Image src={campaignPhoto(role, 0, locale)} alt="" fill sizes="220px" />
+        </div>
+        <p><Copy text={offer.subline} /></p>
+      </article>
+      <article className={campaign.reel} data-social-platform={filmChannel} data-campaign-material="video">
+        <ChannelLabel channel={filmChannel} />
+        <div className={campaign.film} data-campaign-media>
+          <CampaignClip role={role} playing={playing} />
+        </div>
+        <p><Copy text={film.headline} /></p>
+      </article>
+    </div>
+  </div>;
 }
 /** The changing metric stays anchored to the campaign material behind it. */
 export function CampaignGrowthScene({playing,reduced=false,compact=false,role="online_shop"}:{playing:boolean;reduced?:boolean;compact?:boolean;role?:ProcessRole}){

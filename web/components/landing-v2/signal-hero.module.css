@@ -1,8 +1,6 @@
 .hero {
-  --signal: #ff7957;
-  --paper: #fff9f3;
-  color: var(--hero-ink, #20221c);
-  background: var(--paper);
+  color: var(--paper);
+  background: var(--dark-ground);
 }
 .root {
   display: grid;
@@ -18,32 +16,55 @@
   font-weight: 700;
   font-size: clamp(44px, 5.4vw, 88px);
   line-height: 1.04;
-  letter-spacing: -.042em;
+  letter-spacing: -.035em;
   text-wrap: balance;
 }
 :global(html[lang=he]) .copy h1 { font-family: SignalHebrew, var(--font-site-clean), sans-serif; font-weight: 400; }
-.copy p { margin-top: 22px; max-width: 43ch; font-size: clamp(17px, 1.5vw, 21px); line-height: 1.55; }
+.copy p { margin-top: 22px; max-width: 43ch; font-size: clamp(17px, 1.5vw, 21px); line-height: 1.55; color: var(--dark-copy); }
 .copy .approval { margin-top: 9px; font-size: 15px; }
-.start { display: inline-flex; align-items: center; gap: 24px; min-height: 50px; padding: 10px 20px; background: var(--hero-ink, #20221c); color: var(--paper); border-radius: 7px; font-weight: 650; margin-top: 25px; }
-.start:hover { background: #393b35; }
+.start {
+  display: inline-flex;
+  align-items: center;
+  gap: 18px;
+  min-height: 50px;
+  padding: 10px 21px;
+  background: var(--dark-action);
+  color: var(--dark-ground);
+  border-radius: 10px;
+  font-weight: 650;
+  margin-top: 25px;
+}
+.start:hover { background: var(--paper); }
 .start svg { width: 22px; height: 22px; }
-.copy > small { display: block; margin-top: 8px; font-size: 12px; }
-.campaign { margin: 0; background: var(--signal); overflow: hidden; border-radius: 4px; }
-.media { position: relative; aspect-ratio: 1.25; background: #242722; }
-.media video { width: 100%; height: 100%; display: block; object-fit: cover; object-position: center 10%; }
+.copy > small { display: block; margin-top: 9px; color: var(--dark-copy); font-size: 12px; }
+.campaign { margin: 0; overflow: hidden; border-radius: 14px; background: var(--dark-raised); }
+.media { position: relative; aspect-ratio: 1.22; background: var(--dark-raised); }
+.media video { width: 100%; height: 100%; display: block; object-fit: cover; object-position: center 40%; }
 .media video[data-software=true] { object-fit: contain; }
-.credit, .motion { position: absolute; background: #242722; color: white; }
-.credit { inset-block-start: 16px; inset-inline-start: 16px; padding: 5px 10px; font-size: 12px; }
-.motion { inset-block-end: 12px; inset-inline-end: 12px; display: grid; place-items: center; border-radius: 50%; width: 44px; height: 44px; }
+.motion {
+  position: absolute;
+  inset-block-end: 12px;
+  inset-inline-end: 12px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  background: var(--dark-ground);
+  color: var(--paper);
+}
 .motion svg { width: 18px; height: 18px; }
-.motion:focus-visible, .start:focus-visible { outline: 3px solid var(--signal); outline-offset: 2px; }
-.campaign figcaption { display: grid; grid-template-columns: 1.4fr 1fr; padding: 18px 22px; gap: 14px; }
-.campaign figcaption > div + div { border-inline-start: 1px solid #713a2c; padding-inline-start: 16px; }
-.campaign figcaption small, .campaign figcaption strong { display: block; }
-.campaign figcaption small { font-size: 12px; margin-bottom: 4px; }
-.campaign figcaption strong { font-size: clamp(15px, 1.45vw, 21px); line-height: 1.25; }
-.word { display: inline-block; padding-inline: .05em; margin-inline: -.05em; border-radius: 2px; }
-.word:hover { background: #ff7957; color: #20221c; }
+.motion:focus-visible, .start:focus-visible { outline: 3px solid var(--dark-action); outline-offset: 3px; }
+.campaign figcaption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 14px;
+  padding: 14px 17px;
+}
+.campaign figcaption span { font-size: 12px; color: var(--dark-copy); }
+.campaign figcaption strong { font-size: clamp(15px, 1.5vw, 21px); line-height: 1.25; }
 @media (max-width: 760px) {
   .root { grid-template-columns: 1fr; gap: 27px; padding: 34px 20px 28px; }
   .copy h1 { font-size: clamp(41px, 9vw, 62px); }

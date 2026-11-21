@@ -628,12 +628,12 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 26,
+        "line": 27,
         "kind": "literal"
       },
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 79,
+        "line": 80,
         "kind": "literal"
       },
       {
@@ -2465,7 +2465,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 60,
+        "line": 61,
         "kind": "literal"
       }
     ]
@@ -4662,7 +4662,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 48,
+        "line": 49,
         "kind": "literal"
       }
     ]
@@ -5278,7 +5278,7 @@
       },
       {
         "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 36,
+        "line": 34,
         "kind": "literal"
       },
       {
@@ -6856,7 +6856,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 74,
+        "line": 75,
         "kind": "literal"
       }
     ]
@@ -6900,7 +6900,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 38,
+        "line": 39,
         "kind": "literal"
       },
       {
@@ -7831,7 +7831,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 49,
+        "line": 50,
         "kind": "literal"
       },
       {
@@ -8302,7 +8302,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 37,
+        "line": 38,
         "kind": "literal"
       }
     ]
@@ -8475,7 +8475,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 42,
+        "line": 35,
         "kind": "literal"
       }
     ]
@@ -10229,7 +10229,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 48,
+        "line": 49,
         "kind": "literal"
       }
     ]
@@ -10295,7 +10295,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 88,
+        "line": 89,
         "kind": "literal"
       }
     ]
@@ -11401,7 +11401,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 55,
+        "line": 93,
         "kind": "literal"
       }
     ]
@@ -13415,7 +13415,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 48,
+        "line": 49,
         "kind": "literal"
       }
     ]
@@ -13448,7 +13448,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 83,
+        "line": 84,
         "kind": "literal"
       }
     ]
@@ -13642,7 +13642,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 61,
+        "line": 62,
         "kind": "literal"
       }
     ]
@@ -15180,7 +15180,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 45,
+        "line": 46,
         "kind": "literal"
       }
     ]
@@ -16564,7 +16564,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 25,
+        "line": 26,
         "kind": "literal"
       }
     ]
@@ -16901,7 +16901,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 61,
+        "line": 62,
         "kind": "literal"
       }
     ]
@@ -17863,7 +17863,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 36,
+        "line": 37,
         "kind": "literal"
       }
     ]
@@ -20504,7 +20504,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 62,
+        "line": 63,
         "kind": "literal"
       }
     ]
@@ -20945,7 +20945,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 26,
+        "line": 27,
         "kind": "literal"
       }
     ]
@@ -21048,7 +21048,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 24,
+        "line": 25,
         "kind": "literal"
       }
     ]
@@ -23683,7 +23683,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 55,
+        "line": 93,
         "kind": "literal"
       }
     ]
@@ -25006,7 +25006,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 35,
+        "line": 36,
         "kind": "literal"
       }
     ]
@@ -25039,7 +25039,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 61,
+        "line": 62,
         "kind": "literal"
       }
     ]
@@ -25171,7 +25171,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 36,
+        "line": 37,
         "kind": "literal"
       }
     ]
@@ -27779,17 +27779,6 @@
       }
     ]
   },
-  "m_36f3d2fd1a2d331c": {
-    "source": "הקמפיין: {arg_0}",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 44,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_36fc3ae398e7827a": {
     "source": "תנאי השימוש",
     "language": "he",
@@ -28121,7 +28110,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 27,
+        "line": 28,
         "kind": "literal"
       }
     ]
@@ -28944,7 +28933,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 37,
+        "line": 38,
         "kind": "literal"
       }
     ]
@@ -29751,7 +29740,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 89,
+        "line": 90,
         "kind": "literal"
       }
     ]
@@ -30705,7 +30694,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 89,
+        "line": 90,
         "kind": "literal"
       },
       {
@@ -30835,7 +30824,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 55,
+        "line": 93,
         "kind": "literal"
       }
     ]
@@ -31003,7 +30992,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 25,
+        "line": 26,
         "kind": "literal"
       }
     ]
@@ -31467,7 +31456,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 90,
+        "line": 91,
         "kind": "literal"
       }
     ]
@@ -33937,7 +33926,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 56,
+        "line": 57,
         "kind": "literal"
       }
     ]
@@ -33982,7 +33971,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 50,
+        "line": 51,
         "kind": "literal"
       }
     ]
@@ -34349,7 +34338,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 81,
+        "line": 82,
         "kind": "literal"
       },
       {
@@ -34719,7 +34708,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 75,
+        "line": 76,
         "kind": "literal"
       }
     ]
@@ -34840,7 +34829,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 39,
+        "line": 40,
         "kind": "literal"
       },
       {
@@ -36155,7 +36144,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 54,
+        "line": 92,
         "kind": "literal"
       }
     ]
@@ -37729,7 +37718,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 73,
+        "line": 74,
         "kind": "literal"
       }
     ]
@@ -39469,7 +39458,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 50,
+        "line": 51,
         "kind": "literal"
       }
     ]
@@ -39766,7 +39755,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 54,
+        "line": 55,
         "kind": "literal"
       }
     ]
@@ -40754,7 +40743,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 76,
+        "line": 77,
         "kind": "literal"
       }
     ]
@@ -40974,7 +40963,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 90,
+        "line": 91,
         "kind": "literal"
       }
     ]
@@ -42401,7 +42390,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 63,
+        "line": 64,
         "kind": "literal"
       },
       {
@@ -43401,7 +43390,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 54,
+        "line": 92,
         "kind": "literal"
       }
     ]
@@ -43769,12 +43758,12 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 56,
+        "line": 57,
         "kind": "literal"
       },
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 65,
+        "line": 66,
         "kind": "literal"
       }
     ]
@@ -44398,7 +44387,7 @@
       },
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 41,
+        "line": 42,
         "kind": "literal"
       }
     ]
@@ -44637,7 +44626,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 91,
+        "line": 92,
         "kind": "literal"
       },
       {
@@ -44709,7 +44698,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 93,
+        "line": 94,
         "kind": "literal"
       }
     ]
@@ -45627,7 +45616,7 @@
       },
       {
         "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 38,
+        "line": 36,
         "kind": "literal"
       },
       {
@@ -46902,7 +46891,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 88,
+        "line": 89,
         "kind": "literal"
       }
     ]
@@ -48923,17 +48912,6 @@
       }
     ]
   },
-  "m_63eae07763f435f6": {
-    "source": "מה מודדים",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 50,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_63f35c46ecd10e18": {
     "source": "להוביל את הצופים לצעד ברור",
     "language": "he",
@@ -50545,17 +50523,6 @@
       }
     ]
   },
-  "m_66f001ae8d6df2f0": {
-    "source": "מההיכרות ועד התוצאות.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 57,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_66f1afdf85abe547": {
     "source": "אופי התנועה",
     "language": "he",
@@ -50910,7 +50877,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 36,
+        "line": 37,
         "kind": "literal"
       }
     ]
@@ -51067,7 +51034,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 54,
+        "line": 92,
         "kind": "literal"
       }
     ]
@@ -51113,7 +51080,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 89,
+        "line": 90,
         "kind": "literal"
       }
     ]
@@ -51543,7 +51510,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 37,
+        "line": 38,
         "kind": "literal"
       }
     ]
@@ -52606,7 +52573,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 36,
+        "line": 34,
         "kind": "literal"
       },
       {
@@ -52614,11 +52581,6 @@
         "line": 91,
         "kind": "literal",
         "purpose": "display"
-      },
-      {
-        "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 49,
-        "kind": "literal"
       },
       {
         "file": "web/components/posts/CampaignBrief.tsx",
@@ -54260,7 +54222,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 90,
+        "line": 91,
         "kind": "literal"
       }
     ]
@@ -55529,7 +55491,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 79,
+        "line": 80,
         "kind": "literal"
       }
     ]
@@ -55771,7 +55733,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 53,
+        "line": 54,
         "kind": "literal"
       }
     ]
@@ -55845,7 +55807,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 83,
+        "line": 84,
         "kind": "literal"
       }
     ]
@@ -56540,7 +56502,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 69,
+        "line": 70,
         "kind": "literal"
       }
     ]
@@ -57153,7 +57115,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 54,
+        "line": 92,
         "kind": "literal"
       }
     ]
@@ -57526,7 +57488,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 69,
+        "line": 70,
         "kind": "literal"
       }
     ]
@@ -58231,7 +58193,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 78,
+        "line": 79,
         "kind": "literal"
       }
     ]
@@ -59000,7 +58962,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 52,
+        "line": 53,
         "kind": "literal"
       }
     ]
@@ -59614,7 +59576,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 23,
+        "line": 24,
         "kind": "literal"
       }
     ]
@@ -60282,7 +60244,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 36,
+        "line": 37,
         "kind": "literal"
       },
       {
@@ -61480,7 +61442,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 78,
+        "line": 79,
         "kind": "literal"
       }
     ]
@@ -62103,7 +62065,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 46,
+        "line": 47,
         "kind": "literal"
       }
     ]
@@ -62783,7 +62745,7 @@
       },
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 61,
+        "line": 62,
         "kind": "literal"
       },
       {
@@ -63934,7 +63896,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 80,
+        "line": 81,
         "kind": "literal"
       }
     ]
@@ -64134,7 +64096,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 36,
+        "line": 37,
         "kind": "literal"
       }
     ]
@@ -65863,7 +65825,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 80,
+        "line": 81,
         "kind": "literal"
       }
     ]
@@ -68146,7 +68108,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 50,
+        "line": 51,
         "kind": "literal"
       }
     ]
@@ -70271,7 +70233,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 38,
+        "line": 39,
         "kind": "literal"
       },
       {
@@ -70365,7 +70327,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 33,
+        "line": 27,
         "kind": "literal"
       }
     ]
@@ -70387,7 +70349,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 79,
+        "line": 80,
         "kind": "literal"
       }
     ]
@@ -70984,7 +70946,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 49,
+        "line": 50,
         "kind": "literal"
       }
     ]
@@ -74526,7 +74488,7 @@
       },
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 49,
+        "line": 50,
         "kind": "literal"
       },
       {
@@ -75052,7 +75014,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 89,
+        "line": 90,
         "kind": "literal"
       }
     ]
@@ -75856,7 +75818,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 79,
+        "line": 80,
         "kind": "literal"
       },
       {
@@ -76441,7 +76403,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 82,
+        "line": 83,
         "kind": "literal"
       }
     ]
@@ -78848,7 +78810,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 80,
+        "line": 81,
         "kind": "literal"
       }
     ]
@@ -79889,7 +79851,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 48,
+        "line": 49,
         "kind": "literal"
       }
     ]
@@ -81649,7 +81611,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 93,
+        "line": 94,
         "kind": "literal"
       }
     ]
@@ -82166,7 +82128,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 90,
+        "line": 91,
         "kind": "literal"
       }
     ]
@@ -86188,7 +86150,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 62,
+        "line": 63,
         "kind": "literal"
       }
     ]
@@ -87932,7 +87894,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 40,
+        "line": 41,
         "kind": "literal"
       }
     ]
@@ -88393,7 +88355,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 51,
+        "line": 52,
         "kind": "literal"
       }
     ]
@@ -88736,7 +88698,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 41,
+        "line": 42,
         "kind": "literal"
       }
     ]
@@ -88987,7 +88949,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 51,
+        "line": 52,
         "kind": "literal"
       }
     ]
@@ -89294,7 +89256,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 79,
+        "line": 80,
         "kind": "literal"
       }
     ]
@@ -91886,7 +91848,7 @@
       },
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 24,
+        "line": 25,
         "kind": "literal"
       }
     ]
@@ -91953,7 +91915,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 37,
+        "line": 38,
         "kind": "literal"
       }
     ]
@@ -93364,7 +93326,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 54,
+        "line": 92,
         "kind": "literal"
       }
     ]
@@ -93448,7 +93410,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 35,
+        "line": 36,
         "kind": "literal"
       }
     ]
@@ -94484,7 +94446,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 60,
+        "line": 61,
         "kind": "literal"
       }
     ]
@@ -94847,7 +94809,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 61,
+        "line": 62,
         "kind": "literal"
       }
     ]
@@ -94948,7 +94910,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 48,
+        "line": 49,
         "kind": "literal"
       }
     ]
@@ -95714,7 +95676,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 35,
+        "line": 29,
         "kind": "literal"
       }
     ]
@@ -95816,7 +95778,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 36,
+        "line": 37,
         "kind": "literal"
       }
     ]
@@ -96187,7 +96149,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 55,
+        "line": 56,
         "kind": "literal"
       }
     ]
@@ -96435,7 +96397,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 48,
+        "line": 49,
         "kind": "literal"
       }
     ]
@@ -96763,7 +96725,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 47,
+        "line": 48,
         "kind": "literal"
       }
     ]
@@ -97328,7 +97290,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 62,
+        "line": 63,
         "kind": "literal"
       }
     ]
@@ -98338,7 +98300,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 40,
+        "line": 43,
         "kind": "literal"
       }
     ]
@@ -98803,7 +98765,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 89,
+        "line": 90,
         "kind": "literal"
       }
     ]
@@ -98898,7 +98860,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 64,
+        "line": 65,
         "kind": "literal"
       },
       {
@@ -100876,7 +100838,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 61,
+        "line": 62,
         "kind": "literal"
       }
     ]
@@ -105296,7 +105258,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 75,
+        "line": 76,
         "kind": "literal"
       }
     ]
@@ -106096,7 +106058,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 71,
+        "line": 72,
         "kind": "literal"
       }
     ]
@@ -108617,7 +108579,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 79,
+        "line": 80,
         "kind": "literal"
       }
     ]
@@ -108682,7 +108644,7 @@
       },
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 45,
+        "line": 46,
         "kind": "literal"
       }
     ]
@@ -111740,7 +111702,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 91,
+        "line": 92,
         "kind": "literal"
       },
       {
@@ -112905,7 +112867,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 92,
+        "line": 93,
         "kind": "literal"
       },
       {
@@ -114268,7 +114230,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 63,
+        "line": 64,
         "kind": "literal"
       },
       {
@@ -114417,7 +114379,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 50,
+        "line": 51,
         "kind": "literal"
       }
     ]
@@ -114732,7 +114694,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 81,
+        "line": 82,
         "kind": "literal"
       }
     ]
@@ -114776,7 +114738,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 80,
+        "line": 81,
         "kind": "literal"
       }
     ]
@@ -114855,7 +114817,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 62,
+        "line": 63,
         "kind": "literal"
       }
     ]
@@ -116660,7 +116622,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 23,
+        "line": 24,
         "kind": "literal"
       }
     ]
@@ -116777,7 +116739,7 @@
       },
       {
         "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 36,
+        "line": 34,
         "kind": "literal"
       },
       {
@@ -117227,7 +117189,7 @@
       },
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 65,
+        "line": 66,
         "kind": "literal"
       }
     ]
@@ -117729,7 +117691,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 27,
+        "line": 28,
         "kind": "literal"
       }
     ]
@@ -119358,7 +119320,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 72,
+        "line": 73,
         "kind": "literal"
       }
     ]
@@ -120195,7 +120157,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 55,
+        "line": 93,
         "kind": "literal"
       }
     ]
@@ -120234,7 +120196,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 89,
+        "line": 90,
         "kind": "literal"
       }
     ]
@@ -121004,7 +120966,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 47,
+        "line": 48,
         "kind": "literal"
       }
     ]
@@ -121347,7 +121309,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 52,
+        "line": 53,
         "kind": "literal"
       }
     ]
@@ -122287,7 +122249,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 42,
+        "line": 35,
         "kind": "literal"
       }
     ]
@@ -125826,7 +125788,7 @@
       },
       {
         "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 16,
+        "line": 15,
         "kind": "literal"
       },
       {
