@@ -11,7 +11,7 @@ from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from sqlalchemy.orm import Session
 
 from app.db import get_db
-from app.deps import get_current_user
+from app.deps import get_current_user, selected_business
 from app.models import Asset, Business, User
 from app.schemas import AssetImportUrlIn, AssetUpdateIn
 from app.services.assets import (
@@ -41,9 +41,7 @@ NOT_FOUND = "לא מצאנו את הקובץ הזה"
 
 
 def _business_for(db: Session, user: User) -> Business:
-    business = (
-        db.query(Business).filter(Business.user_id == user.id).order_by(Business.id.desc()).first()
-    )
+    business = selected_business(db, user)
     if not business:
         raise HTTPException(status_code=404, detail="עוד לא הגדרתם עסק")
     return business

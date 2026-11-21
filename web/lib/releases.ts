@@ -5,6 +5,13 @@
 // Message: connect Instagram, paste the Story link, and see the count with its read date.
 export const RELEASES = [
   {
+    id: "2026-11-21-workspaces", date: "2026-11-21",
+    title: "כמה עסקים, חשבון אחד",
+    summary: "אפשר לפתוח מרחב עבודה נפרד לכל עסק או עמותה ולעבור ביניהם מאותו חשבון.",
+    detail: "לכל מרחב יש היכרות, תוכנית, תוכן וחיבורים משלו.",
+    href: "/workspaces", action: "לפתוח את מרחבי העבודה",
+  },
+  {
     id: "2026-11-21-work-and-results", date: "2026-11-21",
     title: "הפוסט הבא והתוצאות במקום ברור",
     summary: "בקמפיין רואים מיד איזה פוסט מחכה לכם. בתוצאות רואים מה נמדד בכל פוסט ומה עוד חסר כדי לבדוק את היעד.",

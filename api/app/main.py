@@ -35,6 +35,7 @@ from app.routers import (
     support,
     trial,
     whatsapp,
+    workspaces,
 )
 from app.security import DEFAULT_JWT_SECRET
 from app.services import billing as billing_service
@@ -153,6 +154,7 @@ model_usage.install()
 
 app.include_router(auth.router)
 app.include_router(onboarding.router)
+app.include_router(workspaces.router)
 app.include_router(assets.router)
 app.include_router(brand_dna.router)
 app.include_router(audiences.router)

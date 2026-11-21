@@ -59,9 +59,14 @@ class User(Base):
 
 class Business(Base):
     __tablename__ = "businesses"
+    __table_args__ = (UniqueConstraint("user_id", "workspace_key", name="uq_business_workspace_key"),)
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
+    # Existing businesses stay the default. Explicitly created workspaces get a key
+    # so retrying a lost create response cannot create a second workspace.
+    workspace_key: Mapped[str | None] = mapped_column(String(36), nullable=True)
+    workspace_events_json: Mapped[str] = mapped_column(Text, default="{}", server_default="{}")
     name: Mapped[str] = mapped_column(String(255), default="")
     website_url: Mapped[str] = mapped_column(String(500), default="")
     business_type: Mapped[str] = mapped_column(String(120), default="")

@@ -70,6 +70,8 @@ def migrate_db():
     with engine.connect() as conn:
         existing = {row[1] for row in conn.exec_driver_sql("PRAGMA table_info(businesses)").fetchall()}
         new_cols = [
+            ("workspace_key", "VARCHAR(36)"),
+            ("workspace_events_json", "TEXT NOT NULL DEFAULT '{}'"),
             ("location", "VARCHAR(255) DEFAULT ''"),
             ("presence_type", "VARCHAR(40) DEFAULT 'brick_and_mortar'"),
             ("social_links_json", "TEXT DEFAULT '{}'"),
@@ -91,6 +93,9 @@ def migrate_db():
         for col, col_type in new_cols:
             if col not in existing:
                 conn.exec_driver_sql(f"ALTER TABLE businesses ADD COLUMN {col} {col_type}")
+        conn.exec_driver_sql(
+            "CREATE UNIQUE INDEX IF NOT EXISTS uq_business_workspace_key ON businesses (user_id, workspace_key)"
+        )
         # The free first month (Revision 7 B): additive, NULL/empty on existing accounts.
         user_cols = {row[1] for row in conn.exec_driver_sql("PRAGMA table_info(users)").fetchall()}
         for col, col_type in (

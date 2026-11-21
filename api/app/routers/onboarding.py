@@ -6,7 +6,7 @@ from pydantic import BaseModel, Field, ValidationError
 from sqlalchemy.orm import Session
 
 from app.db import get_db
-from app.deps import get_current_user
+from app.deps import get_current_user, selected_business
 from app.models import Asset, Business, Strategy, User
 from app.schemas import BrandLanguageIn, OnboardingIn, PaletteIn, WebsiteScanIn
 from app.services import connected_posts, design_dna, generation_jobs, image_jobs, month_posts
@@ -120,7 +120,7 @@ def _business_payload(business: Business) -> dict:
 
 @router.get("/me")
 def current_business(user: User = Depends(get_current_user), db: Session = Depends(get_db)) -> dict:
-    business = db.query(Business).filter(Business.user_id == user.id).order_by(Business.id.desc()).first()
+    business = selected_business(db, user)
     if not business:
         return {"business": None}
     return {"business": _business_payload(business)}
@@ -165,7 +165,7 @@ def from_draft(
     unchanged; generation reads the brand this stores (the cached site scan, or the
     style preset) and the chosen direction/idea (see onboarding_draft.apply_draft).
     """
-    business = db.query(Business).filter(Business.user_id == user.id).order_by(Business.id.desc()).first()
+    business = selected_business(db, user)
     if business and (business.onboarding_complete or loads(business.scraped_profile_json, {}).get("quarter_plan")) and body.draft.research_journey:
         raise HTTPException(status_code=409, detail="כבר יש עסק בחשבון הזה. הפרטים הקיימים נשמרו; אפשר להיכנס אליו.")
     if not business:
@@ -221,7 +221,7 @@ def draft_photos(
     """Link the photos uploaded right after signup (kept in the browser until then) to
     the week-1 posts chosen at /start, so the month uses them. Idempotent. Same
     response as /onboarding/me."""
-    business = db.query(Business).filter(Business.user_id == user.id).order_by(Business.id.desc()).first()
+    business = selected_business(db, user)
     if not business:
         raise HTTPException(status_code=404, detail="עוד אין עסק. קודם שומרים את מה שבנינו.")
     try:
@@ -251,7 +251,7 @@ def update_owner_context(
         update = OwnerContextIn.model_validate(body)
     except ValidationError as exc:
         raise HTTPException(status_code=422, detail=owner_context_errors_he(exc.errors())) from exc
-    business = db.query(Business).filter(Business.user_id == user.id).order_by(Business.id.desc()).first()
+    business = selected_business(db, user)
     if not business:
         raise HTTPException(status_code=400, detail="מלאו קודם את פרטי העסק.")
     apply_owner_context(business, update)
@@ -276,7 +276,7 @@ def scan_business_site(
         except Exception as exc:
             raise HTTPException(status_code=502, detail=str(exc)) from exc
 
-    business = db.query(Business).filter(Business.user_id == user.id).order_by(Business.id.desc()).first()
+    business = selected_business(db, user)
     if not business:
         business = Business(user_id=user.id, website_url=body.website_url)
         db.add(business)
@@ -336,7 +336,7 @@ def save_brand_language(
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> dict:
-    business = db.query(Business).filter(Business.user_id == user.id).order_by(Business.id.desc()).first()
+    business = selected_business(db, user)
     stored = loads(business.scraped_profile_json, {}) if business else {}
     if not business or not stored.get("brand_language"):
         raise HTTPException(status_code=400, detail="קודם צריך לקרוא את האתר. עד אז אין סגנון לשמור.")
@@ -374,7 +374,7 @@ def save_brand_logo(body: LogoSelectionIn, user: User = Depends(get_current_user
     from app.services.assets import business_folder
     from app.services.colors import image_size
 
-    business = db.query(Business).filter(Business.user_id == user.id).order_by(Business.id.desc()).first()
+    business = selected_business(db, user)
     if not business:
         raise HTTPException(status_code=404, detail="עוד לא הגדרתם עסק")
     record = None
@@ -443,7 +443,7 @@ def save_palette(
     — and extraction genuinely gets it wrong (CMS preset palettes, social-icon colours).
     Without this the user was stuck with whatever we guessed.
     """
-    business = db.query(Business).filter(Business.user_id == user.id).order_by(Business.id.desc()).first()
+    business = selected_business(db, user)
     stored = loads(business.scraped_profile_json, {}) if business else {}
     brand = stored.get("brand_language") if business else None
     if not business or not brand:
@@ -467,7 +467,7 @@ def save_profile(
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> dict:
-    business = db.query(Business).filter(Business.user_id == user.id).order_by(Business.id.desc()).first()
+    business = selected_business(db, user)
     if not business:
         business = Business(user_id=user.id)
         db.add(business)
@@ -539,7 +539,7 @@ def hypotheses(
 
 
 def _require_business(db: Session, user: User) -> tuple[Business, dict]:
-    business = db.query(Business).filter(Business.user_id == user.id).order_by(Business.id.desc()).first()
+    business = selected_business(db, user)
     if not business or not business.name or not business.business_type:
         raise HTTPException(status_code=400, detail="מלאו קודם את פרטי העסק.")
     return business, loads(business.scraped_profile_json, {}) or {}
@@ -898,7 +898,7 @@ generation_jobs.register(
 
 
 def _owned_business(db: Session, user: User) -> Business | None:
-    return db.query(Business).filter(Business.user_id == user.id).order_by(Business.id.desc()).first()
+    return selected_business(db, user)
 
 
 def _first_month_strategy(db: Session, business: Business, year: int, month: int) -> Strategy | None:

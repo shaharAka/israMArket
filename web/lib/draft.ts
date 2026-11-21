@@ -50,6 +50,7 @@ import {
   type DraftTarget,
   type TargetSuggestion,
 } from "./goals";
+import { workspaceStorageKey } from "./workspaceScope";
 import { clearPending } from "./pendingUploads";
 import {
   KPI_UNITS,
@@ -148,6 +149,7 @@ export type BrandScan = {
 /** Everything /start needs to resume where the owner left off. */
 export type FlowState = {
   researchOwnerId?: number;
+  researchBusinessId?: number;
   v: 2;
   step: string;
   draft: OnboardingDraft;
@@ -198,7 +200,7 @@ export function emptyFlow(): FlowState {
 
 export function loadFlow(): FlowState | null {
   try {
-    const raw = window.localStorage.getItem(DRAFT_KEY);
+    const raw = window.localStorage.getItem(workspaceStorageKey(DRAFT_KEY));
     if (!raw) return null;
     const parsed = JSON.parse(raw) as Partial<FlowState>;
     if (parsed?.v !== 2 || !parsed.draft || typeof parsed.step !== "string") return null;
@@ -215,7 +217,7 @@ export function loadFlow(): FlowState | null {
 
 export function saveFlow(flow: FlowState) {
   try {
-    window.localStorage.setItem(DRAFT_KEY, JSON.stringify(flow));
+    window.localStorage.setItem(workspaceStorageKey(DRAFT_KEY), JSON.stringify(flow));
   } catch {
     // Storage blocked or full: the flow still works, it only will not survive a refresh.
   }
@@ -223,7 +225,7 @@ export function saveFlow(flow: FlowState) {
 
 export function clearFlow() {
   try {
-    window.localStorage.removeItem(DRAFT_KEY);
+    window.localStorage.removeItem(workspaceStorageKey(DRAFT_KEY));
   } catch {
     // Nothing to clear.
   }

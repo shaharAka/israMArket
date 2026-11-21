@@ -43,7 +43,7 @@ const TAB_ICONS = { home: IconHome, campaign: IconMegaphone, plan: IconStore, re
 export const TABS: Tab[] = APP_TABS.map(tab => ({ ...tab, icon: TAB_ICONS[tab.icon] }));
 
 // `/security` is public (the landing links to it) and has no shell.
-const BUSINESS_UTILITIES = ["/brand", "/integrations", "/account", "/billing", "/help", "/support", "/updates"];
+const BUSINESS_UTILITIES = ["/workspaces", "/brand", "/integrations", "/account", "/billing", "/help", "/support", "/updates"];
 
 function underRoute(pathname: string, route: string) {
   return pathname === route || pathname.startsWith(`${route}/`);
@@ -69,7 +69,7 @@ export function tabFor(pathname: string): Tab | null {
  * `/account` and `/billing` too: they belong to the account, not the business. Paying,
  * changing a password or deleting the account must not require finishing the wizard.
  */
-const FIRST_RUN_ROUTES = ["/campaign", "/posts", "/integrations", "/onboarding", "/start", "/login", "/signup", "/decisions", "/strategy", "/account", "/billing", "/help", "/support", "/updates"];
+const FIRST_RUN_ROUTES = ["/workspaces", "/campaign", "/posts", "/integrations", "/onboarding", "/start", "/login", "/signup", "/decisions", "/strategy", "/account", "/billing", "/help", "/support", "/updates"];
 
 /** Log out from anywhere: the sidebar, the business hub, the wizard's top bar. */
 export function useLogOut() {
@@ -145,7 +145,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         }
         setCheckedOnboarding(true);
       })
-      .catch(() => setCheckedOnboarding(true));
+      .catch((err: unknown) => {
+        if (err instanceof ApiError && err.code === "workspace_not_found" && pathname !== "/workspaces") {
+          router.replace("/workspaces");
+          return;
+        }
+        setCheckedOnboarding(true);
+      });
     return () => window.clearTimeout(timer);
   }, [router, pathname, onFirstRunRoute]);
 
@@ -164,7 +170,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   // On a page under a tab (the calendar, the monthly plan, the account…) the phone's top
   // bar leads back to that tab. Mid-wizard, the only way back is the wizard itself.
   const back = inSetup
-    ? pathname.startsWith("/onboarding") || pathname.startsWith("/strategy")
+    ? pathname.startsWith("/onboarding") || pathname.startsWith("/strategy") || pathname === "/workspaces"
       ? null
       : { href: setupHref, label: "חזרה להגדרה" }
     : BUSINESS_UTILITIES.some(route => underRoute(pathname, route))
@@ -263,8 +269,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
         <div className="m-3 mt-1 flex items-center justify-between gap-2 rounded-2xl bg-[var(--soft)] p-2">
           <Link
-            href={inSetup ? setupHref : "/business"}
-            aria-current={pathname === "/business" ? "page" : undefined}
+            href={demo ? "/business" : "/workspaces"}
+            aria-current={pathname === "/workspaces" ? "page" : undefined}
             className="flex min-h-11 min-w-0 items-center gap-2.5 rounded-xl px-1.5 transition-colors hover:bg-[var(--paper)]"
           >
             <BusinessLogo src={businessLogo} name={businessName || name || "העסק שלי"} color={businessColor} className="h-8 w-8 shrink-0" />

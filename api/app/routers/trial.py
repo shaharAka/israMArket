@@ -97,8 +97,11 @@ def _iso(value: datetime | None) -> str | None:
 # --- stored events ------------------------------------------------------------------
 
 
-def _events(user: User) -> dict:
-    events = loads(user.trial_events_json, {}) if user.trial_events_json else {}
+def _events(user: User, business: Business | None) -> dict:
+    if business is None:
+        return {}
+    raw = business.workspace_events_json if business.workspace_key else user.trial_events_json
+    events = loads(raw, {}) if raw else {}
     return events if isinstance(events, dict) else {}
 
 
@@ -529,7 +532,7 @@ def _has_route(request: Request, path: str, method: str) -> bool:
 def payload_for(request: Request, db: Session, user: User) -> dict:
     business = newest_business(db, user)
     facts = journey.load(db, business)
-    events = _events(user)
+    events = _events(user, business)
     started = trial_start(user, business)
     day = day_of(started)
     whatsapp = _whatsapp_state(request, business)
@@ -584,10 +587,13 @@ class SeenIn(BaseModel):
     what: typing.Literal["plan", "results"]
 
 
-def _record(user: User, db: Session, update) -> None:
-    events = _events(user)
+def _record(user: User, db: Session, business: Business, update) -> None:
+    events = _events(user, business)
     update(events, datetime.utcnow().isoformat(timespec="seconds"))
-    user.trial_events_json = dumps(events)
+    if business.workspace_key:
+        business.workspace_events_json = dumps(events)
+    else:
+        user.trial_events_json = dumps(events)
     db.commit()
 
 
@@ -616,7 +622,7 @@ def seen(body: SeenIn, request: Request, user: User = Depends(get_current_user),
         if now_day >= REVIEW_FROM_DAY and facts.has_month:
             events.setdefault("month_reviewed_at", stamp)
 
-    _record(user, db, update)
+    _record(user, db, business, update)
     return payload_for(request, db, user)
 
 
@@ -630,5 +636,8 @@ class ConfirmIn(BaseModel):
 def confirm(body: ConfirmIn, request: Request, user: User = Depends(get_current_user), db: Session = Depends(get_db)) -> dict:
     """Something only the owner can tell us happened. Idempotent: the first time stays."""
     key = {"gbp": "gbp_confirmed_at", "posts_started": "posts_started_at"}[body.what]
-    _record(user, db, lambda events, stamp: events.setdefault(key, stamp))
+    business = newest_business(db, user)
+    if business is None:
+        raise HTTPException(status_code=404, detail="עוד לא הגדרתם עסק")
+    _record(user, db, business, lambda events, stamp: events.setdefault(key, stamp))
     return payload_for(request, db, user)

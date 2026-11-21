@@ -10,6 +10,7 @@
  * only, so they still upload if the owner signs up without refreshing.
  */
 import { endpoints } from "./api";
+import { workspaceStorageKey } from "./workspaceScope";
 
 export type PendingUpload = {
   /** One per sample post: `post-0`, `post-1`, `post-2`. */
@@ -39,7 +40,7 @@ function openDb(): Promise<IDBDatabase | null> {
   return new Promise((resolve) => {
     try {
       if (typeof indexedDB === "undefined") return resolve(null);
-      const request = indexedDB.open(DB_NAME, 1);
+      const request = indexedDB.open(workspaceStorageKey(DB_NAME), 1);
       request.onupgradeneeded = () => {
         if (!request.result.objectStoreNames.contains(STORE)) request.result.createObjectStore(STORE, { keyPath: "key" });
       };

@@ -18,6 +18,7 @@ import {
   IconMegaphone,
   IconPhotos,
   IconRoute,
+  IconStore,
   IconUser,
 } from "@/lib/icons";
 
@@ -54,6 +55,7 @@ const GROUPS: { title: string; rows: Row[] }[] = [
   {
     title: "ההגדרות",
     rows: [
+      { href: "/workspaces", title: "מרחבי עבודה", hint: "לעבור בין עסקים ועמותות", icon: IconStore },
       { href: "/prepare?stage=write", title: "שפת הפוסטים", hint: "שפה קבועה וניסויים לקהל שלכם", icon: IconMegaphone },
       { href: "/decisions", title: "ההחלטות שלי", hint: "תקציב, יעדים ועדיפויות", icon: IconFlag },
       { href: "/integrations", title: "חיבורים", hint: "אינסטגרם, פייסבוק ונתוני האתר", icon: IconLink },

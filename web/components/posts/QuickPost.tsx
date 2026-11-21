@@ -5,6 +5,7 @@ import { useCopy } from "@/components/language/LanguageProvider";
 import { ApiError, endpoints, isDemo, type StrategyPayload } from "@/lib/api";
 import { CONTENT_LANGUAGES, CONTENT_LANGUAGE_NAMES, contentDirection, type ContentLanguage } from "@/lib/content-language";
 import { browserDraftStorage, quickPostDraftKey, quickPostRequest, readQuickPostDraft, writeQuickPostDraft } from "@/lib/postCaptionDraft";
+import { workspaceStorageKey } from "@/lib/workspaceScope";
 import { foundations } from "@/lib/trial";
 import ui from "./chrome.module.css";
 
@@ -51,7 +52,7 @@ export function QuickPost({ open, onCancel, onCreated, draft, onDraftChange, pla
     endpoints.me().then(owner => {
       if (!active) return;
       const ownerScope = `${isDemo() ? "demo" : "account"}:${owner.id}`;
-      const key = quickPostDraftKey(ownerScope, plan);
+      const key = quickPostDraftKey(plan ? ownerScope : workspaceStorageKey(ownerScope), plan);
       if (verifiedAccount.current && verifiedAccount.current !== ownerScope) {
         touched.current = false;
         changedLanguage.current = false;

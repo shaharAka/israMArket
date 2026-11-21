@@ -1,3 +1,4 @@
+import { clearWorkspace, workspaceScope } from "./workspaceScope";
 import { consumeSignupEvent } from "./siteAnalytics";
 import { clearCaptionDrafts } from "./postCaptionDraft";
 import { demoCampaign } from "./campaignDemo";
@@ -89,6 +90,8 @@ const DEMO_USER: AuthUser = {
 };
 
 /** GET /auth/me. `has_password` is false for an account opened with Google only. */
+export type Workspace = { id: number; name: string; ready: boolean; scope_required: boolean };
+
 export type AuthUser = {
   id: number;
   email: string;
@@ -3923,6 +3926,8 @@ export async function api<T>(
   if (forceLive) exitDemo();
   if (isDemo() && !forceLive) return demoResolve<T>(path, options);
   const headers = new Headers(options.headers);
+  const workspace = workspaceScope();
+  if (workspace) headers.set("X-Workspace-Id", workspace);
   // A FormData body must keep the browser-generated multipart boundary, so the only
   // safe Content-Type is the one fetch sets itself. Everything else stays JSON.
   const isFormData = typeof FormData !== "undefined" && options.body instanceof FormData;
@@ -3977,9 +3982,15 @@ export const endpoints = {
   logout: async () => {
     clearCaptionDrafts();
     exitDemo();
-    return api("/auth/logout", { method: "POST" });
+    const result = await api("/auth/logout", { method: "POST" });
+    clearWorkspace();
+    return result;
   },
   business: () => api<{ business: Business | null }>("/onboarding/me"),
+  workspaces: () => api<{ active_id: number | null; workspaces: Workspace[] }>("/workspaces"),
+  createWorkspace: (name: string, request_id: string) => api<{ workspace: Workspace }>("/workspaces", {
+    method: "POST", body: JSON.stringify({ name, request_id }),
+  }),
   saveProfile: (body: OnboardingPayload) =>
     api<{ business: Business }>("/onboarding/profile", { method: "POST", body: JSON.stringify(body) }),
   /** Change some of what the owner told us at /start. Answers like /onboarding/me. */

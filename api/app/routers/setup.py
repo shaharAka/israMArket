@@ -18,7 +18,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from app.db import get_db
-from app.deps import get_current_user
+from app.deps import get_current_user, selected_business
 from app.models import Business, User
 from app.services import ga4, journey, meta, plan_connections, tiktok
 
@@ -70,9 +70,7 @@ _RANK = {key: index for index, key in enumerate(NEXT_ORDER)}
 
 def newest_business(db: Session, user: User) -> Business | None:
     """The business the rest of the app is scoped to: the caller's newest one."""
-    return (
-        db.query(Business).filter(Business.user_id == user.id).order_by(Business.id.desc()).first()
-    )
+    return selected_business(db, user)
 
 
 def _item(key: str, title: str, why: str, action_href: str, action_label: str, done: bool) -> dict:

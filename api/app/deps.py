@@ -1,12 +1,13 @@
 import logging
+import re
 from datetime import datetime, timedelta
 
 from fastapi import Depends, HTTPException, Request
-from sqlalchemy import update
+from sqlalchemy import case, update
 from sqlalchemy.orm import Session
 
 from app.db import get_db
-from app.errors import account_suspended
+from app.errors import CodedError, account_suspended
 from app.models import Business, User
 from app.security import COOKIE_NAME, decode_access_claims
 from app.services import model_usage
@@ -60,16 +61,38 @@ def get_current_user(request: Request, db: Session = Depends(get_db)) -> User:
         # Signed out by a password change, a reset link, a Google takeover, or the
         # backoffice (models.User.session_epoch).
         raise HTTPException(status_code=401, detail="צריך להתחבר שוב")
+    scope = request.headers.get("X-Workspace-Id")
+    if scope is not None and not re.fullmatch(r"[1-9][0-9]{0,15}", scope):
+        raise HTTPException(status_code=400, detail="מרחב העבודה לא תקין")
+    user._request_workspace_id = int(scope) if scope is not None else None
     _touch_last_seen(db, user)
     model_usage.note_user(user.id, db.get_bind())
     return user
 
 
+def default_business(db: Session, user: User) -> Business | None:
+    """Keep the pre-existing default when another workspace is added."""
+    return db.query(Business).filter(Business.user_id == user.id).order_by(
+        Business.workspace_key.is_not(None),
+        case((Business.workspace_key.is_(None), -Business.id), else_=Business.id),
+    ).first()
+
+
+def selected_business(db: Session, user: User) -> Business | None:
+    workspace_id = vars(user).get("_request_workspace_id")
+    if workspace_id is None:
+        business = default_business(db, user)
+    else:
+        business = db.query(Business).filter(Business.id == workspace_id, Business.user_id == user.id).one_or_none()
+        if business is None:
+            raise CodedError(404, "workspace_not_found", "מרחב העבודה לא נמצא")
+    if business:
+        model_usage.note_business(business.id, db.get_bind())
+    return business
+
+
 def get_business(user: User = Depends(get_current_user), db: Session = Depends(get_db)) -> Business:
-    business = (
-        db.query(Business).filter(Business.user_id == user.id).order_by(Business.id.desc()).first()
-    )
+    business = selected_business(db, user)
     if not business:
         raise HTTPException(status_code=404, detail="עוד לא הגדרתם עסק")
-    model_usage.note_business(business.id, db.get_bind())
     return business
