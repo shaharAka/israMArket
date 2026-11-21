@@ -1554,6 +1554,111 @@
       "en": "More orders",
       "ar": "زيادة الطلبات",
       "ru": "Больше заказов"
+    },
+    "m_04af0af11d699334": {
+      "en": "A video, feed post, and story share one visual style, adapted to each format.",
+      "ar": "فيديو ومنشور وقصة بأسلوب بصري واحد، مع تصميم يناسب كل صيغة.",
+      "ru": "Видео, пост и сторис в одном визуальном стиле, каждый в своём формате."
+    },
+    "m_04f57f3813cf59c0": {
+      "en": "Introductory post",
+      "ar": "منشور تعريفي",
+      "ru": "Пост-знакомство"
+    },
+    "m_2c99452ea5d27796": {
+      "en": "Next, review the post before publishing.",
+      "ar": "الخطوة التالية هي مراجعة المنشور قبل نشره.",
+      "ru": "Следующий шаг — проверить пост перед публикацией."
+    },
+    "m_3f060a30102ea1b0": {
+      "en": "Track how many forms are submitted",
+      "ar": "نتابع عدد النماذج المُرسلة",
+      "ru": "Считаем отправленные формы"
+    },
+    "m_48ea45236ca81ca7": {
+      "en": "Watch the video",
+      "ar": "مشاهدة الفيديو",
+      "ru": "Смотреть видео"
+    },
+    "m_49957949060006b3": {
+      "en": "Orange post with an illustrated fish and the line “The ink is still wet”",
+      "ar": "منشور برتقالي فيه رسم سمكة وعبارة «الحبر لا يزال رطبًا»",
+      "ru": "Оранжевый пост с рисунком рыбы и надписью «Краска ещё не высохла»"
+    },
+    "m_660f910dff4a3da0": {
+      "en": "Personal service, even after the sale",
+      "ar": "خدمة شخصية حتى بعد الشراء",
+      "ru": "Индивидуальный подход и после покупки"
+    },
+    "m_6a9571ef53684170": {
+      "en": "Product preview",
+      "ar": "معاينة للمنصة",
+      "ru": "Пример работы платформы"
+    },
+    "m_72d4b1bc8df830b3": {
+      "en": "Your channels",
+      "ar": "قنواتكم",
+      "ru": "Ваши каналы"
+    },
+    "m_81fda56693660d64": {
+      "en": "Blue story showing the print you can make at the workshop",
+      "ar": "قصة زرقاء تعرض المطبوعة التي يمكن إنجازها في الورشة",
+      "ru": "Синяя сторис с принтом, который можно сделать на мастер-классе"
+    },
+    "m_8413c663f1dad22e": {
+      "en": "Monday",
+      "ar": "الاثنين",
+      "ru": "Понедельник"
+    },
+    "m_a005fc3f9483a482": {
+      "en": "This week’s plan",
+      "ar": "خطة هذا الأسبوع",
+      "ru": "План на эту неделю"
+    },
+    "m_bad57ef7837c8e6b": {
+      "en": "Instagram",
+      "ar": "Instagram",
+      "ru": "Instagram"
+    },
+    "m_c94f8db48fce3237": {
+      "en": "Planned",
+      "ar": "ضمن الخطة",
+      "ru": "В плане"
+    },
+    "m_c9c083971dd4562e": {
+      "en": "One idea, content for every channel.",
+      "ar": "فكرة واحدة، ومحتوى لكل قناة.",
+      "ru": "Одна идея, контент для каждого канала."
+    },
+    "m_cc258b35100f45b8": {
+      "en": "Awaiting approval",
+      "ar": "بانتظار الموافقة",
+      "ru": "На согласовании"
+    },
+    "m_d41f5b4977ee05c6": {
+      "en": "Facebook",
+      "ar": "Facebook",
+      "ru": "Facebook"
+    },
+    "m_dc5864ae79a06dc0": {
+      "en": "Customer story",
+      "ar": "قصة أحد العملاء",
+      "ru": "История клиента"
+    },
+    "m_ec640de6b0aa0341": {
+      "en": "Get more inquiries",
+      "ar": "الحصول على مزيد من الاستفسارات",
+      "ru": "Получать больше заявок"
+    },
+    "m_f917a40080ec1d68": {
+      "en": "Short video for Dyo Tari’s screen-printing workshop",
+      "ar": "فيديو قصير لورشة الطباعة بالشاشة الحريرية لدى ديو تاري",
+      "ru": "Короткий ролик о мастер-классе по шелкографии Dyo Tari"
+    },
+    "m_feb0ff18665b4a4c": {
+      "en": "Creative example for a printmaking workshop in Haifa",
+      "ar": "نموذج ترويجي لورشة طباعة في حيفا",
+      "ru": "Пример продвижения мастер-класса по печати в Хайфе"
     }
   },
   "numberForms": {

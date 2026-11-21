@@ -2610,6 +2610,17 @@
       }
     ]
   },
+  "m_04af0af11d699334": {
+    "source": "סרטון, פוסט וסטורי באותה שפה עיצובית, כל אחד בפורמט שמתאים לו.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/CreativeReel.tsx",
+        "line": 17,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_04b96692c1ec7bf5": {
     "source": "שם ותיאור קצר לכל מוצר. אפשר גם מוצר אחד שעוד בונים.",
     "language": "he",
@@ -2732,6 +2743,17 @@
       {
         "file": "web/app/posts/page.tsx",
         "line": 379,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_04f57f3813cf59c0": {
+    "source": "פוסט היכרות",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/LandingStory.tsx",
+        "line": 83,
         "kind": "literal"
       }
     ]
@@ -5430,7 +5452,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 62,
+        "line": 64,
         "kind": "literal"
       }
     ]
@@ -5708,17 +5730,6 @@
         "file": "web/app/decisions/page.tsx",
         "line": 336,
         "kind": "template"
-      }
-    ]
-  },
-  "m_0b48f2e4bba8305c": {
-    "source": "מה תרצו לקדם?",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/LandingStory.tsx",
-        "line": 31,
-        "kind": "literal"
       }
     ]
   },
@@ -6712,6 +6723,11 @@
     "source": "לראות איך זה עובד",
     "language": "he",
     "references": [
+      {
+        "file": "web/components/landing-v2/SignalHero.tsx",
+        "line": 21,
+        "kind": "literal"
+      },
       {
         "file": "web/lib/releases.ts",
         "line": 103,
@@ -9946,7 +9962,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingStory.tsx",
-        "line": 17,
+        "line": 16,
         "kind": "literal",
         "purpose": "display"
       }
@@ -12097,17 +12113,6 @@
       }
     ]
   },
-  "m_18a386326519b34d": {
-    "source": "מודדים הזמנות שהושלמו",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/LandingStory.tsx",
-        "line": 58,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_18b74f647ee04574": {
     "source": "חסר מה מבקשים מהלקוח ואיך.",
     "language": "he",
@@ -12124,6 +12129,11 @@
     "source": "יום חמישי",
     "language": "he",
     "references": [
+      {
+        "file": "web/components/landing-v2/LandingStory.tsx",
+        "line": 87,
+        "kind": "literal"
+      },
       {
         "file": "web/components/landing-v2/productFixtures.ts",
         "line": 92,
@@ -12773,7 +12783,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 65,
+        "line": 67,
         "kind": "literal"
       }
     ]
@@ -15699,7 +15709,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 63,
+        "line": 65,
         "kind": "literal"
       }
     ]
@@ -17017,7 +17027,7 @@
       },
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 70,
+        "line": 72,
         "kind": "literal"
       },
       {
@@ -19531,7 +19541,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingStory.tsx",
-        "line": 106,
+        "line": 120,
         "kind": "literal"
       }
     ]
@@ -20724,6 +20734,11 @@
       {
         "file": "web/components/AssetCard.tsx",
         "line": 37,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/landing-v2/CreativeReel.tsx",
+        "line": 33,
         "kind": "literal"
       },
       {
@@ -22073,6 +22088,17 @@
       }
     ]
   },
+  "m_2c99452ea5d27796": {
+    "source": "הצעד הבא הוא לבדוק את הפוסט לפני הפרסום.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/LandingStory.tsx",
+        "line": 93,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_2c9bb838d733bfa4": {
     "source": "מתנה צפה על רקע לבן",
     "language": "he",
@@ -23377,6 +23403,11 @@
     "source": "תוכנית החודש",
     "language": "he",
     "references": [
+      {
+        "file": "web/components/landing-v2/LandingStory.tsx",
+        "line": 74,
+        "kind": "literal"
+      },
       {
         "file": "web/lib/api.ts",
         "line": 1791,
@@ -25576,13 +25607,13 @@
       },
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 46,
+        "line": 47,
         "kind": "literal",
         "purpose": "display"
       },
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 70,
+        "line": 72,
         "kind": "jsx"
       },
       {
@@ -25748,7 +25779,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 65,
+        "line": 67,
         "kind": "literal"
       }
     ]
@@ -31341,6 +31372,22 @@
       }
     ]
   },
+  "m_3f060a30102ea1b0": {
+    "source": "נמדוד כמה טפסים נשלחו",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/LandingStory.tsx",
+        "line": 55,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/landing-v2/LandingStory.tsx",
+        "line": 76,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_3f0699298081d1ee": {
     "source": "הדרכה",
     "language": "he",
@@ -36184,6 +36231,17 @@
       }
     ]
   },
+  "m_48ea45236ca81ca7": {
+    "source": "לצפייה בסרטון",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/CreativeReel.tsx",
+        "line": 31,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_48fb562eabdf8708": {
     "source": "כך נראה עוד יום של עשייה.",
     "language": "he",
@@ -36469,6 +36527,17 @@
       {
         "file": "web/lib/api.ts",
         "line": 329,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_49957949060006b3": {
+    "source": "פוסט כתום עם איור דג וכיתוב ״הדיו עוד רטוב״",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/CreativeReel.tsx",
+        "line": 37,
         "kind": "literal"
       }
     ]
@@ -39643,7 +39712,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 66,
+        "line": 68,
         "kind": "literal"
       }
     ]
@@ -40241,14 +40310,9 @@
       },
       {
         "file": "web/components/landing-v2/LandingStory.tsx",
-        "line": 24,
+        "line": 23,
         "kind": "literal",
         "purpose": "display"
-      },
-      {
-        "file": "web/components/landing-v2/LandingStory.tsx",
-        "line": 77,
-        "kind": "literal"
       },
       {
         "file": "web/components/posts/CalendarView.tsx",
@@ -42333,7 +42397,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 57,
+        "line": 59,
         "kind": "literal"
       }
     ]
@@ -42810,7 +42874,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 65,
+        "line": 67,
         "kind": "literal"
       }
     ]
@@ -49172,6 +49236,11 @@
     "language": "he",
     "references": [
       {
+        "file": "web/components/landing-v2/CreativeReel.tsx",
+        "line": 38,
+        "kind": "literal"
+      },
+      {
         "file": "web/components/posts/CalendarView.tsx",
         "line": 193,
         "kind": "literal"
@@ -50065,6 +50134,17 @@
       }
     ]
   },
+  "m_660f910dff4a3da0": {
+    "source": "שירות אישי, גם אחרי הקנייה",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/LandingStory.tsx",
+        "line": 31,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_661d204bdcfaec4b": {
     "source": "באילו חיפושים האתר מופיע ומי לוחץ",
     "language": "he",
@@ -50095,7 +50175,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingStory.tsx",
-        "line": 25,
+        "line": 24,
         "kind": "literal"
       }
     ]
@@ -51948,7 +52028,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 61,
+        "line": 63,
         "kind": "literal"
       }
     ]
@@ -52314,6 +52394,17 @@
         "line": 247,
         "kind": "literal",
         "purpose": "display"
+      }
+    ]
+  },
+  "m_6a9571ef53684170": {
+    "source": "תצוגה לדוגמה",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/LandingStory.tsx",
+        "line": 70,
+        "kind": "literal"
       }
     ]
   },
@@ -56621,6 +56712,17 @@
       }
     ]
   },
+  "m_72d4b1bc8df830b3": {
+    "source": "הערוצים שלכם",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/LandingStory.tsx",
+        "line": 43,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_72d6b40ce22167c5": {
     "source": "רובם",
     "language": "he",
@@ -59808,7 +59910,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 63,
+        "line": 65,
         "kind": "literal"
       }
     ]
@@ -63330,7 +63432,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 62,
+        "line": 64,
         "kind": "literal"
       }
     ]
@@ -63798,6 +63900,17 @@
         "line": 1489,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_81fda56693660d64": {
+    "source": "סטורי כחול שמציג את ההדפס שאפשר להכין בסדנה",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/CreativeReel.tsx",
+        "line": 42,
+        "kind": "literal"
       }
     ]
   },
@@ -64709,6 +64822,17 @@
         "line": 106,
         "kind": "literal",
         "purpose": "display"
+      }
+    ]
+  },
+  "m_8413c663f1dad22e": {
+    "source": "יום שני",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/LandingStory.tsx",
+        "line": 82,
+        "kind": "literal"
       }
     ]
   },
@@ -70809,7 +70933,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingStory.tsx",
-        "line": 10,
+        "line": 9,
         "kind": "literal"
       }
     ]
@@ -77592,7 +77716,7 @@
       },
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 70,
+        "line": 72,
         "kind": "literal"
       },
       {
@@ -77663,11 +77787,6 @@
     "source": "מה אתם מציעים?",
     "language": "he",
     "references": [
-      {
-        "file": "web/components/landing-v2/LandingStory.tsx",
-        "line": 32,
-        "kind": "literal"
-      },
       {
         "file": "web/components/landing-v2/QuestionnaireDemo.tsx",
         "line": 52,
@@ -78316,6 +78435,17 @@
       }
     ]
   },
+  "m_a005fc3f9483a482": {
+    "source": "מה עושים השבוע",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/LandingStory.tsx",
+        "line": 79,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_a0062fed5ddfea80": {
     "source": "הספירות הן דיווח של בעלי העסק, לא מדידה מגוגל או מאינסטגרם ולא שיוך לפוסט.",
     "language": "he",
@@ -78793,7 +78923,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 56,
+        "line": 58,
         "kind": "literal"
       }
     ]
@@ -82897,7 +83027,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 64,
+        "line": 66,
         "kind": "literal"
       }
     ]
@@ -83512,14 +83642,9 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingStory.tsx",
-        "line": 23,
+        "line": 22,
         "kind": "literal",
         "purpose": "display"
-      },
-      {
-        "file": "web/components/landing-v2/LandingStory.tsx",
-        "line": 76,
-        "kind": "literal"
       },
       {
         "file": "web/components/landing-v2/processStory.ts",
@@ -84864,7 +84989,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingStory.tsx",
-        "line": 9,
+        "line": 8,
         "kind": "literal",
         "purpose": "display"
       }
@@ -85451,14 +85576,9 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingStory.tsx",
-        "line": 25,
+        "line": 24,
         "kind": "literal",
         "purpose": "display"
-      },
-      {
-        "file": "web/components/landing-v2/LandingStory.tsx",
-        "line": 78,
-        "kind": "literal"
       },
       {
         "file": "web/lib/uxFlows.ts",
@@ -86129,7 +86249,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingStory.tsx",
-        "line": 14,
+        "line": 13,
         "kind": "literal"
       }
     ]
@@ -87823,11 +87943,6 @@
     "source": "התוכנית שלכם לחודש הקרוב.",
     "language": "he",
     "references": [
-      {
-        "file": "web/components/landing-v2/LandingStory.tsx",
-        "line": 74,
-        "kind": "literal"
-      },
       {
         "file": "web/components/landing-v2/processStory.ts",
         "line": 28,
@@ -91422,6 +91537,17 @@
         "file": "web/lib/api.ts",
         "line": 1190,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_bad57ef7837c8e6b": {
+    "source": "Instagram",
+    "language": "en",
+    "references": [
+      {
+        "file": "web/components/landing-v2/LandingStory.tsx",
+        "line": 83,
+        "kind": "jsx"
       }
     ]
   },
@@ -95760,7 +95886,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 20,
+        "line": 23,
         "kind": "literal"
       }
     ]
@@ -96336,7 +96462,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingStory.tsx",
-        "line": 13,
+        "line": 12,
         "kind": "literal",
         "purpose": "display"
       }
@@ -98430,6 +98556,17 @@
       }
     ]
   },
+  "m_c94f8db48fce3237": {
+    "source": "בתוכנית",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/LandingStory.tsx",
+        "line": 89,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_c95452c791a44466": {
     "source": "להיכנס",
     "language": "he",
@@ -98451,7 +98588,7 @@
       },
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 47,
+        "line": 48,
         "kind": "literal"
       },
       {
@@ -98729,6 +98866,17 @@
         "line": 438,
         "kind": "literal",
         "purpose": "validation"
+      }
+    ]
+  },
+  "m_c9c083971dd4562e": {
+    "source": "רעיון אחד, תוכן לכל ערוץ.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/CreativeReel.tsx",
+        "line": 15,
+        "kind": "literal"
       }
     ]
   },
@@ -100021,6 +100169,17 @@
       }
     ]
   },
+  "m_cc258b35100f45b8": {
+    "source": "ממתין לאישור",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/LandingStory.tsx",
+        "line": 84,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_cc28eaccd9a3c127": {
     "source": "לראות את האתר",
     "language": "he",
@@ -100809,6 +100968,11 @@
     "source": "מה מבדיל אתכם מאחרים?",
     "language": "he",
     "references": [
+      {
+        "file": "web/components/landing-v2/LandingStory.tsx",
+        "line": 30,
+        "kind": "literal"
+      },
       {
         "file": "web/components/start/steps.tsx",
         "line": 199,
@@ -103705,6 +103869,17 @@
       }
     ]
   },
+  "m_d41f5b4977ee05c6": {
+    "source": "Facebook",
+    "language": "en",
+    "references": [
+      {
+        "file": "web/components/landing-v2/LandingStory.tsx",
+        "line": 88,
+        "kind": "jsx"
+      }
+    ]
+  },
   "m_d43110ace2400b4d": {
     "source": "לסגור ולהמשיך אחר כך",
     "language": "he",
@@ -103739,6 +103914,11 @@
       {
         "file": "web/app/integrations/page.tsx",
         "line": 979,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/landing-v2/CreativeReel.tsx",
+        "line": 43,
         "kind": "literal"
       },
       {
@@ -104253,7 +104433,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingStory.tsx",
-        "line": 23,
+        "line": 22,
         "kind": "literal"
       }
     ]
@@ -105409,7 +105589,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingStory.tsx",
-        "line": 18,
+        "line": 17,
         "kind": "literal"
       }
     ]
@@ -106003,7 +106183,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 64,
+        "line": 66,
         "kind": "literal"
       }
     ]
@@ -108038,6 +108218,17 @@
       {
         "file": "web/components/support/Conversation.tsx",
         "line": 58,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_dc5864ae79a06dc0": {
+    "source": "סיפור של לקוח",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/LandingStory.tsx",
+        "line": 88,
         "kind": "literal"
       }
     ]
@@ -116159,6 +116350,22 @@
       }
     ]
   },
+  "m_ec640de6b0aa0341": {
+    "source": "לקבל יותר פניות",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/LandingStory.tsx",
+        "line": 53,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/landing-v2/LandingStory.tsx",
+        "line": 75,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_ec6acc8433e2b222": {
     "source": "מה קורה אצלכם ובאזור, למי שכבר מכיר.",
     "language": "he",
@@ -116572,7 +116779,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingStory.tsx",
-        "line": 24,
+        "line": 23,
         "kind": "literal"
       }
     ]
@@ -117212,11 +117419,6 @@
     "source": "למי זה מתאים?",
     "language": "he",
     "references": [
-      {
-        "file": "web/components/landing-v2/LandingStory.tsx",
-        "line": 33,
-        "kind": "literal"
-      },
       {
         "file": "web/components/landing-v2/QuestionnaireDemo.tsx",
         "line": 53,
@@ -119010,7 +119212,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingStory.tsx",
-        "line": 55,
+        "line": 52,
         "kind": "literal"
       }
     ]
@@ -122151,17 +122353,6 @@
       }
     ]
   },
-  "m_f7cde2bf38b5aa33": {
-    "source": "יותר הזמנות",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/LandingStory.tsx",
-        "line": 56,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_f7de860a46e82905": {
     "source": "בערך 2 דקות",
     "language": "he",
@@ -122680,6 +122871,17 @@
         "line": 403,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_f917a40080ec1d68": {
+    "source": "סרטון קצר לסדנת הדפס רשת של דיו טרי",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/CreativeReel.tsx",
+        "line": 28,
+        "kind": "literal"
       }
     ]
   },
@@ -124903,7 +125105,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingStory.tsx",
-        "line": 87,
+        "line": 101,
         "kind": "literal"
       }
     ]
@@ -125326,6 +125528,17 @@
       }
     ]
   },
+  "m_feb0ff18665b4a4c": {
+    "source": "דוגמה לקידום סדנת הדפס בחיפה",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/CreativeReel.tsx",
+        "line": 14,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_fec481195e556315": {
     "source": "יותר חם",
     "language": "he",
@@ -125726,7 +125939,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 67,
+        "line": 69,
         "kind": "literal"
       }
     ]

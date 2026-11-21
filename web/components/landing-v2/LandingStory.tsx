@@ -1,6 +1,5 @@
 import { Copy } from "@/components/language/LanguageProvider";
-import { IconChart, IconFlag, IconPhotos } from "@/lib/icons";
-import { BrandWordmark } from "./BrandWordmark";
+import { IconCalendar, IconChart, IconCheck, IconFlag, IconPhotos } from "@/lib/icons";
 import { ProviderLogo } from "./ProviderLogo";
 import styles from "./landing-story.module.css";
 
@@ -20,17 +19,16 @@ const STEPS = [
 ] as const;
 
 const OUTCOMES = [
-  { id: "campaign", alias: "plan", title: "קמפיין", body: "תוכנית חודשית עם קהל, יעד ולוח פרסום." },
-  { id: "posts", alias: null, title: "פוסטים", body: "תוכן, עיצובים וסרטונים לאישורכם." },
-  { id: "learning", alias: "data", title: "מדידה", body: "רואים מה התקדם ומה כדאי לשנות." },
+  { id: "campaign", alias: "plan", title: "קמפיין", body: "תוכנית חודשית עם קהל, יעד ולוח פרסום.", icon: IconCalendar },
+  { id: "posts", alias: null, title: "פוסטים", body: "תוכן, עיצובים וסרטונים לאישורכם.", icon: IconPhotos },
+  { id: "learning", alias: "data", title: "מדידה", body: "רואים מה התקדם ומה כדאי לשנות.", icon: IconChart },
 ] as const;
 
 function InterviewVisual() {
   return <div className={styles.interviewArt} aria-hidden="true">
     <div className={styles.interviewSheet}>
-      <strong><Copy text="מה תרצו לקדם?" /></strong>
-      <div className={styles.field}><Copy text="מה אתם מציעים?" /></div>
-      <div className={styles.field}><Copy text="למי זה מתאים?" /></div>
+      <strong><Copy text="מה מבדיל אתכם מאחרים?" /></strong>
+      <div className={styles.field}><Copy text="שירות אישי, גם אחרי הקנייה" /><IconCheck /></div>
     </div>
   </div>;
 }
@@ -38,12 +36,11 @@ function InterviewVisual() {
 function ConnectionsVisual() {
   return <div className={styles.channelsArt} aria-hidden="true">
     <div className={styles.channels}>
-      <div><ProviderLogo provider="google-analytics" size={28} /></div>
-      <div><ProviderLogo provider="facebook-instagram" size={28} /></div>
-      <div><ProviderLogo provider="whatsapp" size={28} /></div>
+      <ProviderLogo provider="google-analytics" size={24} />
+      <ProviderLogo provider="facebook-instagram" size={24} />
+      <ProviderLogo provider="whatsapp" size={24} />
     </div>
-    <div className={styles.converge}><i /><i /><i /></div>
-    <div className={styles.channelHub}><BrandWordmark /></div>
+    <p><Copy text="הערוצים שלכם" /></p>
   </div>;
 }
 
@@ -53,9 +50,9 @@ function GoalVisual() {
       <IconFlag />
       <div>
         <span><Copy text="יעד לחודש" /></span>
-        <strong><Copy text="יותר הזמנות" /></strong>
+        <strong><Copy text="לקבל יותר פניות" /></strong>
       </div>
-      <p><Copy text="מודדים הזמנות שהושלמו" /></p>
+      <p><Copy text="נמדוד כמה טפסים נשלחו" /></p>
     </div>
   </div>;
 }
@@ -66,19 +63,36 @@ const STEP_VISUALS = {
   goals: GoalVisual,
 };
 
-/** A simplified view of the three outputs, rendered as product elements. */
+/** A compact, localized illustration of the plan and its next action. */
 export function LandingProductVisual() {
-  return <div className={styles.productArt} aria-hidden="true">
+  return <figure className={styles.productArt}>
+    <figcaption className={styles.previewLabel}>
+      <IconCalendar /><Copy text="תצוגה לדוגמה" />
+    </figcaption>
     <div className={styles.productSheet}>
-      <div className={styles.productBrand}><BrandWordmark /></div>
-      <strong><Copy text="התוכנית שלכם לחודש הקרוב." /></strong>
-      <div className={styles.productRows}>
-        <div><span><IconFlag /></span><Copy text="קמפיין" /></div>
-        <div><span><IconPhotos /></span><Copy text="פוסטים" /></div>
-        <div><span><IconChart /></span><Copy text="מדידה" /></div>
+      <div className={styles.productIntro}>
+        <p><Copy text="תוכנית החודש" /></p>
+        <strong><Copy text="לקבל יותר פניות" /></strong>
+        <span><IconFlag /><Copy text="נמדוד כמה טפסים נשלחו" /></span>
       </div>
+      <div className={styles.productWeek}>
+        <h2><Copy text="מה עושים השבוע" /></h2>
+        <ul>
+          <li>
+            <span className={styles.planDay}><Copy text="יום שני" /></span>
+            <div><strong><Copy text="פוסט היכרות" /></strong><span>Instagram</span></div>
+            <span className={styles.planApproval}><Copy text="ממתין לאישור" /></span>
+          </li>
+          <li>
+            <span className={styles.planDay}><Copy text="יום חמישי" /></span>
+            <div><strong><Copy text="סיפור של לקוח" /></strong><span>Facebook</span></div>
+            <span className={styles.planStatus}><Copy text="בתוכנית" /></span>
+          </li>
+        </ul>
+      </div>
+      <p className={styles.productNext}><IconPhotos /><Copy text="הצעד הבא הוא לבדוק את הפוסט לפני הפרסום." /></p>
     </div>
-  </div>;
+  </figure>;
 }
 
 export function LandingStory() {
@@ -89,7 +103,6 @@ export function LandingStory() {
         {STEPS.map((step, index) => {
           const Visual = STEP_VISUALS[step.id];
           return <li id={step.id} key={step.id}>
-            <Visual />
             <div className={styles.stepCopy}>
               <span aria-hidden="true">{index + 1}</span>
               <div>
@@ -97,6 +110,7 @@ export function LandingStory() {
                 <p><Copy text={step.body} /></p>
               </div>
             </div>
+            <Visual />
           </li>;
         })}
       </ol>
@@ -108,6 +122,7 @@ export function LandingStory() {
           {OUTCOMES.map(outcome => (
             <article id={outcome.id} key={outcome.id}>
               {outcome.alias && <span id={outcome.alias} className={styles.anchor} aria-hidden="true" />}
+              <outcome.icon className={styles.outcomeIcon} />
               <h3><Copy text={outcome.title} /></h3>
               <p><Copy text={outcome.body} /></p>
             </article>

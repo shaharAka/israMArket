@@ -16,7 +16,10 @@ export function SignalHero({ start }: { start: string }) {
         <h1 id="process-title"><Copy text={PROCESS_HERO.title} /></h1>
         <p><Copy text={PROCESS_HERO.body} /></p>
         <p className={styles.approval}><Copy text="האישור והפרסום בידיים שלך." /></p>
-        <Link href={start} className={styles.start}><TrialCtaLabel /><Arrow /></Link>
+        <div className={styles.actions}>
+          <Link href={start} className={styles.start}><TrialCtaLabel /><Arrow /></Link>
+          <a href="#story" className={styles.storyLink}><Copy text="לראות איך זה עובד" /></a>
+        </div>
         <small><TrialOfferNote /><Copy text="בלי כרטיס אשראי. בלי התחייבות." /></small>
       </div>
       <LandingProductVisual />

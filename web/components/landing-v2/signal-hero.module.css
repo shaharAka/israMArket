@@ -1,12 +1,13 @@
 .hero {
   color: var(--paper);
   background: var(--dark-ground);
+  overflow: clip;
 }
 .root {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, .92fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, .95fr);
   align-items: center;
-  gap: clamp(36px, 6vw, 108px);
+  gap: clamp(36px, 5vw, 75px);
   max-width: 1500px;
   margin: auto;
   padding: clamp(36px, 5vw, 82px) clamp(24px, 5.5vw, 88px);
@@ -22,6 +23,7 @@
 :global(html[lang=he]) .copy h1 { font-family: SignalHebrew, var(--font-site-clean), sans-serif; font-weight: 400; }
 .copy p { margin-top: 22px; max-width: 43ch; font-size: clamp(17px, 1.5vw, 21px); line-height: 1.55; color: var(--dark-copy); }
 .copy .approval { margin-top: 9px; font-size: 15px; }
+.actions { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 20px; margin-block-start: 25px; }
 .start {
   display: inline-flex;
   align-items: center;
@@ -32,12 +34,21 @@
   color: var(--dark-ground);
   border-radius: 10px;
   font-weight: 650;
-  margin-top: 25px;
 }
 .start:hover { background: var(--paper); }
 .start svg { width: 22px; height: 22px; }
+.storyLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--paper);
+  font-size: 14px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.storyLink:hover { color: var(--dark-action); }
 .copy > small { display: block; margin-top: 9px; color: var(--dark-copy); font-size: 12px; }
-.start:focus-visible {
+:is(.start, .storyLink):focus-visible {
   outline: 3px solid var(--dark-action);
   outline-offset: 3px;
 }
@@ -46,5 +57,5 @@
   .copy h1 { font-size: clamp(41px, 9vw, 62px); }
   .copy p { margin-top: 15px; }
   .copy .approval { margin-top: 7px; }
-  .start { margin-top: 18px; }
+  .actions { margin-block-start: 18px; }
 }

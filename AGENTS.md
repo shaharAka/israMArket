@@ -23,6 +23,7 @@ Keep private security findings, customer data and owner declarations in private 
 - Lanes: Claude owns product and design of every screen; Codex owns integrations, provider
   reviews, legal pages, deploy and infra. The owner decides. Details in `PLAN.md`.
 - Any screen follows `web/DESIGN-STANDARD.md`.
+- Review customer-facing design and UX changes with Impeccable before delivery.
 - Before writing interface copy, define the screen's purpose, main message and next
   action in Hebrew. Write and review natural Hebrew first, including instructions,
   findings and creative directions; then adapt that version into English, Arabic and Russian.

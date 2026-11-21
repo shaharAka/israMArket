@@ -9,6 +9,7 @@ import { DeletedNotice } from "@/components/landing/DeletedNotice";
 import { PRICE_ILS, TRIAL_LABEL, VAT_NOTE } from "@/lib/pricing";
 import { BrandWordmark } from "./BrandWordmark";
 import { LandingStory } from "./LandingStory";
+import { CreativeReel } from "./CreativeReel";
 import { TrialCtaLabel } from "./TrialCtaLabel";
 import { SignalHero } from "./SignalHero";
 import { PROCESS_ROLES, defaultProcessRole, isProcessRole, type ProcessRole } from "./processExamples";
@@ -49,6 +50,7 @@ export function ProcessLanding({ initialPath, identity }: { initialPath?: Exampl
     <main>
       <SignalHero start={start} />
       <LandingStory />
+      <CreativeReel />
       <section id="trial" className={`lv2-wrap ${story.trial}`} aria-labelledby="trial-title">
         <span id="price" className={story.anchor} aria-hidden="true" />
         <div>
