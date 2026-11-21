@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import Boolean, DateTime, Float, ForeignKey, Integer, String, Text, UniqueConstraint, delete, event, select
+from sqlalchemy import Boolean, DateTime, Float, ForeignKey, Integer, LargeBinary, String, Text, UniqueConstraint, delete, event, select
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db import Base
@@ -758,6 +758,16 @@ class SupportMessage(Base):
     role: Mapped[str] = mapped_column(String(20))
     body: Mapped[str] = mapped_column(Text)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+
+class FeedbackEvidence(Base):
+    __tablename__ = "feedback_evidence"
+
+    ticket_id: Mapped[str] = mapped_column(ForeignKey("support_tickets.id"), primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
+    screenshot: Mapped[bytes | None] = mapped_column(LargeBinary, nullable=True)
+    board_state: Mapped[str] = mapped_column(String(20), default="pending", index=True)
+    board_item_id: Mapped[str | None] = mapped_column(String(100), nullable=True)
 
 
 class AdminAudit(Base):

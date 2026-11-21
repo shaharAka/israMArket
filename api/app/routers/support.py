@@ -1,19 +1,23 @@
 """Account-isolated reports and an owner-only support queue."""
 import secrets
 from datetime import datetime
+from io import BytesIO
 from typing import Literal
 from uuid import UUID
 
-from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
+from fastapi import APIRouter, BackgroundTasks, Depends, File, Form, HTTPException, Request, Response, UploadFile
+from PIL import Image, UnidentifiedImageError
 from pydantic import BaseModel, Field
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
+from app.config import get_settings
 from app.db import get_db
-from app.deps import get_current_user
-from app.models import AdminAudit, SupportMessage, SupportTicket, User
-from app.services import ratelimit, support
-from app.services.admin_access import require_admin
+from app.deps import get_current_user, session_token
+from app.models import AdminAudit, FeedbackEvidence, SupportMessage, SupportTicket, User
+from app.security import METHOD_GOOGLE, session_method
+from app.services import feedback_board, ratelimit, support
+from app.services.admin_access import is_admin_request, require_admin
 
 router = APIRouter(prefix="/support", tags=["support"])
 admin_router = APIRouter(prefix="/admin/support", tags=["admin"], dependencies=[Depends(require_admin)])
@@ -81,6 +85,77 @@ def create(body: ReportIn, background: BackgroundTasks, db: Session = Depends(ge
     if not body.human:
         background.add_task(support.schedule, ticket.id, support.factory_for(db))
     return result
+
+
+def _feedback_screenshot(file: UploadFile | None):
+    if file is None:
+        return None
+    limit = 2 * 1024 * 1024
+    contents = file.file.read(limit + 1)
+    if len(contents) > limit:
+        raise HTTPException(413, "צילום המסך גדול מדי. אפשר לשלוח את הדיווח בלעדיו.")
+    try:
+        with Image.open(BytesIO(contents), formats=["JPEG", "PNG", "WEBP"]) as image:
+            if max(image.size) > 2400 or image.width * image.height > 3_000_000:
+                raise ValueError("large image")
+            output = BytesIO()
+            image.convert("RGB").save(output, "JPEG", quality=85)
+            return output.getvalue()
+    except (UnidentifiedImageError, Image.DecompressionBombError, OSError, ValueError):
+        raise HTTPException(422, "לא הצלחנו לקרוא את צילום המסך.") from None
+
+
+@router.post("/feedback", status_code=201)
+def feedback(
+    client_ref: UUID = Form(),
+    kind: Literal["bug", "suggestion"] = Form(),
+    body: str = Form(min_length=5, max_length=3000),
+    page: str = Form(default="/", max_length=40, pattern=r"^/(?:[a-z0-9-]+(?:/[a-z0-9-]+)*)?$"),
+    screenshot: UploadFile | None = File(default=None),
+    db: Session = Depends(get_db),
+    user: User = Depends(get_current_user),
+):
+    ref = str(client_ref)
+    ticket = db.query(SupportTicket).filter_by(user_id=user.id, client_ref=ref).first()
+    if ticket is None:
+        text = support.clean(body)
+        if len(text) < 5:
+            raise HTTPException(422, "כתבו בכמה מילים מה קרה.")
+        _budget(user, report=True)
+        image = _feedback_screenshot(screenshot)
+        ticket = SupportTicket(id=secrets.token_hex(16), user_id=user.id, client_ref=ref,
+                               category=kind, page=page, ai_status="skipped")
+        try:
+            db.add(ticket)
+            db.flush()
+            support.message(db, ticket, "user", text, ref)
+            db.add(FeedbackEvidence(ticket_id=ticket.id, user_id=user.id, screenshot=image))
+            db.commit()
+        except IntegrityError:
+            db.rollback()
+            ticket = db.query(SupportTicket).filter_by(user_id=user.id, client_ref=ref).one()
+    ticket_id = ticket.id
+    feedback_board.publish(db, ticket_id)
+    evidence = db.get(FeedbackEvidence, ticket_id)
+    if evidence is None:
+        raise HTTPException(409, "מספר הדיווח כבר משויך לפנייה אחרת.")
+    return {"id": ticket_id, "board_synced": evidence.board_state == "sent"}
+
+
+@router.get("/{ticket_id}/screenshot")
+def screenshot(
+    ticket_id: str, request: Request, db: Session = Depends(get_db),
+    user: User = Depends(get_current_user),
+):
+    evidence = db.get(FeedbackEvidence, ticket_id)
+    reviewers = {email.strip().lower() for email in get_settings().feedback_reviewer_emails.split(",") if email.strip()}
+    reviewer = user.email.lower() in reviewers and user.google_sub and session_method(session_token(request)) == METHOD_GOOGLE
+    if not evidence or not evidence.screenshot or not (
+        evidence.user_id == user.id or reviewer or is_admin_request(request, user)
+    ):
+        raise HTTPException(404, "צילום המסך לא נמצא.")
+    return Response(evidence.screenshot, media_type="image/jpeg",
+                    headers={"Cache-Control": "private, no-store", "X-Content-Type-Options": "nosniff"})
 
 
 @router.get("/{ticket_id}")

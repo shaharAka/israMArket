@@ -14,6 +14,7 @@ container gets them from there. The web and Caddy containers never see them.
 |---|---|---|---|
 | `openai-api-key` | `OPENAI_API_KEY` | when GPT selected | The funded project API key for GPT text/vision calls. No key in extra.env, git or command arguments. |
 | `gemini-api-key` | `GEMINI_API_KEY` | **yes** | The Gemini API key for media and the text rollback route. Prefer a key created in project `isramarket` (APIs & Services > Credentials), restricted to the Generative Language API. |
+| `feedback-github-token` | `FEEDBACK_GITHUB_TOKEN` | no | Dedicated GitHub credential with project write access for the private feedback board. |
 | `jwt-secret` | `JWT_SECRET` | **yes** | Signs sessions. Generate it (below). The API refuses to boot in production with the default. Rotating it logs everyone out. |
 | `token-encryption-key` | `TOKEN_ENCRYPTION_KEY` | **yes** | A Fernet key that encrypts the stored GA4/Meta OAuth tokens. Generate it (below). **Never rotate it casually:** tokens stored under the old key become undecryptable and every owner has to reconnect. Keep an offline copy. |
 | `google-client-id` | `GOOGLE_CLIENT_ID` | no | OAuth client (type "Web application") in project `isramarket`. Needed for GA4/Search Console connect and, later, Google sign-in. |
@@ -134,3 +135,15 @@ Access is 12 reads per boot or deploy, which stays well inside the free tier.
   boot disk. So `sudo docker inspect` shows the values. Google encrypts the disk at rest.
   Anyone with root on the VM can read the secrets, so keep SSH limited to IAP and OS Login
   (README step 5).
+
+### Product feedback board
+
+Set `FEEDBACK_GITHUB_PROJECT_ID` in `/etc/isramarket/extra.env` to the private GitHub
+Project's node ID. Grant the VM service account access to the `feedback-github-token`
+secret and render the environment on deployment. Use a dedicated Project-write
+credential. Project drafts remain private. Keep the Project private.
+
+The GitHub card links to the screenshot in IsraMarket. The reporter and backoffice
+admins can view it. For board reviewers who are not admins, set
+`FEEDBACK_REVIEWER_EMAILS` to their verified Google sign-in addresses. They can view
+feedback screenshots with their Google session. This does not grant backoffice access.

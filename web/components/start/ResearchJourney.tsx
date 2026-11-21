@@ -18,6 +18,7 @@ import { OnboardingTip } from "./OnboardingTip";
 import { Copy, useCopy, useLanguage } from "@/components/language/LanguageProvider";
 import { HowToFind } from "@/components/help/HowToFind";
 import { ProductUtilities } from "@/components/language/ProductUtilities";
+import { ReportFeedback } from "@/components/support/ReportFeedback";
 import { IdentityMark } from "@/components/landing-v2/IdentityMark";
 import { BuildReview, REVIEW_PATHS } from "./BuildReview";
 import { BUSINESS_EXAMPLES } from "@/components/landing-v2/businessExamples";
@@ -212,7 +213,7 @@ export function ResearchJourney() {
     case "build": screen = <BuildReview {...common} mock={mock} busy={busy} canStart={signedIn && !busy}
       onDone={() => { void clearSavedFlow(); router.replace("/strategy"); }} />; break;
   }
-  return <div className={`start-blue ${styles.flow}`}><header className="border-b border-[var(--rule)]"><div className="mx-auto flex max-w-[1100px] flex-wrap items-center justify-between gap-3 px-5 py-4"><Link href="/" aria-label={t("ישראמארקט")} className="product-wordmark !text-[22px]" dir="ltr"><IdentityMark /></Link><ProductUtilities inline /></div></header>
+  return <div className={`start-blue ${styles.flow}`}><header className="border-b border-[var(--rule)]"><div className="mx-auto flex max-w-[1100px] flex-wrap items-center justify-between gap-3 px-5 py-4"><Link href="/" aria-label={t("ישראמארקט")} className="product-wordmark !text-[22px]" dir="ltr"><IdentityMark /></Link><div className="flex items-center gap-2">{signedIn && !mock ? <ReportFeedback iconOnly /> : null}<ProductUtilities inline /></div></div></header>
     <main className="mx-auto w-full max-w-[760px] px-5 py-6 sm:py-10" aria-busy={busy}>{index > 0 ? <button type="button" disabled={busy} onClick={() => void move(steps[index - 1], true)} className="mb-4 min-h-11 text-sm"><Copy text="חזרה" /></button> : null}
       <ol className={styles.journeyStages} aria-label={t("מהיכרות לתוכנית")}>
         {["מכירים את העסק", "מחברים מידע", "מגדירים מטרות", "בונים תוכנית"].map((label,i)=><li key={label} aria-current={stage===i?"step":undefined} data-complete={i<stage}><i aria-hidden="true"/><span><Copy text={label}/></span></li>)}

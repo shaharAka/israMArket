@@ -3,11 +3,13 @@ import _test_env  # noqa: F401
 import json
 import tempfile
 import unittest
+from io import BytesIO
 from pathlib import Path
 from unittest import mock
 from uuid import uuid4
 
 from fastapi.testclient import TestClient
+from PIL import Image
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -16,7 +18,7 @@ from app.db import Base, get_db
 from app.main import app
 from app.models import AdminAudit, SupportMessage, SupportTicket, User
 from app.security import METHOD_GOOGLE, create_access_token
-from app.services import account_deletion, ratelimit, support
+from app.services import account_deletion, feedback_board, ratelimit, support
 
 
 class SupportTest(unittest.TestCase):
@@ -48,6 +50,46 @@ class SupportTest(unittest.TestCase):
 
     def report(self, user=1, **extra):
         return self.client.post("/support", headers=self.headers(user), json={"client_ref": str(uuid4()), "body": "איך מאשרים פוסט?", **extra})
+
+    def test_product_feedback_adds_private_draft_and_limits_screenshot_access(self):
+        screen = BytesIO()
+        Image.new("RGB", (80, 60), "white").save(screen, "PNG")
+        payload = {"client_ref": str(uuid4()), "kind": "bug", "body": "The interview text stopped saving.", "page": "/start"}
+        with mock.patch.object(get_settings(), "feedback_github_token", "synthetic"), \
+             mock.patch.object(get_settings(), "feedback_github_project_id", "test-project"), \
+             mock.patch.object(feedback_board, "_graphql", side_effect=[
+                 {"node": {"public": False, "closed": False}},
+                 {"addProjectV2DraftIssue": {"projectItem": {"id": "test-item"}}},
+             ]) as github:
+            result = self.client.post("/support/feedback", headers=self.headers(), data=payload,
+                                      files={"screenshot": ("screen.png", screen.getvalue(), "image/png")})
+            self.assertEqual(result.status_code, 201, result.text)
+            self.assertTrue(result.json()["board_synced"])
+            retry = self.client.post("/support/feedback", headers=self.headers(), data=payload)
+            self.assertEqual(retry.json(), result.json())
+            self.assertEqual(github.call_count, 2)
+            query = github.call_args.args[2]["input"]
+            self.assertEqual(query["title"], "[Bug] The interview text stopped saving.")
+            self.assertIn("/support/screenshot/", query["body"])
+        url = f"/support/{result.json()['id']}/screenshot"
+        self.assertEqual(self.client.get(url).status_code, 401)
+        self.assertEqual(self.client.get(url, headers=self.headers(2)).status_code, 404)
+        for account in (1, 3):
+            image = self.client.get(url, headers=self.headers(account))
+            self.assertEqual(image.status_code, 200)
+            self.assertEqual(image.headers["content-type"], "image/jpeg")
+            self.assertEqual(image.headers["cache-control"], "private, no-store")
+
+    def test_product_feedback_stays_in_support_if_board_is_public(self):
+        payload = {"client_ref": str(uuid4()), "kind": "suggestion", "body": "Make the post editor clearer.", "page": "/posts"}
+        with mock.patch.object(get_settings(), "feedback_github_token", "synthetic"), \
+             mock.patch.object(get_settings(), "feedback_github_project_id", "test-project"), \
+             mock.patch.object(feedback_board, "_graphql", return_value={"node": {"public": True, "closed": False}}) as github:
+            result = self.client.post("/support/feedback", headers=self.headers(), data=payload)
+            self.assertEqual(result.status_code, 201, result.text)
+            self.assertFalse(result.json()["board_synced"])
+            self.assertEqual(github.call_count, 1)
+        self.assertEqual(self.client.get("/support", headers=self.headers()).json()["tickets"][0]["category"], "suggestion")
 
     def run_ai(self, ticket_id, *, result=None, side_effect=None):
         result = result or {"outcome": "suggestion", "article": "posts", "answer": "פתחו את הפוסט, בדקו את הטקסט והתמונה ואז אשרו."}

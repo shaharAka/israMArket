@@ -5,7 +5,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 23,
+        "line": 30,
         "kind": "literal",
         "purpose": "display"
       }
@@ -18,6 +18,17 @@
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
         "line": 63,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_000475b751702835": {
+    "source": "להסיר את צילום המסך",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/support/ReportFeedback.tsx",
+        "line": 139,
         "kind": "literal"
       }
     ]
@@ -756,7 +767,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 32,
+        "line": 39,
         "kind": "literal"
       }
     ]
@@ -1367,12 +1378,12 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 197,
+        "line": 198,
         "kind": "literal"
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 365,
+        "line": 366,
         "kind": "literal"
       },
       {
@@ -1763,7 +1774,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 369,
+        "line": 370,
         "kind": "literal",
         "purpose": "display"
       }
@@ -3055,7 +3066,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 24,
+        "line": 31,
         "kind": "literal"
       }
     ]
@@ -3659,7 +3670,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 239,
+        "line": 240,
         "kind": "literal"
       },
       {
@@ -5003,7 +5014,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 220,
+        "line": 221,
         "kind": "literal"
       }
     ]
@@ -5186,7 +5197,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 315,
+        "line": 316,
         "kind": "literal"
       }
     ]
@@ -5395,7 +5406,7 @@
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 328,
+        "line": 331,
         "kind": "literal"
       },
       {
@@ -5466,7 +5477,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 360,
+        "line": 361,
         "kind": "literal"
       }
     ]
@@ -5499,7 +5510,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 199,
+        "line": 206,
         "kind": "literal"
       }
     ]
@@ -6078,7 +6089,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 65,
+        "line": 66,
         "kind": "literal"
       }
     ]
@@ -6365,7 +6376,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 73,
+        "line": 80,
         "kind": "literal"
       }
     ]
@@ -6569,12 +6580,12 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 61,
+        "line": 68,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 82,
+        "line": 89,
         "kind": "literal"
       }
     ]
@@ -6978,7 +6989,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 229,
+        "line": 236,
         "kind": "literal"
       }
     ]
@@ -7541,7 +7552,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 262,
+        "line": 269,
         "kind": "literal"
       }
     ]
@@ -8122,7 +8133,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 60,
+        "line": 67,
         "kind": "literal"
       }
     ]
@@ -8340,7 +8351,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 172,
+        "line": 179,
         "kind": "literal"
       }
     ]
@@ -8826,7 +8837,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 370,
+        "line": 371,
         "kind": "literal"
       }
     ]
@@ -9627,7 +9638,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 217,
+        "line": 218,
         "kind": "literal"
       }
     ]
@@ -9707,7 +9718,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 227,
+        "line": 234,
         "kind": "literal"
       }
     ]
@@ -10565,7 +10576,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 103,
+        "line": 104,
         "kind": "literal"
       }
     ]
@@ -10691,7 +10702,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 218,
+        "line": 219,
         "kind": "literal"
       }
     ]
@@ -10902,7 +10913,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 284,
+        "line": 291,
         "kind": "literal"
       }
     ]
@@ -11270,6 +11281,17 @@
       }
     ]
   },
+  "m_1793faeead4ecf04": {
+    "source": "דיווח על תקלה או הצעה לשיפור",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/support/ReportFeedback.tsx",
+        "line": 115,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_1799615dc8b355a6": {
     "source": "שאלות",
     "language": "he",
@@ -11372,7 +11394,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 317,
+        "line": 318,
         "kind": "literal"
       }
     ]
@@ -11463,7 +11485,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 367,
+        "line": 368,
         "kind": "literal",
         "purpose": "display"
       }
@@ -11627,7 +11649,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 250,
+        "line": 257,
         "kind": "literal"
       }
     ]
@@ -11744,7 +11766,7 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 184,
+        "line": 185,
         "kind": "literal"
       },
       {
@@ -11969,7 +11991,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 58,
+        "line": 65,
         "kind": "literal",
         "purpose": "display"
       }
@@ -13397,7 +13419,7 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 184,
+        "line": 185,
         "kind": "literal"
       },
       {
@@ -14542,7 +14564,7 @@
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 51,
+        "line": 52,
         "kind": "literal",
         "purpose": "display"
       },
@@ -15022,7 +15044,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 340,
+        "line": 341,
         "kind": "literal"
       }
     ]
@@ -15055,7 +15077,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 31,
+        "line": 38,
         "kind": "literal"
       }
     ]
@@ -15726,7 +15748,7 @@
     "references": [
       {
         "file": "api/app/routers/support.py",
-        "line": 50,
+        "line": 54,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -16377,7 +16399,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 171,
+        "line": 178,
         "kind": "literal"
       }
     ]
@@ -16582,7 +16604,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 187,
+        "line": 194,
         "kind": "literal"
       }
     ]
@@ -17304,7 +17326,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 240,
+        "line": 247,
         "kind": "literal",
         "purpose": "display"
       }
@@ -17339,12 +17361,12 @@
     "references": [
       {
         "file": "web/components/AppShell.tsx",
-        "line": 223,
+        "line": 225,
         "kind": "literal"
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 255,
+        "line": 257,
         "kind": "literal"
       }
     ]
@@ -18977,7 +18999,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 100,
+        "line": 107,
         "kind": "literal",
         "purpose": "display"
       }
@@ -19000,7 +19022,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 37,
+        "line": 44,
         "kind": "literal",
         "purpose": "display"
       }
@@ -19284,7 +19306,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 268,
+        "line": 275,
         "kind": "literal",
         "purpose": "display"
       }
@@ -19493,7 +19515,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 102,
+        "line": 109,
         "kind": "literal"
       }
     ]
@@ -19624,7 +19646,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 366,
+        "line": 367,
         "kind": "literal"
       }
     ]
@@ -19714,7 +19736,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 141,
+        "line": 148,
         "kind": "literal"
       }
     ]
@@ -19849,12 +19871,12 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 184,
+        "line": 185,
         "kind": "literal"
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 314,
+        "line": 315,
         "kind": "literal"
       }
     ]
@@ -20298,12 +20320,12 @@
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 68,
+        "line": 75,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 110,
+        "line": 117,
         "kind": "literal"
       }
     ]
@@ -21281,7 +21303,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 156,
+        "line": 163,
         "kind": "literal",
         "purpose": "display"
       }
@@ -21362,7 +21384,13 @@
     "references": [
       {
         "file": "api/app/routers/support.py",
-        "line": 68,
+        "line": 72,
+        "kind": "literal",
+        "purpose": "validation"
+      },
+      {
+        "file": "api/app/routers/support.py",
+        "line": 123,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -21596,7 +21624,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 283,
+        "line": 290,
         "kind": "literal"
       }
     ]
@@ -22281,7 +22309,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 348,
+        "line": 349,
         "kind": "literal"
       }
     ]
@@ -22814,17 +22842,17 @@
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 194,
+        "line": 201,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 222,
+        "line": 229,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 264,
+        "line": 271,
         "kind": "literal"
       }
     ]
@@ -23182,7 +23210,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 203,
+        "line": 204,
         "kind": "literal"
       }
     ]
@@ -23204,7 +23232,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 348,
+        "line": 349,
         "kind": "literal"
       }
     ]
@@ -23294,17 +23322,17 @@
     "references": [
       {
         "file": "web/components/AppShell.tsx",
-        "line": 263,
+        "line": 265,
         "kind": "literal"
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 184,
+        "line": 185,
         "kind": "literal"
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 314,
+        "line": 315,
         "kind": "literal"
       },
       {
@@ -25033,12 +25061,12 @@
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 207,
+        "line": 208,
         "kind": "jsx"
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 246,
+        "line": 248,
         "kind": "jsx"
       },
       {
@@ -25186,7 +25214,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 360,
+        "line": 361,
         "kind": "literal"
       }
     ]
@@ -26256,7 +26284,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 184,
+        "line": 185,
         "kind": "literal"
       }
     ]
@@ -26323,6 +26351,17 @@
       {
         "file": "web/components/start/script.ts",
         "line": 229,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_35595ac28a5483d4": {
+    "source": "צילום המסך יצורף לדיווח לצוות.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/support/ReportFeedback.tsx",
+        "line": 135,
         "kind": "literal"
       }
     ]
@@ -26545,7 +26584,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 367,
+        "line": 368,
         "kind": "literal",
         "purpose": "display"
       }
@@ -27532,7 +27571,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 186,
+        "line": 193,
         "kind": "literal"
       }
     ]
@@ -27895,7 +27934,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 321,
+        "line": 322,
         "kind": "literal"
       }
     ]
@@ -28140,7 +28179,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 370,
+        "line": 371,
         "kind": "literal"
       }
     ]
@@ -28398,7 +28437,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 218,
+        "line": 219,
         "kind": "literal"
       }
     ]
@@ -28676,7 +28715,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 165,
+        "line": 172,
         "kind": "literal"
       }
     ]
@@ -30610,7 +30649,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 198,
+        "line": 205,
         "kind": "literal",
         "purpose": "display"
       }
@@ -30796,7 +30835,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 184,
+        "line": 185,
         "kind": "literal"
       }
     ]
@@ -30851,7 +30890,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 80,
+        "line": 87,
         "kind": "literal"
       }
     ]
@@ -31138,7 +31177,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 368,
+        "line": 369,
         "kind": "literal"
       }
     ]
@@ -31683,7 +31722,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 185,
+        "line": 192,
         "kind": "literal"
       }
     ]
@@ -32103,7 +32142,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 46,
+        "line": 53,
         "kind": "literal"
       }
     ]
@@ -32254,7 +32293,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 184,
+        "line": 185,
         "kind": "literal"
       }
     ]
@@ -32338,7 +32377,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 220,
+        "line": 221,
         "kind": "literal"
       }
     ]
@@ -32846,7 +32885,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 365,
+        "line": 366,
         "kind": "literal",
         "purpose": "display"
       },
@@ -32898,7 +32937,7 @@
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 12,
+        "line": 19,
         "kind": "literal"
       }
     ]
@@ -33730,7 +33769,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 243,
+        "line": 250,
         "kind": "literal"
       }
     ]
@@ -34260,7 +34299,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 179,
+        "line": 186,
         "kind": "literal"
       }
     ]
@@ -34885,7 +34924,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 220,
+        "line": 227,
         "kind": "literal"
       }
     ]
@@ -35206,17 +35245,12 @@
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 96,
-        "kind": "literal"
-      },
-      {
-        "file": "web/lib/releases.ts",
         "line": 103,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 152,
+        "line": 110,
         "kind": "literal"
       },
       {
@@ -35227,6 +35261,11 @@
       {
         "file": "web/lib/releases.ts",
         "line": 166,
+        "kind": "literal"
+      },
+      {
+        "file": "web/lib/releases.ts",
+        "line": 173,
         "kind": "literal"
       },
       {
@@ -35415,17 +35454,17 @@
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 89,
+        "line": 96,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 117,
+        "line": 124,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 143,
+        "line": 150,
         "kind": "literal"
       }
     ]
@@ -36040,7 +36079,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 369,
+        "line": 370,
         "kind": "literal",
         "purpose": "display"
       }
@@ -36805,7 +36844,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 142,
+        "line": 149,
         "kind": "literal"
       }
     ]
@@ -36888,7 +36927,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 365,
+        "line": 366,
         "kind": "literal"
       }
     ]
@@ -37173,7 +37212,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 360,
+        "line": 361,
         "kind": "literal"
       }
     ]
@@ -37564,7 +37603,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 10,
+        "line": 17,
         "kind": "literal"
       }
     ]
@@ -37679,12 +37718,12 @@
     "references": [
       {
         "file": "web/components/AppShell.tsx",
-        "line": 231,
+        "line": 233,
         "kind": "literal"
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 291,
+        "line": 294,
         "kind": "literal"
       }
     ]
@@ -38647,7 +38686,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 282,
+        "line": 289,
         "kind": "literal",
         "purpose": "display"
       }
@@ -38945,7 +38984,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 25,
+        "line": 32,
         "kind": "literal"
       }
     ]
@@ -39046,7 +39085,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 125,
+        "line": 132,
         "kind": "literal"
       }
     ]
@@ -39120,7 +39159,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 17,
+        "line": 24,
         "kind": "literal"
       }
     ]
@@ -39315,7 +39354,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 206,
+        "line": 213,
         "kind": "literal"
       }
     ]
@@ -39404,7 +39443,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 360,
+        "line": 361,
         "kind": "literal"
       }
     ]
@@ -39420,7 +39459,7 @@
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 50,
+        "line": 51,
         "kind": "literal",
         "purpose": "display"
       },
@@ -39482,7 +39521,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 254,
+        "line": 261,
         "kind": "literal",
         "purpose": "display"
       }
@@ -39708,6 +39747,18 @@
       }
     ]
   },
+  "m_525e09bdd812576d": {
+    "source": "מספר הדיווח כבר משויך לפנייה אחרת.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/routers/support.py",
+        "line": 141,
+        "kind": "literal",
+        "purpose": "validation"
+      }
+    ]
+  },
   "m_526e8a9db48bb992": {
     "source": "ל־{arg_0}",
     "language": "he",
@@ -39754,6 +39805,11 @@
       {
         "file": "web/components/design/Controls.tsx",
         "line": 72,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/support/ReportFeedback.tsx",
+        "line": 118,
         "kind": "literal"
       }
     ]
@@ -39905,7 +39961,28 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 165,
+        "line": 166,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_52eced5d4bff146b": {
+    "source": "לדווח על תקלה או להציע שיפור",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/support/ReportFeedback.tsx",
+        "line": 106,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/support/ReportFeedback.tsx",
+        "line": 107,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/support/ReportFeedback.tsx",
+        "line": 113,
         "kind": "literal"
       }
     ]
@@ -41692,7 +41769,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 199,
+        "line": 200,
         "kind": "literal"
       }
     ]
@@ -41755,7 +41832,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 276,
+        "line": 283,
         "kind": "literal"
       }
     ]
@@ -42235,13 +42312,24 @@
       }
     ]
   },
+  "m_580e13d9062f0b19": {
+    "source": "צילום המסך לא הצליח. אפשר לשלוח את הדיווח בלעדיו.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/support/ReportFeedback.tsx",
+        "line": 141,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_5817f5c7a6a28f6d": {
     "source": "הפוסטים והתוצאות מקבלים יותר מקום בעמוד הבית, ואפשר לבחור מטרה מתוך ההדגמה.",
     "language": "he",
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 45,
+        "line": 52,
         "kind": "literal"
       }
     ]
@@ -43203,6 +43291,18 @@
       }
     ]
   },
+  "m_5a8494fe432d4b6d": {
+    "source": "GitHub rejected the operation",
+    "language": "en",
+    "references": [
+      {
+        "file": "api/app/services/feedback_board.py",
+        "line": 26,
+        "kind": "literal",
+        "purpose": "validation"
+      }
+    ]
+  },
   "m_5a8b187c88e64fb2": {
     "source": "בתוכנית נבחר מעט ערוצים שאפשר להתחיל בהם, לפי העסק, המחקר והתוצאות. שיתוף פעולה הוא הצעה לבדיקה, לא חיבור שכבר קיים.",
     "language": "he",
@@ -43365,7 +43465,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 39,
+        "line": 46,
         "kind": "literal"
       }
     ]
@@ -43642,7 +43742,7 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 321,
+        "line": 322,
         "kind": "literal"
       }
     ]
@@ -43725,7 +43825,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 150,
+        "line": 157,
         "kind": "literal"
       }
     ]
@@ -44470,7 +44570,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 277,
+        "line": 284,
         "kind": "literal"
       }
     ]
@@ -44516,7 +44616,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 124,
+        "line": 131,
         "kind": "literal"
       }
     ]
@@ -46352,7 +46452,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 87,
+        "line": 94,
         "kind": "literal"
       }
     ]
@@ -46901,7 +47001,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 255,
+        "line": 262,
         "kind": "literal"
       }
     ]
@@ -47331,7 +47431,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 257,
+        "line": 264,
         "kind": "literal"
       }
     ]
@@ -47771,7 +47871,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 208,
+        "line": 215,
         "kind": "literal"
       }
     ]
@@ -48039,7 +48139,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 16,
+        "line": 23,
         "kind": "literal",
         "purpose": "display"
       }
@@ -48473,7 +48573,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 52,
+        "line": 59,
         "kind": "literal"
       }
     ]
@@ -48518,7 +48618,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 44,
+        "line": 51,
         "kind": "literal",
         "purpose": "display"
       }
@@ -49203,6 +49303,17 @@
       {
         "file": "web/lib/uxFlows.ts",
         "line": 77,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_6698d326c62852d6": {
+    "source": "שולחים את הדיווח…",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/support/ReportFeedback.tsx",
+        "line": 144,
         "kind": "literal"
       }
     ]
@@ -51084,7 +51195,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 191,
+        "line": 198,
         "kind": "literal",
         "purpose": "display"
       }
@@ -51217,7 +51328,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 270,
+        "line": 277,
         "kind": "literal"
       }
     ]
@@ -51272,7 +51383,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 269,
+        "line": 276,
         "kind": "literal"
       }
     ]
@@ -51419,7 +51530,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 275,
+        "line": 282,
         "kind": "literal",
         "purpose": "display"
       }
@@ -51744,7 +51855,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 38,
+        "line": 45,
         "kind": "literal"
       }
     ]
@@ -53520,6 +53631,17 @@
       }
     ]
   },
+  "m_6fb6420128b144be": {
+    "source": "הדיווח נוסף ללוח של הצוות. תודה!",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/support/ReportFeedback.tsx",
+        "line": 117,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_6fc17e55964dd2b8": {
     "source": "היי, מה הכתובת המדויקת של האתר שלנו? צריך אותה לאפליקציית השיווק. תודה!",
     "language": "he",
@@ -53537,7 +53659,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 369,
+        "line": 370,
         "kind": "literal",
         "purpose": "display"
       }
@@ -53617,7 +53739,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 261,
+        "line": 268,
         "kind": "literal",
         "purpose": "display"
       }
@@ -53931,7 +54053,7 @@
     "references": [
       {
         "file": "web/components/AppShell.tsx",
-        "line": 43,
+        "line": 44,
         "kind": "literal",
         "purpose": "display"
       }
@@ -53943,7 +54065,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 72,
+        "line": 79,
         "kind": "literal",
         "purpose": "display"
       }
@@ -54213,12 +54335,12 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 134,
+        "line": 141,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 180,
+        "line": 187,
         "kind": "literal"
       }
     ]
@@ -54229,7 +54351,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 114,
+        "line": 121,
         "kind": "literal",
         "purpose": "display"
       }
@@ -54274,7 +54396,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 214,
+        "line": 221,
         "kind": "literal"
       }
     ]
@@ -54715,7 +54837,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 123,
+        "line": 130,
         "kind": "literal",
         "purpose": "display"
       }
@@ -55730,7 +55852,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 107,
+        "line": 108,
         "kind": "literal"
       }
     ]
@@ -56063,7 +56185,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 106,
+        "line": 107,
         "kind": "literal"
       }
     ]
@@ -56742,7 +56864,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 340,
+        "line": 341,
         "kind": "literal"
       }
     ]
@@ -56941,7 +57063,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 66,
+        "line": 73,
         "kind": "literal"
       }
     ]
@@ -57848,7 +57970,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 233,
+        "line": 240,
         "kind": "literal",
         "purpose": "display"
       }
@@ -58643,7 +58765,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 213,
+        "line": 220,
         "kind": "literal"
       }
     ]
@@ -59522,7 +59644,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 199,
+        "line": 200,
         "kind": "literal"
       }
     ]
@@ -60144,7 +60266,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 184,
+        "line": 185,
         "kind": "literal"
       }
     ]
@@ -60411,7 +60533,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 105,
+        "line": 106,
         "kind": "literal"
       }
     ]
@@ -60607,6 +60729,17 @@
       {
         "file": "web/lib/uxFlows.ts",
         "line": 57,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_7ebb3160400569b6": {
+    "source": "מה כדאי לשפר?",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/support/ReportFeedback.tsx",
+        "line": 129,
         "kind": "literal"
       }
     ]
@@ -60939,6 +61072,17 @@
       }
     ]
   },
+  "m_7fccc513455a71b3": {
+    "source": "להיכנס כדי לראות את צילום המסך",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/support/screenshot/[id]/page.tsx",
+        "line": 44,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_7fd7689a520a9655": {
     "source": "לייקים ותגובות, ביחס למספר הצפיות (אין נתונים על כמה אנשים ראו, שמירות ושיתופים)",
     "language": "he",
@@ -61167,7 +61311,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 228,
+        "line": 235,
         "kind": "literal"
       }
     ]
@@ -61653,7 +61797,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 370,
+        "line": 371,
         "kind": "literal"
       }
     ]
@@ -62637,7 +62781,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 221,
+        "line": 228,
         "kind": "literal"
       }
     ]
@@ -63189,6 +63333,17 @@
       {
         "file": "web/lib/pricing.ts",
         "line": 53,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_8440827160a8e7d9": {
+    "source": "לשלוח דיווח",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/support/ReportFeedback.tsx",
+        "line": 144,
         "kind": "literal"
       }
     ]
@@ -64016,7 +64171,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 325,
+        "line": 326,
         "kind": "literal"
       }
     ]
@@ -64184,7 +64339,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 104,
+        "line": 105,
         "kind": "literal"
       }
     ]
@@ -64589,17 +64744,17 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 26,
-        "kind": "literal"
-      },
-      {
-        "file": "web/lib/releases.ts",
         "line": 33,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 47,
+        "line": 40,
+        "kind": "literal"
+      },
+      {
+        "file": "web/lib/releases.ts",
+        "line": 54,
         "kind": "literal"
       }
     ]
@@ -64899,7 +65054,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 177,
+        "line": 184,
         "kind": "literal",
         "purpose": "display"
       }
@@ -64956,7 +65111,7 @@
     "references": [
       {
         "file": "api/app/routers/support.py",
-        "line": 41,
+        "line": 45,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -65122,7 +65277,7 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 177,
+        "line": 178,
         "kind": "literal"
       },
       {
@@ -65177,6 +65332,17 @@
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
         "line": 110,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_87c60083cd6b9567": {
+    "source": "הדיווח נשמר לצוות. תודה!",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/support/ReportFeedback.tsx",
+        "line": 117,
         "kind": "literal"
       }
     ]
@@ -66272,7 +66438,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 107,
+        "line": 114,
         "kind": "literal",
         "purpose": "display"
       }
@@ -67532,6 +67698,17 @@
       }
     ]
   },
+  "m_8d6f37216d0cd17d": {
+    "source": "בהיכרות יש יותר מקום לתשובות, ואפשר להחזיר מקור שהסרתם בלי להזין את הקישור מחדש.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 11,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_8d7415e68ec0799b": {
     "source": "רגע קטן של שמחה",
     "language": "he",
@@ -68394,7 +68571,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 219,
+        "line": 226,
         "kind": "literal",
         "purpose": "display"
       }
@@ -68457,6 +68634,17 @@
       {
         "file": "web/lib/uxFlows.ts",
         "line": 68,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_8f081538cc0e0dcd": {
+    "source": "צילום המסך לא זמין בחשבון הזה.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/support/screenshot/[id]/page.tsx",
+        "line": 46,
         "kind": "literal"
       }
     ]
@@ -68758,7 +68946,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 212,
+        "line": 219,
         "kind": "literal",
         "purpose": "display"
       }
@@ -69311,7 +69499,7 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 218,
+        "line": 219,
         "kind": "literal"
       }
     ]
@@ -69961,7 +70149,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 255,
+        "line": 256,
         "kind": "literal"
       }
     ]
@@ -70014,6 +70202,18 @@
         "line": 1172,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_924b0980f647b5ed": {
+    "source": "צילום המסך לא נמצא.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/routers/support.py",
+        "line": 156,
+        "kind": "literal",
+        "purpose": "validation"
       }
     ]
   },
@@ -70402,6 +70602,17 @@
       {
         "file": "web/lib/sections.ts",
         "line": 35,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_934afdbb2b00d775": {
+    "source": "תצוגה מקדימה של צילום המסך",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/support/ReportFeedback.tsx",
+        "line": 136,
         "kind": "literal"
       }
     ]
@@ -71092,7 +71303,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 314,
+        "line": 315,
         "kind": "literal"
       }
     ]
@@ -72581,7 +72792,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 157,
+        "line": 164,
         "kind": "literal"
       }
     ]
@@ -73866,6 +74077,18 @@
       }
     ]
   },
+  "m_9a5d6fa8e2c98241": {
+    "source": "large image",
+    "language": "en",
+    "references": [
+      {
+        "file": "api/app/routers/support.py",
+        "line": 100,
+        "kind": "literal",
+        "purpose": "validation"
+      }
+    ]
+  },
   "m_9a6ad7b7c8cd3b6c": {
     "source": "- הבעיה שהמוצר פותר: {arg_0}",
     "language": "he",
@@ -74121,7 +74344,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 263,
+        "line": 270,
         "kind": "literal"
       }
     ]
@@ -74328,7 +74551,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 278,
+        "line": 285,
         "kind": "literal"
       }
     ]
@@ -74880,7 +75103,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 321,
+        "line": 322,
         "kind": "literal",
         "purpose": "display"
       }
@@ -75465,7 +75688,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 204,
+        "line": 205,
         "kind": "literal"
       }
     ]
@@ -75487,7 +75710,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 19,
+        "line": 26,
         "kind": "literal"
       }
     ]
@@ -75863,7 +76086,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 204,
+        "line": 205,
         "kind": "literal"
       }
     ]
@@ -75947,7 +76170,7 @@
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 282,
+        "line": 285,
         "kind": "literal"
       }
     ]
@@ -76695,7 +76918,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 178,
+        "line": 185,
         "kind": "literal"
       }
     ]
@@ -77028,13 +77251,13 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 197,
+        "line": 198,
         "kind": "literal",
         "purpose": "display"
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 198,
+        "line": 199,
         "kind": "literal"
       },
       {
@@ -77592,7 +77815,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 94,
+        "line": 101,
         "kind": "literal"
       }
     ]
@@ -78016,7 +78239,12 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 285,
+        "line": 12,
+        "kind": "literal"
+      },
+      {
+        "file": "web/lib/releases.ts",
+        "line": 292,
         "kind": "literal"
       }
     ]
@@ -79688,7 +79916,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 204,
+        "line": 205,
         "kind": "literal"
       }
     ]
@@ -80970,6 +81198,17 @@
       }
     ]
   },
+  "m_a9f9fccf43ca9966": {
+    "source": "אפשר לשלוח לצוות תקלה או הצעה לשיפור ולבחור אם לצרף צילום מסך.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 10,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_aa0a9ba976fcc4f6": {
     "source": "כרטיס של טקסט בלבד, בלי תמונה",
     "language": "he",
@@ -81298,7 +81537,7 @@
     "references": [
       {
         "file": "web/components/AppShell.tsx",
-        "line": 40,
+        "line": 41,
         "kind": "literal",
         "purpose": "display"
       },
@@ -81345,7 +81584,7 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 216,
+        "line": 217,
         "kind": "literal"
       },
       {
@@ -81417,7 +81656,7 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 190,
+        "line": 191,
         "kind": "literal"
       }
     ]
@@ -81770,7 +82009,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 247,
+        "line": 254,
         "kind": "literal",
         "purpose": "display"
       }
@@ -81916,12 +82155,12 @@
     "references": [
       {
         "file": "web/components/AppShell.tsx",
-        "line": 261,
+        "line": 263,
         "kind": "literal"
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 308,
+        "line": 311,
         "kind": "literal"
       },
       {
@@ -82179,7 +82418,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 184,
+        "line": 185,
         "kind": "literal"
       }
     ]
@@ -82201,7 +82440,7 @@
     "references": [
       {
         "file": "api/app/routers/support.py",
-        "line": 128,
+        "line": 203,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -82319,7 +82558,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 88,
+        "line": 95,
         "kind": "literal"
       }
     ]
@@ -82608,7 +82847,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 333,
+        "line": 334,
         "kind": "literal"
       }
     ]
@@ -82687,7 +82926,7 @@
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 267,
+        "line": 269,
         "kind": "literal"
       },
       {
@@ -82774,7 +83013,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 164,
+        "line": 171,
         "kind": "literal"
       }
     ]
@@ -83087,7 +83326,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 370,
+        "line": 371,
         "kind": "literal"
       }
     ]
@@ -83110,7 +83349,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 18,
+        "line": 25,
         "kind": "literal"
       }
     ]
@@ -83827,7 +84066,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 360,
+        "line": 361,
         "kind": "literal"
       }
     ]
@@ -84008,7 +84247,7 @@
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 271,
+        "line": 278,
         "kind": "literal"
       }
     ]
@@ -84170,7 +84409,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 151,
+        "line": 158,
         "kind": "literal"
       }
     ]
@@ -84966,7 +85205,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 184,
+        "line": 185,
         "kind": "literal"
       }
     ]
@@ -85034,7 +85273,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 163,
+        "line": 170,
         "kind": "literal",
         "purpose": "display"
       }
@@ -85651,7 +85890,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 140,
+        "line": 147,
         "kind": "literal",
         "purpose": "display"
       }
@@ -86352,7 +86591,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 340,
+        "line": 341,
         "kind": "literal"
       }
     ]
@@ -86533,7 +86772,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 203,
+        "line": 204,
         "kind": "literal"
       }
     ]
@@ -86578,7 +86817,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 203,
+        "line": 204,
         "kind": "literal",
         "purpose": "display"
       }
@@ -86956,7 +87195,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 239,
+        "line": 240,
         "kind": "literal"
       }
     ]
@@ -87634,12 +87873,12 @@
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 217,
+        "line": 219,
         "kind": "literal"
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 264,
+        "line": 266,
         "kind": "literal"
       },
       {
@@ -89025,7 +89264,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 115,
+        "line": 122,
         "kind": "literal"
       }
     ]
@@ -89144,7 +89383,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 360,
+        "line": 361,
         "kind": "literal"
       }
     ]
@@ -90008,7 +90247,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 170,
+        "line": 177,
         "kind": "literal",
         "purpose": "display"
       }
@@ -91043,7 +91282,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 248,
+        "line": 255,
         "kind": "literal"
       }
     ]
@@ -91173,7 +91412,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 235,
+        "line": 242,
         "kind": "literal"
       }
     ]
@@ -91914,7 +92153,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 78,
+        "line": 79,
         "kind": "literal"
       }
     ]
@@ -92058,7 +92297,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 65,
+        "line": 72,
         "kind": "literal",
         "purpose": "display"
       }
@@ -92331,7 +92570,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 40,
+        "line": 47,
         "kind": "literal"
       }
     ]
@@ -92482,7 +92721,7 @@
     "references": [
       {
         "file": "web/components/AppShell.tsx",
-        "line": 247,
+        "line": 249,
         "kind": "literal"
       }
     ]
@@ -93179,7 +93418,7 @@
     "references": [
       {
         "file": "web/components/AppShell.tsx",
-        "line": 179,
+        "line": 180,
         "kind": "literal",
         "purpose": "display"
       }
@@ -94274,7 +94513,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 360,
+        "line": 361,
         "kind": "literal"
       }
     ]
@@ -94318,7 +94557,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 239,
+        "line": 240,
         "kind": "literal"
       },
       {
@@ -95217,7 +95456,7 @@
     "references": [
       {
         "file": "api/app/routers/support.py",
-        "line": 96,
+        "line": 171,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -95355,23 +95594,23 @@
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 181,
+        "line": 182,
         "kind": "literal",
         "purpose": "display"
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 233,
-        "kind": "literal"
-      },
-      {
-        "file": "web/components/AppShell.tsx",
-        "line": 280,
+        "line": 235,
         "kind": "literal"
       },
       {
         "file": "web/components/AppShell.tsx",
         "line": 283,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/AppShell.tsx",
+        "line": 286,
         "kind": "literal"
       }
     ]
@@ -95924,7 +96163,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 95,
+        "line": 102,
         "kind": "literal"
       }
     ]
@@ -96064,7 +96303,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 184,
+        "line": 185,
         "kind": "literal"
       }
     ]
@@ -96098,7 +96337,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 51,
+        "line": 58,
         "kind": "literal",
         "purpose": "display"
       }
@@ -96201,7 +96440,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 75,
+        "line": 82,
         "kind": "literal"
       }
     ]
@@ -96692,7 +96931,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 234,
+        "line": 241,
         "kind": "literal"
       }
     ]
@@ -96819,7 +97058,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 86,
+        "line": 93,
         "kind": "literal",
         "purpose": "display"
       }
@@ -96913,7 +97152,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 340,
+        "line": 341,
         "kind": "literal"
       }
     ]
@@ -97395,7 +97634,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 215,
+        "line": 222,
         "kind": "literal"
       }
     ]
@@ -97450,7 +97689,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 108,
+        "line": 115,
         "kind": "literal"
       }
     ]
@@ -97798,6 +98037,18 @@
       }
     ]
   },
+  "m_cd3a3650ca7ced9c": {
+    "source": "מדווחים על תקלה מתוך המסך",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 9,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
   "m_cd46855529c4fb70": {
     "source": "מתחילים {arg_0}. השבוע הראשון והפוסטים התעדכנו.",
     "language": "he",
@@ -97889,7 +98140,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 81,
+        "line": 88,
         "kind": "literal"
       }
     ]
@@ -97911,7 +98162,23 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 59,
+        "line": 66,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_cd83795ec3115456": {
+    "source": "צילום המסך מהדיווח",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/support/screenshot/[id]/page.tsx",
+        "line": 41,
+        "kind": "literal"
+      },
+      {
+        "file": "web/app/support/screenshot/[id]/page.tsx",
+        "line": 47,
         "kind": "literal"
       }
     ]
@@ -98144,6 +98411,18 @@
         "line": 1355,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_ce1a0c54e9fa8b74": {
+    "source": "לא הצלחנו לקרוא את צילום המסך.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/routers/support.py",
+        "line": 105,
+        "kind": "literal",
+        "purpose": "validation"
       }
     ]
   },
@@ -99969,7 +100248,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 218,
+        "line": 219,
         "kind": "literal"
       }
     ]
@@ -100233,7 +100512,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 249,
+        "line": 256,
         "kind": "literal"
       }
     ]
@@ -100313,8 +100592,13 @@
         "kind": "literal"
       },
       {
+        "file": "web/app/support/screenshot/[id]/page.tsx",
+        "line": 42,
+        "kind": "literal"
+      },
+      {
         "file": "web/components/AppShell.tsx",
-        "line": 189,
+        "line": 190,
         "kind": "literal"
       },
       {
@@ -100334,7 +100618,7 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 179,
+        "line": 180,
         "kind": "literal"
       },
       {
@@ -100835,7 +101119,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 93,
+        "line": 100,
         "kind": "literal",
         "purpose": "display"
       }
@@ -101041,7 +101325,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 74,
+        "line": 81,
         "kind": "literal"
       }
     ]
@@ -101688,7 +101972,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 203,
+        "line": 204,
         "kind": "literal"
       }
     ]
@@ -101749,7 +102033,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 200,
+        "line": 207,
         "kind": "literal"
       }
     ]
@@ -102335,6 +102619,11 @@
         "file": "web/app/support/page.tsx",
         "line": 85,
         "kind": "literal"
+      },
+      {
+        "file": "web/components/support/ReportFeedback.tsx",
+        "line": 129,
+        "kind": "literal"
       }
     ]
   },
@@ -102512,7 +102801,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 184,
+        "line": 191,
         "kind": "literal",
         "purpose": "display"
       }
@@ -102947,7 +103236,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 360,
+        "line": 361,
         "kind": "literal"
       }
     ]
@@ -104294,7 +104583,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 126,
+        "line": 133,
         "kind": "literal"
       }
     ]
@@ -105908,7 +106197,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 149,
+        "line": 156,
         "kind": "literal",
         "purpose": "display"
       }
@@ -105942,7 +106231,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 207,
+        "line": 214,
         "kind": "literal"
       }
     ]
@@ -106224,7 +106513,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 192,
+        "line": 199,
         "kind": "literal"
       }
     ]
@@ -106978,7 +107267,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 256,
+        "line": 263,
         "kind": "literal"
       }
     ]
@@ -107164,6 +107453,17 @@
         "file": "web/app/terms/page.tsx",
         "line": 82,
         "kind": "jsx"
+      }
+    ]
+  },
+  "m_e039b5912ead4495": {
+    "source": "מכינים צילום מסך…",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/support/ReportFeedback.tsx",
+        "line": 134,
+        "kind": "literal"
       }
     ]
   },
@@ -107528,6 +107828,23 @@
         "file": "web/components/integrations/PixelSetupGuide.tsx",
         "line": 19,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_e0d6247de5e8265f": {
+    "source": "צילום המסך גדול מדי. אפשר לשלוח את הדיווח בלעדיו.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/support/ReportFeedback.tsx",
+        "line": 98,
+        "kind": "literal"
+      },
+      {
+        "file": "api/app/routers/support.py",
+        "line": 96,
+        "kind": "literal",
+        "purpose": "validation"
       }
     ]
   },
@@ -107927,7 +108244,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 132,
+        "line": 139,
         "kind": "literal"
       }
     ]
@@ -108091,7 +108408,7 @@
     "references": [
       {
         "file": "api/app/routers/support.py",
-        "line": 98,
+        "line": 173,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -108227,7 +108544,7 @@
     "references": [
       {
         "file": "web/components/AppShell.tsx",
-        "line": 211,
+        "line": 212,
         "kind": "literal"
       },
       {
@@ -108242,12 +108559,12 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 215,
+        "line": 216,
         "kind": "literal"
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 222,
+        "line": 223,
         "kind": "literal"
       }
     ]
@@ -108698,6 +109015,17 @@
       }
     ]
   },
+  "m_e34269fce6aea1dc": {
+    "source": "לא הצלחנו לשלוח את הדיווח. אפשר לנסות שוב, הטקסט נשאר כאן.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/support/ReportFeedback.tsx",
+        "line": 99,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_e36b52a458370bc1": {
     "source": "נכון כשיש מקום, ורוב הפניות כבר נסגרות.",
     "language": "he",
@@ -108744,7 +109072,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 109,
+        "line": 116,
         "kind": "literal"
       }
     ]
@@ -108916,7 +109244,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 360,
+        "line": 361,
         "kind": "literal"
       }
     ]
@@ -109730,7 +110058,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 67,
+        "line": 74,
         "kind": "literal"
       }
     ]
@@ -109907,7 +110235,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 314,
+        "line": 315,
         "kind": "literal"
       },
       {
@@ -110166,7 +110494,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 158,
+        "line": 165,
         "kind": "literal"
       }
     ]
@@ -110188,12 +110516,12 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 54,
+        "line": 61,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 201,
+        "line": 208,
         "kind": "literal"
       }
     ]
@@ -110238,7 +110566,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 53,
+        "line": 60,
         "kind": "literal"
       }
     ]
@@ -111144,7 +111472,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 131,
+        "line": 138,
         "kind": "literal",
         "purpose": "display"
       }
@@ -111630,6 +111958,11 @@
         "line": 72,
         "kind": "literal",
         "purpose": "display"
+      },
+      {
+        "file": "web/components/support/ReportFeedback.tsx",
+        "line": 124,
+        "kind": "literal"
       }
     ]
   },
@@ -112599,7 +112932,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 242,
+        "line": 249,
         "kind": "literal"
       }
     ]
@@ -112756,7 +113089,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 9,
+        "line": 16,
         "kind": "literal",
         "purpose": "display"
       }
@@ -112877,7 +113210,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 101,
+        "line": 108,
         "kind": "literal"
       }
     ]
@@ -113685,7 +114018,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 116,
+        "line": 123,
         "kind": "literal"
       }
     ]
@@ -114224,7 +114557,7 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 198,
+        "line": 199,
         "kind": "literal"
       }
     ]
@@ -116719,7 +117052,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 184,
+        "line": 185,
         "kind": "literal"
       }
     ]
@@ -117412,6 +117745,22 @@
       }
     ]
   },
+  "m_f49c4b6b104eac1d": {
+    "source": "הצעה לשיפור",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/support/ReportFeedback.tsx",
+        "line": 125,
+        "kind": "literal"
+      },
+      {
+        "file": "web/lib/support.ts",
+        "line": 16,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_f49f7bdc29ff2463": {
     "source": "להתחיל במדידה",
     "language": "he",
@@ -117580,7 +117929,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 11,
+        "line": 18,
         "kind": "literal"
       }
     ]
@@ -118079,7 +118428,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 241,
+        "line": 248,
         "kind": "literal"
       }
     ]
@@ -118650,7 +118999,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 205,
+        "line": 212,
         "kind": "literal",
         "purpose": "display"
       }
@@ -120635,7 +120984,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 236,
+        "line": 243,
         "kind": "literal"
       }
     ]
@@ -120781,7 +121130,7 @@
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 52,
+        "line": 53,
         "kind": "literal",
         "purpose": "display"
       },
@@ -121100,7 +121449,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 30,
+        "line": 37,
         "kind": "literal",
         "purpose": "display"
       }
@@ -121195,7 +121544,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 193,
+        "line": 200,
         "kind": "literal"
       }
     ]
@@ -121479,7 +121828,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 79,
+        "line": 86,
         "kind": "literal",
         "purpose": "display"
       }
@@ -121858,7 +122207,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 226,
+        "line": 233,
         "kind": "literal",
         "purpose": "display"
       }
@@ -122060,6 +122409,17 @@
       }
     ]
   },
+  "m_fe72dd9aa952c540": {
+    "source": "סוג הדיווח",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/support/ReportFeedback.tsx",
+        "line": 121,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_fe73f336719965d6": {
     "source": "הבצק תופח, התנור לוהט. מוזמנים לקפה ומאפה חם כל הבוקר.",
     "language": "he",
@@ -122186,7 +122546,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 173,
+        "line": 180,
         "kind": "literal"
       }
     ]

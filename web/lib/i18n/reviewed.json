@@ -1129,6 +1129,146 @@
       "en": "Restore source",
       "ar": "استعادة المصدر",
       "ru": "Вернуть источник"
+    },
+    "m_1793faeead4ecf04": {
+      "en": "Report an issue or suggestion",
+      "ar": "الإبلاغ عن مشكلة أو اقتراح تحسين",
+      "ru": "Сообщить о проблеме или предложить улучшение"
+    },
+    "m_35595ac28a5483d4": {
+      "en": "The screenshot will accompany your report to the team.",
+      "ar": "ستُرفق لقطة الشاشة بالبلاغ المرسل إلى الفريق.",
+      "ru": "Снимок экрана будет приложен к отчёту для команды."
+    },
+    "m_525e09bdd812576d": {
+      "en": "This report reference already belongs to another request.",
+      "ar": "هذا الرقم المرجعي مرتبط بطلب آخر.",
+      "ru": "Этот номер отчёта уже связан с другим обращением."
+    },
+    "m_52eced5d4bff146b": {
+      "en": "Report an issue or suggest an improvement",
+      "ar": "أبلغوا عن مشكلة أو اقترحوا تحسينًا",
+      "ru": "Сообщить о проблеме или предложить улучшение"
+    },
+    "m_580e13d9062f0b19": {
+      "en": "The screenshot couldn’t be captured. You can send the report without it.",
+      "ar": "تعذّر التقاط الشاشة. يمكنكم إرسال البلاغ من دونها.",
+      "ru": "Не удалось сделать снимок экрана. Отчёт можно отправить без него."
+    },
+    "m_5a8494fe432d4b6d": {
+      "en": "GitHub rejected the operation",
+      "ar": "رفض GitHub العملية",
+      "ru": "GitHub отклонил операцию"
+    },
+    "m_6698d326c62852d6": {
+      "en": "Sending your report…",
+      "ar": "جارٍ إرسال البلاغ…",
+      "ru": "Отправляем отчёт…"
+    },
+    "m_6fb6420128b144be": {
+      "en": "Your report was added to the team’s board. Thank you!",
+      "ar": "أُضيف بلاغكم إلى لوحة الفريق. شكرًا!",
+      "ru": "Ваш отчёт добавлен на доску команды. Спасибо!"
+    },
+    "m_71cf73101f805a34": {
+      "en": "Send without screenshot",
+      "ar": "الإرسال من دون لقطة شاشة",
+      "ru": "Отправить без снимка экрана"
+    },
+    "m_7ebb3160400569b6": {
+      "en": "What could be improved?",
+      "ar": "ما الذي يمكن تحسينه؟",
+      "ru": "Что можно улучшить?"
+    },
+    "m_7fccc513455a71b3": {
+      "en": "Sign in to view the screenshot",
+      "ar": "سجّلوا الدخول لعرض لقطة الشاشة",
+      "ru": "Войти, чтобы посмотреть снимок экрана"
+    },
+    "m_8440827160a8e7d9": {
+      "en": "Send report",
+      "ar": "إرسال البلاغ",
+      "ru": "Отправить отчёт"
+    },
+    "m_87c60083cd6b9567": {
+      "en": "Your report was saved for the team. Thank you!",
+      "ar": "حُفظ بلاغكم للفريق. شكرًا!",
+      "ru": "Ваш отчёт сохранён для команды. Спасибо!"
+    },
+    "m_8f081538cc0e0dcd": {
+      "en": "The screenshot isn’t available to this account.",
+      "ar": "لقطة الشاشة غير متاحة لهذا الحساب.",
+      "ru": "Снимок экрана недоступен этому аккаунту."
+    },
+    "m_924b0980f647b5ed": {
+      "en": "Screenshot not found.",
+      "ar": "لم نعثر على لقطة الشاشة.",
+      "ru": "Снимок экрана не найден."
+    },
+    "m_934afdbb2b00d775": {
+      "en": "Screenshot preview",
+      "ar": "معاينة لقطة الشاشة",
+      "ru": "Предпросмотр снимка экрана"
+    },
+    "m_9a5d6fa8e2c98241": {
+      "en": "Large image",
+      "ar": "صورة كبيرة",
+      "ru": "Большое изображение"
+    },
+    "m_cd83795ec3115456": {
+      "en": "Report screenshot",
+      "ar": "لقطة الشاشة المرفقة بالبلاغ",
+      "ru": "Снимок экрана из отчёта"
+    },
+    "m_ce1a0c54e9fa8b74": {
+      "en": "We couldn’t read the screenshot.",
+      "ar": "تعذّرت قراءة لقطة الشاشة.",
+      "ru": "Не удалось прочитать снимок экрана."
+    },
+    "m_e039b5912ead4495": {
+      "en": "Capturing the screen…",
+      "ar": "جارٍ التقاط الشاشة…",
+      "ru": "Делаем снимок экрана…"
+    },
+    "m_e0d6247de5e8265f": {
+      "en": "The screenshot is too large. You can send the report without it.",
+      "ar": "لقطة الشاشة كبيرة جدًا. يمكنكم إرسال البلاغ من دونها.",
+      "ru": "Снимок экрана слишком большой. Отчёт можно отправить без него."
+    },
+    "m_e34269fce6aea1dc": {
+      "en": "The report couldn’t be sent. Your text is still here, so you can try again.",
+      "ar": "تعذّر إرسال البلاغ. بقي النص هنا ويمكنكم المحاولة مرة أخرى.",
+      "ru": "Не удалось отправить отчёт. Текст остался здесь, можно попробовать ещё раз."
+    },
+    "m_f49c4b6b104eac1d": {
+      "en": "Improvement suggestion",
+      "ar": "اقتراح تحسين",
+      "ru": "Предложение по улучшению"
+    },
+    "m_fe72dd9aa952c540": {
+      "en": "Report type",
+      "ar": "نوع البلاغ",
+      "ru": "Тип отчёта"
+    },
+    "m_000475b751702835": {
+      "en": "Remove screenshot",
+      "ar": "إزالة لقطة الشاشة",
+      "ru": "Удалить снимок экрана"
+    },
+    "m_8d6f37216d0cd17d": {
+      "en": "There’s more room for onboarding answers, and you can restore an excluded source without typing its link again.",
+      "ar": "هناك مساحة أكبر لإجابات الإعداد، ويمكنكم استعادة مصدر مستبعد من دون إعادة كتابة رابطه.",
+      "ru": "В анкете стало больше места для ответов. Исключённый источник можно вернуть без повторного ввода ссылки."
+    },
+    "m_a9f9fccf43ca9966": {
+      "en": "Send the team a bug or suggestion and choose whether to include a screenshot.",
+      "ar": "أرسلوا للفريق مشكلة أو اقتراحًا، واختاروا ما إذا كنتم تريدون إرفاق لقطة شاشة.",
+      "ru": "Сообщите команде об ошибке или предложите улучшение и решите, прикладывать ли снимок экрана."
+    },
+    "m_cd3a3650ca7ced9c": {
+      "en": "Report an issue from the screen",
+      "ar": "أبلغوا عن مشكلة من الشاشة نفسها",
+      "ru": "Сообщайте о проблемах прямо с экрана"
     }
   },
   "numberForms": {
