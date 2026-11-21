@@ -56897,17 +56897,6 @@
       }
     ]
   },
-  "m_72f6175b5098da26": {
-    "source": "סטודיו גבעול מזמין את הלקוחות לשמור זר לאיסוף ביום שישי.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/CampaignFilm.tsx",
-        "line": 13,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_7306c0544035d070": {
     "source": "האינסטגרם עוד לא מקושר לדף. חזרו לשלב 2.",
     "language": "he",
@@ -81316,6 +81305,17 @@
       }
     ]
   },
+  "m_a54e64ae01772981": {
+    "source": "בקו מים מזמינים שחיינים לסדנה לשיפור סגנון החתירה.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/CampaignFilm.tsx",
+        "line": 19,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_a555ac3b6d82f36c": {
     "source": "בנק",
     "language": "he",
@@ -90258,6 +90258,17 @@
       }
     ]
   },
+  "m_b790b6393ba48261": {
+    "source": "בסטודיו גבעול מזמינים זר בהודעה עד חמישי ואוספים אותו בשישי.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/CampaignFilm.tsx",
+        "line": 13,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_b7921dae7e5c3998": {
     "source": "סרטון: הגזרה בתנועה",
     "language": "he",
@@ -97915,17 +97926,6 @@
         "line": 35,
         "kind": "literal",
         "purpose": "copy"
-      }
-    ]
-  },
-  "m_c7814157f6b0fe40": {
-    "source": "בקו מים מזמינים מבוגרים לשיעור שחייה ראשון.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/CampaignFilm.tsx",
-        "line": 19,
-        "kind": "literal"
       }
     ]
   },

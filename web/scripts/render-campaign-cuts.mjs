@@ -29,9 +29,10 @@ async function render(subject) {
   const moving = subject === "interior";
   const input = moving ? path.join(publicDir, "showcase/designer-human-motion-ai.mp4") : path.join(directory, subject + "-art.webp");
   const image = await readFile(input);
+  const detail = moving ? null : await readFile(path.join(directory, subject + "-detail.webp"));
   const font = await readFile(path.join(publicDir, "fonts/signal/SecularOne.ttf"));
   await page.setContent('<canvas width="720" height="1280"></canvas>');
-  await page.evaluate(async ({ photo, typeface, moving }) => {
+  await page.evaluate(async ({ photo, typeface, moving, alternate }) => {
     const face = new FontFace("CampaignDisplay", 'url(data:font/ttf;base64,' + typeface + ')');
     await face.load();
     document.fonts.add(face);
@@ -47,8 +48,12 @@ async function render(subject) {
       img.src = 'data:image/webp;base64,' + photo;
       await img.decode();
       window.art = img;
+      const detailPhoto = new Image();
+      detailPhoto.src = 'data:image/webp;base64,' + alternate;
+      await detailPhoto.decode();
+      window.detail = detailPhoto;
     }
-  }, { photo: image.toString("base64"), typeface: font.toString("base64"), moving });
+  }, { photo: image.toString("base64"), typeface: font.toString("base64"), moving, alternate: detail?.toString("base64") });
   const output = path.join(directory, subject + ".mp4");
   const track = path.join(scratch, subject + ".pcm");
   await writeFile(track, score(subject));
@@ -60,7 +65,7 @@ async function render(subject) {
   for (let frame = 0; frame < frames; frame++) {
     const data = await page.evaluate(drawFrame, { subject, t: frame / 24 });
     const buffer = Buffer.from(data.split(",")[1], "base64");
-    if (frame === 76) await sharp(buffer).webp({ quality: 87 }).toFile(path.join(directory, subject + "-poster.webp"));
+    if (frame === (subject === "flowers" ? 95 : subject === "water" ? 32 : 76)) await sharp(buffer).webp({ quality: 87 }).toFile(path.join(directory, subject + "-poster.webp"));
     if (!encoder.stdin.write(buffer)) await once(encoder.stdin, "drain");
   }
   encoder.stdin.end();
@@ -83,10 +88,10 @@ async function drawFrame({ subject, t }) {
   function line(x1, y1, x2, y2, color, thickness = 2) {
     c.beginPath(); c.strokeStyle = color; c.lineWidth = thickness; c.moveTo(x1, y1); c.lineTo(x2, y2); c.stroke();
   }
-  function cover(x, y, width, height, focus = .5) {
-    const scale = Math.max(width / photo.width, height / photo.height);
+  function cover(x, y, width, height, focus = .5, source = photo) {
+    const scale = Math.max(width / source.width, height / source.height);
     const sw = width / scale, sh = height / scale;
-    c.drawImage(photo, (photo.width - sw) * focus, (photo.height - sh) * .5, sw, sh, x, y, width, height);
+    c.drawImage(source, (source.width - sw) * focus, (source.height - sh) * .5, sw, sh, x, y, width, height);
   }
   function botanical(cx, cy, radius, progress, ink) {
     for (let petal = 0; petal < 5; petal++) {
@@ -97,87 +102,120 @@ async function drawFrame({ subject, t }) {
       c.lineDashOffset = (1 - progress) * radius * 5; c.stroke(); c.restore();
     }
   }
+  // Conversion lines sit within x 84–600 / y 360–960, clear of feed captions and controls.
+  function safeType(value, y, size, color, align = "right") {
+    c.save(); c.direction = "rtl"; c.textAlign = align; c.fillStyle = color;
+    c.font = size + "px CampaignDisplay";
+    const width = c.measureText(value).width;
+    if (width > 516) c.font = Math.floor(size * 516 / width) + "px CampaignDisplay";
+    c.fillText(value, align === "right" ? 600 : 342, y);
+    c.restore();
+  }
   if (subject === "flowers") {
     const wine = "#47150e", cream = "#ffedcd", citron = "#e8ef93";
     box(0, 0, w, h, wine);
-    // Tissue paper opens in three leaves. Each reveals the same stationary photograph.
-    for (let panel = 0; panel < 3; panel++) {
-      const reveal = smooth((t - panel * .07) / .75);
-      c.save(); c.beginPath(); c.rect(panel * w / 3, (1 - reveal) * 1045, w / 3 + 1, 1045 * reveal);
-      c.clip(); cover(0, 0, w, 1045); c.restore();
-    }
-    box(0, 1045, w, 235, cream);
-    const header = c.createLinearGradient(0, 0, 0, 240);
-    header.addColorStop(0, "rgba(52,7,6,.78)"); header.addColorStop(1, "rgba(52,7,6,0)");
-    c.fillStyle = header; c.fillRect(0, 0, w, 240);
-    type("גבעול", 670, 92, 69, cream);
-    type("FLOWER STUDIO", 42, 77, 20, cream, "monospace", "left", "ltr");
-    line(43, 112, 677, 112, cream, 1);
-    const closing = smooth((t - 4.35) / .7);
-    c.save(); c.beginPath(); c.rect(0, 1039, w, 241); c.clip();
-    type("פרחים לשישי.", 675, 1186 + closing * 235, 104, wine);
-    type("זר לאיסוף ביום שישי", 675, 1243 + closing * 235, 31, wine);
-    type("שומרים זר.", 675, 950 + closing * 235, 103, wine);
-    type("ההזמנות פתוחות עד יום חמישי", 675, 1008 + closing * 235, 30, wine);
-    c.restore();
-    botanical(95, 1112, 36, smooth(t / 1.9), wine);
-    if (closing > 0) {
-      c.save(); c.globalAlpha = closing;
-      box(33, 883, 195, 116, citron);
-      type("לאיסוף", 130, 933, 32, wine, "CampaignDisplay", "center");
-      type("בשישי", 130, 974, 34, wine, "CampaignDisplay", "center");
+    if (t < 1.55) {
+      // Petal texture, the tying gesture, then the completed handoff make three separate plates.
+      c.drawImage(photo, 40, 92, 610, 820, 0, 0, w, 968);
+      box(0, 968, w, 312, cream);
+      safeType("פרחים", 725, 126, cream);
+      safeType("לשישי.", 846, 126, cream);
+      botanical(337, 1114, 75, smooth(t / .95), wine);
+    } else if (t < 3.25) {
+      cover(0, 0, w, 1280, .49, window.detail);
+      box(83, 850, 441, 85, cream);
+      type("אורזים בסטודיו.", 493, 910, 48, wine);
+    } else if (t < 4.65) {
+      cover(0, 0, w, 1090);
+      box(0, 1090, w, 190, cream);
+      botanical(100, 1179, 43, 1, wine);
+      type("פרחים לשישי.", 638, 1216, 83, wine);
+    } else {
+      // An order slip is the last shot. The name of the action is central and held for reading.
+      cover(0, 0, w, h, .5, window.detail);
+      const reveal = smooth((t - 4.65) / .28);
+      c.save(); c.translate(0, (1 - reveal) * 620);
+      box(0, 302, w, 702, cream);
+      line(80, 386, 637, 386, wine, 1);
+      botanical(132, 504, 35, 1, wine);
+      safeType("גבעול", 530, 45, wine);
+      safeType("רוצים זר לשישי?", 659, 76, wine);
+      safeType("שלחו לנו הודעה", 747, 69, wine);
+      box(83, 788, 520, 78, citron);
+      safeType("עד חמישי. איסוף בשישי.", 842, 40, wine, "center");
+      line(80, 927, 637, 927, wine, 1);
       c.restore();
     }
+    if (t < 4.65) {
+      const shade = c.createLinearGradient(0, 0, 0, 170);
+      shade.addColorStop(0, "rgba(52,7,6,.77)"); shade.addColorStop(1, "rgba(52,7,6,0)");
+      c.fillStyle = shade; c.fillRect(0, 0, w, 170);
+      type("גבעול", 661, 94, 65, cream);
+      type("FLOWER STUDIO", 43, 77, 20, cream, "monospace", "left", "ltr");
+      line(43, 114, 673, 114, cream, 1);
+    }
   } else if (subject === "interior") {
-    const cream = "#fae3b9", graphite = "#292721", terra = "#a94028";
-    const target = t < 1.6 ? 1.9 + t : .25 + t;
+    const cream = "#fae3b9", graphite = "#292721", terra = "#92391f";
     const sought = new Promise(resolve => photo.addEventListener("seeked", resolve, { once: true }));
-    photo.currentTime = target;
+    photo.currentTime = .55 + t;
     await sought;
     box(0, 0, w, h, cream);
-    c.drawImage(photo, 0, 0, 720, 1010, 0, 0, 720, 1010);
-    const ramp = c.createLinearGradient(0, 0, 0, 170);
-    ramp.addColorStop(0, "rgba(31,20,11,.78)"); ramp.addColorStop(1, "rgba(31,20,11,0)");
-    c.fillStyle = ramp; c.fillRect(0, 0, w, 170);
-    type("צד אור", 675, 81, 54, cream);
-    type("MATERIAL STUDY", 40, 65, 21, cream, "monospace", "left", "ltr");
-    line(40, 104, 675, 104, cream, 1);
-    const reveal = smooth((t - 3.6) / .9);
-    c.save(); c.beginPath(); c.rect(0, 1010, w, 185); c.clip();
-    type("אותו קיר.", 673, 1131 - 180 * reveal, 101, graphite);
-    type("אור אחר.", 673, 1311 - 180 * reveal, 101, terra); c.restore();
-    type(t < 4.6 ? "צבע בוחרים באור של הבית." : "לתיאום פגישת צבע בבית", 677, 1240, 37, graphite);
-    for(let i = 0; i < 4; i++) box(45 + i * 47, 1158, 37, 37, ["#64351d","#a45122","#c18149","#f1c282"][i]);
+    // One continuous take. Both sample strips come from this same frame of the actual wall.
+    c.drawImage(photo, 0, 80, 720, 750, 0, 0, 720, 750);
+    c.drawImage(photo, 15, 30, 77, 48, 0, 1084, 360, 196);
+    c.drawImage(photo, 503, 158, 77, 48, 360, 1084, 360, 196);
+    const ramp = c.createLinearGradient(0, 0, 0, 186);
+    ramp.addColorStop(0, "rgba(31,20,11,.80)"); ramp.addColorStop(1, "rgba(31,20,11,0)");
+    c.fillStyle = ramp; c.fillRect(0, 0, w, 186);
+    type("צד אור", 668, 87, 58, cream);
+    type("MATERIAL STUDY", 40, 66, 21, cream, "monospace", "left", "ltr");
+    line(40, 110, 675, 110, cream, 1);
+    type("בצל", 279, 1172, 45, cream);
+    type("בשמש", 598, 1172, 45, graphite);
+    if (t < 4.32) {
+      safeType(t < 2.05 ? "אותו קיר." : "אור אחר.", 873, 93, t < 2.05 ? graphite : terra);
+      safeType("צבע בוחרים באור של הבית.", 947, 40, graphite);
+    } else {
+      safeType("איזה גוון מתאים אצלכם?", 837, 61, terra);
+      safeType("שלחו הודעה לתיאום", 908, 45, graphite);
+      safeType("פגישת צבע בבית.", 961, 45, graphite);
+    }
   } else {
     const blue = "#082760", bright = "#ecff62", white = "#ffffff";
     box(0, 0, w, h, blue);
-    const opening = smooth(t / 1.1);
-    for (let strip = 0; strip < 8; strip++) {
-      const p = smooth((t - strip * .045) / .85);
-      c.save(); c.beginPath(); c.rect(0, strip * 137, w * p, 138); c.clip(); cover(0, 0, w, 1096, .50); c.restore();
+    const underwater = t >= 2.04 && t < 4.56;
+    if (t < 4.56) {
+      cover(0, 0, w, h, underwater ? .48 : .5, underwater ? window.detail : photo);
+      const shade = c.createLinearGradient(0, 0, 0, 400);
+      shade.addColorStop(0, "rgba(0,14,55,.78)"); shade.addColorStop(1, "rgba(0,14,55,0)");
+      c.fillStyle = shade; c.fillRect(0, 0, w, 400);
+      if (underwater) {
+        box(0, 824, 637, 111, bright);
+        type("התנועה שמתחת למים.", 603, 900, 52, blue);
+        line(0, 947, 400 * smooth((t - 2.04) / 1.2), 947, white, 3);
+      } else {
+        safeType("עד הקיר", 287, 105, white);
+        safeType("ובחזרה.", 393, 111, bright);
+      }
+    } else {
+      cover(0, 0, w, 495, .5, window.detail);
+      cover(0, 939, w, 341, .5, photo);
+      const slide = smooth((t - 4.56) / .25);
+      c.save(); c.translate(w * (1 - slide), 0);
+      box(0, 388, w, 575, bright);
+      for (let i = 0; i <= 23; i++) {
+        const x = 44 + i * 27;
+        line(x, 446, x, i % 4 === 0 ? 414 : 433, blue, i % 4 === 0 ? 3 : 1);
+      }
+      safeType("סדנת חתירה", 608, 92, blue);
+      safeType("לשחיינים.", 701, 91, blue);
+      line(83, 753, 600, 753, blue, 2);
+      safeType("שלחו הודעה להרשמה", 838, 47, blue);
+      c.restore();
     }
-    const shade = c.createLinearGradient(0, 0, 0, 550);
-    shade.addColorStop(0, "rgba(0,14,55,.83)"); shade.addColorStop(1, "rgba(0,14,55,0)");
-    c.fillStyle = shade; c.fillRect(0, 0, w, 550);
-    type("קו מים", 674, 90, 64, white);
-    type("SWIM CLUB", 42, 70, 22, white, "monospace", "left", "ltr");
+    type("קו מים", 665, 91, 60, white);
+    type("SWIM CLUB", 42, 72, 22, white, "monospace", "left", "ltr");
     line(43, 115, 677, 115, bright, 2);
-    const closing = smooth((t - 4.25) / .75);
-    c.save(); c.beginPath(); c.rect(12, 139, 688, 316); c.clip();
-    type("עד הקיר", 675, 250 - closing * 320, 115, white);
-    type("ובחזרה.", 675, 356 - closing * 320, 115, bright);
-    type("מתחילים", 675, 572 - closing * 320, 110, white);
-    type("לשחות.", 675, 677 - closing * 320, 112, bright); c.restore();
-    box(0, 1095, w, 185, bright);
-    type(closing > .48 ? "להרשמה לשיעור היכרות" : "שיעורי שחייה למתחילים", 673, 1232, 46, blue);
-    // Lap markings move through the type composition like a starting clock.
-    for (let i = 0; i <= 24; i++) {
-      const x = 45 + i * 26;
-      const length = i % 4 === 0 ? 36 : 15;
-      line(x, 1148, x, 1148 - length, blue, i % 4 === 0 ? 3 : 1);
-    }
-    const lane = Math.min(1, t / 5.8);
-    line(43, 1153, 43 + 623 * lane * opening, 1153, blue, 5);
   }
   return canvas.toDataURL("image/jpeg", .93);
 }

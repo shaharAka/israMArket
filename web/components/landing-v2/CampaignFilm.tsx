@@ -10,13 +10,13 @@ export const CAMPAIGN_FILMS = {
     src: "/showcase/campaign-cuts/flowers.mp4",
     poster: "/showcase/campaign-cuts/flowers-poster.webp",
     title: "פרחים לשישי",
-    caption: "סטודיו גבעול מזמין את הלקוחות לשמור זר לאיסוף ביום שישי.",
+    caption: "בסטודיו גבעול מזמינים זר בהודעה עד חמישי ואוספים אותו בשישי.",
   },
   water: {
     src: "/showcase/campaign-cuts/water.mp4",
     poster: "/showcase/campaign-cuts/water-poster.webp",
     title: "עד הקיר ובחזרה",
-    caption: "בקו מים מזמינים מבוגרים לשיעור שחייה ראשון.",
+    caption: "בקו מים מזמינים שחיינים לסדנה לשיפור סגנון החתירה.",
   },
   interior: {
     src: "/showcase/campaign-cuts/interior.mp4",
