@@ -132,7 +132,7 @@
     "references": [
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1198,
+        "line": 1200,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -4416,17 +4416,6 @@
       }
     ]
   },
-  "m_08bcf4c8b04b542b": {
-    "source": "יותר פניות לשירות",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 86,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_08c43af59ff52e42": {
     "source": "כבר קראנו מכאן כמה אתרים בשעה האחרונה. נסו שוב מאוחר יותר, או הירשמו והמשיכו משם.",
     "language": "he",
@@ -5441,7 +5430,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 61,
+        "line": 62,
         "kind": "literal"
       }
     ]
@@ -5722,6 +5711,17 @@
       }
     ]
   },
+  "m_0b48f2e4bba8305c": {
+    "source": "מה תרצו לקדם?",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/LandingStory.tsx",
+        "line": 31,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_0b4a94ac66519b05": {
     "source": "מעלים את התמונה…",
     "language": "he",
@@ -5875,17 +5875,6 @@
       {
         "file": "web/components/landing-v2/productFixtures.ts",
         "line": 60,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_0bc7d898ad04cdfd": {
-    "source": "יותר תרומות",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 86,
         "kind": "literal"
       }
     ]
@@ -8469,17 +8458,6 @@
       }
     ]
   },
-  "m_1127651141e398df": {
-    "source": "הפעלת הסרטון",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 35,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_1128eedfdf26a524": {
     "source": "לא ממש",
     "language": "he",
@@ -9959,6 +9937,18 @@
         "line": 171,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_143627656290a3ad": {
+    "source": "בוחרים יעד לחודש",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/LandingStory.tsx",
+        "line": 17,
+        "kind": "literal",
+        "purpose": "display"
       }
     ]
   },
@@ -11525,7 +11515,7 @@
     "references": [
       {
         "file": "api/app/routers/strategy.py",
-        "line": 893,
+        "line": 895,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -12104,6 +12094,17 @@
         "line": 842,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_18a386326519b34d": {
+    "source": "מודדים הזמנות שהושלמו",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/LandingStory.tsx",
+        "line": 58,
+        "kind": "literal"
       }
     ]
   },
@@ -12760,7 +12761,7 @@
     "references": [
       {
         "file": "api/app/routers/strategy.py",
-        "line": 819,
+        "line": 821,
         "kind": "template",
         "purpose": "validation"
       }
@@ -12772,7 +12773,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 63,
+        "line": 65,
         "kind": "literal"
       }
     ]
@@ -15692,6 +15693,17 @@
       }
     ]
   },
+  "m_1fa5c36b126e3fb4": {
+    "source": "אפשר לעבוד מהנייד?",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/ProcessLanding.tsx",
+        "line": 63,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_1fa6ada8f21f7b6f": {
     "source": "פניות בוואטסאפ",
     "language": "he",
@@ -17005,7 +17017,7 @@
       },
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 68,
+        "line": 70,
         "kind": "literal"
       },
       {
@@ -19513,6 +19525,17 @@
       }
     ]
   },
+  "m_278deb5237c33683": {
+    "source": "מה מקבלים",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/LandingStory.tsx",
+        "line": 106,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_278fa342a29a057c": {
     "source": "ביקורים בפרופיל",
     "language": "he",
@@ -20175,7 +20198,7 @@
     "references": [
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1445,
+        "line": 1447,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -24458,7 +24481,7 @@
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1080,
+        "line": 1082,
         "kind": "literal",
         "purpose": "logic-reference"
       },
@@ -24887,7 +24910,7 @@
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1404,
+        "line": 1406,
         "kind": "template",
         "purpose": "copy"
       }
@@ -25553,13 +25576,13 @@
       },
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 51,
+        "line": 46,
         "kind": "literal",
         "purpose": "display"
       },
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 68,
+        "line": 70,
         "kind": "jsx"
       },
       {
@@ -25725,7 +25748,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 63,
+        "line": 65,
         "kind": "literal"
       }
     ]
@@ -39620,7 +39643,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 64,
+        "line": 66,
         "kind": "literal"
       }
     ]
@@ -40214,6 +40237,17 @@
       {
         "file": "web/app/performance/page.tsx",
         "line": 794,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/landing-v2/LandingStory.tsx",
+        "line": 24,
+        "kind": "literal",
+        "purpose": "display"
+      },
+      {
+        "file": "web/components/landing-v2/LandingStory.tsx",
+        "line": 77,
         "kind": "literal"
       },
       {
@@ -42299,7 +42333,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 99,
+        "line": 57,
         "kind": "literal"
       }
     ]
@@ -42429,25 +42463,25 @@
     "references": [
       {
         "file": "api/app/routers/strategy.py",
-        "line": 872,
+        "line": 874,
         "kind": "literal",
         "purpose": "validation"
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 944,
+        "line": 946,
         "kind": "literal",
         "purpose": "validation"
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 964,
+        "line": 966,
         "kind": "literal",
         "purpose": "validation"
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 950,
+        "line": 952,
         "kind": "literal",
         "purpose": "validation"
       },
@@ -42776,7 +42810,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 63,
+        "line": 65,
         "kind": "literal"
       }
     ]
@@ -47129,19 +47163,19 @@
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 872,
+        "line": 874,
         "kind": "literal",
         "purpose": "validation"
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 944,
+        "line": 946,
         "kind": "literal",
         "purpose": "validation"
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 964,
+        "line": 966,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -47328,7 +47362,7 @@
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1412,
+        "line": 1414,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -50055,6 +50089,17 @@
       }
     ]
   },
+  "m_663614f0c0b198c7": {
+    "source": "רואים מה התקדם ומה כדאי לשנות.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/LandingStory.tsx",
+        "line": 25,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_663c182740f1941f": {
     "source": "ביו באינסטגרם",
     "language": "he",
@@ -51045,7 +51090,7 @@
     "references": [
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1041,
+        "line": 1043,
         "kind": "template",
         "purpose": "validation"
       }
@@ -51903,7 +51948,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 60,
+        "line": 61,
         "kind": "literal"
       }
     ]
@@ -56421,7 +56466,7 @@
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1421,
+        "line": 1423,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -56997,17 +57042,6 @@
       {
         "file": "web/components/start/StepSoftwareOffer.tsx",
         "line": 16,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_73dec3aaf4dd5094": {
-    "source": "יותר לקוחות בחנות",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 86,
         "kind": "literal"
       }
     ]
@@ -58181,7 +58215,7 @@
     "references": [
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1131,
+        "line": 1133,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -59764,6 +59798,17 @@
       {
         "file": "web/lib/goals.ts",
         "line": 149,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_79f1f01479edb5c9": {
+    "source": "כן. התוכנית, הפוסטים והתוצאות זמינים בדפדפן של הטלפון.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/ProcessLanding.tsx",
+        "line": 63,
         "kind": "literal"
       }
     ]
@@ -63285,7 +63330,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 61,
+        "line": 62,
         "kind": "literal"
       }
     ]
@@ -65482,17 +65527,6 @@
       }
     ]
   },
-  "m_8580bf3181990455": {
-    "source": "יותר קניות באתר",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 86,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_8591d4ac1c827e18": {
     "source": "קריאת נתוני הפרסום לא אושרה. אפשר לחבר אותה בהמשך.",
     "language": "he",
@@ -66941,7 +66975,7 @@
     "references": [
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1413,
+        "line": 1415,
         "kind": "template",
         "purpose": "copy"
       }
@@ -70327,7 +70361,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 27,
+        "line": 18,
         "kind": "literal"
       }
     ]
@@ -70766,6 +70800,17 @@
         "line": 11,
         "kind": "literal",
         "purpose": "display"
+      }
+    ]
+  },
+  "m_9093f3f91ba0a53e": {
+    "source": "כמה שאלות על מה אתם מציעים, למי ומה מייחד אתכם.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/LandingStory.tsx",
+        "line": 10,
+        "kind": "literal"
       }
     ]
   },
@@ -71734,7 +71779,7 @@
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1424,
+        "line": 1426,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -77547,7 +77592,7 @@
       },
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 68,
+        "line": 70,
         "kind": "literal"
       },
       {
@@ -77618,6 +77663,11 @@
     "source": "מה אתם מציעים?",
     "language": "he",
     "references": [
+      {
+        "file": "web/components/landing-v2/LandingStory.tsx",
+        "line": 32,
+        "kind": "literal"
+      },
       {
         "file": "web/components/landing-v2/QuestionnaireDemo.tsx",
         "line": 52,
@@ -78743,7 +78793,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 99,
+        "line": 56,
         "kind": "literal"
       }
     ]
@@ -81820,7 +81870,7 @@
     "references": [
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1423,
+        "line": 1425,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -82847,7 +82897,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 62,
+        "line": 64,
         "kind": "literal"
       }
     ]
@@ -83461,6 +83511,17 @@
     "language": "he",
     "references": [
       {
+        "file": "web/components/landing-v2/LandingStory.tsx",
+        "line": 23,
+        "kind": "literal",
+        "purpose": "display"
+      },
+      {
+        "file": "web/components/landing-v2/LandingStory.tsx",
+        "line": 76,
+        "kind": "literal"
+      },
+      {
         "file": "web/components/landing-v2/processStory.ts",
         "line": 33,
         "kind": "literal",
@@ -83682,7 +83743,7 @@
     "references": [
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1434,
+        "line": 1436,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -84797,6 +84858,18 @@
       }
     ]
   },
+  "m_ad4e885c496eb085": {
+    "source": "מספרים על העסק",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/LandingStory.tsx",
+        "line": 9,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
   "m_ad5205549aa3594e": {
     "source": "קהל חדש",
     "language": "he",
@@ -85123,7 +85196,7 @@
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1201,
+        "line": 1203,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -85376,6 +85449,17 @@
     "source": "מדידה",
     "language": "he",
     "references": [
+      {
+        "file": "web/components/landing-v2/LandingStory.tsx",
+        "line": 25,
+        "kind": "literal",
+        "purpose": "display"
+      },
+      {
+        "file": "web/components/landing-v2/LandingStory.tsx",
+        "line": 78,
+        "kind": "literal"
+      },
       {
         "file": "web/lib/uxFlows.ts",
         "line": 67,
@@ -85685,7 +85769,7 @@
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1414,
+        "line": 1416,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -86036,6 +86120,17 @@
         "line": 550,
         "kind": "template",
         "purpose": "display"
+      }
+    ]
+  },
+  "m_b0046c24a1c2fd6f": {
+    "source": "מוסיפים את ערוצי הקידום והנתונים שרוצים לשתף.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/LandingStory.tsx",
+        "line": 14,
+        "kind": "literal"
       }
     ]
   },
@@ -86625,7 +86720,7 @@
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1405,
+        "line": 1407,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -87728,6 +87823,11 @@
     "source": "התוכנית שלכם לחודש הקרוב.",
     "language": "he",
     "references": [
+      {
+        "file": "web/components/landing-v2/LandingStory.tsx",
+        "line": 74,
+        "kind": "literal"
+      },
       {
         "file": "web/components/landing-v2/processStory.ts",
         "line": 28,
@@ -90031,11 +90131,6 @@
         "kind": "literal"
       },
       {
-        "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 95,
-        "kind": "literal"
-      },
-      {
         "file": "web/components/start/BusinessRoute.tsx",
         "line": 36,
         "kind": "literal",
@@ -92164,17 +92259,6 @@
         "line": 18,
         "kind": "literal",
         "purpose": "copy"
-      }
-    ]
-  },
-  "m_bcb33dbc95cc0694": {
-    "source": "יותר מתנסים במוצר",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 86,
-        "kind": "literal"
       }
     ]
   },
@@ -95676,7 +95760,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 29,
+        "line": 20,
         "kind": "literal"
       }
     ]
@@ -96243,6 +96327,18 @@
         "line": 169,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_c496c1b7898ff09f": {
+    "source": "מחברים את הערוצים",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/LandingStory.tsx",
+        "line": 13,
+        "kind": "literal",
+        "purpose": "display"
       }
     ]
   },
@@ -97026,17 +97122,6 @@
         "line": 115,
         "kind": "literal",
         "purpose": "copy"
-      }
-    ]
-  },
-  "m_c693f0ccdeb05024": {
-    "source": "מטרות לפי סוג הפעילות",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 95,
-        "kind": "literal"
       }
     ]
   },
@@ -98294,17 +98379,6 @@
       }
     ]
   },
-  "m_c9343e3d2d64d25b": {
-    "source": "קמפיין לדוגמה",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 43,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_c93927fe6b3f6c1a": {
     "source": "פייסבוק לא החזיר פעילות פרסום לתקופה הזו. אפשר להמשיך עם תוצאות הפוסטים והאתר.",
     "language": "he",
@@ -98377,7 +98451,7 @@
       },
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 52,
+        "line": 47,
         "kind": "literal"
       },
       {
@@ -100725,7 +100799,7 @@
     "references": [
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1413,
+        "line": 1415,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -103591,7 +103665,7 @@
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1424,
+        "line": 1426,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -104169,6 +104243,17 @@
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
         "line": 118,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_d50899ed060f17d1": {
+    "source": "תוכנית חודשית עם קהל, יעד ולוח פרסום.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/LandingStory.tsx",
+        "line": 23,
         "kind": "literal"
       }
     ]
@@ -105318,6 +105403,17 @@
       }
     ]
   },
+  "m_d71e155b6c3672d2": {
+    "source": "מחליטים מה רוצים להשיג ואיך נדע שהתקדמנו.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/LandingStory.tsx",
+        "line": 18,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_d7349ef2e9d6f7eb": {
     "source": "לייקים",
     "language": "he",
@@ -105907,7 +106003,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 62,
+        "line": 64,
         "kind": "literal"
       }
     ]
@@ -107161,37 +107257,37 @@
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 802,
+        "line": 804,
         "kind": "literal",
         "purpose": "validation"
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 868,
+        "line": 870,
         "kind": "literal",
         "purpose": "validation"
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 981,
+        "line": 983,
         "kind": "literal",
         "purpose": "validation"
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1126,
+        "line": 1128,
         "kind": "literal",
         "purpose": "validation"
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1164,
+        "line": 1166,
         "kind": "literal",
         "purpose": "validation"
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1194,
+        "line": 1196,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -108026,7 +108122,7 @@
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 951,
+        "line": 953,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -112833,7 +112929,7 @@
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1403,
+        "line": 1405,
         "kind": "template",
         "purpose": "copy"
       }
@@ -116470,6 +116566,17 @@
       }
     ]
   },
+  "m_eced4afaa70460f2": {
+    "source": "תוכן, עיצובים וסרטונים לאישורכם.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/LandingStory.tsx",
+        "line": 24,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_ecf18b5d1a191d80": {
     "source": "להזמין",
     "language": "he",
@@ -117105,6 +117212,11 @@
     "source": "למי זה מתאים?",
     "language": "he",
     "references": [
+      {
+        "file": "web/components/landing-v2/LandingStory.tsx",
+        "line": 33,
+        "kind": "literal"
+      },
       {
         "file": "web/components/landing-v2/QuestionnaireDemo.tsx",
         "line": 53,
@@ -118889,6 +119001,17 @@
         "line": 429,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_f1921f2085e5f302": {
+    "source": "יעד לחודש",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/LandingStory.tsx",
+        "line": 55,
+        "kind": "literal"
       }
     ]
   },
@@ -121831,13 +121954,13 @@
     "references": [
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1235,
+        "line": 1237,
         "kind": "literal",
         "purpose": "validation"
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1347,
+        "line": 1349,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -122024,6 +122147,17 @@
       {
         "file": "web/components/integrations/MetaConnection.tsx",
         "line": 215,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_f7cde2bf38b5aa33": {
+    "source": "יותר הזמנות",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/LandingStory.tsx",
+        "line": 56,
         "kind": "literal"
       }
     ]
@@ -122239,17 +122373,6 @@
       {
         "file": "web/components/integrations/MetaAdsSummary.tsx",
         "line": 45,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_f87c13497713d1ed": {
-    "source": "השהיית הסרטון",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 35,
         "kind": "literal"
       }
     ]
@@ -124779,8 +124902,8 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 57,
+        "file": "web/components/landing-v2/LandingStory.tsx",
+        "line": 87,
         "kind": "literal"
       }
     ]
@@ -125603,7 +125726,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 65,
+        "line": 67,
         "kind": "literal"
       }
     ]

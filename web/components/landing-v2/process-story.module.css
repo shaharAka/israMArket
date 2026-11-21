@@ -599,11 +599,17 @@
 
 /* The dark surfaces are fixed. Colour is an accent for actions and examples. */
 .page.page {
-  --dark-ground: #252921;
-  --dark-raised: #343b30;
-  --dark-copy: #e2d8ca;
-  --dark-line: #6c685c;
-  --dark-action: #ffb89b;
+  --paper: #f7f1e6;
+  --canvas: #f7f1e6;
+  --ink: #30252d;
+  --action: #30252d;
+  --dark-ground: #30252d;
+  --dark-raised: #44363f;
+  --dark-copy: #e7d9ce;
+  --dark-line: #78636e;
+  --dark-action: #f4b28b;
+  background: var(--paper);
+  color: var(--ink);
 }
 .page:global(.lv2-site) .header {
   background: var(--dark-ground);
