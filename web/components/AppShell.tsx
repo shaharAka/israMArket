@@ -169,7 +169,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       : { href: setupHref, label: "חזרה להגדרה" }
     : BUSINESS_UTILITIES.some(route => underRoute(pathname, route))
       ? { href: "/business", label: "כלי העסק" }
-      : activeTab && pathname !== activeTab.href
+      : activeTab && pathname !== activeTab.href && pathname !== "/posts"
       ? { href: activeTab.href, label: activeTab.label }
       : null;
 
@@ -194,7 +194,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <span className="truncate"><Copy text={back.label} /></span>
           </Link>
         ) : (
-          <Link href={inSetup ? setupHref : "/campaign"} className="flex min-h-11 min-w-0 flex-1 items-center gap-2 px-2">
+          <Link href={inSetup ? setupHref : "/dashboard"} className="flex min-h-11 min-w-0 flex-1 items-center gap-2 px-2">
             {businessName ? <BusinessLogo src={businessLogo} name={businessName} color={businessColor} className="h-7 w-7 shrink-0" /> : <span className="product-wordmark !text-[16px]" dir="ltr"><IdentityMark direction="open" /><span className="sr-only">isramarket</span></span>}
             {/* The owner's business, not ours: "ישראמארקט / לחם …" truncated the one
                 word they would recognise. */}
@@ -231,7 +231,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <div>
           {/* Keep the compact updates utility beside the identity, away from account actions. */}
           <div className="flex items-center justify-between gap-2 px-5 pt-5 pb-2">
-            <Link href={inSetup ? setupHref : "/campaign"} className="flex min-w-0 items-center gap-3">
+            <Link href={inSetup ? setupHref : "/dashboard"} className="flex min-w-0 items-center gap-3">
               <div className="min-w-0">
                 <span className="product-wordmark block" dir="ltr"><IdentityMark direction="open" /><span className="sr-only">isramarket</span></span>
                 <span className="block text-xs text-[color:var(--ink-muted)]"><Copy text="שיווק לעסקים קטנים" /></span>

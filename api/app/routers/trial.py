@@ -311,7 +311,7 @@ def build_steps(
 
     # --- week 2 · raw materials: what the posts are made of ---------------------------
     minimum_photos = MIN_PHOTOS if products else 1
-    minimum_featured = foundations.minimum_featured("products" if products else "services")
+    minimum_featured = foundations.MIN_FEATURED
     photos_done = facts.asset_count >= minimum_photos
     have = facts.asset_count
     steps.append(_step(

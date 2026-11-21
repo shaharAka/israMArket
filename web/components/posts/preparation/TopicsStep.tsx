@@ -22,7 +22,6 @@ export function TopicsStep({ embedded = false, onNext, onPendingChange }: { embe
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [dirty, setDirty] = useState(false);
-  const [showRecommendations, setShowRecommendations] = useState(false);
   useEffect(() => {
     foundations.featured().then(payload => { setData(payload); setItems(payload.items); }).catch((err: unknown) => {
       if (err instanceof ApiError && err.status === 401) return;
@@ -43,7 +42,6 @@ export function TopicsStep({ embedded = false, onNext, onPendingChange }: { embe
     if (!clean || !data || items.length >= data.max || items.some(item => item.name === clean)) return;
     change([...items, { id: crypto.randomUUID(), name: clean, reason: null, note: "", kind: recommendation?.kind ?? (data.business_model === "services" ? "service" : ["both", "saas"].includes(data.business_model) ? "offering" : "product") }]);
     setDraft("");
-    setShowRecommendations(false);
   }
   function move(index: number, by: -1 | 1) {
     const target = index + by;
@@ -65,10 +63,9 @@ export function TopicsStep({ embedded = false, onNext, onPendingChange }: { embe
   const service = data?.business_model !== "products";
   const recommendations = data?.recommendations.filter(rec => !items.some(item => item.name === rec.name)) ?? [];
   return <><div className="mx-auto max-w-[760px]">
-    <SectionHeader level={embedded ? 2 : 1} eyebrow={embedded ? null : undefined} section="business" title={t("מה להבליט בפוסטים")} subtitle={data?.business_model === "saas" ? t("הבעיה שהמוצר פותר, הדגמה אמיתית או ידע שלכם. בחרו נושא אחד להתחלה.") : data?.business_model === "services" ? t("שירותים, עבודות שלכם וטיפים מקצועיים. בחרו נושא אחד להתחלה.") : t("מציעים נקודת פתיחה לפי העסק והתוכנית. אתם בוחרים מה מתאים.")} />
+    <SectionHeader level={embedded ? 2 : 1} eyebrow={embedded ? null : undefined} section="business" title={t("מה להבליט בפוסטים")} subtitle={data?.business_model === "saas" ? t("הבעיה שהמוצר פותר, הדגמה אמיתית או ידע שלכם. בחרו נושא אחד להתחלה.") : data?.business_model === "services" ? t("שירותים, עבודות שלכם וטיפים מקצועיים. בחרו נושא אחד להתחלה.") : t("בחרו נושא אחד להתחלה. אפשר להוסיף עוד בהמשך.")} />
     {!data ? error ? <p role="alert" className={ui.error}>{error}</p> : <LoadingMark label={t("טוענים הצעות…")} /> : <>
-      {!full && recommendations.length > 0 && items.length > 0 ? <button type="button" onClick={() => setShowRecommendations(value => !value)} aria-expanded={showRecommendations} className={`${ui.link} mb-5 min-h-11`}>{showRecommendations ? t("לסגור את ההצעות") : t("להוסיף מההצעות ({arg_0})", { arg_0: recommendations.length })} <IconChevron className={showRecommendations ? "rotate-90" : "-rotate-90"} /></button> : null}
-      {!full && recommendations.length > 0 && (!items.length || showRecommendations) ? <section aria-label={t("ההצעות שלנו")} className="mb-8">
+      {!full && recommendations.length > 0 ? <section aria-label={t("ההצעות שלנו")} className="mb-8">
         <h2 className="mb-3 text-[18px] font-bold"><Copy text="מציעים להתחיל כאן" /></h2>
         <ul className={`${ui.card} divide-y divide-[var(--rule)] overflow-hidden`}>
           {recommendations.map(rec => <li key={rec.name} className="flex items-center gap-4 px-4 py-4 sm:px-5">

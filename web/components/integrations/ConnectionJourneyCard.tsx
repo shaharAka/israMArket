@@ -16,12 +16,14 @@ export function ConnectionJourneyCard({ id, title, account, status, journey, ope
   const t = useCopy();
   const { locale } = useLanguage();
   const labels = [t("אישור גישה"), t("בחירת החשבון"), t("קריאת נתונים")];
+  const unavailable = status === t("עדיין לא זמין") && !account && !journey.checkedAt;
   return <section id={id} className="scroll-mt-20 rounded-2xl bg-[var(--paper)] p-5 shadow-[var(--shadow-card)] sm:p-6" aria-labelledby={`${id}-title`}>
     <div className="flex flex-wrap items-start justify-between gap-x-5 gap-y-1">
       <div className="min-w-0"><h2 id={`${id}-title`} className="text-[18px] font-semibold text-[var(--ink)]">{title}</h2>
         {account ? <p dir="auto" className="mt-1 break-words text-[14px] text-[var(--ink-soft)]">{account}</p> : null}</div>
       <p className="text-[13px] font-medium text-[var(--ink-muted)]">{status}</p>
     </div>
+    {unavailable ? <p className="mt-2 text-sm text-[var(--ink-soft)]">{journey.streams.map(stream => t(stream.label)).join(" · ")}</p> : <>
     <ol aria-label={t("התקדמות החיבור")} className="my-4 grid grid-cols-3 gap-3">
       {journey.steps.map((step, index) => <li key={index} aria-current={step === "current" ? "step" : undefined} className="min-w-0">
         <span aria-hidden className={`mb-2 block h-1 rounded-full ${step === "done" ? "bg-[var(--ink)]" : step === "current" ? "bg-[var(--primary)]" : "bg-[var(--rule)]"}`} />
@@ -40,5 +42,6 @@ export function ConnectionJourneyCard({ id, title, account, status, journey, ope
       {open ? t("לסגור את שלבי החיבור") : t(journey.action)}
     </UIAction></div>
     <div id={`${id}-connection-body`} hidden={!open} className="mt-2 border-t border-[var(--rule)] pt-4">{children}</div>
+    </>}
   </section>;
 }

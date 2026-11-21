@@ -478,6 +478,7 @@ class AssetUpdateIn(BaseModel):
 class PostAssetIn(BaseModel):
     post_index: int = Field(ge=0, le=500)
     asset_id: int = Field(ge=1)
+    campaign_post_uid: str | None = Field(default=None, min_length=1, max_length=120)
 
 
 class PostSuggestAssetsIn(BaseModel):

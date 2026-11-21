@@ -83,7 +83,7 @@ function demoStatus(): BillingStatus {
 const DEMO_REFUSAL = "בדמו אין מנוי.";
 
 export const billingEndpoints = {
-  mediaAllowance: () => isDemo() ? Promise.resolve({
+  mediaAllowance: (): Promise<MediaAllowance> => isDemo() ? Promise.resolve({
     tier: "regular", period_start: null, resets_at: null,
     images: { included: 60, used: 6, reserved: 0, remaining: 54, generation_available: true },
     videos: { included: 2, used: 0, reserved: 0, remaining: 2, generation_available: false },
@@ -100,8 +100,8 @@ export const billingEndpoints = {
 
 export type MediaAllowance = {
   tier: string; period_start: string | null; resets_at: string | null;
-  images: { included: number; used: number; reserved: number; remaining: number; generation_available: boolean };
-  videos: { included: number; used: number; reserved: number; remaining: number; generation_available: boolean };
+  images: { included: number; used: number; reserved: number; remaining: number; generation_available: boolean; blocked_by?: "subscription" | "quota" | "unavailable" | null };
+  videos: { included: number; used: number; reserved: number; remaining: number; generation_available: boolean; blocked_by?: "subscription" | "quota" | "unavailable" | null };
 };
 
 /** "31 באוקטובר 2026", in Israel's calendar. */

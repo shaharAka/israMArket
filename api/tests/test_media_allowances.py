@@ -251,7 +251,9 @@ class MediaCapsTest(unittest.TestCase):
         self.db.add_all([ImageUsage(business_id=self.biz.id, outcome="ok", provider="muse",
                                    est_cost_usd=.01, created_at=NOW) for _ in range(60)])
         self.db.commit()
-        self.assertEqual(caps.status(self.db, self.user, NOW)["images"]["remaining"], 0)
+        images = caps.status(self.db, self.user, NOW)["images"]
+        self.assertEqual(images["remaining"], 0)
+        self.assertEqual(images["blocked_by"], "quota")
         with self.assertRaises(CodedError):
             self.reserve("extra", kind="image")
 

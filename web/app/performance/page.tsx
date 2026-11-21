@@ -10,7 +10,6 @@ import { useEffect, useState, type ReactNode } from "react";
 import { AppShell, Button, ErrorNote, PageHeader } from "@/components/AppShell";
 import { HowToFind } from "@/components/help/HowToFind";
 import { PerformanceHypotheses, ResearchSection } from "@/components/trial/Research";
-import { StepLink } from "@/components/trial/StepLink";
 import { MetaAdsSummary } from "@/components/integrations/MetaAdsSummary";
 import { SourceDataNotice } from "@/components/integrations/SourceDataNotice";
 import { MetricComparison } from "@/components/design/MetricComparison";
@@ -29,7 +28,7 @@ import {
 import { LOCALE_META } from "@/lib/i18n/locales";
 import { dateRange } from "@/lib/dates";
 import { markSeen } from "@/lib/trial";
-import { IconArrowLeft, IconChart, IconChevron } from "@/lib/icons";
+import { IconChevron } from "@/lib/icons";
 import { FAMILY_HE, whatsappEndpoints, type WhatsappPayload } from "@/lib/whatsapp";
 
 const METRIC_LABELS: Record<string, { label: string; note: string }> = {
@@ -196,6 +195,13 @@ function comparisonText(item: MeasuredPost, t: ReturnType<typeof useCopy>, forma
   return "";
 }
 
+const POST_LEAD_LABEL: Record<PostMetric, string> = {
+  reach: "הכי הרבה אנשים ראו",
+  saves: "הכי הרבה שמירות",
+  site_visits: "הכי הרבה כניסות לאתר",
+  whatsapp_clicks: "הכי הרבה לחיצות לוואטסאפ",
+};
+
 function ResultRow({ item, best }: { item: MeasuredPost; best?: boolean }) {
   const { locale } = useLanguage();
   const formatLocale = LOCALE_META[locale].formatLocale;
@@ -212,14 +218,14 @@ function ResultRow({ item, best }: { item: MeasuredPost; best?: boolean }) {
         </Link>
         {best ? (
           <span className="shrink-0 rounded-full bg-[var(--primary-soft)] px-2.5 py-0.5 text-xs font-semibold text-[color:var(--primary)]">
-            <Copy text="הכי טוב" /></span>
+            {t(POST_LEAD_LABEL[item.metric])}</span>
         ) : null}
       </span>
       <span className="mt-0.5 block text-[13px] tabular-nums text-[color:var(--ink-soft)]">
         {`${item.value.toLocaleString(formatLocale)} ${t(item.label_he)}`}
         {compare ? <span className="text-[color:var(--ink-muted)]">{` · ${compare}`}</span> : null}
       </span>
-      <PostObservationLine observation={item.observation} google={item.metric === "site_visits"} />
+      <PostObservationLine observation={item.observation} google={item.metric === "site_visits"} includeSource />
     </li>
   );
 }
@@ -240,7 +246,8 @@ function PostResults({ results }: { results: PostResultsView }) {
   const rest = measured.slice(VISIBLE_POSTS);
   const lead = leadingMetric(measured);
   // "Best" only among posts counted the same way, and only when there is more than one.
-  const comparable = comparablePosts(measured.filter((item) => item.metric === lead));
+  const sameMeasure = measured.filter(item => item.metric === lead);
+  const hasLeader = comparablePosts(sameMeasure) && sameMeasure[0].value > sameMeasure[1].value;
 
   return (
     <section aria-labelledby="posts-heading">
@@ -249,7 +256,7 @@ function PostResults({ results }: { results: PostResultsView }) {
       {visible.length ? (
         <ul className="mt-2 divide-y divide-[var(--rule)] border-y border-[var(--rule)]">
           {visible.map((item, index) => (
-            <ResultRow key={item.uid || item.index} item={item} best={index === 0 && comparable} />
+            <ResultRow key={item.uid || item.index} item={item} best={index === 0 && hasLeader} />
           ))}
         </ul>
       ) : (
@@ -297,30 +304,24 @@ function PostComparison({ results }: { results: PostResultsView }) {
  */
 function Answer({ payload }: { payload: PerformancePayload }) {
   const { locale } = useLanguage();
-  const formatLocale = LOCALE_META[locale].formatLocale;
-  const formatPeriod = (start?: string, end?: string) => dateRange(start, end, locale);
-  const formatMetricValue = (key: string, value: string) => formatMetric(key, value, t, formatLocale);
   const t = useCopy();
   const overview = payload.ga4?.overview ?? {};
-  const period = formatPeriod(payload.ga4?.period?.start || payload.period_start, payload.ga4?.period?.end || payload.period_end);
-  const conversions = overview.conversions;
-  const sessions = overview.sessions;
-  const sentence =
-    (conversions !== undefined && sessions !== undefined
-      ? t("היו {arg_0} כניסות לאתר ו־{arg_1} פעולות שהוגדרו כחשובות.", { arg_0: formatMetricValue("sessions", sessions), arg_1: formatMetricValue("conversions", conversions) })
-      : sessions !== undefined ? t("היו {arg_0} כניסות לאתר.", { arg_0: formatMetricValue("sessions", sessions) })
-      : t("עוד אין מספיק נתונים כדי לדעת אם השיווק מביא פניות."));
+  const period = dateRange(payload.ga4?.period?.start || payload.period_start, payload.ga4?.period?.end || payload.period_end, locale);
+  const fields = (["sessions", "conversions"] as const).filter(key => overview[key] !== undefined);
+  if (!fields.length) return null;
 
   return (
-    <section>
-      {period ? <p className="text-[13px] font-medium tabular-nums text-[color:var(--ink-muted)]"><bdi>{period}</bdi></p> : null}
-      <h2 className="mt-2 max-w-[30em] text-[21px] font-bold leading-[1.4] tracking-tight text-balance text-[color:var(--ink)] sm:text-[24px]">
-        {sentence}
-      </h2>
-      {conversions !== undefined ? (
-        <p className="mt-3 max-w-[46em] text-[13px] leading-6 text-[color:var(--ink-muted)]"><Copy text="אלה הפעולות שסומנו כחשובות במדידה של האתר. כדי לדעת אם הן פניות או הזמנות, צריך לבדוק מה בדיוק נספר." /></p>
-      ) : null}
-    </section>
+    <div className="space-y-2 pt-1">
+      <dl className="flex flex-wrap gap-x-6 gap-y-2">
+        {fields.map(key => <div key={key} className="flex flex-wrap items-baseline gap-2 text-sm">
+          <dt className="text-[var(--ink-soft)]">{t(METRIC_LABELS[key].label)}</dt>
+          <dd className="font-semibold tabular-nums">{formatMetric(key, overview[key], t, LOCALE_META[locale].formatLocale)}</dd>
+        </div>)}
+      </dl>
+      <p className="text-xs text-[var(--ink-muted)]">
+        <Copy text="גוגל אנליטיקס" />{period ? <> · <bdi>{period}</bdi></> : null}
+      </p>
+    </div>
   );
 }
 
@@ -984,59 +985,6 @@ function WhatsappClicks({ data }: { data: WhatsappPayload | null }) {
 }
 
 /**
- * Nothing has been synced yet. A normal state on this screen, and not an error. Our own
- * WhatsApp count may already have numbers: `postTaps` (the taps on the posts that were
- * measured) then leads, rather than a page that says there is nothing yet (#111).
- */
-function NoSnapshotYet({ payload, postTaps = 0 }: { payload: PerformancePayload; postTaps?: number }) {
-  const { locale } = useLanguage();
-  const formatLocale = LOCALE_META[locale].formatLocale;
-  const t = useCopy();
-  const setup = payload.measurement_setup;
-  const needs = setup?.requirements.filter(item => item.status === "todo") || [];
-  const later = setup?.requirements.find(item => item.status === "soon");
-  const whatsappOnly = setup?.requirements.length === 1 && setup.requirements[0].key === "whatsapp";
-  const action = needs[0];
-  const stepKeys = needs.map(item => item.key === "ga4" ? "site_data" : item.key === "meta" ? "instagram" : "whatsapp");
-  const explanation = whatsappOnly && needs.length
-    ? t("הכינו קישור מדיד לוואטסאפ. נספור לחיצות עליו, ולא הודעות או לקוחות.")
-    : needs.length
-    ? t("לפי התוכנית, נשאר לבדוק: {arg_0}. נציג רק נתונים שנמדדו בפועל.", { arg_0: needs.map(item => t(item.title)).join(" ו") })
-    : later ? later.why
-    : whatsappOnly ? t("התוכנית מודדת לחיצות על הקישור לוואטסאפ. הספירה מופיעה בהמשך העמוד; היא לא סופרת הודעות או לקוחות.")
-    : t("עוד לא שמרנו נתונים מהחיבורים. קריאה מוצלחת תופיע כאן, עם המקור והתאריך. אפשר להמשיך לעבוד בתוכנית.");
-  return (
-    <section className="paper px-6 py-10 text-center sm:px-10">
-      <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[var(--sand)] text-[color:var(--sand-dark)]">
-        <IconChart className="h-6 w-6" />
-      </div>
-      <h2 className="mt-5 text-xl font-bold tracking-tight text-[color:var(--ink)]">
-        {postTaps > 0
-          ? postTaps === 1
-            ? t("לחיצה אחת לוואטסאפ מהפוסטים")
-            : t("{arg_0} לחיצות לוואטסאפ מהפוסטים", { arg_0: postTaps.toLocaleString(formatLocale) })
-          : whatsappOnly ? t("המדידה לפי התוכנית") : t("עוד אין נתונים מהחיבורים")}
-      </h2>
-      <p className="mx-auto mt-2 max-w-md text-[15px] leading-7 text-[color:var(--ink-soft)]">
-        {explanation}
-      </p>
-      {/* Ask for the first missing source in the saved plan, or return to the plan. */}
-      <Link
-        href={action?.action_href || "/strategy"}
-        className="drawn-button group mt-6 inline-flex min-h-12 items-center gap-2 bg-[var(--primary)] px-6 text-[15px] text-white hover:bg-[var(--primary-dark)]"
-      >
-        {action?.action_label || t("לתוכנית")}
-        <IconArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-0.5" />
-      </Link>
-      {needs.some(item => item.key === "ga4") ? <div className="mt-2">
-        <HowToFind topic="google_analytics" label={t("איך מוצאים את נתוני האתר?")} />
-      </div> : null}
-      {!later || needs.length ? <div className="mt-2"><StepLink stepKey={[...stepKeys, "results"]} /></div> : null}
-    </section>
-  );
-}
-
-/**
  * Results.
  *
  * The owner opens this to learn one thing — is the marketing working? — so the page leads
@@ -1149,7 +1097,8 @@ export default function PerformancePage() {
   const canRefresh = data?.measurement_setup?.can_refresh ?? Boolean(data?.audiences?.connected?.ga4 || data?.audiences?.connected?.meta);
   // The posts' own numbers need no snapshot: WhatsApp taps are counted from day one.
   const results = data ? postResults(data) : null;
-  const postTaps = (results?.items || []).reduce((sum, item) => sum + (item.metric === "whatsapp_clicks" ? item.value : 0), 0);
+  const measurementAction = data?.measurement_setup?.requirements.find(item => item.status === "todo" && item.action_href);
+  const showMeasurementAction = !available && !serviceResults?.enabled;
   const hasVerdict = Boolean(data?.diagnostic?.top_content?.length || data?.diagnostic?.bottom_content?.length);
   const hasFriction = Boolean(data?.diagnostic?.funnel_issues?.length);
   // Only from a refresh that read the account; an older snapshot simply has none.
@@ -1182,30 +1131,36 @@ export default function PerformancePage() {
 
         {data ? (
           <div className="space-y-8 sm:space-y-10">
-            <section aria-labelledby="goal-heading" className="space-y-3">
-              <h2 id="goal-heading" className="text-lg font-bold tracking-tight text-[color:var(--ink)]">
+            <section aria-labelledby="goal-heading" className="space-y-2 border-b border-[var(--rule)] pb-5">
+              <h2 id="goal-heading" className="text-lg font-semibold tracking-tight">
                 <Copy text="האם התקדמנו ליעד?" />
               </h2>
-              <SourceDataNotice payload={data} />
-              {available ? <Answer payload={data} /> : !serviceResults?.enabled ? <NoSnapshotYet payload={data} postTaps={postTaps} /> : !serviceResults.report ? <p className="text-[15px] text-[var(--ink-soft)]"><Copy text="עוד לא נמדד" /></p> : null}
-              {planMeasure ? (
-                <p className="text-[14px] leading-6 text-[color:var(--ink-soft)]">
-                  <Copy text="היעד שנבחר בתוכנית:" /><span className="font-semibold text-[color:var(--ink)]">{planMeasure}</span>.{" "}
-                  <Link href="/strategy" className="inline-flex min-h-11 items-center align-middle font-semibold text-[color:var(--primary)] hover:underline hover:underline-offset-4">
-                    <Copy text="לתוכנית" /></Link>
+              {planMeasure ? <p dir="auto" className="text-[15px] font-medium">{planMeasure}</p> : null}
+              {serviceResults?.enabled && serviceResults.report ? null : (
+                <p className="text-[14px] text-[var(--ink-soft)]">
+                  <Copy text="עוד אין מדידה ישירה של היעד" />
                 </p>
-              ) : null}
-            </section>
-            {available && !hasProposal && !serviceResults?.enabled ? <MeasurementGaps payload={data} /> : null}
-            <section aria-labelledby="next-heading" className="space-y-4">
-              <h2 id="next-heading" className="text-lg font-bold tracking-tight text-[color:var(--ink)]"><Copy text="מה כדאי לעשות עכשיו?" /></h2>
-              {hasProposal && recommendation ? <FindingCard payload={recommendation} primary={!serviceEditing} /> : null}
-              {!hasProposal ? checkIn : null}
-              {hasProposal && serviceResults?.enabled ? checkIn : null}
-              {serviceResults?.enabled ? <MeasurementGaps payload={data} ownerReport /> : null}
-              <SourceReportLimits payload={data} />
+              )}
+              <SourceDataNotice payload={data} />
+              {available && siteNumbers ? <Answer payload={data} /> : null}
             </section>
             {results ? <PostResults results={results} /> : null}
+            {hasProposal || serviceResults?.enabled || showMeasurementAction ? (
+              <section aria-labelledby="next-heading" className="space-y-3">
+                <h2 id="next-heading" className="text-lg font-bold tracking-tight"><Copy text="מה כדאי לעשות עכשיו?" /></h2>
+                {hasProposal && recommendation ? <FindingCard payload={recommendation} primary={!serviceEditing} /> : null}
+                {checkIn}
+                {showMeasurementAction ? (
+                  <Link href={measurementAction?.action_href || "/integrations"}
+                    className={hasProposal ? "inline-flex min-h-11 items-center font-semibold text-[var(--primary)]" : "drawn-button inline-flex min-h-11 items-center px-5"}>
+                    {measurementAction?.action_label ? t(measurementAction.action_label) : t("לבדוק את מקורות המדידה")}
+                  </Link>
+                ) : null}
+              </section>
+            ) : null}
+            {available && !hasProposal && !serviceResults?.enabled ? <MeasurementGaps payload={data} /> : null}
+            {serviceResults?.enabled ? <MeasurementGaps payload={data} ownerReport /> : null}
+            <SourceReportLimits payload={data} />
             <details className="group/technical border-y border-[var(--rule)]">
               <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 py-3 text-[15px] font-semibold text-[color:var(--ink)] [&::-webkit-details-marker]:hidden">
                 <Copy text="נתונים נוספים ופרטי המדידה" /><Chevron />

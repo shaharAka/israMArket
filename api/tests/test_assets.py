@@ -470,6 +470,32 @@ class AssetTestCase(unittest.TestCase):
         self.assertEqual(saved["image_asset_id"], asset.id)
         self.assertEqual(response.json()["strategy"]["id"], self.db.query(Strategy).first().id)
 
+    def test_campaign_photo_requires_the_selected_draft(self):
+        strategy = self.add_strategy()
+        asset = self.add_asset()
+        data = json.loads(strategy.roadmap_json)
+        stored = data["roadmap"]["posts"][0]
+        stored.update(uid="stable-post", approval_status="review")
+        strategy.roadmap_json = dumps(data)
+        self.db.commit()
+
+        def attach(uid):
+            return self.client.post("/strategy/posts/asset", json={
+                "post_index": 0, "asset_id": asset.id, "campaign_post_uid": uid,
+            })
+
+        self.assertEqual(attach("other-post").status_code, 409)
+        stored["approval_status"] = "approved"
+        strategy.roadmap_json = dumps(data)
+        self.db.commit()
+        self.assertEqual(attach("stable-post").status_code, 409)
+        self.db.refresh(strategy)
+        self.assertNotIn("image_url", json.loads(strategy.roadmap_json)["roadmap"]["posts"][0])
+        stored["approval_status"] = "review"
+        strategy.roadmap_json = dumps(data)
+        self.db.commit()
+        self.assertEqual(attach("stable-post").json()["post"]["image_asset_id"], asset.id)
+
     def test_attaching_a_foreign_asset_404s(self):
         self.add_strategy()
         theirs = self.add_asset(business=self.rival)

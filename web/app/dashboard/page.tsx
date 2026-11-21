@@ -2,13 +2,14 @@
 
 import { Copy, useCopy } from "@/components/language/LanguageProvider";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState, type ReactNode } from "react";
 import { AppShell } from "@/components/AppShell";
 import { BillingReminder } from "@/components/billing/BillingReminder";
 import { LoadingMark } from "@/components/Doodles";
 import { PlanBrief } from "@/components/design/PlanBrief";
+import { NextCampaignPost } from "@/components/posts/NextCampaignPost";
+import { nextCampaignPost } from "@/lib/campaign";
 import { MonthAhead } from "@/components/MonthAhead";
 import { MonthBuildProgress } from "@/components/MonthBuildProgress";
 import { IconCamera } from "@/components/instagram/SourceLink";
@@ -17,7 +18,7 @@ import { BidiText } from "@/components/start/ui";
 import { LIFECYCLE_LABEL, lifecycleOf, postDay, postHref } from "@/components/today/posts";
 import type { PostLifecycle } from "@/lib/api";
 import { ContactLink } from "@/components/trial/StepLink";
-import { allDoneText, minutesLabel, NextStepAction, TrialDay, TrialGuide } from "@/components/trial/TrialGuide";
+import { allDoneText, NextStepAction, TrialDay, TrialGuide } from "@/components/trial/TrialGuide";
 import { HypothesisStatus, WeeklyBrief } from "@/components/trial/WeeklyBrief";
 import {
   ApiError,
@@ -29,7 +30,7 @@ import {
   type StrategyPayload,
 } from "@/lib/api";
 import { formatNis, stageFor } from "@/lib/budget";
-import { IconArrowLeft, IconCheck, IconChevron, IconImage } from "@/lib/icons";
+import { IconCheck, IconChevron, IconImage } from "@/lib/icons";
 import { foundationsDone, loadTrial, nextStep, useTrial, type TrialPayload } from "@/lib/trial";
 
 /** Which plan week today falls in, or null when today is outside the plan's month. */
@@ -160,7 +161,8 @@ export default function DashboardPage() {
   }
 
   const posts = strategy?.roadmap?.posts || [];
-  const nextIndex = posts.findIndex((post) => post.approval_status !== "approved");
+  const next = nextCampaignPost(posts);
+  const nextIndex = next.index;
   const nextPost = nextIndex >= 0 ? posts[nextIndex] : undefined;
   const approvedCount = posts.filter((post) => post.approval_status === "approved").length;
   const allApproved = posts.length > 0 && approvedCount === posts.length;
@@ -196,6 +198,8 @@ export default function DashboardPage() {
       : allDoneText(trial, t)
     : strategy?.weekly_breakdown?.find((week) => week.week === shownWeek)?.what_user_does?.[0];
 
+  const postComesFirst = Boolean(nextPost && (lifecycleOf(nextPost) !== "needs_owner" || !step));
+  const stepComesFirst = Boolean(step && !postComesFirst);
   const postsOpen = posts.length > 0 && (!guided || (trial && foundationsDone(trial)));
 
   return (
@@ -231,7 +235,16 @@ export default function DashboardPage() {
             />
           ) : null}
 
-          {/* 1. The plan and the one thing. */}
+          {postComesFirst && nextPost && next.action !== "results" ? (
+            <NextCampaignPost post={nextPost} index={next.index} action={next.action} />
+          ) : stepComesFirst && step ? (
+            <section aria-label={t("הצעד שלכם השבוע")} className="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--rule)] pb-4">
+              <h2 className="text-lg font-semibold">{t(step.title_he)}</h2>
+              <NextStepAction step={step} />
+            </section>
+          ) : null}
+
+          {/* The strategy explains the action after the owner can reach it. */}
           {direction ? (
             <PlanBrief
               businessName={business?.name}
@@ -239,10 +252,7 @@ export default function DashboardPage() {
               why={plan?.strategy.why_he}
               measure={plan?.kpi.name_he}
               baseline={baselineText ? <BidiText text={baselineText} /> : undefined}
-              ownerAction={ownerAction || undefined}
-              ownerWhy={step?.why_he}
-              ownerMeta={step ? minutesLabel(step.minutes, t) : undefined}
-              action={step ? <NextStepAction step={step} /> : undefined}
+              ownerAction={step ? undefined : ownerAction || undefined}
             />
           ) : null}
 
@@ -254,11 +264,9 @@ export default function DashboardPage() {
           {guided && trial ? (
             <>
               {/* No plan to brief from (an older business): the guide carries the step itself. */}
-              <TrialGuide trial={trial} showNext={!direction} />
+              <TrialGuide trial={trial} showNext={!postComesFirst && !stepComesFirst} />
             </>
-          ) : nextPost ? (
-            <NextPostCard post={nextPost} index={nextIndex} total={posts.length} />
-          ) : strategy && allApproved ? (
+          ) : postComesFirst ? null : strategy && allApproved ? (
             <section className="drawn-card px-6 pt-6 pb-3 sm:px-8 sm:pt-7">
               <p className="flex items-center gap-2.5 text-[17px] font-bold text-[color:var(--ink)]">
                 <span aria-hidden className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[var(--primary-soft)] text-[color:var(--primary)]">
@@ -347,7 +355,7 @@ export default function DashboardPage() {
 
                 <div className="border-t border-[var(--rule)] px-5 sm:px-6">
                   <Link
-                    href="/posts"
+                    href={`/campaign?week=${shownWeek}`}
                     className="inline-flex min-h-12 items-center gap-1.5 text-sm font-semibold text-[color:var(--primary)] underline-offset-4 hover:underline"
                   >
                     <Copy text="כל הפוסטים" /></Link>
@@ -419,45 +427,6 @@ function InstagramNudge({ connected }: { connected: boolean }) {
         ? t("עוד לא משכנו פוסטים מהאינסטגרם, אז אנחנו כותבים בלי לדעת מה כבר הצליח לכם")
         : t("לחבר את האינסטגרם, כדי שנכתוב לפי מה שכבר הצליח לכם")}
     </QuietRow>
-  );
-}
-
-/** The single ask after the free month: the next post waiting for the owner. The page's only dark button. */
-function NextPostCard({ post, index, total }: { post: RoadmapPost; index: number; total: number }) {
-  return (
-    <section className="drawn-card p-6 sm:p-8">
-      <p className="text-[13px] font-semibold text-[color:var(--primary)]">{LIFECYCLE_LABEL[lifecycleOf(post)]}</p>
-      <div className="mt-4 flex items-center gap-4 sm:gap-5">
-        <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-[var(--primary-soft)] sm:h-20 sm:w-20">
-          {post.image_url ? (
-            <Image
-              src={post.image_url}
-              alt=""
-              width={160}
-              height={160}
-              unoptimized
-              className="h-full w-full object-cover"
-            />
-          ) : (
-            <span className="flex h-full items-center justify-center text-[color:var(--ink-muted)]">
-              <IconImage className="h-5 w-5" />
-            </span>
-          )}
-        </div>
-        <div className="min-w-0">
-          <h2 className="text-[19px] font-bold leading-snug tracking-tight text-[color:var(--ink)]">{post.title}</h2>
-          <p className="mt-1 text-[13px] tabular-nums text-[color:var(--ink-muted)]">
-            {postDay(post)} <Copy text="· פוסט" />{index + 1} <Copy text="מתוך" />{total}
-          </p>
-        </div>
-      </div>
-      <Link
-        href={postHref(index)}
-        className="drawn-button group mt-6 inline-flex min-h-12 w-full items-center justify-center gap-2 bg-[var(--primary)] px-6 text-[15px] font-semibold text-white sm:w-auto"
-      >
-        <Copy text="לבדוק ולאשר" /><IconArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-1" />
-      </Link>
-    </section>
   );
 }
 

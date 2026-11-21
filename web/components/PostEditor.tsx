@@ -285,6 +285,7 @@ export function PostEditor({
   const designTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const designQueueRef = useRef<DesignSaveQueue | null>(null);
   const [designSaveState, setDesignSaveState] = useState<LatestWriteState>("saved");
+  const [captionFailedIndex, setCaptionFailedIndex] = useState<number | null>(null);
   const [designSaveError, setDesignSaveError] = useState("");
   const [designSavedOnce, setDesignSavedOnce] = useState(false);
   const designUnsaved = designSaveState !== "saved";
@@ -979,6 +980,7 @@ export function PostEditor({
   async function saveCaption() {
     if (captionDraft === null || savingCaption || captionWork.changedElsewhere || designUnsaved) return;
     const wasApproved = currentPost.approval_status === "approved";
+    setCaptionFailedIndex(null);
     setSavingCaption(true);
     try {
       const result = await endpoints.savePost(selectedIndex, { ...savePayload(currentPost, captionDraft), expected_caption: captionWork.base });
@@ -1002,7 +1004,7 @@ export function PostEditor({
         }
         return;
       }
-      toast(err instanceof Error ? err.message : t("לא הצלחנו לשמור את הנוסח"));
+      setCaptionFailedIndex(selectedIndex);
     } finally {
       setSavingCaption(false);
     }
@@ -1579,7 +1581,7 @@ export function PostEditor({
               dir={contentDirection(currentPost.content_language)}
               lang={currentPost.content_language || "he"}
               value={draft}
-              rows={5}
+              rows={3}
               maxLength={4000}
               disabled={savingCaption || captionWork.changedElsewhere}
               onChange={(event) => setCaptionDraft(event.target.value)}
@@ -1612,6 +1614,9 @@ export function PostEditor({
               }}>{t("לטעון שוב")}</button> : <p className="mt-1">{t("טוענים את הנוסח המעודכן…")}</p>}
             </div>
           ) : null}
+          {dirty && captionFailedIndex === selectedIndex ? (
+            <p role="alert" className={`${ui.error} mt-3`}>{t("הנוסח לא נשמר. אפשר לנסות שוב.")}</p>
+          ) : null}
           {dirty ? (
             <div className="mt-3 flex items-center gap-5">
               <button
@@ -1625,7 +1630,7 @@ export function PostEditor({
               <button
                 type="button"
                 disabled={savingCaption}
-                onClick={() => { setCaptionDraft(null); setCaptionConflict(false); setCaptionConflictReadFailed(false); }}
+                onClick={() => { setCaptionDraft(null); setCaptionFailedIndex(null); setCaptionConflict(false); setCaptionConflictReadFailed(false); }}
                 className={`${ui.link} ${ui.linkQuiet}`}
               >
                 <Copy text="לבטל" />
@@ -1907,7 +1912,7 @@ export function PostEditor({
         <button type="button" onClick={() => openStep("publish")} className={primaryClass}>
           {/* Mirrored: in RTL, "forward" flies left. */}
           <EditorIcon kind="publish" className="h-5 w-5 -scale-x-100" />
-          <Copy text="לפרסם" />
+          {t("להכין לפרסום ב{arg_0}", { arg_0: channelLabel })}
         </button>
       );
     }

@@ -7,7 +7,10 @@ import { ArtworkResult } from "@/components/feedback/ResultReveal";
 import { CampaignOverview } from "./CampaignOverview";
 import { CampaignBrief } from "./CampaignBrief";
 import { CampaignDirection } from "./CampaignDirection";
-import { ownerNeedsOf } from "@/lib/postLifecycle";
+import { NextCampaignPost } from "./NextCampaignPost";
+import { CampaignPhotoPicker } from "./CampaignPhotoPicker";
+import { LOCALE_META } from "@/lib/i18n/locales";
+import { toast } from "@/lib/ui";
 import { postDay, postWeek } from "./postMeta";
 import { CampaignWeek } from "./CampaignWeek";
 import { CampaignPostCard } from "./CampaignPostCard";
@@ -18,9 +21,7 @@ import { ApiError, endpoints, type RoadmapPost, type StrategyPayload, type Asset
 import { downloadCardPng, renderCardPng } from "@/lib/cardExport";
 import { loadCampaignWorkspace } from "@/lib/campaignRecovery";
 import { signInUrl } from "@/lib/authNavigation";
-import { LOCALE_META } from "@/lib/i18n/locales";
 import { CampaignVideoOverlay, CampaignVideoPreview } from "./CampaignVideo";
-import { IconChevron } from "@/lib/icons";
 import styles from "./campaign.module.css";
 
 const REVISION_LABEL: Record<RevisionKind, string> = { text: "הנוסח", layout: "קומפוזיציה אחרת", image: "התמונה", video: "סרטון חדש", video_edit: "שינוי בסרטון", finish: "סרטון שיש לכם" };
@@ -54,6 +55,7 @@ export function CampaignTimeline() {
   const [historyKnown, setHistoryKnown] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [assets, setAssets] = useState<Asset[]>([]);
+  const [photoPickerUid, setPhotoPickerUid] = useState<string | null>(null);
   const [assetId, setAssetId] = useState<number | undefined>();
   const [overlayHeadline, setOverlayHeadline] = useState("");
   const [start, setStart] = useState(0);
@@ -157,10 +159,22 @@ export function CampaignTimeline() {
   const editingOverlay = kind === "finish" && !reviewing && selected.includes(active);
   const overlayPost = editingOverlay && displayed ? { ...displayed, overlay_headline: overlayHeadline, overlay_text: overlayHeadline, has_overlay: Boolean(overlayHeadline.trim()) } : displayed;
   const footage = editingOverlay ? assets.find(a => a.id === (assetId || current?.video_raw_asset_id))?.url : undefined;
-  const mayCreate = historyKnown && (kind !== "layout" || layoutAvailable) && (!videoKind || selected.length === 1) && ((kind !== "finish" && kind !== "video_edit") || Boolean(assetId || current?.video_raw_asset_id || current?.video_asset_id)) && selected.length > 0 && !changing && !reviewing && (
-    (kind === "layout" && layoutAvailable) || kind === "finish" || (kind === "text" ? Boolean(instruction.trim()) : kind === "image" ?
-      Boolean(allowance?.images.generation_available && selected.length <= allowance.images.remaining) :
-      Boolean(allowance?.videos.generation_available && allowance.videos.remaining > 0 && (kind !== "video_edit" || instruction.trim()))));
+  const media = kind === "image" ? allowance?.images : kind === "video" || kind === "video_edit" ? allowance?.videos : undefined;
+  const paidMedia = kind === "image" || kind === "video" || kind === "video_edit";
+  const unitsNeeded = kind === "image" ? selected.length : 1;
+  const mediaBlocked = paidMedia && (!media?.generation_available || media.remaining < unitsNeeded);
+  const mediaReason = !media ? t("לא הצלחנו לבדוק את מכסת היצירה.")
+    : media.blocked_by === "subscription" ? t("צריך מנוי פעיל כדי ליצור תמונות וסרטונים")
+    : media.remaining < unitsNeeded ? t("אין מספיק יחידות במכסה לשינוי הזה")
+    : !media.generation_available ? t("היצירה אינה זמינה כרגע") : "";
+  const renewOn = allowance?.resets_at ? new Date(allowance.resets_at).toLocaleDateString(
+    LOCALE_META[locale].formatLocale, { day: "numeric", month: "short", timeZone: "Asia/Jerusalem" }
+  ) : "";
+  const hasFootage = Boolean(assetId || current?.video_raw_asset_id || current?.video_asset_id);
+  const mayCreate = historyKnown && selected.length > 0 && !changing && !reviewing && !mediaBlocked &&
+    (kind !== "layout" || layoutAvailable) && (!videoKind || selected.length === 1) &&
+    ((kind !== "finish" && kind !== "video_edit") || hasFootage) &&
+    ((kind !== "text" && kind !== "video_edit") || Boolean(instruction.trim()));
   function showRevisionItem(uid: string) {
     setActive(uid);setShowOriginal(false);
     const post=posts.find(post=>post.uid===uid);if(post){setFocusedUid(uid);selectWeek(postWeek(post));}
@@ -257,21 +271,7 @@ export function CampaignTimeline() {
   }
   return <div className={styles.workspace}>
     <header className={styles.heading}>
-      <div><h1>{t("הקמפיין שלכם")}</h1>
-        <p>{strategy?.business_name}</p>
-      </div>
-      <div className={styles.headingActions}>
-        <Link href={`/posts?create=1&from=campaign&week=${visibleWeek || 0}&lang=${locale}`} className={styles.textAction}>{t("ליצור פוסט משלכם")}</Link>
-        <Link href="/assets" className={styles.textAction}>{t("התמונות והסרטונים שלכם")}</Link>
-      {allowance ? <details className={styles.quota}>
-        <summary>{t("המכסה שנותרה")}<IconChevron className={styles.disclosureIcon}/></summary>
-        <div className={styles.balance}>
-        <span>{t("{arg_0} תמונות", { arg_0: allowance.images.remaining })}</span>
-        <span>{t("{arg_0} סרטונים", { arg_0: allowance.videos.remaining })}</span>
-        {allowance.resets_at ? <span>{t("מתחדש ב־{arg_0}", { arg_0: new Date(allowance.resets_at).toLocaleDateString(LOCALE_META[locale].formatLocale, { day: "numeric", month: "short" }) })}</span> : null}
-        </div>
-      </details> : null}
-      </div>
+      <h1>{t("הקמפיין שלכם")}</h1>
     </header>
     {error ? <div className={styles.error} role="alert">{t(error)} <button disabled={refreshing} onClick={() => void reload()}>{t("לטעון שוב")}</button></div> : null}
     {unavailable.length && posts.length ? <div className={styles.error} role="status">
@@ -280,23 +280,24 @@ export function CampaignTimeline() {
     </div> : null}
     {!ready ? <p aria-live="polite">{t("פותחים את הקמפיין…")}</p> : null}
     {ready && !posts.length && !error ? <div className={styles.empty}><p>{t(strategy?.post_workspace_only ? "הפוסטים שתכינו יופיעו כאן לפי השבוע שלהם." : "מכינים את הפוסטים לפי המטרות והתוכנית שלכם.")}</p><Link href={strategy?.post_workspace_only ? "/posts?create=1" : "/strategy"}>{t(strategy?.post_workspace_only ? "ליצור פוסט משלכם" : "להכין את פוסטי החודש")}</Link></div> : null}
+    {ready && !posts.length && !strategy?.post_workspace_only ? <Link href="/posts?create=1" className={styles.textAction}>{t("ליצור פוסט משלכם")}</Link> : null}
     {posts.length ? <>
       {pendingRevision && revision ? <section className={styles.nextTask} aria-label={t("הגרסה שבעבודה")}>
         <div><h2>{t(changing ? "מכינים את הגרסה החדשה…" : "הגרסה החדשה מחכה לבדיקה שלכם")}</h2><p dir="auto">{revision.items.map(item=>item.original.title).join(" · ")}</p></div>
         <button type="button" className={styles.textAction} onClick={()=>showRevisionItem(revision.items[0]?.uid || "")}>{t("לחזור לגרסה")}</button>
-      </section> : <section className={styles.nextTask} aria-label={t("הצעד הבא בקמפיין")}>
-        <div><h2>{t(next.action === "review" ? "הפוסט הבא שמחכה לכם" : next.action === "publish" ? "פוסט מוכן לפרסום" : "אין פוסטים שמחכים לכם עכשיו")}</h2>
-          <p dir="auto">{nextPost ? `${nextPost.title}${ownerNeedsOf(nextPost)[0]?.text ? ` · ${t(ownerNeedsOf(nextPost)[0].text)}` : ""}` : t("אפשר לראות את התוצאות ולבחור את הצעד הבא.")}</p></div>
-        <Link className={selecting ? styles.textAction : styles.primary} href={nextPost ? `/posts?post=${next.index}&from=campaign&week=${postWeek(nextPost)}` : "/performance"}>{t(next.action === "review" ? "לבדוק ולאשר" : next.action === "publish" ? "לפתוח לפרסום" : "לראות תוצאות")}</Link>
-      </section>}
-      <a href="#campaign-weeks" className={styles.textAction}>{t("לפוסטים של השבוע")}</a>
-      {ready && strategy ? <CampaignOverview strategy={strategy}/> : null}
-      {!pendingRevision ? <div className={styles.timelineTools}>
-          {selecting ? <p>{t("אפשר לבחור עד שלושה פוסטים לעריכה משותפת.")}</p> : null}
-          <button type="button" className={styles.textAction} aria-pressed={selecting} disabled={!historyKnown || refreshing} onClick={selecting ? endSelection : beginSelection}>
-            {t(selecting ? "לסיים בחירה" : "לבחור כמה פוסטים לעריכה")}
-          </button>
-        </div> : null}
+      </section> : nextPost && next.action !== "results" ?
+        <NextCampaignPost post={nextPost} index={next.index} action={next.action} quiet={selecting} /> :
+        <section className={styles.nextTask} aria-label={t("הצעד הבא בקמפיין")}>
+          <h2>{t("אין פוסטים שמחכים לכם עכשיו")}</h2>
+          <Link className={selecting ? styles.textAction : styles.primary} href="/performance">{t("לראות תוצאות")}</Link>
+        </section>}
+      <div className={styles.timelineTools}>
+        <Link href={`/posts?create=1&from=campaign&week=${visibleWeek || 0}&lang=${locale}`} className={styles.textAction}>{t("ליצור פוסט משלכם")}</Link>
+        {!pendingRevision ? <button type="button" className={styles.textAction} aria-pressed={selecting} disabled={!historyKnown || refreshing || busy} onClick={selecting ? endSelection : beginSelection}>
+          {t(selecting ? "לסיים בחירה" : "לבחור כמה פוסטים לעריכה")}
+        </button> : null}
+        {selecting ? <p>{t("אפשר לבחור עד שלושה פוסטים לעריכה משותפת.")}</p> : null}
+      </div>
       <nav id="campaign-weeks" className={styles.weekNav} aria-label={t("שבועות הקמפיין")}>
         {weeks.map(week=><button key={week} type="button" aria-pressed={visibleWeek===week} onClick={()=>selectWeek(week)}>
           <strong>{week ? t("שבוע {arg_0}",{arg_0:week}) : t("ללא שבוע")}</strong>
@@ -311,7 +312,7 @@ export function CampaignTimeline() {
               selected={selected.includes(post.uid || "")}
               focused={focusedUid === post.uid}
               selecting={selecting}
-              disabled={pendingRevision || (!protectedPost(post) && !selected.includes(post.uid || "") && selected.length >= 3)}
+              disabled={busy || pendingRevision || (!protectedPost(post) && !selected.includes(post.uid || "") && selected.length >= 3)}
               onChoose={() => choose(post)} editorHref={`/posts?post=${index}&from=campaign&week=${week}`} />)}
         </CampaignWeek>)}
       </div>
@@ -333,7 +334,7 @@ export function CampaignTimeline() {
         </div>
         <div className={styles.controls}>
           <CampaignBrief post={current} audience={current.audience_name || ""} dna={dna} />
-          {changing ? <p role="status">{t("מכינים את הגרסה החדשה…")}</p> : reviewing && revision ? <div className={styles.decision}>
+          {changing && !photoPickerUid ? <p role="status">{t("מכינים את הגרסה החדשה…")}</p> : reviewing && revision ? <div className={styles.decision}>
             <h2>{t("איך נראית הגרסה החדשה?")}</h2>
             <p>{t("עברו על הפוסטים שבחרתם לפני השמירה.")}</p>
             {revision.items.map(i => <button key={i.uid} aria-pressed={active === i.uid} onClick={() => showRevisionItem(i.uid)}>{i.original.title}{i.error ? ` · ${t(i.error)}` : ""}</button>)}
@@ -344,7 +345,7 @@ export function CampaignTimeline() {
             <CampaignDirection post={current} onUse={value=>{setKind("text");setSelected([active]);setInstruction(value);}} />
             <h2>{t("מה תרצו לשנות?")}</h2>
             <div className={styles.choices}>
-              {([ ["text", "הנוסח"], ...(layoutAvailable ? [["layout", "העיצוב"] as const] : []), ["image", "התמונה"], ["video", "סרטון"] ] as const).map(([value,label]) => <button key={value} type="button" aria-pressed={value==="video" ? videoKind : kind === value} onClick={() => setKind(value)}>{t(label)}</button>)}
+              {([ ["text", "הנוסח"], ...(layoutAvailable ? [["layout", "העיצוב"] as const] : []), ["image", "התמונה"], ["video", "סרטון"] ] as const).map(([value,label]) => <button key={value} type="button" aria-pressed={value==="video" ? videoKind : kind === value} disabled={busy} onClick={() => { setPhotoPickerUid(null); setKind(value); }}>{t(label)}</button>)}
             </div>
             {videoKind ? <div className={styles.videoModes} role="group" aria-label={t("העבודה על הסרטון")}>
               {([ ["video","ליצור סרטון"], ["finish","לערוך סרטון קיים"], ...(current.video_url ? [["video_edit","לשנות את התוכן בסרטון"] as const] : []) ] as const).map(([value,label])=><button key={value} type="button" aria-pressed={kind===value} onClick={()=>setKind(value)}>{t(label)}</button>)}
@@ -362,14 +363,30 @@ export function CampaignTimeline() {
             </div> : null}
             {kind !== "layout" && kind !== "finish" ? <><label htmlFor="campaign-instruction">{t("כתבו לנו במילים שלכם")}</label><textarea id="campaign-instruction" value={instruction} onChange={e => setInstruction(e.target.value)} maxLength={200} placeholder={t("למשל, פחות רשמי ולשים את המוצר במרכז")} />
             {kind === "text" ? <div className={styles.suggestions}>{["קצר יותר", "יותר חם", "עם שאלה ללקוחות"].map(label => <button key={label} type="button" onClick={() => setInstruction(label)}>{t(label)}</button>)}</div> : null}</> : kind === "layout" ? <p>{t("ננסה קומפוזיציה אחרת בסגנון של העסק, עם אותה תמונה.")}</p> : null}
-            <p className={styles.quote}>{kind === "finish" ? t("חיתוך הסרטון והוספת הכיתוב בסגנון שלכם לא משתמשים במכסת היצירה.") : kind === "video" || kind === "video_edit" ? t("סרטון אחד מהמכסה · קטע של עד 5 שניות") : kind === "image" ? t("עד {arg_0} תמונות מהמכסה ל־{arg_1} פוסטים", { arg_0: selected.length, arg_1: selected.length }) : t("השינוי הזה לא משתמש במכסת התמונות והסרטונים.")}</p>
-            <button type="submit" className={styles.primary} disabled={!mayCreate}>{t("להכין גרסה חדשה")}</button>
-            {(kind === "video" || kind === "video_edit") && !allowance?.videos.generation_available ? <button type="button" className={styles.textAction} onClick={() => setKind("finish")}>{t("להשתמש בסרטון שכבר יש לכם")}</button> : null}
-            {kind === "image" && !allowance?.images.generation_available ? <Link href="/assets" className={styles.textAction}>{t("לבחור תמונה שכבר יש לכם")}</Link> : null}
+            {paidMedia && media ? <p className={styles.quote}>
+              {kind === "image" ? t("תמונות במכסה: נותרו {arg_0} · נדרשות עד {arg_1}", { arg_0: media.remaining, arg_1: unitsNeeded }) :
+                t("סרטונים במכסה: נותרו {arg_0} · נדרש אחד", { arg_0: media.remaining })}
+              {renewOn ? <> · {t("מתחדש ב־{arg_0}", { arg_0: renewOn })}</> : null}
+            </p> : null}
+            {!paidMedia ? <p className={styles.quote}>{kind === "finish" ? t("חיתוך הסרטון והוספת הכיתוב בסגנון שלכם לא משתמשים במכסת היצירה.") : t("השינוי הזה לא משתמש במכסת התמונות והסרטונים.")}</p> : null}
+            {paidMedia && mediaReason ? <p role="status" className={styles.quote}>{mediaReason}</p> : null}
+            {photoPickerUid !== current.uid ? <button type="submit" className={styles.primary} disabled={!mayCreate}>{t("להכין גרסה חדשה")}</button> : null}
+            {videoKind && kind !== "finish" && mediaBlocked ? <button type="button" className={styles.textAction} onClick={() => setKind("finish")}>{t("להשתמש בסרטון שכבר יש לכם")}</button> : null}
+            {kind === "image" && mediaBlocked && current.uid && currentIndex >= 0 && (current.channel || current.primary_outlet) !== "tiktok" && current.design?.text_mode !== "text_only" ?
+              photoPickerUid === current.uid ? <CampaignPhotoPicker key={current.uid} index={currentIndex} uid={current.uid} title={current.title} onBusy={setBusy}
+                onCancel={() => setPhotoPickerUid(null)} onSaved={saved => {
+                  setStrategy(saved);
+                  setPhotoPickerUid(null);
+                  toast(t("התמונה שלכם נכנסה לפוסט."));
+                }} /> :
+                <button type="button" className={styles.textAction} onClick={() => setPhotoPickerUid(current.uid!)}>{t("לבחור תמונה שכבר יש לכם")}</button>
+            : null}
           </form>}
           {history.some(r => r.state === "kept") ? <div className={styles.history}><h2>{t("גרסאות ששמרתם")}</h2>{history.filter(r => r.state === "kept").map(r => <div key={r.id}><span dir="auto">{r.instruction || t(REVISION_LABEL[r.kind])}</span><button disabled={!historyKnown || busy || changing || reviewing} onClick={() => void decide(r, "undo")}>{t("לחזור לגרסה הקודמת")}</button></div>)}</div> : null}
         </div>
       </section> : null}
+      {ready && strategy ? <CampaignOverview strategy={strategy} /> : null}
+      <Link href="/assets" className={styles.textAction}>{t("התמונות והסרטונים שלכם")}</Link>
     </> : null}
   </div>;
 }

@@ -34,13 +34,8 @@ from app.services.jsonutil import dumps, loads
 
 router = APIRouter(prefix="/business", tags=["foundations"])
 
-MIN_FEATURED = 3
+MIN_FEATURED = 1
 MAX_FEATURED = 10
-
-
-def minimum_featured(model: str) -> int:
-    """One service is enough to establish a first content focus; shops need variety."""
-    return 1 if model in {"services", "saas"} else MIN_FEATURED
 
 # One list for the picks screen and the post writer (services/connected_posts.py).
 REASONS: dict[str, str] = FEATURED_REASONS_HE
@@ -218,7 +213,7 @@ def _featured_payload(business: Business, db: Session) -> dict:
         ],
         "saved_at": raw.get("saved_at"),
         "reasons": [{"key": key, "label_he": label} for key, label in REASONS.items() if model not in {"services", "saas"} or key in {"seasonal", "new"}],
-        "min": minimum_featured(model),
+        "min": MIN_FEATURED,
         "max": MAX_FEATURED,
         "kind_he": "נושאים על המוצר" if model == "saas" else "שירותים" if model == "services" else "מוצרים ושירותים" if model == "both" else "מוצרים",
         "business_model": model,

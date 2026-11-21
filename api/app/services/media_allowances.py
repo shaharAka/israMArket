@@ -127,19 +127,24 @@ def status(db: Session, user: User, now: datetime | None = None) -> dict:
             pass
     minimum_image_cost = min(ceilings) if ceilings else None
     from app.services import campaign_video
+    locked = billing.locked(db, user, now)
     for kind, (limit, attempts, budget) in POLICY[tier].items():
         minimum_cost = minimum_image_cost if kind == "image" else campaign_video.default_ceiling()
         configured = kind == "image" or campaign_video.available()
         row = _row(db, user.id, kind, start)
         historical = _legacy_images(db, user.id, start, end) if row is None and kind == "image" else (0, 0, 0)
         used, held = (row.used, row.reserved) if row else (historical[0], 0)
+        generation_available = configured and not locked and minimum_cost is not None and used + held < limit and (
+            historical[1] < attempts and historical[2] + minimum_cost <= budget if row is None else
+            row.attempts < attempts and row.committed_microusd + row.reserved_microusd + minimum_cost <= budget
+        )
         kinds[kind] = {
             "included": limit, "used": used, "reserved": held,
             "remaining": max(0, limit - used - held),
-            "generation_available": configured and not billing.locked(db, user, now)
-            and minimum_cost is not None and used + held < limit
-            and ((historical[1] < attempts and historical[2] + minimum_cost <= budget) if row is None else (
-                row.attempts < attempts and row.committed_microusd + row.reserved_microusd + minimum_cost <= budget)),
+            "generation_available": generation_available,
+            "blocked_by": None if generation_available else (
+                "subscription" if locked else "quota" if used + held >= limit else "unavailable"
+            ),
         }
     return {"tier": tier, "period_start": billing.iso_utc(start), "resets_at": billing.iso_utc(end)
             if tier == "regular" and end > now else None, "images": kinds["image"], "videos": kinds["video"]}

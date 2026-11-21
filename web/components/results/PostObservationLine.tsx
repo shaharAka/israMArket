@@ -7,7 +7,7 @@ import { dateRange, dayMonth } from "@/lib/dates";
 /** Purpose: show which days this number covers, directly beside the number.
  * Message: a Google reporting window and a cumulative click count are different.
  * No action needed; recovery belongs to Connections, not this factual label. */
-export function PostObservationLine({ observation, google = false }: { observation?: PostObservation | null; google?: boolean }) {
+export function PostObservationLine({ observation, google = false, includeSource = false }: { observation?: PostObservation | null; google?: boolean; includeSource?: boolean }) {
   const { locale } = useLanguage();
   const t = useCopy();
   const read = dayMonth(observation?.read_at, locale);
@@ -17,7 +17,12 @@ export function PostObservationLine({ observation, google = false }: { observati
       {observation.source === "facebook" ? t("פייסבוק") : t("אינסטגרם")} · {read ? t("נקרא ב־{arg_0}", { arg_0: read }) : null}
     </p>;
   }
-  if (!google && observation?.source !== "ga4") return null;
+  if (!google && observation?.source !== "ga4") {
+    const source = observation?.source === "instagram" ? t("אינסטגרם") : observation?.source === "whatsapp" ? t("ספירה שלנו") : "";
+    return includeSource && (source || read) ? <p className="mt-1 text-[12px] leading-5 text-[color:var(--ink-muted)]">
+      {[source, read ? t("נקרא ב־{arg_0}", { arg_0: read }) : ""].filter(Boolean).join(" · ")}
+    </p> : null;
+  }
   const range = dateRange(observation?.start, observation?.end, locale);
   return <p className="mt-1 text-[12px] leading-5 text-[color:var(--ink-muted)]">
     {t("גוגל אנליטיקס")} · <bdi>{range || t("תאריכי המדידה לא נשמרו")}</bdi>

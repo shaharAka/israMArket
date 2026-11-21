@@ -1204,6 +1204,146 @@
       "en": "On your phone, choose the language in the header. A clear button opens the next post for review; audience, measurement and generation allowance details stay close at hand.",
       "ar": "على الهاتف، يمكنكم اختيار اللغة من شريط العنوان. يفتح زر واضح المنشور التالي للمراجعة، وتبقى تفاصيل الجمهور والقياس وحصة الإنشاء قريبة من العمل.",
       "ru": "На телефоне выбор языка находится в верхней строке. Заметная кнопка открывает следующий пост для проверки, а сведения об аудитории, измерениях и лимите генерации доступны рядом с рабочей областью."
+    },
+    "m_0c296da8a3df8e0e": {
+      "en": "Check measurement sources",
+      "ar": "مراجعة مصادر القياس",
+      "ru": "Проверить источники данных"
+    },
+    "m_11e4ba3a7d690532": {
+      "en": "An active subscription is needed to create images",
+      "ar": "يتطلب إنشاء الصور اشتراكًا نشطًا",
+      "ru": "Для создания изображений нужна активная подписка"
+    },
+    "m_2d1d05cc277fe9d3": {
+      "en": "Generation is currently unavailable",
+      "ar": "الإنشاء غير متاح حاليًا",
+      "ru": "Создание сейчас недоступно"
+    },
+    "m_322a5b899b4742b9": {
+      "en": "An active subscription is needed to create images and videos",
+      "ar": "يتطلب إنشاء الصور والفيديوهات اشتراكًا نشطًا",
+      "ru": "Для создания изображений и видео нужна активная подписка"
+    },
+    "m_38df7b0116a24658": {
+      "en": "Choose a photo for the post",
+      "ar": "اختيار صورة للمنشور",
+      "ru": "Выберите фото для публикации"
+    },
+    "m_4b5d57605253db19": {
+      "en": "We’ll save what you shared, then move on to goals and the plan.",
+      "ar": "سنحفظ ما شاركتموه، ثم ننتقل إلى الأهداف والخطة.",
+      "ru": "Мы сохраним ваши ответы, затем перейдём к целям и плану."
+    },
+    "m_52fcfff5d1e61fb5": {
+      "en": "The post has changed. Reload the campaign and choose a post.",
+      "ar": "تغيّر المنشور. أعيدوا تحميل الحملة واختاروا منشورًا.",
+      "ru": "Публикация изменилась. Обновите кампанию и выберите публикацию."
+    },
+    "m_59d598c88bebd2b7": {
+      "en": "Image allowance: {arg_0} left · up to {arg_1} needed",
+      "ar": "رصيد الصور: المتبقي {arg_0} · المطلوب حتى {arg_1}",
+      "ru": "Лимит изображений: осталось {arg_0} · нужно до {arg_1}"
+    },
+    "m_6a6a5a487b5e15e4": {
+      "en": "Highest reach",
+      "ar": "أعلى وصول",
+      "ru": "Самый высокий охват"
+    },
+    "m_705dc8a8dc4021c7": {
+      "en": "Most WhatsApp link clicks",
+      "ar": "أكبر عدد من النقرات على رابط واتساب",
+      "ru": "Больше всего переходов в WhatsApp"
+    },
+    "m_788211e74ba06ddb": {
+      "en": "Your remaining allowance doesn’t cover this change",
+      "ar": "الرصيد المتبقي لا يكفي لهذا التعديل",
+      "ru": "Оставшегося лимита не хватает для этого изменения"
+    },
+    "m_80a0891c7974721d": {
+      "en": "The caption wasn’t saved. Try again.",
+      "ar": "لم يُحفَظ النص. حاولوا مرة أخرى.",
+      "ru": "Подпись не сохранилась. Попробуйте ещё раз."
+    },
+    "m_875a41f0a6b3fc33": {
+      "en": "What sets you apart? (optional)",
+      "ar": "ما الذي يميّزكم؟ (اختياري)",
+      "ru": "Что вас отличает? (необязательно)"
+    },
+    "m_9167cdd2e110eae8": {
+      "en": "Most site visits",
+      "ar": "أكبر عدد من زيارات الموقع",
+      "ru": "Больше всего посещений сайта"
+    },
+    "m_9758266ec4e89da7": {
+      "en": "Use this photo in the post",
+      "ar": "استخدام هذه الصورة في المنشور",
+      "ru": "Использовать фото в публикации"
+    },
+    "m_9a5be09e0eee0161": {
+      "en": "Video allowance: {arg_0} left · one needed",
+      "ar": "رصيد الفيديو: المتبقي {arg_0} · المطلوب فيديو واحد",
+      "ru": "Лимит видео: осталось {arg_0} · нужно одно"
+    },
+    "m_9b60e8d9f406d201": {
+      "en": "We suggest topics based on your business, research and plan. Choose what fits.",
+      "ar": "نقترح مواضيع بحسب نشاطكم والبحث والخطة. اختاروا ما يناسبكم.",
+      "ru": "Мы предлагаем темы на основе вашего бизнеса, исследования и плана. Выберите подходящие."
+    },
+    "m_a06d6e0c0ed2dbd9": {
+      "en": "Most saves",
+      "ar": "أكبر عدد من مرات الحفظ",
+      "ru": "Больше всего сохранений"
+    },
+    "m_a67433686b90a4fb": {
+      "en": "We couldn’t check your generation allowance.",
+      "ar": "لم نتمكن من التحقق من رصيد الإنشاء.",
+      "ru": "Не удалось проверить лимит генерации."
+    },
+    "m_b5032db8cc332a02": {
+      "en": "Counted by isramarket",
+      "ar": "حسب إحصاء isramarket",
+      "ru": "По данным isramarket"
+    },
+    "m_c415d7e7eb1ddfb4": {
+      "en": "We’ll save what you shared. In your account you can connect data, choose goals and get a monthly plan.",
+      "ar": "سنحفظ ما شاركتموه. في حسابكم يمكنكم ربط البيانات واختيار الأهداف والحصول على خطة شهرية.",
+      "ru": "Мы сохраним ваши ответы. В аккаунте вы сможете подключить данные, выбрать цели и получить план на месяц."
+    },
+    "m_d1c540abbd88be8d": {
+      "en": "Photo {arg_0}",
+      "ar": "الصورة {arg_0}",
+      "ru": "Фото {arg_0}"
+    },
+    "m_e1eb7f927e80ec48": {
+      "en": "Prepare for {arg_0}",
+      "ar": "تجهيز للنشر على {arg_0}",
+      "ru": "Подготовить к публикации в {arg_0}"
+    },
+    "m_e34f079a2e10154b": {
+      "en": "Choose one topic to start. You can add more later.",
+      "ar": "اختاروا موضوعًا واحدًا للبدء. يمكنكم إضافة المزيد لاحقًا.",
+      "ru": "Выберите одну тему для начала. Остальные можно добавить позже."
+    },
+    "m_ecdc4e3ab11e24a1": {
+      "en": "Progress toward this goal hasn’t been measured directly yet",
+      "ar": "لم يُقَس التقدّم نحو هذا الهدف مباشرةً بعد",
+      "ru": "Прогресс по этой цели пока не измерен напрямую"
+    },
+    "m_997902823a6e8bc2": {
+      "en": "See the next post and what was measured",
+      "ar": "المنشور التالي وما جرى قياسه بوضوح",
+      "ru": "Следующая публикация и измеренные результаты"
+    },
+    "m_f6a479e722c2b427": {
+      "en": "Campaign leads with the post waiting for you. Results shows what was measured for each post and what’s missing for your goal.",
+      "ar": "تظهر أولًا في الحملة المنشورات التي تنتظر إجراءكم. تعرض النتائج ما قيس لكل منشور وما ينقص لقياس الهدف.",
+      "ru": "В кампании сразу видно, какая публикация ждёт вашего решения. В результатах видно, что измерено и каких данных не хватает для оценки цели."
+    },
+    "m_b9bbf71a9f4a9444": {
+      "en": "One topic is enough to start preparing posts. If your image allowance runs low, choose a photo you already have in Campaign.",
+      "ar": "يكفي موضوع واحد لبدء إعداد المنشورات. إذا لم يكفِ رصيد الصور، اختاروا صورة موجودة من داخل الحملة.",
+      "ru": "Чтобы начать готовить публикации, достаточно одной темы. Если лимита на новое изображение не хватает, выберите готовое фото прямо в кампании."
     }
   },
   "numberForms": {

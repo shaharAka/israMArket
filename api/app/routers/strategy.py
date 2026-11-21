@@ -26,6 +26,7 @@ from app.schemas import (
 )
 from app.services import (
     billing,
+    campaign_revisions,
     connected_posts,
     design_dna,
     generation_jobs,
@@ -734,6 +735,15 @@ def attach_post_asset(
         raise HTTPException(status_code=404, detail="הפוסט לא נמצא בתוכנית")
 
     target = posts[body.post_index]
+    def check_campaign_target(post: dict) -> None:
+        if body.campaign_post_uid and (post.get("uid") != body.campaign_post_uid or campaign_revisions.protected(post)):
+            raise HTTPException(status_code=409, detail="הפוסט השתנה. טענו את הקמפיין שוב ובחרו פוסט.")
+
+    def apply_asset(before: dict, after: dict, current: dict) -> dict:
+        check_campaign_target(current)
+        return image_jobs.owner_changes(before, after, current)
+
+    check_campaign_target(target)
     before = copy.deepcopy(target)
     if target.get("primary_outlet") == "tiktok" and asset.kind != "video":
         raise HTTPException(status_code=422, detail="בחרו סרטון לפרסום בטיקטוק.")
@@ -747,7 +757,7 @@ def attach_post_asset(
         target["approval_status"] = "review"
         target["approved_at"] = None
         business.updated_at = datetime.utcnow()
-        target = image_jobs.save_post(db, strategy, body.post_index, before, target)
+        target = image_jobs.save_post(db, strategy, body.post_index, before, target, merge=apply_asset)
         db.refresh(strategy)
         return {"post": _post_view(strategy, business, body.post_index, target), "strategy": serialize_strategy(strategy, business)}
     # Selecting a photo replaces the video too: never leave an old clip as the preview.
@@ -768,7 +778,7 @@ def attach_post_asset(
                           allow_model=may_spend)
     # The photo's analysis may take a model call: write this post only (#123).
     business.updated_at = datetime.utcnow()
-    target = image_jobs.save_post(db, strategy, body.post_index, before, target)
+    target = image_jobs.save_post(db, strategy, body.post_index, before, target, merge=apply_asset)
     db.refresh(strategy)
     return {"post": _post_view(strategy, business, body.post_index, target), "strategy": serialize_strategy(strategy, business)}
 

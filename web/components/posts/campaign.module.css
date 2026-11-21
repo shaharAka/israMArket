@@ -272,3 +272,20 @@ details[open] > summary > .disclosureIcon { transform:rotate(90deg); }
 }
 
 .selectionBar button:focus-visible { outline:2px solid var(--paper); outline-offset:3px; }
+
+.nextTask { margin-bottom:16px; padding:12px 0 18px; }
+.nextPost { display:flex; align-items:center; gap:12px; }
+.nextThumbnail { display:grid; place-items:center; width:64px; height:64px; flex:none; overflow:hidden; border-radius:10px; background:var(--soft); color:var(--ink-muted); }
+.nextThumbnail img,.nextThumbnail video { width:100%; height:100%; object-fit:cover; }
+.nextThumbnail svg { width:22px; height:22px; }
+.nextPostCopy { min-width:0; overflow-wrap:anywhere; }
+.nextPostCopy h2 { margin-block:3px 0; }
+.nextPostCopy p { margin:0; font-size:13px; }
+.timelineTools { flex-wrap:wrap; gap:0 12px; }
+.timelineTools p { flex-basis:100%; }
+
+.libraryPhotos { display:grid; grid-template-columns:repeat(auto-fill,minmax(108px,1fr)); gap:8px; margin-block:8px; max-height:280px; overflow:auto; }
+.libraryPhotos button { display:grid; gap:4px; width:100%; padding:6px; border-radius:10px; border:1px solid var(--rule-dark); text-align:start; }
+.libraryPhotos button[aria-pressed="true"] { border-color:var(--primary); background:var(--primary-soft); }
+.libraryPhotos img { width:100%; height:80px; object-fit:cover; border-radius:6px; }
+.libraryPhotos span { overflow-wrap:anywhere; font-size:12px; }

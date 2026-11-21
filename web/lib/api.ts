@@ -4061,10 +4061,10 @@ export const endpoints = {
       body: JSON.stringify({ post_index, generation_request_id: crypto.randomUUID(), ...options }),
     }),
   /** Point a post's image at one of the owner's own library assets. */
-  attachPostAsset: (post_index: number, asset_id: number) =>
+  attachPostAsset: (post_index: number, asset_id: number, campaign_post_uid?: string) =>
     api<{ post: RoadmapPost; strategy: StrategyPayload }>("/strategy/posts/asset", {
       method: "POST",
-      body: JSON.stringify({ post_index, asset_id }),
+      body: JSON.stringify({ post_index, asset_id, campaign_post_uid }),
     }),
   /** Which library assets fit this post, ranked with a Hebrew reason each. A real model
    *  call — several seconds, and an empty list when the library is empty. */
