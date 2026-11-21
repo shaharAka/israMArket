@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, useId, useRef, type ReactNode } from "react";
 import { Copy, useCopy } from "@/components/language/LanguageProvider";
 import styles from "./creative-reel.module.css";
 
@@ -21,8 +21,8 @@ export const CAMPAIGN_FILMS = {
   interior: {
     src: "/showcase/campaign-cuts/interior.mp4",
     poster: "/showcase/campaign-cuts/interior-poster.webp",
-    title: "אותו קיר. אור אחר.",
-    caption: "סטודיו צד אור מזמין לפגישת צבע בבית, באור הטבעי של החדר.",
+    title: "אותו גוון. אור אחר.",
+    caption: "בפגישת ייעוץ של צד אור בודקים דוגמאות צבע על הקיר בבית, לפני שצובעים.",
   },
   ink: {
     src: "/showcase/dyo-tari/film.mp4",
@@ -33,10 +33,12 @@ export const CAMPAIGN_FILMS = {
 } as const;
 export type FilmName = keyof typeof CAMPAIGN_FILMS;
 
-export function CampaignFilm({ film, children, size, autoPreview = false }: {
-  film: FilmName; children?: ReactNode; size: string; autoPreview?: boolean;
+export function CampaignFilm({ film, children, size, previewSrc }: {
+  film: FilmName; children?: ReactNode; size: string; previewSrc?: string;
 }) {
   const item = CAMPAIGN_FILMS[film];
+  const inlineSrc = previewSrc ?? item.src;
+  const description = useId();
   const t = useCopy();
   const dialog = useRef<HTMLDialogElement>(null);
   const player = useRef<HTMLVideoElement>(null);
@@ -45,19 +47,19 @@ export function CampaignFilm({ film, children, size, autoPreview = false }: {
 
   useEffect(() => {
     const video = preview.current;
-    if (!video || !autoPreview) return;
+    if (!video) return;
     const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
     let visible = false;
     const update = () => {
       if (visible && !motion.matches && !document.hidden && !document.querySelector("dialog[open]")) {
-        if (!video.src) video.src = item.src;
+        if (!video.src) video.src = inlineSrc;
         void video.play().catch(() => {});
       } else video.pause();
     };
     const observer = new IntersectionObserver(([entry]) => {
-      visible = entry.isIntersecting;
+      visible = entry.isIntersecting && entry.intersectionRatio >= .2;
       update();
-    }, { threshold: .55 });
+    }, { threshold: [0, .2] });
     observer.observe(video);
     motion.addEventListener("change", update);
     document.addEventListener("visibilitychange", update);
@@ -69,7 +71,7 @@ export function CampaignFilm({ film, children, size, autoPreview = false }: {
       document.removeEventListener("landing-film-change", update);
       video.pause();
     };
-  }, [autoPreview, item.src]);
+  }, [inlineSrc]);
 
   const open = () => {
     const element = dialog.current;
@@ -87,8 +89,8 @@ export function CampaignFilm({ film, children, size, autoPreview = false }: {
       aria-label={t("לצפייה בסרטון ״{arg_0}״", { arg_0: t(item.title) })}>
       {children ?? <Image src={item.poster} alt="" width={720}
         height={1280} sizes={size} />}
-      {autoPreview && <video ref={preview} muted playsInline loop preload="none" aria-hidden="true" className={styles.inlinePreview} />}
-      <span className={styles.play}><svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><path d="M6 3.5 16 10 6 16.5z" fill="currentColor" /></svg></span>
+      <video ref={preview} muted playsInline loop preload="none" aria-hidden="true" className={styles.inlinePreview} />
+      <span className={styles.play}><svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><path d="M12 3h5v5M17 3l-5 5M8 17H3v-5m0 5 5-5" fill="none" stroke="currentColor" strokeWidth="1.7" /></svg></span>
     </button>
     <dialog ref={dialog} className={styles.dialog} aria-label={t(item.title)}
       onClick={event => { if (event.target === event.currentTarget) dialog.current?.close(); }}
@@ -99,8 +101,8 @@ export function CampaignFilm({ film, children, size, autoPreview = false }: {
       }}>
       <div className={styles.viewer}>
         <header><strong>{t(item.title)}</strong><button type="button" onClick={() => dialog.current?.close()}><Copy text="סגירה" /></button></header>
-        <video ref={player} controls preload="none" playsInline poster={item.poster} aria-label={t(item.title)} />
-        <p>{t(item.caption)}</p>
+        <video ref={player} controls muted preload="none" playsInline poster={item.poster} aria-label={t(item.title)} aria-describedby={description} />
+        <p id={description} className="sr-only">{t(item.caption)}</p>
       </div>
     </dialog>
   </>;

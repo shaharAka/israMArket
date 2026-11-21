@@ -1,10 +1,9 @@
-/** Re-cut the original social films and their scores with local Chrome and ffmpeg.
+/** Re-cut the original silent social films with local Chrome and ffmpeg.
  * Run from any directory. The campaign language stays Hebrew across UI locales.
  */
 import { once } from "node:events";
 import { spawn } from "node:child_process";
-import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
-import os from "node:os";
+import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 import puppeteer from "puppeteer-core";
@@ -12,22 +11,21 @@ import sharp from "sharp";
 
 const publicDir = fileURLToPath(new URL("../public/", import.meta.url));
 const directory = path.join(publicDir, "showcase/campaign-cuts");
-const scratch = await mkdtemp(path.join(os.tmpdir(), "campaign-scores-"));
 const browser = await puppeteer.launch({
   executablePath: process.env.CHROME_PATH || "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
   headless: true,
 });
 try {
-  for (const subject of ["flowers", "water", "interior"]) await render(subject);
+  for (const subject of ["flowers", "water", "interior", "ink"]) await render(subject);
+  await previews();
 } finally {
   await browser.close();
-  await rm(scratch, { recursive: true, force: true });
 }
 
 async function render(subject) {
   const page = await browser.newPage();
-  const moving = subject === "interior";
-  const input = moving ? path.join(publicDir, "showcase/designer-human-motion-ai.mp4") : path.join(directory, subject + "-art.webp");
+  const moving = subject === "interior" || subject === "ink";
+  const input = subject === "ink" ? path.join(publicDir, "showcase/dyo-tari/film.mp4") : moving ? path.join(publicDir, "showcase/designer-human-motion-ai.mp4") : path.join(directory, subject + "-art.webp");
   const image = await readFile(input);
   const detail = moving ? null : await readFile(path.join(directory, subject + "-detail.webp"));
   const font = await readFile(path.join(publicDir, "fonts/signal/SecularOne.ttf"));
@@ -54,18 +52,16 @@ async function render(subject) {
       window.detail = detailPhoto;
     }
   }, { photo: image.toString("base64"), typeface: font.toString("base64"), moving, alternate: detail?.toString("base64") });
-  const output = path.join(directory, subject + ".mp4");
-  const track = path.join(scratch, subject + ".pcm");
-  await writeFile(track, score(subject));
+  const output = path.join(directory, subject === "ink" ? "ink-preview.mp4" : subject + ".mp4");
   const encoder = spawn("ffmpeg", ["-loglevel", "error", "-y", "-f", "image2pipe", "-vcodec", "mjpeg", "-framerate", "24",
-    "-i", "pipe:0", "-f", "f32le", "-ar", "44100", "-ac", "1", "-i", track, "-c:a", "aac", "-b:a", "96k", "-c:v", "libx264", "-preset", "fast", "-crf", "23", "-pix_fmt", "yuv420p", "-movflags", "+faststart", output],
+    "-i", "pipe:0", "-an", "-c:v", "libx264", "-preset", "fast", "-crf", "23", "-pix_fmt", "yuv420p", "-movflags", "+faststart", output],
   { stdio: ["pipe", "ignore", "inherit"] });
   const done = once(encoder, "close");
   const frames = 168;
   for (let frame = 0; frame < frames; frame++) {
     const data = await page.evaluate(drawFrame, { subject, t: frame / 24 });
     const buffer = Buffer.from(data.split(",")[1], "base64");
-    if (frame === (subject === "flowers" ? 95 : subject === "water" ? 32 : 76)) await sharp(buffer).webp({ quality: 87 }).toFile(path.join(directory, subject + "-poster.webp"));
+    if (subject !== "ink" && frame === (subject === "flowers" ? 95 : subject === "water" ? 32 : 76)) await sharp(buffer).webp({ quality: 87 }).toFile(path.join(directory, subject + "-poster.webp"));
     if (!encoder.stdin.write(buffer)) await once(encoder.stdin, "drain");
   }
   encoder.stdin.end();
@@ -154,6 +150,22 @@ async function drawFrame({ subject, t }) {
       type("FLOWER STUDIO", 43, 77, 20, cream, "monospace", "left", "ltr");
       line(43, 114, 673, 114, cream, 1);
     }
+  } else if (subject === "ink") {
+    const cream = "#f7eecb", blue = "#193681", orange = "#ec5027";
+    const sought = new Promise(resolve => photo.addEventListener("seeked", resolve, { once: true }));
+    photo.currentTime = .003 + t;
+    await sought;
+    box(0, 0, w, h, cream);
+    type("דיו טרי", 662, 96, 62, blue);
+    type("HAIFA PRINT CLUB", 46, 75, 23, blue, "monospace", "left", "ltr");
+    line(44, 120, 671, 120, blue, 2);
+    safeType("שני צבעים.", 272, 103, blue);
+    safeType("דג אחד.", 382, 118, orange);
+    c.drawImage(photo, 0, 133, 762, 453, 0, 424, 720, 445);
+    box(0, 903, w, 377, blue);
+    safeType("ערב הדפס רשת בחיפה", 1011, 59, cream);
+    type("19:00", 72, 1140, 89, cream, "monospace", "left", "ltr");
+    type("להרשמה לסדנה", 642, 1127, 35, cream);
   } else if (subject === "interior") {
     const cream = "#fae3b9", graphite = "#292721", terra = "#92391f";
     const sought = new Promise(resolve => photo.addEventListener("seeked", resolve, { once: true }));
@@ -173,12 +185,12 @@ async function drawFrame({ subject, t }) {
     type("בצל", 279, 1172, 45, cream);
     type("בשמש", 598, 1172, 45, graphite);
     if (t < 4.32) {
-      safeType(t < 2.05 ? "אותו קיר." : "אור אחר.", 873, 93, t < 2.05 ? graphite : terra);
-      safeType("צבע בוחרים באור של הבית.", 947, 40, graphite);
+      safeType(t < 2.05 ? "אותו גוון." : "אור אחר לגמרי.", 873, 86, t < 2.05 ? graphite : terra);
+      safeType("איך הוא ייראה אצלכם בסלון?", 947, 40, graphite);
     } else {
-      safeType("איזה גוון מתאים אצלכם?", 837, 61, terra);
-      safeType("שלחו הודעה לתיאום", 908, 45, graphite);
-      safeType("פגישת צבע בבית.", 961, 45, graphite);
+      safeType("לפני שצובעים,", 833, 64, terra);
+      safeType("מנסים את הגוונים בבית.", 897, 54, graphite);
+      safeType("שלחו הודעה לקביעת ייעוץ צבע.", 961, 37, graphite);
     }
   } else {
     const blue = "#082760", bright = "#ecff62", white = "#ffffff";
@@ -220,38 +232,18 @@ async function drawFrame({ subject, t }) {
   return canvas.toDataURL("image/jpeg", .93);
 }
 
-/** Short original scores. Transients mark the cuts; ambient playback on the site is muted. */
-function score(subject) {
-  const rate = 44100;
-  const audio = new Float32Array(7 * rate);
-  let random = 38149657;
-  function note(time, hz, duration, gain, texture = 0) {
-    const start = Math.round(time * rate);
-    const samples = Math.min(Math.round(duration * rate), audio.length - start);
-    let air = 0;
-    for (let n = 0; n < samples; n++) {
-      const t = n / rate;
-      const phase = 2 * Math.PI * hz * t;
-      random = (1664525 * random + 1013904223) >>> 0;
-      air = air * .72 + (random / 4294967296 - .5) * .28;
-      const ring = Math.sin(phase) + .24 * Math.sin(phase * 2.003) * Math.exp(-8 * t)
-        + .15 * Math.sin(phase * 3.02) * Math.exp(-15 * t);
-      const shape = (1 - Math.exp(-140 * t)) * Math.exp(-4.6 * t / duration)
-        * Math.min(1, (samples - n) / 350);
-      audio[start + n] += gain * shape * (ring + texture * air * Math.exp(-22 * t));
-    }
-  }
-  if (subject === "flowers") {
-    for (const [start, pitch] of [[.04,220],[.22,329.63],[.48,392],[1.65,294],[2.45,246.94],[3.22,329.63],[4.38,392],[4.63,440],[5.36,329.63],[6.1,220]])
-      note(start, pitch, .91, .18, 1.4);
-  } else if (subject === "water") {
-    for (const beat of [0,.58,1.16,1.74,2.32,2.9,3.48,4.06,4.64,5.22,5.8,6.38])
-      note(beat, beat % 1.16 < .1 ? 98 : 147, .32, .19, 3);
-    for (const [start,hz] of [[.11,587],[.30,784],[1.43,392],[3.19,440],[4.32,587],[4.53,784],[6.12,587]])
-      note(start, hz, .67, .12);
-  } else {
-    for (const [start, hz] of [[.13,164.81],[1.66,246.94],[2.72,329.63],[3.7,293.66],[4.22,246.94],[5.45,164.81]])
-      note(start, hz, 1.37, .19, 2.4);
-  }
-  return Buffer.from(audio.buffer);
+
+// Separate inline framing preserves the full-size master when the visitor opens a film.
+async function previews() {
+  const transcode = async args => {
+    const child = spawn("ffmpeg", ["-y", "-loglevel", "error", ...args], { stdio: ["ignore", "ignore", "inherit"] });
+    const [code] = await once(child, "close");
+    if (code) throw new Error("Inline film export failed");
+  };
+  const settings = ["-an", "-c:v", "libx264", "-crf", "25", "-preset", "fast", "-pix_fmt", "yuv420p", "-movflags", "+faststart"];
+  await transcode(["-loop", "1", "-framerate", "24", "-t", "2.0", "-i", path.join(directory, "flowers-art.webp"),
+    "-loop", "1", "-framerate", "24", "-t", "2.25", "-i", path.join(directory, "flowers-detail.webp"),
+    "-loop", "1", "-framerate", "24", "-t", "2.75", "-i", path.join(directory, "flowers-art.webp"),
+    "-filter_complex", "[0:v]crop=700:423:35:80,scale=800:484,setsar=1[a];[1:v]scale=800:-1,crop=800:484:0:300,setsar=1[b];[2:v]scale=800:-1,crop=800:484:0:220,setsar=1[c];[a][b][c]concat=n=3:v=1:a=0",
+    ...settings, path.join(directory, "flowers-hero.mp4")]);
 }

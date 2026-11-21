@@ -2,15 +2,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { Copy, useCopy, useLanguage } from "@/components/language/LanguageProvider";
-import { IconCalendar, IconFlag, IconPhotos } from "@/lib/icons";
+import { IconCheck } from "@/lib/icons";
 import { ProviderLogo } from "./ProviderLogo";
+import { StoryStage } from "./StoryStage";
 import styles from "./product-outcomes.module.css";
-
-const SCHEDULE = [
-  { week: "שבוע ראשון", task: "פותחים הרשמה לסדנה", channel: "Instagram" },
-  { week: "שבוע שני", task: "מציגים את ההדפס המוכן", channel: "Facebook" },
-  { week: "שבוע שלישי", task: "מזמינים לערב ההדפס", channel: "Instagram" },
-] as const;
+import art from "./journey-art.module.css";
 
 const SOURCES = [
   { provider: "google-analytics", name: "Google Analytics", data: "כניסות לאתר" },
@@ -18,91 +14,73 @@ const SOURCES = [
   { provider: "ads-pixel", name: "Meta Ads", data: "לחיצות על מודעות" },
 ] as const;
 
+const SCHEDULED: Record<number, string> = {
+  4: "/showcase/campaign-cuts/printmaker.webp",
+  11: "/showcase/dyo-tari/feed.webp",
+  18: "/showcase/dyo-tari/story.webp",
+};
+
 function SchedulePreview() {
-  return <figure className={styles.workspace}>
-    <figcaption className={styles.workspaceTitle}><IconCalendar /><Copy text="התוכנית לחודש הקרוב" /></figcaption>
-    <p className={styles.scheduleGoal}><IconFlag /><Copy text="למלא את סדנת ההדפס" /></p>
-    <ol className={styles.schedule}>
-      {SCHEDULE.map(({ week, task, channel }) => (
-        <li key={week}>
-          <p><Copy text={week} /></p>
-          <div><strong><Copy text={task} /></strong><bdi lang="en">{channel}</bdi></div>
-        </li>
-      ))}
-    </ol>
-  </figure>;
+  return <StoryStage className={art.calendar} decorative>
+    <div className={art.planner}>
+      <div className={art.plannerHead}><strong><Copy text="לוח הפרסום" /></strong><i/><i/></div>
+      <div className={art.days}>
+        {Array.from({ length: 28 }, (_, i) => {
+          const day = i + 1;
+          return <span key={day} data-publish={SCHEDULED[day] ? day : undefined}>
+            {day}
+            {SCHEDULED[day] && <Image src={SCHEDULED[day]} width={60} height={44} alt="" sizes="46px" />}
+          </span>;
+        })}
+      </div>
+    </div>
+    <strong className={art.planNote}><Copy text="פותחים הרשמה לסדנה" /></strong>
+  </StoryStage>;
 }
 
 function ApprovalPreview() {
-  const t = useCopy();
   const [approved, setApproved] = useState(false);
-  return <div className={styles.approvalComposition}>
-    <figure className={styles.phone}>
-      <figcaption className={styles.phoneHeading}><IconPhotos /><Copy text="הפוסט הבא שלכם" /></figcaption>
-      <Image src="/showcase/dyo-tari/feed.webp" width={864} height={1080}
-        alt={t("פוסט כתום עם איור דג וכיתוב ״הדיו עוד רטוב״")} sizes="(max-width: 760px) 84vw, 26vw" />
-      <div className={styles.phoneStatus}>
-        <bdi lang="en">Instagram</bdi>
-        <span role="status" data-approved={approved || undefined}>
-          <Copy text={approved ? "אושר. מוכן לפרסום" : "ממתין לאישור"} />
-        </span>
-      </div>
-      <button type="button" className={styles.approvalAction} onClick={() => setApproved(current => !current)}>
-        <Copy text={approved ? "להציג שוב את אישור הפוסט" : "לאשר את הפוסט"} />
-      </button>
-    </figure>
-  </div>;
+  const t = useCopy();
+  return <StoryStage className={art.edition}>
+    <div aria-hidden="true" className={art.campaignStack}>
+      <Image src="/showcase/dyo-tari/story.webp" width={720} height={1280} alt="" sizes="100px" />
+      <Image src="/showcase/dyo-tari/feed.webp" width={864} height={1080} alt="" sizes="170px" />
+    </div>
+    <button type="button" className={art.approve} aria-pressed={approved}
+      aria-label={t(approved ? "להציג שוב את אישור הפוסט" : "לאשר את הפוסט")} onClick={()=>setApproved(value=>!value)}>
+      <IconCheck /><span role="status" data-approved={approved || undefined}><Copy text={approved ? "אושר. מוכן לפרסום" : "לאשר את הפוסט"} /></span>
+    </button>
+  </StoryStage>;
 }
 
 function MeasurementPreview() {
-  return <figure className={styles.workspace} id="data">
-    <figcaption className={styles.workspaceTitle}>
-      <Copy text="מה עבד ומה כדאי לנסות" />
-    </figcaption>
-    <div className={styles.measurement}>
-      <dl>
-        <div><dt><Copy text="לחיצות על הקישור" /></dt><dd>38 · <bdi lang="en">Instagram</bdi></dd></div>
-        <div><dt><Copy text="טפסים שנשלחו" /></dt><dd>3 · <bdi lang="en">Google Analytics</bdi></dd></div>
-      </dl>
-      <div className={styles.finding}>
-        <p><Copy text="הצעה לפוסט הבא" /></p>
-        <strong><Copy text="להפנות לטופס קצר ולבדוק אם יותר אנשים משאירים פרטים" /></strong>
-      </div>
+  return <StoryStage className={art.numbers}>
+    <div className={art.measureTitle}><Copy text="הרשמות לסדנה" /><small><Copy text="תצוגה לדוגמה" /></small></div>
+    <div className={art.filledSeats} aria-hidden="true">
+      {Array.from({ length: 8 }, (_, i) => <div key={i} data-filled={i<3 || undefined}>{i<3 && <IconCheck />}</div>)}
     </div>
-  </figure>;
+    <strong className={art.count}><Copy text="3 מתוך 8 מקומות" /></strong>
+    <small className={art.metricSource}><bdi lang="en">Google Analytics</bdi></small>
+  </StoryStage>;
 }
 
 export function ProductOutcomes() {
   return <section id="results" className={styles.results} aria-labelledby="outcome-title">
     <div className="lv2-wrap">
-      <div className={styles.resultsHeading}>
-        <h2 id="outcome-title"><Copy text="מה מקבלים" /></h2>
-        <span><Copy text="תצוגה לדוגמה" /></span>
-      </div>
+      <h2 id="outcome-title"><Copy text="מה מקבלים" /></h2>
       <div className={styles.outcomeGrid}>
-      <article id="campaign" className={styles.outcome}>
-        <div className={styles.outcomeCopy}>
+        <article id="campaign" className={styles.outcome}>
           <span id="plan" className={styles.anchor} aria-hidden="true" />
-          <h3><Copy text="יודעים מה לפרסם השבוע" /></h3>
-          <p><Copy text="התוכנית מחלקת את הקמפיין לשבועות ולערוצים." /></p>
-        </div>
-        <SchedulePreview />
-      </article>
-      <article id="posts" className={styles.outcome}>
-        <div className={styles.outcomeCopy}>
+          <SchedulePreview /><h3><Copy text="יודעים מה לפרסם השבוע" /></h3>
+        </article>
+        <article id="posts" className={styles.outcome}>
           <span id="mobile" className={styles.anchor} aria-hidden="true" />
-          <h3><Copy text="מקבלים פוסט מוכן לאישור" /></h3>
-          <p><Copy text="אפשר לערוך את הטקסט והעיצוב לפני הפרסום." /></p>
-        </div>
-        <ApprovalPreview />
-      </article>
-      <article id="learning" className={styles.outcome}>
-        <div className={styles.outcomeCopy}>
-          <h3><Copy text="בודקים אם הגיעו פניות" /></h3>
-          <p><Copy text="רואים כמה לחצו וכמה השאירו פרטים, ובוחרים מה לנסות בפעם הבאה." /></p>
-        </div>
-        <MeasurementPreview />
-      </article>
+          <ApprovalPreview /><h3><Copy text="מקבלים פוסט מוכן לאישור" /></h3>
+        </article>
+        <article id="learning" className={styles.outcome}>
+          <span id="data" className={styles.anchor} aria-hidden="true" />
+          <MeasurementPreview /><h3><Copy text="רואים כמה נרשמו" /></h3>
+        </article>
       </div>
     </div>
   </section>;

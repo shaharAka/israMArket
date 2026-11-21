@@ -24,7 +24,7 @@ export function SignalHero({ start }: { start: string }) {
         <small><TrialOfferNote /><Copy text="בלי כרטיס אשראי. בלי התחייבות." /></small>
       </div>
       <figure className={styles.proof}>
-        <CampaignFilm film="flowers" size="(max-width: 760px) 100vw, 54vw">
+        <CampaignFilm film="flowers" previewSrc="/showcase/campaign-cuts/flowers-hero.mp4" size="(max-width: 760px) 100vw, 54vw">
           <Image src="/showcase/campaign-cuts/flowers-art.webp" alt="" width={1050} height={1312}
             sizes="(max-width: 760px) 100vw, 54vw" preload className={styles.heroPhoto} />
           <span className={styles.artType} dir="rtl" lang="he" aria-hidden="true">פרחים<br/>לשישי.</span>
