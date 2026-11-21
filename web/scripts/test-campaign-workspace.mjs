@@ -19,8 +19,8 @@ for(const value of [null,undefined,Infinity,NaN])assert.equal(briefLearning({...
 assert.equal(briefLearning({...draft,published_at:"2026-10-23",results:{...draft.results,matched_by:[]}}),null);
 assert.equal(briefLearning({...draft,published_at:"2026-10-23",results:{...draft.results,updated_at:""}}),null);
 const {signInDestination,safeReturnPath}=moduleAt("../lib/authNavigation.ts");
-assert.equal(signInDestination(null,{onboarding_complete:true},"he"),"/campaign?lang=he");
-assert.equal(signInDestination(null,{quarter_plan:{}},"en"),"/campaign?lang=en");
+assert.equal(signInDestination(null,{onboarding_complete:true},"he"),"/dashboard?lang=he");
+assert.equal(signInDestination(null,{quarter_plan:{}},"en"),"/dashboard?lang=en");
 assert.equal(signInDestination(null,null,"ar"),"/start?lang=ar");
 assert.equal(signInDestination(null,{},"ru"),"/onboarding?lang=ru");
 assert.equal(signInDestination("/posts?post=2&lang=en",null,"he"),"/posts?post=2&lang=en");

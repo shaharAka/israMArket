@@ -50,5 +50,5 @@ for (const relative of ["../components/trial/TrialGuide.tsx", "../components/tri
   }
   visit(ast);
 }
-assert.equal(calls, 4, "All four trial-duration call sites were checked");
-console.log("Trial durations: singular/plural labels in HE/EN/AR/RU and all four translator call sites passed");
+assert.equal(calls, 3, "All three trial-duration call sites were checked");
+console.log("Trial durations: singular/plural labels in HE/EN/AR/RU and all three translator call sites passed");

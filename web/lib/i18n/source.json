@@ -7961,6 +7961,11 @@
         "file": "web/components/PostEditor.tsx",
         "line": 1204,
         "kind": "literal"
+      },
+      {
+        "file": "web/components/posts/CampaignPhotoPicker.tsx",
+        "line": 93,
+        "kind": "literal"
       }
     ]
   },
@@ -8802,7 +8807,7 @@
     "references": [
       {
         "file": "web/components/posts/MediaAllowanceNote.tsx",
-        "line": 28,
+        "line": 27,
         "kind": "literal"
       }
     ]
@@ -19390,17 +19395,12 @@
     "references": [
       {
         "file": "web/components/posts/CampaignPhotoPicker.tsx",
-        "line": 55,
+        "line": 74,
         "kind": "literal"
       },
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
         "line": 382,
-        "kind": "literal"
-      },
-      {
-        "file": "web/components/posts/MediaAllowanceNote.tsx",
-        "line": 30,
         "kind": "literal"
       }
     ]
@@ -22229,7 +22229,7 @@
     "references": [
       {
         "file": "web/components/posts/MediaAllowanceNote.tsx",
-        "line": 31,
+        "line": 29,
         "kind": "literal"
       }
     ]
@@ -28599,7 +28599,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignPhotoPicker.tsx",
-        "line": 56,
+        "line": 75,
         "kind": "literal"
       }
     ]
@@ -38193,7 +38193,7 @@
     "references": [
       {
         "file": "web/components/posts/MediaAllowanceNote.tsx",
-        "line": 28,
+        "line": 27,
         "kind": "literal"
       }
     ]
@@ -40987,7 +40987,7 @@
     "references": [
       {
         "file": "web/components/posts/MediaAllowanceNote.tsx",
-        "line": 28,
+        "line": 27,
         "kind": "literal"
       }
     ]
@@ -44939,6 +44939,17 @@
       }
     ]
   },
+  "m_5c28a251789e84d3": {
+    "source": "לא הצלחנו להוסיף את התמונה",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/CampaignPhotoPicker.tsx",
+        "line": 50,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_5c305e50787986a2": {
     "source": "נבדק:",
     "language": "he",
@@ -46808,7 +46819,7 @@
       },
       {
         "file": "web/components/posts/CampaignPhotoPicker.tsx",
-        "line": 60,
+        "line": 79,
         "kind": "literal"
       },
       {
@@ -73269,7 +73280,7 @@
       },
       {
         "file": "web/components/posts/CampaignPhotoPicker.tsx",
-        "line": 59,
+        "line": 78,
         "kind": "literal"
       },
       {
@@ -74313,7 +74324,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignPhotoPicker.tsx",
-        "line": 71,
+        "line": 90,
         "kind": "literal"
       }
     ]
@@ -90584,7 +90595,7 @@
     "references": [
       {
         "file": "web/components/posts/MediaAllowanceNote.tsx",
-        "line": 28,
+        "line": 27,
         "kind": "literal"
       }
     ]
@@ -93623,7 +93634,7 @@
       },
       {
         "file": "web/components/posts/CampaignPhotoPicker.tsx",
-        "line": 60,
+        "line": 79,
         "kind": "literal"
       }
     ]
@@ -95979,7 +95990,7 @@
     "references": [
       {
         "file": "web/components/posts/MediaAllowanceNote.tsx",
-        "line": 29,
+        "line": 28,
         "kind": "literal"
       }
     ]
@@ -100354,7 +100365,7 @@
     "references": [
       {
         "file": "web/components/posts/MediaAllowanceNote.tsx",
-        "line": 23,
+        "line": 22,
         "kind": "literal"
       }
     ]
@@ -100533,12 +100544,12 @@
       },
       {
         "file": "web/components/posts/CampaignPhotoPicker.tsx",
-        "line": 29,
+        "line": 30,
         "kind": "literal"
       },
       {
         "file": "web/components/posts/CampaignPhotoPicker.tsx",
-        "line": 36,
+        "line": 37,
         "kind": "literal"
       }
     ]
@@ -102105,7 +102116,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignPhotoPicker.tsx",
-        "line": 65,
+        "line": 84,
         "kind": "literal"
       }
     ]
@@ -102443,7 +102454,7 @@
       },
       {
         "file": "web/components/posts/CampaignPhotoPicker.tsx",
-        "line": 48,
+        "line": 67,
         "kind": "literal"
       }
     ]
@@ -109552,7 +109563,7 @@
       },
       {
         "file": "web/components/posts/CampaignPhotoPicker.tsx",
-        "line": 71,
+        "line": 90,
         "kind": "literal"
       }
     ]
@@ -119051,7 +119062,7 @@
       },
       {
         "file": "web/components/posts/CampaignPhotoPicker.tsx",
-        "line": 73,
+        "line": 94,
         "kind": "literal"
       },
       {

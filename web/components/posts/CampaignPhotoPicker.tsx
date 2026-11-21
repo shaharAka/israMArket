@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useCopy } from "@/components/language/LanguageProvider";
 import { endpoints, type Asset, type StrategyPayload } from "@/lib/api";
 import styles from "./campaign.module.css";
@@ -19,6 +19,7 @@ export function CampaignPhotoPicker({ index, uid, title, onSaved, onCancel, onBu
   const [choice, setChoice] = useState<number | null>(null);
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
+  const uploadInput = useRef<HTMLInputElement>(null);
 
   async function load() {
     setError("");
@@ -36,6 +37,24 @@ export function CampaignPhotoPicker({ index, uid, title, onSaved, onCancel, onBu
     }).catch(() => { if (live) setError("לא הצלחנו לטעון את התמונות שלכם"); });
     return () => { live = false; };
   }, []);
+  async function upload(file: File | undefined) {
+    if (!file || saving) return;
+    setError("");
+    onBusy(true);
+    setSaving(true);
+    try {
+      const { asset } = await endpoints.uploadAsset(file);
+      setPhotos(previous => [...(previous ?? []), asset]);
+      setChoice(asset.id);
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : "לא הצלחנו להוסיף את התמונה");
+    } finally {
+      setSaving(false);
+      onBusy(false);
+      if (uploadInput.current) uploadInput.current.value = "";
+    }
+  }
+
   async function save() {
     if (!choice || saving) return;
     setError("");
@@ -70,6 +89,8 @@ export function CampaignPhotoPicker({ index, uid, title, onSaved, onCancel, onBu
       {photos?.length ? <button type="button" className={styles.primary} disabled={saving || !choice} onClick={() => void save()}>
         {t(saving ? "מכניסים לפוסט…" : "להשתמש בתמונה בפוסט")}
       </button> : null}
+      <input ref={uploadInput} hidden type="file" accept="image/*" onChange={event => void upload(event.target.files?.[0])} />
+      <button type="button" disabled={saving || photos === null} className={styles.textAction} onClick={() => uploadInput.current?.click()}>{t("להעלות מהמכשיר")}</button>
       <button type="button" disabled={saving} className={styles.textAction} onClick={onCancel}>{t("לבטל")}</button>
     </div>
   </section>;
