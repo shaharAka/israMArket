@@ -12,11 +12,14 @@ const STEPS = [
 ] as const;
 
 function Interview() {
-  return <StoryStage className={art.interview} decorative>
-    <Image src={media+"printmaker.webp"} alt="" fill sizes="(max-width:760px) 92vw, 31vw" className={art.photograph} />
-    <div className={art.conversation}>
-      <span><Copy text="מה מיוחד בסדנה שלכם?" /></span>
-      <strong><Copy text="כל משתתף מדפיס ולוקח את ההדפס הביתה." /></strong>
+  return <StoryStage className={art.interview}>
+    <div className={art.interviewSheet}>
+      <span className={art.interviewLabel}><Copy text="ראיון לדוגמה" /></span>
+      <p className={art.interviewQuestion}><Copy text="מה קורה בסדנה שלכם?" /></p>
+      <blockquote className={art.interviewReply}>
+        <span><Copy text="בעלת הסטודיו" /></span>
+        <p><Copy text="כל משתתף בוחר שני צבעים, מדפיס בעצמו ולוקח הביתה את ההדפס שלו." /></p>
+      </blockquote>
     </div>
   </StoryStage>;
 }

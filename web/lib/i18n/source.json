@@ -10613,6 +10613,17 @@
       }
     ]
   },
+  "m_15e29599914e7fb4": {
+    "source": "כל משתתף בוחר שני צבעים, מדפיס בעצמו ולוקח הביתה את ההדפס שלו.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/LandingStory.tsx",
+        "line": 21,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_15e3b899ee0ff62d": {
     "source": "לקוח אחד: מה היה, מה עשינו, מה השתנה.",
     "language": "he",
@@ -12363,6 +12374,17 @@
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
         "line": 47,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_19191db4cc783561": {
+    "source": "בעלת הסטודיו",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/LandingStory.tsx",
+        "line": 20,
         "kind": "literal"
       }
     ]
@@ -17957,6 +17979,18 @@
       }
     ]
   },
+  "m_23e339bed1f41aa7": {
+    "source": "תדר לילה מזמין לערב תקליטים ביום חמישי.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/CreativeReel.tsx",
+        "line": 15,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
   "m_23ec3ab2de88a8ac": {
     "source": "קוראים את מה שסיפרתם",
     "language": "he",
@@ -21183,6 +21217,17 @@
       {
         "file": "web/components/trial/Welcome.tsx",
         "line": 49,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_2ade9e8346cb2ff8": {
+    "source": "לעצור את תנועת התצוגה",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/CreativeReel.tsx",
+        "line": 112,
         "kind": "literal"
       }
     ]
@@ -30031,6 +30076,17 @@
       }
     ]
   },
+  "m_3bf8c3e4237f86ec": {
+    "source": "מה קורה בסדנה שלכם?",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/LandingStory.tsx",
+        "line": 18,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_3bfc6d56b46c01c3": {
     "source": "באיזה שוק ושפה מתחילים? (לא חובה)",
     "language": "he",
@@ -31713,6 +31769,17 @@
         "line": 149,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_3f7bc0478656113e": {
+    "source": "להמשיך את תנועת התצוגה",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/CreativeReel.tsx",
+        "line": 112,
+        "kind": "literal"
       }
     ]
   },
@@ -35162,6 +35229,18 @@
         "line": 606,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_46e0873bacf04d0d": {
+    "source": "סטודיו עפר מציע סדנת אובניים שבה יוצרים כוס.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/CreativeReel.tsx",
+        "line": 13,
+        "kind": "literal",
+        "purpose": "display"
       }
     ]
   },
@@ -40637,11 +40716,6 @@
         "file": "web/components/design/Controls.tsx",
         "line": 72,
         "kind": "literal"
-      },
-      {
-        "file": "web/components/landing-v2/CampaignFilm.tsx",
-        "line": 103,
-        "kind": "literal"
       }
     ]
   },
@@ -40850,17 +40924,6 @@
       {
         "file": "web/components/landing-v2/processExamples.ts",
         "line": 77,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_52fa547458d3cfbd": {
-    "source": "מה מיוחד בסדנה שלכם?",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/LandingStory.tsx",
-        "line": 18,
         "kind": "literal"
       }
     ]
@@ -46637,6 +46700,18 @@
       }
     ]
   },
+  "m_5eaba82a5e77bd1d": {
+    "source": "בית הקלייה מקור מזמין לטעימת שלושה סוגי קפה.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/CreativeReel.tsx",
+        "line": 21,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
   "m_5eae0d7fb53bbc00": {
     "source": "נתוני האינסטגרם",
     "language": "he",
@@ -51792,17 +51867,6 @@
       }
     ]
   },
-  "m_69490c2b9cf6c322": {
-    "source": "כל משתתף מדפיס ולוקח את ההדפס הביתה.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/LandingStory.tsx",
-        "line": 19,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_694ada7536ca8e71": {
     "source": "מחפשים את שם העסק",
     "language": "he",
@@ -53488,7 +53552,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingStory.tsx",
-        "line": 46,
+        "line": 49,
         "kind": "literal"
       }
     ]
@@ -61530,17 +61594,6 @@
       }
     ]
   },
-  "m_7d47c326069416ed": {
-    "source": "לצפייה בסרטון ״{arg_0}״",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/CampaignFilm.tsx",
-        "line": 89,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_7d517d32a2cab3c1": {
     "source": "תזכורת בזמן חוסכת להם ריצה ומחזירה אותם אליכם.",
     "language": "he",
@@ -66057,17 +66110,6 @@
       }
     ]
   },
-  "m_86391387a3e5e365": {
-    "source": "מסדנת הדפס ועד סטודיו לעיצוב פנים. לכל עסק יש סיפור משלו והזמנה שמתאימה לקהל שלו.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/CreativeReel.tsx",
-        "line": 12,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_86399ecefe73076c": {
     "source": "ממליצה ·",
     "language": "he",
@@ -68200,6 +68242,18 @@
       }
     ]
   },
+  "m_8aaa03798e416dff": {
+    "source": "קפל מציגים את חולצת הפשתן שלהם ומפנים למדריך המידות.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/CreativeReel.tsx",
+        "line": 19,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
   "m_8aad64ce5314d094": {
     "source": "עלות לחיצה על קישור במודעות",
     "language": "he",
@@ -69891,7 +69945,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingStory.tsx",
-        "line": 37,
+        "line": 40,
         "kind": "literal"
       },
       {
@@ -88831,6 +88885,18 @@
       }
     ]
   },
+  "m_b4decd0eacce8d64": {
+    "source": "מוסך הילוך מזמין רוכבים לכיוון הילוכים.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/CreativeReel.tsx",
+        "line": 12,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
   "m_b4e0d49b6b98270d": {
     "source": "זו העונה החזקה שלכם, אז מתחילים להתכונן עכשיו.",
     "language": "he",
@@ -94721,6 +94787,18 @@
       }
     ]
   },
+  "m_c16dcfe8afd23732": {
+    "source": "מסלול מציגה לוח זמנים משותף ומזמינה צוותים להדגמה.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/CreativeReel.tsx",
+        "line": 22,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
   "m_c171baa2747bd0de": {
     "source": "פניות מתאימות הן חלק מהפניות שהתקבלו בחודש הזה, לפי ההגדרה של בעלי העסק.",
     "language": "he",
@@ -96026,6 +96104,17 @@
       {
         "file": "web/lib/uxFlows.ts",
         "line": 103,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_c3bdb140217c8164": {
+    "source": "ראיון לדוגמה",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/LandingStory.tsx",
+        "line": 17,
         "kind": "literal"
       }
     ]
@@ -97372,6 +97461,18 @@
       }
     ]
   },
+  "m_c699fdc44c592b06": {
+    "source": "ארגז לשישי מחפשים מתנדבים לאריזת סלי מזון.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/CreativeReel.tsx",
+        "line": 18,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
   "m_c69d4c408527f039": {
     "source": "{arg_0} עוקבים",
     "language": "he",
@@ -98557,7 +98658,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingStory.tsx",
-        "line": 38,
+        "line": 41,
         "kind": "literal"
       }
     ]
@@ -98886,17 +98987,6 @@
       {
         "file": "web/app/reset/[token]/page.tsx",
         "line": 56,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_c9a7b79041131a2c": {
-    "source": "סרטוני קמפיין",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 22,
         "kind": "literal"
       }
     ]
@@ -102545,7 +102635,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/CreativeReel.tsx",
-        "line": 11,
+        "line": 110,
         "kind": "literal"
       }
     ]
@@ -105662,7 +105752,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingStory.tsx",
-        "line": 46,
+        "line": 49,
         "kind": "literal"
       }
     ]
@@ -115337,6 +115427,17 @@
       }
     ]
   },
+  "m_ea3df5d291f727a0": {
+    "source": "פוסטים וסרטוני קמפיין",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/CreativeReel.tsx",
+        "line": 119,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_ea4364a066213462": {
     "source": "יש להם מקום שלקוחות מגיעים אליו: הכרטיס של העסק בגוגל (gbp) הוא בדרך כלל הערוץ החדש הראשון, כי הוא חינמי ומביא אנשים שמחפשים באזור.",
     "language": "he",
@@ -119381,6 +119482,17 @@
         "file": "web/components/design/ShorterPathPreview.tsx",
         "line": 53,
         "kind": "jsx"
+      }
+    ]
+  },
+  "m_f1c977bbca37ee64": {
+    "source": "דוגמאות לקמפיינים",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/SignalHero.tsx",
+        "line": 22,
+        "kind": "literal"
       }
     ]
   },
@@ -124438,6 +124550,18 @@
       }
     ]
   },
+  "m_fbec4988e4278d9b": {
+    "source": "מבט שני מזמינים למדוד בחנות מסגרות בגוון ענבר.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/CreativeReel.tsx",
+        "line": 16,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
   "m_fbef7191edf83573": {
     "source": "לוח מסכים שאפשר לגרור ולהגדיל",
     "language": "he",
@@ -125211,7 +125335,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingStory.tsx",
-        "line": 53,
+        "line": 56,
         "kind": "literal"
       },
       {

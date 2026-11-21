@@ -19,7 +19,7 @@ export function SignalHero({ start }: { start: string }) {
           <Link href={start} className={styles.start}><TrialCtaLabel />
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><path d={locale==="he"||locale==="ar"?"M20 12H4m6-6-6 6 6 6":"M4 12h16m-6-6 6 6-6 6"}/></svg>
           </Link>
-          <a href="#creative-reel" className={styles.storyLink}><Copy text="סרטוני קמפיין" /></a>
+          <a href="#creative-reel" className={styles.storyLink}><Copy text="דוגמאות לקמפיינים" /></a>
         </div>
         <small><TrialOfferNote /><Copy text="בלי כרטיס אשראי. בלי התחייבות." /></small>
       </div>

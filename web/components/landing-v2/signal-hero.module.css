@@ -16,8 +16,8 @@
 :is(.start, .storyLink):focus-visible { outline: 2px solid var(--dark-action); outline-offset: 4px; }
 .copy > small { display: block; margin-top: 9px; color: var(--dark-copy); font-size: 13px; }
 .proof { min-width: 0; margin: 0; background: #ffedcd; color: #47150e; }
-.proof > button { aspect-ratio: 1.65; border-radius: 0; }
-.proof > button .heroPhoto { width: 100%; height: 100%; object-fit: cover; object-position: center 48%; }
+.proof > [data-film] { height: auto; aspect-ratio: 1.65; border-radius: 0; }
+.proof > [data-film] .heroPhoto { width: 100%; height: 100%; object-fit: cover; object-position: center 48%; }
 .artType { position: absolute; z-index: 1; inset-block-end: 8%; left: 5.5%; color: #fff0d0; font: 400 clamp(44px, 5.1vw, 77px)/.84 SignalHebrew, sans-serif; letter-spacing: -.055em; text-align: right; text-shadow: 0 1px 20px rgb(52 12 8 / .65); }
 .proof figcaption { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: clamp(13px, 1.7vw, 24px); }
 .proof figcaption small, .proof figcaption strong { display: block; }
@@ -29,6 +29,6 @@
   .copy h1 { max-width: 16ch; font-size: clamp(42px, 9.2vw, 62px); }
   .copy > p { margin-top: 15px; }
   .actions { margin-block-start: 18px; }
-  .proof > button { aspect-ratio: 1.75; }
+  .proof > [data-film] { aspect-ratio: 1.75; }
   .artType { font-size: clamp(44px, 9.5vw, 65px); }
 }
