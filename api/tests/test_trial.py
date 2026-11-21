@@ -427,6 +427,8 @@ class TrialTestCase(unittest.TestCase):
     def test_featured_items_keep_the_owners_order_and_reasons(self):
         empty = self.client.get("/business/featured-items").json()
         self.assertEqual(empty["items"], [])
+        self.assertEqual(empty["min"], 1)
+        self.assertEqual(self.status("featured"), "todo")
         self.assertEqual(empty["kind_he"], "מוצרים")
         self.assertEqual(empty["suggestions"], ["חלות", "עוגת דבש", "לחם מחמצת"])
         self.assertEqual([r["label_he"] for r in empty["reasons"]], ["במלאי", "רווחי", "עונתי", "חדש", "הכי נמכר"])
@@ -437,10 +439,8 @@ class TrialTestCase(unittest.TestCase):
         self.assertEqual([(i["name"], i["priority"], i["reason"]) for i in saved["items"]],
                          [("עוגת דבש", 1, "seasonal"), ("חלות", 2, "best_seller")])
         self.assertEqual(saved["suggestions"], ["לחם מחמצת"])
-        step = self.steps()["featured"]
-        self.assertEqual(step["status"], "todo")
-        self.assertIn("2", step["why_he"])
-        self.post_json("/business/featured-items", {"items": [{"name": n} for n in ("א׳", "ב׳", "ג׳")]}, "PUT")
+        self.assertEqual(self.status("featured"), "done")
+        self.post_json("/business/featured-items", {"items": [{"name": "חלות"}]}, "PUT")
         self.assertEqual(self.status("featured"), "done")
 
     def test_no_instagram_yet_is_not_the_first_ask(self):
