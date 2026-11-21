@@ -231,6 +231,7 @@ export function TextInput({
   autoComplete,
   note,
   maxLength = 200,
+  rows,
   prefix,
   helpTopic,
 }: {
@@ -244,11 +245,19 @@ export function TextInput({
   autoComplete?: string;
   note?: React.ReactNode;
   maxLength?: number;
+  rows?: number;
   prefix?: string;
   /** Adds a "לראות איך מוצאים את זה" link that opens the matching guide. */
   helpTopic?: HelpTopic;
 }) {
   const t = useCopy();
+  const field = {
+    id, value, dir, inputMode, autoComplete, maxLength,
+    onChange: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => onChange(event.target.value),
+    placeholder: placeholder ? t(placeholder) : undefined,
+    autoCapitalize: dir === "ltr" ? "none" : undefined,
+    spellCheck: dir === "ltr" ? false : undefined,
+  };
   return (
     <div data-help-topic={helpTopic}>
       <div className="flex items-end justify-between gap-3">
@@ -261,26 +270,17 @@ export function TextInput({
           </span>
         ) : null}
       </div>
-      <div className={form.inputBox}>
+      {rows ? <textarea {...field} rows={rows} className={`${form.input} ${form.longInput}`} /> : <div className={form.inputBox}>
         {prefix ? (
           <span dir="ltr" className="ps-3.5 text-base text-[color:var(--ink-muted)]">
             {prefix}
           </span>
         ) : null}
         <input
-          id={id}
-          value={value}
-          onChange={(event) => onChange(event.target.value)}
-          placeholder={placeholder ? t(placeholder) : undefined}
-          dir={dir}
-          inputMode={inputMode}
-          autoComplete={autoComplete}
-          autoCapitalize={dir === "ltr" ? "none" : undefined}
-          spellCheck={dir === "ltr" ? false : undefined}
-          maxLength={maxLength}
+          {...field}
           className={dir === "ltr" ? "text-left placeholder:text-left" : ""}
         />
-      </div>
+      </div>}
       {note ? <div className={form.note}>{note}</div> : null}
     </div>
   );

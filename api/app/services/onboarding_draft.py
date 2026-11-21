@@ -392,12 +392,12 @@ class DraftAudience(BaseModel):
     model_config = ConfigDict(extra="ignore")
 
     name: str = Field(max_length=80)
-    description: str = Field(default="", max_length=300)
+    description: str = Field(default="", max_length=500)
 
     @field_validator("name")
     @classmethod
     def _name(cls, value: str) -> str:
-        text = _readable(clean_text(value, 60), "שם הקהל")
+        text = _readable(clean_text(value, 80), "שם הקהל")
         if len(text) < 2:
             raise ValueError("תנו לקהל שם של לפחות 2 אותיות.")
         return text
@@ -405,7 +405,7 @@ class DraftAudience(BaseModel):
     @field_validator("description")
     @classmethod
     def _description(cls, value: str) -> str:
-        return _readable(clean_text(value, 240), "תיאור הקהל")
+        return _readable(clean_text(value, 500), "תיאור הקהל")
 
 
 class DraftSeasons(BaseModel):
@@ -793,7 +793,7 @@ class OnboardingDraft(BaseModel):
     @field_validator("differentiator")
     @classmethod
     def _differentiator(cls, value: str) -> str:
-        return _readable(clean_text(value, 300), "מה מייחד אתכם")
+        return _readable(clean_text(value, 500), "מה מייחד אתכם")
 
     @property
     def kpi_key(self) -> str:
@@ -826,7 +826,7 @@ class OnboardingDraft(BaseModel):
     @field_validator("business_name")
     @classmethod
     def _business_name(cls, value: str) -> str:
-        text = _readable(clean_text(value, 80), "שם העסק")
+        text = _readable(clean_text(value, 120), "שם העסק")
         if len(text) < 2:
             raise ValueError("מה שם העסק? לפחות 2 אותיות.")
         return text
@@ -860,7 +860,7 @@ class OnboardingDraft(BaseModel):
     @field_validator("offerings")
     @classmethod
     def _offerings(cls, value: str) -> str:
-        text = _readable(clean_text(value, 600), "מה אתם עושים")
+        text = _readable(clean_text(value, 900), "מה אתם עושים")
         if len(text) < 3:
             raise ValueError("כתבו במשפט קצר מה אתם עושים או מוכרים.")
         return text

@@ -1002,7 +1002,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 314,
+        "line": 316,
         "kind": "literal"
       }
     ]
@@ -1372,7 +1372,7 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 289,
+        "line": 365,
         "kind": "literal"
       },
       {
@@ -1763,7 +1763,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 293,
+        "line": 369,
         "kind": "literal",
         "purpose": "display"
       }
@@ -2579,7 +2579,7 @@
       },
       {
         "file": "web/components/start/steps.tsx",
-        "line": 363,
+        "line": 366,
         "kind": "literal"
       }
     ]
@@ -2892,7 +2892,7 @@
       },
       {
         "file": "web/components/start/steps.tsx",
-        "line": 323,
+        "line": 325,
         "kind": "literal",
         "purpose": "display"
       },
@@ -3342,7 +3342,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 429,
+        "line": 433,
         "kind": "literal"
       }
     ]
@@ -3353,7 +3353,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 159,
+        "line": 160,
         "kind": "jsx"
       }
     ]
@@ -3659,7 +3659,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 237,
+        "line": 239,
         "kind": "literal"
       },
       {
@@ -5186,7 +5186,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 256,
+        "line": 315,
         "kind": "literal"
       }
     ]
@@ -5466,7 +5466,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 284,
+        "line": 360,
         "kind": "literal"
       }
     ]
@@ -7825,7 +7825,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 802,
+        "line": 806,
         "kind": "literal",
         "purpose": "display"
       }
@@ -7848,7 +7848,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 654,
+        "line": 658,
         "kind": "literal"
       }
     ]
@@ -8177,7 +8177,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 217,
+        "line": 219,
         "kind": "literal"
       }
     ]
@@ -8826,7 +8826,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 294,
+        "line": 370,
         "kind": "literal"
       }
     ]
@@ -11372,7 +11372,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 258,
+        "line": 317,
         "kind": "literal"
       }
     ]
@@ -11463,7 +11463,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 291,
+        "line": 367,
         "kind": "literal",
         "purpose": "display"
       }
@@ -11616,7 +11616,7 @@
       },
       {
         "file": "web/components/start/steps.tsx",
-        "line": 431,
+        "line": 435,
         "kind": "literal"
       }
     ]
@@ -13337,7 +13337,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 217,
+        "line": 219,
         "kind": "literal"
       }
     ]
@@ -14432,7 +14432,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 217,
+        "line": 219,
         "kind": "literal"
       }
     ]
@@ -15016,6 +15016,17 @@
       }
     ]
   },
+  "m_1e8ad8f6c35e6b4a": {
+    "source": "המקור לא ישמש בהמשך",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/start/ResearchJourney.tsx",
+        "line": 340,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_1e8ca6c42f51def6": {
     "source": "להעתיק קישור:",
     "language": "he",
@@ -15502,7 +15513,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 427,
+        "line": 431,
         "kind": "literal",
         "purpose": "display"
       }
@@ -15921,7 +15932,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 628,
+        "line": 632,
         "kind": "literal"
       }
     ]
@@ -18159,7 +18170,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 211,
+        "line": 212,
         "kind": "literal"
       }
     ]
@@ -19613,7 +19624,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 290,
+        "line": 366,
         "kind": "literal"
       }
     ]
@@ -19843,7 +19854,7 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 255,
+        "line": 314,
         "kind": "literal"
       }
     ]
@@ -20730,7 +20741,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 606,
+        "line": 610,
         "kind": "jsx"
       }
     ]
@@ -21832,7 +21843,7 @@
       },
       {
         "file": "web/components/start/steps.tsx",
-        "line": 813,
+        "line": 817,
         "kind": "literal"
       }
     ]
@@ -22270,7 +22281,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 273,
+        "line": 348,
         "kind": "literal"
       }
     ]
@@ -23187,6 +23198,17 @@
       }
     ]
   },
+  "m_2f6e81cdee593926": {
+    "source": "להחזיר את המקור",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/start/ResearchJourney.tsx",
+        "line": 348,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_2f7a4bde22dff961": {
     "source": "שמרנו לכם עוגת דבש לחג. תגידו כמה.",
     "language": "he",
@@ -23282,7 +23304,7 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 255,
+        "line": 314,
         "kind": "literal"
       },
       {
@@ -23517,7 +23539,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 572,
+        "line": 576,
         "kind": "literal"
       }
     ]
@@ -25164,7 +25186,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 284,
+        "line": 360,
         "kind": "literal"
       }
     ]
@@ -26523,7 +26545,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 291,
+        "line": 367,
         "kind": "literal",
         "purpose": "display"
       }
@@ -27873,7 +27895,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 262,
+        "line": 321,
         "kind": "literal"
       }
     ]
@@ -28118,7 +28140,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 294,
+        "line": 370,
         "kind": "literal"
       }
     ]
@@ -28129,7 +28151,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 201,
+        "line": 202,
         "kind": "literal"
       }
     ]
@@ -29594,7 +29616,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 704,
+        "line": 708,
         "kind": "literal",
         "purpose": "display"
       }
@@ -30145,7 +30167,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 568,
+        "line": 572,
         "kind": "literal"
       }
     ]
@@ -31116,7 +31138,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 292,
+        "line": 368,
         "kind": "literal"
       }
     ]
@@ -32160,7 +32182,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 162,
+        "line": 163,
         "kind": "jsx"
       }
     ]
@@ -32824,7 +32846,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 289,
+        "line": 365,
         "kind": "literal",
         "purpose": "display"
       },
@@ -33506,7 +33528,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 587,
+        "line": 591,
         "kind": "literal",
         "purpose": "display"
       },
@@ -34159,7 +34181,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 399,
+        "line": 402,
         "kind": "literal",
         "purpose": "display"
       }
@@ -36018,7 +36040,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 293,
+        "line": 369,
         "kind": "literal",
         "purpose": "display"
       }
@@ -36866,7 +36888,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 289,
+        "line": 365,
         "kind": "literal"
       }
     ]
@@ -37151,7 +37173,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 284,
+        "line": 360,
         "kind": "literal"
       }
     ]
@@ -37190,7 +37212,7 @@
       },
       {
         "file": "web/components/start/steps.tsx",
-        "line": 466,
+        "line": 470,
         "kind": "literal",
         "purpose": "display"
       }
@@ -37752,7 +37774,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 772,
+        "line": 776,
         "kind": "literal"
       }
     ]
@@ -38224,12 +38246,12 @@
       },
       {
         "file": "web/components/start/steps.tsx",
-        "line": 698,
+        "line": 702,
         "kind": "literal"
       },
       {
         "file": "web/components/start/steps.tsx",
-        "line": 720,
+        "line": 724,
         "kind": "literal"
       },
       {
@@ -38554,7 +38576,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 301,
+        "line": 303,
         "kind": "literal"
       }
     ]
@@ -38956,7 +38978,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 697,
+        "line": 701,
         "kind": "literal",
         "purpose": "display"
       }
@@ -39382,7 +39404,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 284,
+        "line": 360,
         "kind": "literal"
       }
     ]
@@ -43549,7 +43571,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 657,
+        "line": 661,
         "kind": "literal"
       }
     ]
@@ -43565,7 +43587,7 @@
       },
       {
         "file": "web/components/start/steps.tsx",
-        "line": 821,
+        "line": 825,
         "kind": "literal",
         "purpose": "display"
       }
@@ -43599,7 +43621,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 627,
+        "line": 631,
         "kind": "literal"
       }
     ]
@@ -43620,7 +43642,7 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 262,
+        "line": 321,
         "kind": "literal"
       }
     ]
@@ -46801,7 +46823,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 625,
+        "line": 629,
         "kind": "literal"
       },
       {
@@ -47275,7 +47297,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 357,
+        "line": 360,
         "kind": "literal"
       }
     ]
@@ -48304,7 +48326,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 436,
+        "line": 440,
         "kind": "literal"
       }
     ]
@@ -48320,7 +48342,7 @@
       },
       {
         "file": "web/components/start/steps.tsx",
-        "line": 771,
+        "line": 775,
         "kind": "literal"
       }
     ]
@@ -49809,7 +49831,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 715,
+        "line": 719,
         "kind": "literal",
         "purpose": "display"
       }
@@ -50907,7 +50929,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 396,
+        "line": 399,
         "kind": "literal",
         "purpose": "display"
       }
@@ -52225,7 +52247,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 542,
+        "line": 546,
         "kind": "literal"
       }
     ]
@@ -53515,7 +53537,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 293,
+        "line": 369,
         "kind": "literal",
         "purpose": "display"
       }
@@ -56052,7 +56074,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 291,
+        "line": 293,
         "kind": "literal"
       }
     ]
@@ -56439,7 +56461,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 289,
+        "line": 291,
         "kind": "literal"
       }
     ]
@@ -56720,7 +56742,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 266,
+        "line": 340,
         "kind": "literal"
       }
     ]
@@ -56743,7 +56765,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 728,
+        "line": 732,
         "kind": "literal",
         "purpose": "display"
       }
@@ -57039,7 +57061,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 751,
+        "line": 755,
         "kind": "literal",
         "purpose": "display"
       }
@@ -57332,7 +57354,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 779,
+        "line": 783,
         "kind": "literal"
       }
     ]
@@ -57906,7 +57928,7 @@
       },
       {
         "file": "web/components/start/steps.tsx",
-        "line": 567,
+        "line": 571,
         "kind": "literal",
         "purpose": "display"
       }
@@ -58699,7 +58721,7 @@
       },
       {
         "file": "web/components/start/steps.tsx",
-        "line": 450,
+        "line": 454,
         "kind": "literal",
         "purpose": "display"
       },
@@ -61631,7 +61653,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 294,
+        "line": 370,
         "kind": "literal"
       }
     ]
@@ -62404,7 +62426,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 701,
+        "line": 705,
         "kind": "jsx"
       }
     ]
@@ -62683,7 +62705,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 569,
+        "line": 573,
         "kind": "literal"
       }
     ]
@@ -63331,7 +63353,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 674,
+        "line": 678,
         "kind": "jsx"
       }
     ]
@@ -63994,7 +64016,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 274,
+        "line": 325,
         "kind": "literal"
       }
     ]
@@ -64506,7 +64528,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 332,
+        "line": 334,
         "kind": "literal",
         "purpose": "display"
       }
@@ -65216,7 +65238,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 217,
+        "line": 219,
         "kind": "literal"
       }
     ]
@@ -65272,7 +65294,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 654,
+        "line": 658,
         "kind": "template"
       }
     ]
@@ -66988,7 +67010,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 217,
+        "line": 219,
         "kind": "literal"
       }
     ]
@@ -67977,7 +67999,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 211,
+        "line": 212,
         "kind": "literal"
       }
     ]
@@ -68607,7 +68629,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 346,
+        "line": 349,
         "kind": "literal"
       }
     ]
@@ -68837,7 +68859,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 211,
+        "line": 212,
         "kind": "literal"
       }
     ]
@@ -69462,7 +69484,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 799,
+        "line": 803,
         "kind": "literal"
       }
     ]
@@ -69900,7 +69922,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 716,
+        "line": 720,
         "kind": "literal"
       }
     ]
@@ -69939,7 +69961,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 250,
+        "line": 255,
         "kind": "literal"
       }
     ]
@@ -71070,7 +71092,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 255,
+        "line": 314,
         "kind": "literal"
       }
     ]
@@ -74596,7 +74618,7 @@
       },
       {
         "file": "web/components/start/steps.tsx",
-        "line": 662,
+        "line": 666,
         "kind": "template",
         "purpose": "display"
       }
@@ -74793,7 +74815,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 779,
+        "line": 783,
         "kind": "literal"
       }
     ]
@@ -74858,7 +74880,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 262,
+        "line": 321,
         "kind": "literal",
         "purpose": "display"
       }
@@ -76465,7 +76487,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 289,
+        "line": 291,
         "kind": "literal"
       },
       {
@@ -78068,7 +78090,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 772,
+        "line": 776,
         "kind": "literal"
       }
     ]
@@ -78225,7 +78247,7 @@
       },
       {
         "file": "web/components/start/steps.tsx",
-        "line": 791,
+        "line": 795,
         "kind": "template"
       }
     ]
@@ -78818,7 +78840,7 @@
       },
       {
         "file": "web/components/start/steps.tsx",
-        "line": 289,
+        "line": 291,
         "kind": "literal"
       }
     ]
@@ -79269,7 +79291,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 404,
+        "line": 407,
         "kind": "literal",
         "purpose": "display"
       }
@@ -79865,7 +79887,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 217,
+        "line": 219,
         "kind": "literal"
       }
     ]
@@ -81066,7 +81088,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 791,
+        "line": 795,
         "kind": "literal"
       }
     ]
@@ -82586,7 +82608,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 266,
+        "line": 333,
         "kind": "literal"
       }
     ]
@@ -83065,7 +83087,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 294,
+        "line": 370,
         "kind": "literal"
       }
     ]
@@ -83805,7 +83827,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 284,
+        "line": 360,
         "kind": "literal"
       }
     ]
@@ -85242,7 +85264,7 @@
       },
       {
         "file": "web/components/start/steps.tsx",
-        "line": 410,
+        "line": 414,
         "kind": "literal"
       }
     ]
@@ -85811,7 +85833,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 217,
+        "line": 219,
         "kind": "literal"
       }
     ]
@@ -86330,7 +86352,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 266,
+        "line": 340,
         "kind": "literal"
       }
     ]
@@ -86375,7 +86397,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 706,
+        "line": 710,
         "kind": "literal",
         "purpose": "display"
       }
@@ -86934,7 +86956,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 237,
+        "line": 239,
         "kind": "literal"
       }
     ]
@@ -89122,7 +89144,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 284,
+        "line": 360,
         "kind": "literal"
       }
     ]
@@ -90201,7 +90223,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 556,
+        "line": 560,
         "kind": "literal"
       }
     ]
@@ -90446,7 +90468,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 813,
+        "line": 817,
         "kind": "literal"
       }
     ]
@@ -92427,7 +92449,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 600,
+        "line": 604,
         "kind": "jsx"
       }
     ]
@@ -93327,7 +93349,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 771,
+        "line": 775,
         "kind": "literal"
       }
     ]
@@ -94252,7 +94274,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 284,
+        "line": 360,
         "kind": "literal"
       }
     ]
@@ -94296,7 +94318,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 237,
+        "line": 239,
         "kind": "literal"
       },
       {
@@ -96730,7 +96752,7 @@
       },
       {
         "file": "web/components/start/steps.tsx",
-        "line": 289,
+        "line": 291,
         "kind": "literal"
       }
     ]
@@ -96891,7 +96913,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 266,
+        "line": 340,
         "kind": "literal"
       }
     ]
@@ -97395,7 +97417,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 428,
+        "line": 432,
         "kind": "literal"
       }
     ]
@@ -98131,7 +98153,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 199,
+        "line": 200,
         "kind": "literal",
         "purpose": "display"
       }
@@ -98216,12 +98238,12 @@
       },
       {
         "file": "web/components/start/steps.tsx",
-        "line": 698,
+        "line": 702,
         "kind": "literal"
       },
       {
         "file": "web/components/start/steps.tsx",
-        "line": 717,
+        "line": 721,
         "kind": "literal"
       }
     ]
@@ -98782,7 +98804,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 820,
+        "line": 824,
         "kind": "jsx"
       }
     ]
@@ -99698,7 +99720,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 697,
+        "line": 701,
         "kind": "literal"
       }
     ]
@@ -102925,7 +102947,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 284,
+        "line": 360,
         "kind": "literal"
       }
     ]
@@ -103401,7 +103423,7 @@
       },
       {
         "file": "web/components/start/steps.tsx",
-        "line": 794,
+        "line": 798,
         "kind": "literal",
         "purpose": "display"
       }
@@ -103917,7 +103939,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 217,
+        "line": 219,
         "kind": "literal"
       }
     ]
@@ -104930,7 +104952,7 @@
       },
       {
         "file": "web/components/start/steps.tsx",
-        "line": 799,
+        "line": 803,
         "kind": "literal"
       }
     ]
@@ -108126,7 +108148,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 569,
+        "line": 573,
         "kind": "literal"
       }
     ]
@@ -108756,7 +108778,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 290,
+        "line": 292,
         "kind": "literal"
       }
     ]
@@ -108894,7 +108916,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 284,
+        "line": 360,
         "kind": "literal"
       }
     ]
@@ -109552,7 +109574,7 @@
       },
       {
         "file": "web/components/start/steps.tsx",
-        "line": 208,
+        "line": 209,
         "kind": "literal",
         "purpose": "display"
       }
@@ -109885,7 +109907,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 255,
+        "line": 314,
         "kind": "literal"
       },
       {
@@ -110880,7 +110902,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 290,
+        "line": 292,
         "kind": "literal"
       }
     ]
@@ -113533,12 +113555,12 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 204,
+        "line": 205,
         "kind": "literal"
       },
       {
         "file": "web/components/start/steps.tsx",
-        "line": 297,
+        "line": 299,
         "kind": "literal"
       }
     ]
@@ -114543,7 +114565,7 @@
       },
       {
         "file": "web/components/start/steps.tsx",
-        "line": 791,
+        "line": 795,
         "kind": "literal"
       },
       {
@@ -114820,7 +114842,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 773,
+        "line": 777,
         "kind": "literal"
       }
     ]
@@ -116015,7 +116037,7 @@
       },
       {
         "file": "web/components/start/steps.tsx",
-        "line": 743,
+        "line": 747,
         "kind": "literal",
         "purpose": "display"
       }
@@ -116138,7 +116160,7 @@
       },
       {
         "file": "web/components/start/steps.tsx",
-        "line": 614,
+        "line": 618,
         "kind": "literal",
         "purpose": "display"
       }
@@ -117954,7 +117976,7 @@
       },
       {
         "file": "web/components/start/steps.tsx",
-        "line": 617,
+        "line": 621,
         "kind": "literal",
         "purpose": "display"
       }
@@ -121300,7 +121322,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 215,
+        "line": 217,
         "kind": "literal"
       }
     ]

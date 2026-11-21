@@ -95,7 +95,7 @@ export function StepName(props: StepProps) {
           }}
           placeholder={t("למשל: מאפיית השכונה")}
           autoComplete="organization"
-          maxLength={80}
+          maxLength={120}
         />
         {error ? (
           <p id="business-name-error" role="alert" className={`${form.error} mt-2`}>
@@ -151,7 +151,8 @@ export function StepWhat(props: StepProps) {
           setDraft({ offerings: value });
         }}
         placeholder={software ? "למשל: כלי לתיאום פגישות לסטודיואים; כלי לניהול תשלומים" : service && !d.business_type ? "למשל: עיצוב דירות למשפחות, אימון אישי למתחילים או שיעורים לתלמידים" : kit.placeholder}
-        maxLength={software ? 600 : 300}
+        maxLength={900}
+        rows={4}
       />
       <FieldError message={error} />
       <details className="border-t border-[var(--rule)] pt-2">
@@ -209,7 +210,8 @@ export function StepDifferent(props: StepProps) {
         value={text}
         onChange={(value) => setDraft({ differentiator: value })}
         placeholder={d.research_journey?.segment === "fundraising" ? "למשל: ליווי אישי למשפחות לאורך זמן" : modelOf(flow) === "saas" ? "למשל: מתחילים בלי הטמעה ארוכה, והכלי נבנה במיוחד לסטודיואים" : "למשל: הכול נעשה אצלנו, בעבודת יד"}
-        maxLength={200}
+        maxLength={500}
+        rows={4}
       />
       <div>
         <p className="mb-2.5 text-[13px] text-[color:var(--ink-muted)]"><Copy text="אפשר להתחיל מאחד מאלה:" /></p>
@@ -325,7 +327,7 @@ export function StepAudiences(props: StepProps) {
                       onChange={(value) =>
                         setDraft({ audiences: kept.map((a, i) => (i === index ? { ...a, name: value } : a)) })
                       }
-                      maxLength={60}
+                      maxLength={80}
                     />
                     <TextInput
                       id={`aud-desc-${index}`}
@@ -334,7 +336,8 @@ export function StepAudiences(props: StepProps) {
                       onChange={(value) =>
                         setDraft({ audiences: kept.map((a, i) => (i === index ? { ...a, description: value } : a)) })
                       }
-                      maxLength={160}
+                      maxLength={500}
+                      rows={3}
                     />
                     <UIAction
                       variant="secondary"
@@ -397,14 +400,15 @@ export function StepAudiences(props: StepProps) {
                 value={newName}
                 onChange={setNewName}
                 placeholder="למשל: סטודנטים מהאזור"
-                maxLength={60}
+                maxLength={80}
               />
               <TextInput
                 id="aud-new-desc"
                 label="במשפט: מה הם צריכים (לא חובה)"
                 value={newDesc}
                 onChange={setNewDesc}
-                maxLength={160}
+                maxLength={500}
+                rows={3}
               />
               <UIAction variant="secondary" onClick={saveNew} disabled={!newName.trim()}>
                 <Copy text="להוסיף את הקהל" />

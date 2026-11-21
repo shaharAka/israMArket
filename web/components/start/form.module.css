@@ -105,6 +105,8 @@ textarea.input {
   resize: none;
 }
 
+textarea.longInput { resize: vertical; }
+
 /* A select draws its own chevron (a sibling `.selectChevron`), not the browser's. */
 select.input {
   appearance: none;

@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ApiError, api, endpoints, exitDemo, isDemo } from "@/lib/api";
 import { emptyFlow, loadFlow, saveFlow, draftForApi, clearSavedFlow, scanBrand, validateLinks, exitDraftMock, type FlowState, type OnboardingDraft, type LinkKey } from "@/lib/draft";
-import { mergeResearchReplies, BUSINESS_SEGMENTS, METRICS, observationValid, type Segment, type ResearchJourney as Journey, type Observation, type DiscoveryResult } from "@/lib/researchJourney";
+import { mergeResearchReplies, sameResearchSource, BUSINESS_SEGMENTS, METRICS, observationValid, type Segment, type ResearchJourney as Journey, type Observation, type DiscoveryResult } from "@/lib/researchJourney";
 import { StepName, StepDifferent, StepAudiences, type StepProps } from "./steps";
 import { StepSoftwareOffer } from "./StepSoftwareOffer";
 import { StepSoftware } from "./StepSoftware";
@@ -196,7 +196,7 @@ export function ResearchJourney() {
     case "name": screen = <StepName {...common} />; break;
     case "offer": screen = <StepShell {...common} title="מה אתם עושים?" why="" primary="להמשיך" primaryDisabled={busy || !flow.modelConfirmed || flow.draft.offerings.trim().length < 3} onPrimary={() => { const field = inferField(flow.draft.offerings); setDraft({ business_type: field ?? "other" }); void advance(); }}>
       {showSegments || !flow.modelConfirmed ? <fieldset><legend className={form.label}><Copy text="מה אתם עושים?" /></legend><div className="flex flex-wrap gap-2">{BUSINESS_SEGMENTS.map(item => <button key={item.key} type="button" className={form.chip} aria-pressed={journey.segment === item.key} onClick={() => { update(f => selectSegment(f, item.key)); setShowSegments(false); }}><Copy text={item.label} /></button>)}</div></fieldset> : <div className="flex items-center justify-between gap-3 border-b border-[var(--rule)] pb-3"><Copy text={BUSINESS_SEGMENTS.find(item => item.key === journey.segment)!.label} /><button type="button" onClick={() => setShowSegments(true)} className="min-h-11 text-sm text-[var(--primary)]"><Copy text="לשנות את סוג העסק" /></button></div>}
-      <TextInput id="offering" label={journey.segment === "fundraising" ? "למען מה אתם פועלים ומבקשים תמיכה?" : "מה אתם מציעים ללקוחות?"} value={flow.draft.offerings} onChange={offerings => setDraft({ offerings })} maxLength={900} />
+      <TextInput id="offering" label={journey.segment === "fundraising" ? "למען מה אתם פועלים ומבקשים תמיכה?" : "מה אתם מציעים ללקוחות?"} value={flow.draft.offerings} onChange={offerings => setDraft({ offerings })} maxLength={900} rows={4} />
     </StepShell>; break;
     case "different": screen = <StepDifferent {...common} />; break;
     case "audiences": screen = <StepAudiences {...common} />; break;
@@ -225,7 +225,9 @@ export function ResearchJourney() {
 
 function DiscoveryStep(props: StepProps & { after: boolean; mock: boolean; onReplies: (replies: Journey["replies"]) => void }) {
   const [result, setResult] = useState<DiscoveryResult | null>(null); const [loading, setLoading] = useState(true); const [error, setError] = useState("");
-  const [answers, setAnswers] = useState<string[]>([]);
+  const [answers, setAnswers] = useState<Record<string, string>>({});
+  const [skipped, setSkipped] = useState<string[]>([]);
+  const [sourceRevision, refreshSources] = useState(0);
   const [editingFact, setEditingFact] = useState<string | null>(null);
   const t = useCopy(); const { locale } = useLanguage();
   useEffect(() => {
@@ -233,9 +235,9 @@ function DiscoveryStep(props: StepProps & { after: boolean; mock: boolean; onRep
     async function read() {
       if (props.mock) {
         const exampleUrl = "https://example.org/about";
-        const removed=props.flow.draft.research_journey?.excluded_sources?.some(url=>url.includes("example.org"));
-        setResult({ sources: removed?[]:[{kind:"website",url:exampleUrl,status:"read"}], facts:removed?[]:[{quote:props.flow.draft.offerings,url:exampleUrl}], assisted: true, questions: [{ question: props.flow.draft.research_journey?.segment === "fundraising" ? t("איזה שינוי תעזור התרומה לקדם?") : props.after ? t("מה הכי חשוב להסביר על ההצעה שלכם לפני שמישהו מחליט?") : t("מה חשוב שאנשים יבינו על מה שאתם עושים?"), quote: "", source: "answers" }] });
-        setAnswers([""]); return;
+        const removed = props.flow.draft.research_journey?.excluded_sources?.some(url => sameResearchSource(url, exampleUrl));
+        setResult({ sources: removed ? [] : [{kind:"website",url:exampleUrl,status:"read"}], facts: removed ? [] : [{quote:props.flow.draft.offerings,url:exampleUrl}], assisted: true, questions: [{ question: props.flow.draft.research_journey?.segment === "fundraising" ? t("איזה שינוי תעזור התרומה לקדם?") : props.after ? t("מה הכי חשוב להסביר על ההצעה שלכם לפני שמישהו מחליט?") : t("מה חשוב שאנשים יבינו על מה שאתם עושים?"), quote: "", source: "answers" }] });
+        return;
       }
       // Independent checks share one wait; the brand API applies its own URL guards.
       const [errors, brand] = await Promise.all([
@@ -245,35 +247,109 @@ function DiscoveryStep(props: StepProps & { after: boolean; mock: boolean; onRep
       const safe = { ...props.flow, deferredLinks: Object.keys(errors) as LinkKey[] };
       if (live && brand) props.update(f => ({ ...f, brandScan: { ...brand, url: props.flow.draft.links.website! } }));
       const value = await api<DiscoveryResult>(props.after ? "/onboarding/interview" : "/public/discovery", { method: "POST", body: JSON.stringify({ draft: draftForApi(safe), locale }) });
-      if (live) { setResult(value); setAnswers(value.questions.map(q => props.flow.draft.research_journey?.replies.find(r => r.question === q.question)?.answer ?? "")); }
+      if (live) {
+        setResult(value);
+        setAnswers(previous => ({ ...Object.fromEntries((props.flow.draft.research_journey?.replies ?? []).map(r => [r.question, r.answer])), ...previous }));
+      }
     }
     read().catch(() => { if (live) setError(t("לא הצלחנו לקרוא כרגע. אפשר להמשיך עם מה שסיפרתם ולהשלים בהמשך.")); }).finally(() => { if (live) setLoading(false); });
     return () => { live = false; };
-    // This screen runs one bounded research request per entry, never on every keystroke.
+    // Research runs on entry or when an earlier exclusion is restored.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  return <StepShell {...props} title={props.after ? "מה עוד חשוב לדעת על הפעילות שלכם" : "בואו נוודא שהבנו אתכם"} why="" primary={props.after ? "להמשיך לבניית התוכנית" : "להמשיך לפתיחת החשבון"} onPrimary={() => { props.onReplies((result?.questions ?? []).map((q, i) => ({ question: q.question, answer: answers[i] ?? "", source_url: q.url ?? "" }))); props.next(); }}>
+  }, [sourceRevision]);
+
+  const previousExclusions = props.flow.draft.research_journey?.excluded_sources ?? [];
+  const ignores = (url: string) => [...previousExclusions, ...skipped].some(source => sameResearchSource(url, source));
+  const facts = (result?.facts ?? []).filter(fact => !ignores(fact.url));
+  const questions = (result?.questions ?? []).filter(question => !ignores(question.url ?? ""));
+  const sources = result?.sources ?? [];
+  const previousSources = previousExclusions.filter((url, index) =>
+    !sources.some(source => sameResearchSource(source.url, url))
+    && !previousExclusions.slice(0, index).some(source => sameResearchSource(source, url))
+  );
+
+  function restoreSource(url: string) {
+    if (skipped.some(source => sameResearchSource(source, url))) {
+      setSkipped(current => current.filter(source => !sameResearchSource(source, url)));
+      return;
+    }
+    const source = new URL(url.startsWith("https://") || url.startsWith("http://") ? url : `https://${url}`);
+    const domains = { instagram: "instagram.com", facebook: "facebook.com", tiktok: "tiktok.com" } as const;
+    const key = (Object.keys(domains) as (keyof typeof domains)[]).find(network =>
+      source.hostname === domains[network] || source.hostname.endsWith(`.${domains[network]}`)
+    ) ?? "website";
+    props.update(f => {
+      const journey = f.draft.research_journey!;
+      return { ...f, draft: { ...f.draft,
+        links: { ...f.draft.links, [key]: f.draft.links[key] || source.href },
+        research_journey: { ...journey, excluded_sources: (journey.excluded_sources ?? []).filter(item => !sameResearchSource(item, url)) },
+      } };
+    });
+    setError("");
+    setLoading(true);
+    refreshSources(revision => revision + 1);
+  }
+
+  function continueInterview() {
+    if (skipped.length) {
+      const removed = sources.filter(source => skipped.some(url => sameResearchSource(source.url, url)));
+      const matches = (url: string) => skipped.some(source => sameResearchSource(source, url));
+      props.update(f => {
+        const journey = f.draft.research_journey!;
+        const links = { ...f.draft.links };
+        for (const key of Object.keys(links) as LinkKey[]) {
+          if (matches(links[key] ?? "") || removed.some(source => source.kind === key && key !== "website")) delete links[key];
+        }
+        return { ...f, brandScan: null, draft: { ...f.draft, links, research_journey: { ...journey,
+          excluded_sources: [...new Set([...(journey.excluded_sources ?? []), ...skipped])],
+          corrections: (journey.corrections ?? []).filter(correction => !matches(correction.source_url)),
+          replies: journey.replies.filter(reply => !matches(reply.source_url ?? "")),
+        } } };
+      });
+    }
+    props.onReplies(questions.map(q => ({ question: q.question, answer: answers[q.question] ?? "", source_url: q.url ?? "" })));
+    props.next();
+  }
+
+  return <StepShell {...props} title={props.after ? "מה עוד חשוב לדעת על הפעילות שלכם" : "בואו נוודא שהבנו אתכם"} why="" primary={props.after ? "להמשיך לבניית התוכנית" : "להמשיך לפתיחת החשבון"} onPrimary={continueInterview}>
     <ResearchResult pending={loading} label={t("קוראים את המידע ומכינים שאלה להיכרות…")}>
     {error ? <p role="status">{error}</p> : null}
-    {result?.facts?.length ? <section className="space-y-4"><h2 className="font-semibold"><Copy text="מה למדנו עליכם" /></h2>{result.facts.map((fact, i) => {
+    {facts.length ? <section className="space-y-4"><h2 className="font-semibold"><Copy text="מה למדנו עליכם" /></h2>{facts.map((fact, i) => {
       const correction = props.flow.draft.research_journey?.corrections?.find(c => c.original === fact.quote && c.source_url === fact.url);
       const key = `${fact.url}-${i}`;
       return <div key={key} className="border-b border-[var(--rule)] pb-4"><p data-research-fact className="text-base leading-7">{correction?.corrected || fact.quote}</p>
-        {editingFact === key ? <div className="mt-3 space-y-3"><TextInput id={`fact-${i}`} label="מה המידע הנכון?" value={correction?.corrected ?? fact.quote} maxLength={600} onChange={corrected => props.update(f => ({...f,draft:{...f.draft,research_journey:{...f.draft.research_journey!,corrections:[...(f.draft.research_journey?.corrections??[]).filter(c=>c.original!==fact.quote || c.source_url!==fact.url),{original:fact.quote,source_url:fact.url,corrected}]}}}))}/><button type="button" className="min-h-11 text-sm font-semibold text-[var(--primary)]" onClick={()=>setEditingFact(null)}><Copy text="לשמור את התיקון"/></button></div> : <button type="button" className="min-h-11 text-sm text-[var(--primary)]" onClick={()=>setEditingFact(key)}><Copy text="לתקן את המידע"/></button>}
+        {editingFact === key ? <div className="mt-3 space-y-3"><TextInput id={`fact-${i}`} label="מה המידע הנכון?" value={correction?.corrected ?? fact.quote} maxLength={600} rows={3} onChange={corrected => props.update(f => ({...f,draft:{...f.draft,research_journey:{...f.draft.research_journey!,corrections:[...(f.draft.research_journey?.corrections??[]).filter(c=>c.original!==fact.quote || c.source_url!==fact.url),{original:fact.quote,source_url:fact.url,corrected}]}}}))}/><button type="button" className="min-h-11 text-sm font-semibold text-[var(--primary)]" onClick={()=>setEditingFact(null)}><Copy text="לשמור את התיקון"/></button></div> : <button type="button" className="min-h-11 text-sm text-[var(--primary)]" onClick={()=>setEditingFact(key)}><Copy text="לתקן את המידע"/></button>}
       </div>;
     })}</section> : null}
     </ResearchResult>
-    {result?.sources.length ? <section><h2 className="mb-2 text-sm font-semibold"><Copy text="המקורות שבדקנו"/></h2><ul className="divide-y divide-[var(--rule)]">{result.sources.map((source,i)=><li key={`${source.url}-${i}`} className="flex flex-wrap items-center justify-between gap-2 py-2"><div className="min-w-0 flex-1 text-sm"><bdi className="block break-all">{source.url}</bdi><span className="text-xs text-[var(--ink-muted)]"><Copy text={source.status==="read"?"נקרא":source.status==="not_read"?"קישור שנשמר":"לא נקרא"}/></span></div><button type="button" className="min-h-11 text-sm text-[var(--primary)]" onClick={()=>{
-      const sameHost=(url:string)=>{try{return new URL(url).hostname.replace(/^www\./,"")===new URL(source.url).hostname.replace(/^www\./,"");}catch{return url===source.url;}};
-      const removedSources=result.sources.filter(s=>sameHost(s.url));
-      const removedQuestions=new Set(result.questions.filter(q=>q.url&&sameHost(q.url)).map(q=>q.question));
-      props.update(f=>{const links={...f.draft.links};for(const key of Object.keys(links) as LinkKey[])if(sameHost(links[key]??"")||key===source.kind)delete links[key];return {...f,brandScan:null,draft:{...f.draft,links,research_journey:{...f.draft.research_journey!,excluded_sources:[...new Set([...(f.draft.research_journey?.excluded_sources??[]),...removedSources.map(s=>s.url)])],corrections:(f.draft.research_journey?.corrections??[]).filter(c=>!sameHost(c.source_url)),replies:(f.draft.research_journey?.replies??[]).filter(r=>!removedQuestions.has(r.question)&&!sameHost(r.source_url??""))}}};});
-      setAnswers(values=>values.filter((_,at)=>!removedQuestions.has(result.questions[at].question)));
-      setResult({...result,sources:result.sources.filter(s=>!sameHost(s.url)),facts:result.facts?.filter(f=>!sameHost(f.url)),questions:result.questions.filter(q=>!q.url||!sameHost(q.url))});
-    }}><Copy text="לא להשתמש במקור הזה"/></button></li>)}</ul></section>:null}
     {result && !result.assisted ? <p className="text-sm text-[var(--ink-muted)]"><Copy text="המחקר המותאם לא זמין כרגע. אפשר להמשיך בהיכרות ולהשלים אותו בחשבון." /></p> : null}
-    <p className="border-b border-[var(--rule)] pb-4">{props.flow.draft.business_name} · {props.flow.draft.offerings}</p>
-    {result?.questions.map((q, i) => <div key={i}>{q.quote ? <blockquote className="border-s-2 border-[var(--rule)] ps-3 text-sm">{q.quote}</blockquote> : null}<TextInput id={`research-answer-${i}`} label={q.question} value={answers[i] ?? ""} onChange={answer => setAnswers(list => list.map((old, at) => at === i ? answer : old))} maxLength={600} /></div>)}
+    {!facts.length && !loading ? <p dir="auto" className="text-[var(--ink-soft)]">{props.flow.draft.offerings}</p> : null}
+    {questions.map((q, i) => <div key={q.question}>
+      <TextInput id={`research-answer-${i}`} label={q.question} value={answers[q.question] ?? ""}
+        onChange={answer => setAnswers(previous => ({ ...previous, [q.question]: answer }))} maxLength={600} rows={3} />
+      {q.quote ? <p className="mt-2 text-sm text-[var(--ink-muted)]">{q.quote}</p> : null}
+    </div>)}
+    {sources.length || previousSources.length ? <section>
+      <h2 className="text-sm font-semibold"><Copy text="המקורות שבדקנו" /></h2>
+      <ul className="divide-y divide-[var(--rule)]">
+        {[...sources, ...previousSources.map(url => ({ url, status: "not_read" }))].map(source => {
+          const excluded = ignores(source.url);
+          return <li key={source.url} className="flex flex-wrap items-center justify-between gap-x-4 py-2">
+            <div className="min-w-0 flex-1 text-sm">
+              <bdi className="block break-all">{source.url}</bdi>
+              <p className="text-xs text-[var(--ink-muted)]" aria-live="polite"><Copy text={excluded ? "המקור לא ישמש בהמשך" : source.status === "read" ? "נקרא" : source.status === "not_read" ? "קישור שנשמר" : "לא נקרא"} /></p>
+            </div>
+            <button type="button" className="min-h-11 text-sm text-[var(--primary)]" onClick={() => {
+              if (excluded) restoreSource(source.url);
+              else {
+                setEditingFact(null);
+                setSkipped(current => [...current, source.url]);
+              }
+            }}><Copy text={excluded ? "להחזיר את המקור" : "לא להשתמש במקור הזה"} /></button>
+          </li>;
+        })}
+      </ul>
+    </section> : null}
   </StepShell>;
 }
 
