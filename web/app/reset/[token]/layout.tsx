@@ -6,7 +6,7 @@ import type { Metadata } from "next";
  * loads, must not carry the token anywhere.
  */
 export const metadata: Metadata = {
-  title: "סיסמה חדשה · ישראמארקט",
+  title: "סיסמה חדשה · isramarket",
   robots: { index: false, follow: false, nocache: true, googleBot: { index: false, follow: false } },
   referrer: "no-referrer",
 };

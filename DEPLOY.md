@@ -106,6 +106,15 @@ Customer image generation is restricted to allowlisted models at 1K. Account-lev
 successful-unit, attempt and spend caps apply before submission, independently of the
 payment gate: see [media generation limits](docs/media-generation-limits.md).
 
+Campaign video is off until `CAMPAIGN_VIDEO_ENABLED=true` (after the scoped canary). It uses
+`VIDEO_MODEL=gemini-omni-1.2-flash`: 3–15 s clips, 5 s by default, about $0.07 per 720p
+second (a 15 s clip is about $1.06). When it definitively refuses a request, nothing was
+generated and `VIDEO_FALLBACK_MODEL=gemini-omni-1.1-flash` (at most 10 s, about $0.10/s)
+gets the same request once under its own reservation; timeouts never fall back. Google
+routes 1.1 requests to 1.2 from 3 December 2026, so set `VIDEO_FALLBACK_MODEL=` then. Any
+other model name leaves video unavailable. Benchmark and prices:
+[Omni 1.2 benchmark](docs/omni-1.2-benchmark-2026-11-07.md).
+
 Nothing in the app generates an image while browsing — only an explicit click does.
 
 ## Backoffice

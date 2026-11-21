@@ -2,7 +2,8 @@
 
 import { Copy, useCopy } from "@/components/language/LanguageProvider";
 
-import { endpoints, isDemo, type MonthHorizon, type StrategyPayload } from "@/lib/api";
+import { endpoints, type MonthHorizon, type StrategyPayload } from "@/lib/api";
+import { useIsDemo } from "@/lib/useDemo";
 import { IconCalendar, IconRoute } from "@/lib/icons";
 import { SECTIONS } from "@/lib/sections";
 import { toast } from "@/lib/ui";
@@ -41,6 +42,7 @@ export function MonthAhead({
   variant?: "card" | "row" | "line";
 }) {
   const t = useCopy();
+  const demo = useIsDemo();
   // The next month is built on the server in the background (lib/useMonthBuild.ts): the
   // button starts it, and the progress survives leaving the page and coming back.
   const build = useMonthBuild({
@@ -85,11 +87,11 @@ export function MonthAhead({
       <div className="flex items-center justify-between gap-3 py-2.5">
         <div className="min-w-0">
           <p className="text-sm font-semibold text-[var(--ink)]">
-            <Copy text="החודש הבא:" />{next.next_month_name_he}
+            <Copy text="החודש הבא:" /> {next.next_month_name_he}
             {next.next_in_progress && !busy ? t(" · נעצר באמצע") : ""}
           </p>
           <p className="text-xs leading-5 text-[var(--ink-muted)]">
-            {isDemo() ? t("בדמו עובדים על חודש אחד.") : t("נבנה ממה שאישרתם, בלי להמציא מספרים.")}
+            {demo ? t("בדמו עובדים על חודש אחד.") : t("נבנה ממה שאישרתם, בלי להמציא מספרים.")}
           </p>
           {error ? <p className="mt-1 text-sm text-[var(--danger)]">{error}</p> : null}
         </div>
@@ -124,11 +126,11 @@ export function MonthAhead({
       <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 py-3">
         <div className="min-w-0">
           <p className="text-sm font-semibold text-[var(--ink)]">
-            <Copy text="החודש הבא:" />{next.next_month_name_he}
+            <Copy text="החודש הבא:" /> {next.next_month_name_he}
             {next.next_in_progress && !busy ? t(" · נעצר באמצע") : ""}
           </p>
           <p className="mt-0.5 text-xs leading-5 text-[var(--ink-muted)]">
-            {isDemo() ? t("בדמו עובדים על חודש אחד.") : t("נבנה ממה שאישרתם, בלי להמציא מספרים.")}
+            {demo ? t("בדמו עובדים על חודש אחד.") : t("נבנה ממה שאישרתם, בלי להמציא מספרים.")}
           </p>
           {error ? <p className="mt-1 text-sm text-[var(--danger)]">{error}</p> : null}
         </div>
@@ -164,10 +166,10 @@ export function MonthAhead({
         <IconRoute className="h-4 w-4" />
         <Copy text="החודש הבא" /></p>
       <p className="mt-1 text-sm font-semibold text-[var(--ink)]">
-        <Copy text="לבנות את" />{next.next_month_name_he} <Copy text="לפי מה שאישרתם החודש" />{next.next_in_progress ? t(". נמשיך מאיפה שעצרנו") : ""}
+        <Copy text="לבנות את" /> {next.next_month_name_he} <Copy text="לפי מה שאישרתם החודש" />{next.next_in_progress ? t(". נמשיך מאיפה שעצרנו") : ""}
       </p>
       <p className="mt-1 text-sm leading-6 text-[var(--ink-soft)]">
-        {isDemo()
+        {demo
           ? t("בדמו עובדים על חודש אחד. בחשבון אמיתי נבנה אותו מהפוסטים שאישרתם, ומהתוצאות אם יש.")
           : t("בלי להמציא מספרים. אם גוגל או אינסטגרם לא מחוברים, נבנה לפי התוכנית ומה שאישרתם.")}
       </p>

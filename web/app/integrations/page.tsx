@@ -27,11 +27,11 @@ import { LOCALE_META } from "@/lib/i18n/locales";
 import {
   endpoints,
   exitDemo,
-  isDemo,
   type Business,
   type IntegrationsPayload,
   type SetupPayload,
 } from "@/lib/api";
+import { useIsDemo } from "@/lib/useDemo";
 import {
   IconCheck,
   IconChevron,
@@ -82,7 +82,7 @@ export default function IntegrationsPage() {
   const { locale } = useLanguage();
   const [data, setData] = useState<IntegrationsPayload | null>(null);
   const [business, setBusiness] = useState<Business | null>(null);
-  const [demo] = useState(() => typeof window !== "undefined" && isDemo());
+  const demo = useIsDemo();
   const [error, setError] = useState("");
   const [successNote, setSuccessNote] = useState("");
   const [connectionLoadFailed, setConnectionLoadFailed] = useState(false);

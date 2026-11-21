@@ -14,9 +14,11 @@ import { billingEndpoints, formatBillingDate, lastFreeDay, type BillingStatus } 
 import { IconArrowRight } from "@/lib/icons";
 import { formatPrice, TRIAL_LABEL, VAT_NOTE } from "@/lib/pricing";
 
+import { toast } from "@/lib/ui";
+
 /** The subscription is one object: its state, its facts and its one action, on one card. */
 const PLAN_CARD = `${CARD} space-y-5 p-5 sm:p-7`;
-import { toast } from "@/lib/ui";
+const LEAD = "text-[17px] font-semibold leading-7 tracking-[-0.01em] text-[color:var(--ink)]";
 
 /**
  * המנוי (`/billing`, linked from /account and from Today's reminder). api/app/routers/billing.py.
@@ -61,7 +63,7 @@ export default function BillingPage() {
 
   return (
     <AppShell>
-      <div className="mx-auto max-w-[640px]">
+      <div className="mx-auto max-w-[720px]">
         <PageHeader title={t("המנוי")} />
 
         {failed ? (
@@ -102,20 +104,32 @@ function BillingBody({
   if (status.exempt) {
     return (
       <div className={PLAN_CARD}>
-        <p className="text-[17px] font-semibold leading-7 tracking-[-0.01em] text-[color:var(--ink)]">
-          <Copy text="החשבון שלכם פתוח בלי תשלום." /></p>
+        <p className={LEAD}><Copy text="החשבון שלכם פתוח בלי תשלום." /></p>
         <p className="text-[14px] leading-6 text-[color:var(--ink-soft)]"><Copy text="אין מנוי להפעיל ולא נבקש תשלום." /></p>
       </div>
     );
   }
 
+  // The free month, from the trial itself: when it ends and how many days are left.
+  const trialLead = status.trial.ended
+    ? (freeUntil ? t("החודש החינמי נגמר ב-{arg_0}.", { arg_0: freeUntil }) : null)
+    : status.trial.days_left <= 1
+      ? t("היום הוא היום האחרון של החודש החינמי.")
+      : freeUntil
+        ? t("החודש החינמי נגמר ב-{arg_0}. נשארו {arg_1} ימים.", { arg_0: freeUntil, arg_1: status.trial.days_left })
+        : null;
+
   if (!status.configured) {
     return (
       <div className={PLAN_CARD}>
-        <p className="text-[17px] font-semibold leading-7 tracking-[-0.01em] text-[color:var(--ink)]">
-          <Copy text={TRIAL_LABEL} /><Copy text=". אחר כך" />{price}
-        </p>
-        <SetupNotice title={t("התשלום עוד לא פתוח")}><Copy text="החודש החינמי ממשיך כרגיל. לא נבקש תשלום לפני שהוא ייפתח כאן." /></SetupNotice>
+        <p className={LEAD}>{trialLead ?? <Copy text={TRIAL_LABEL} />}</p>
+        <Facts
+          rows={[
+            [t("אחר כך"), price],
+            [t("התשלום"), <Status key="state">{t("עוד לא פתוח")}</Status>],
+          ]}
+        />
+        <p className="text-[14px] leading-6 text-[color:var(--ink-soft)]"><Copy text="אין צורך לעשות כלום. לא נבקש תשלום לפני שהוא ייפתח כאן." /></p>
       </div>
     );
   }
@@ -126,17 +140,13 @@ function BillingBody({
         {justSubscribed ? (
           <SetupNotice tone="success" title={t("המנוי הופעל")} />
         ) : (
-          <p className="text-[17px] font-semibold leading-7 tracking-[-0.01em] text-[color:var(--ink)]"><Copy text="המנוי פעיל." /></p>
+          <p className={LEAD}><Copy text="המנוי פעיל." /></p>
         )}
-        <Rows
+        <Facts
           rows={[
-            !sub.next_billing_time
-              ? null
-              : status.trial.ended
-                ? t("החיוב הבא: {arg_0}.", { arg_0: formatBillingDate(sub.next_billing_time) })
-                : t("החיוב הראשון: {arg_0}, אחרי שהחודש החינמי נגמר.", { arg_0: formatBillingDate(sub.next_billing_time) }),
-            price,
-            t("התשלום דרך פייפאל. את פרטי הכרטיס אנחנו לא רואים."),
+            sub.next_billing_time ? [status.trial.ended ? t("החיוב הבא") : t("החיוב הראשון"), formatBillingDate(sub.next_billing_time)] : null,
+            [t("המחיר"), price],
+            [t("התשלום"), t("דרך פייפאל")],
           ]}
         />
         <CancelSubscription status={status} onCancelled={setStatus} />
@@ -150,7 +160,7 @@ function BillingBody({
       <div className={PLAN_CARD}>
         <SetupNotice tone="attention" title={t("החיוב האחרון לא עבר")}>
           <Copy text="פייפאל ינסה לחייב שוב. כדי שזה יעבור, עדכנו את אמצעי התשלום בחשבון הפייפאל שלכם." /></SetupNotice>
-        <Rows rows={[price]} />
+        <Facts rows={[[t("המחיר"), price]]} />
         <CancelSubscription status={status} onCancelled={setStatus} />
       </div>
     );
@@ -158,37 +168,26 @@ function BillingBody({
 
   // Everything else subscribes: the free month, after it, cancelled, suspended.
   const firstCharge = status.start_time ? formatBillingDate(status.start_time) : "";
-  let lead: ReactNode;
+  let lead: ReactNode = trialLead;
   if (status.state === "cancelled" && sub?.paid_through) {
     lead = t("המנוי בוטל. הכול פתוח עד {arg_0}.", { arg_0: formatBillingDate(sub.paid_through) });
   } else if (status.state === "payment_failed") {
     lead = t("החיובים לא עברו, והמנוי הושהה. אפשר להפעיל מנוי חדש, והקודם יבוטל.");
-  } else if (status.trial.ended) {
-    lead = t("החודש החינמי נגמר ב-{arg_0}.", { arg_0: freeUntil });
-  } else {
-    lead =
-      status.trial.days_left <= 1
-        ? t("היום הוא היום האחרון של החודש החינמי.")
-        : t("החודש החינמי נגמר ב-{arg_0}. נשארו {arg_1} ימים.", { arg_0: freeUntil, arg_1: status.trial.days_left });
   }
 
   return (
     <div className={PLAN_CARD}>
-      <p className="text-[17px] font-semibold leading-7 tracking-[-0.01em] text-[color:var(--ink)]">{lead}</p>
+      {lead ? <p className={LEAD}>{lead}</p> : null}
       {status.locked ? (
         <p className="text-[14px] leading-6 text-[color:var(--ink-soft)]">
           <Copy text="כדי להמשיך ליצור פוסטים ותוכניות, צריך מנוי. כל מה שכבר נוצר נשאר פתוח." /></p>
       ) : null}
-      <Rows
+      <Facts
         rows={[
-          price,
-          !firstCharge
-            ? t("החיוב הראשון ביום ההפעלה.")
-            : status.trial.ended
-              ? t("החיוב הראשון ב-{arg_0}, כשהתקופה ששילמתם עליה נגמרת.", { arg_0: firstCharge })
-              : t("החיוב הראשון רק ב-{arg_0}, אחרי שהחודש החינמי נגמר.", { arg_0: firstCharge }),
-          t("אפשר לבטל בכל רגע, כאן בעמוד."),
-          t("משלמים בפייפאל, עם חשבון פייפאל או בכרטיס אשראי. את פרטי הכרטיס אנחנו לא רואים."),
+          [status.trial.ended ? t("המחיר") : t("אחר כך"), price],
+          [t("החיוב הראשון"), firstCharge || t("ביום ההפעלה")],
+          [t("ביטול"), t("בכל רגע, כאן בעמוד")],
+          [t("התשלום"), t("פייפאל או כרטיס אשראי")],
         ]}
       />
       {status.needs_payment ? <PayPalSubscribe status={status} onConfirmed={onConfirmed} /> : null}
@@ -196,15 +195,27 @@ function BillingBody({
   );
 }
 
-function Rows({ rows }: { rows: (string | null)[] }) {
+/** Facts as label/value rows, divided by hairlines (DESIGN-STANDARD.md §6). */
+function Facts({ rows }: { rows: ([string, ReactNode] | null)[] }) {
   return (
-    <ul className="divide-y divide-[var(--rule)] border-t border-[var(--rule)]">
-      {rows.filter(Boolean).map((row) => (
-        <li key={row} className="py-3 text-[15px] leading-6 text-[color:var(--ink)]">
-          {row}
-        </li>
+    <dl className="divide-y divide-[var(--rule)] border-t border-[var(--rule)]">
+      {rows.filter((row): row is [string, ReactNode] => Boolean(row)).map(([label, value]) => (
+        <div key={label} className="flex items-baseline justify-between gap-4 py-3 text-[15px] leading-6">
+          <dt className="shrink-0 text-[color:var(--ink-muted)]">{label}</dt>
+          <dd className="min-w-0 text-end font-medium text-[color:var(--ink)]">{value}</dd>
+        </div>
       ))}
-    </ul>
+    </dl>
+  );
+}
+
+/** A neutral status: the words first, a small dot second. */
+function Status({ children }: { children: ReactNode }) {
+  return (
+    <span className="inline-flex items-center gap-2">
+      <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-[var(--ink-muted)]" />
+      {children}
+    </span>
   );
 }
 

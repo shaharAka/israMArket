@@ -302,7 +302,7 @@ export function mockQuarterPlan(
       kind: "existing",
       why_he:
         d.activity?.[n] === "regular"
-          ? "כבר יש לכם קהל כאן. מחזקים את מה שכבר עובד לפני שפותחים משהו חדש."
+          ? "כבר יש לכם קהל כאן. מחזקים את מה שכבר מצליח לפני שפותחים משהו חדש."
           : n === "facebook"
             ? "קבוצות באזור ומי שכבר מכיר אתכם. אותם פוסטים, בלי עבודה נוספת."
             : "יש לכם חשבון, צריך רק קצב קבוע.",
@@ -608,7 +608,7 @@ function mockSoftwarePlan(d: OnboardingDraft, inputs: PlanInputs): QuarterPlan {
   const channelLabel = { instagram: "אינסטגרם", facebook: "פייסבוק", tiktok: "טיקטוק" }[channel];
   const focus = ["מסבירים את הבעיה ומראים פעולה אמיתית במוצר", "בודקים מי הגיע ומי התנסה, ומשפרים את המסר", "מעמיקים בתוכן שהביא משתמשים מתאימים"];
   return {
-    strategy: { one_liner_he: `להראות איך ${product} יכול לעזור ל${buyer}. הבעיה שנבחן: ${problem}.`, angle_he: d.differentiator || "מדגימים מה שכבר עובד ומסבירים למי זה מתאים.", why_he: "לפי המוצר, ההצעה, הקהל ושלב החברה שסיפרתם עליהם. זו הדגמה; בתוכנית האמיתית נבדוק גם את המחקר." },
+    strategy: { one_liner_he: `להראות איך ${product} יכול לעזור ל${buyer}. הבעיה שנבחן: ${problem}.`, angle_he: d.differentiator || "מדגימים מה שכבר מצליח ומסבירים למי זה מתאים.", why_he: "לפי המוצר, ההצעה, הקהל ושלב החברה שסיפרתם עליהם. זו הדגמה; בתוכנית האמיתית נבדוק גם את המחקר." },
     kpi: { key: metric, name_he: metricName, how_he: "סופרים את הפעולה שנבחרה, ובודקים בנפרד שימוש ראשון ותשלום.", baseline_he: "עוד לא נמסרו נתוני שימוש. נמדוד לפני שנציע יעד מספרי.", needs: d.links.website ? ["ga4"] : [], available_now: false },
     measures: [{ name_he: "התנסות ראשונה בעלת ערך", how_he: "נבחר פעולה במוצר שמעידה שהוא עוזר, ונבדוק כמה השלימו אותה.", needs: d.links.website ? ["ga4"] : [], available_now: false }],
     integrations: d.links.website ? [{ key: "ga4", name_he: "נתוני האתר והמוצר", why_he: "לחבר מקור הגעה לפעולה שבחרנו למדוד. התקנת תג לבדה לא מגדירה אירוע שימוש.", status: "unknown", effort_he: "נבדוק את החיבור ואת האירוע לפני שסופרים תוצאות." }] : [],

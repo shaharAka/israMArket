@@ -5,8 +5,8 @@ import { formatPrice, NO_CARD_AT_SIGNUP, TRIAL_LABEL, VAT_NOTE } from "@/lib/pri
 import { LEGAL_LINK as LINK, LegalPage, LegalSection as Section } from "@/components/landing/LegalPage";
 
 export const metadata: Metadata = {
-  title: "תנאי שימוש · ישראמארקט",
-  description: "מה ישראמארקט עושה, מה אתם אחראים עליו, מחיר, ביטול ומחיקה.",
+  title: "תנאי שימוש · isramarket",
+  description: "מה isramarket עושה, מה אתם אחראים עליו, מחיר, ביטול ומחיקה.",
 };
 
 /**
@@ -39,13 +39,13 @@ export default function TermsPage() {
     <LegalPage
       eyebrow="תנאי שימוש"
       title="מה אנחנו עושים, ומה נשאר אצלכם"
-      lead="השימוש בישראמארקט אומר שאתם מסכימים לתנאים האלה. כתבנו אותם בקצרה ובפשטות."
+      lead="השימוש ב-isramarket אומר שאתם מסכימים לתנאים האלה. כתבנו אותם בקצרה ובפשטות."
       contents={[...CONTENTS]}
       current="/terms"
     >
         <Section id="service" title={TITLE.service}>
           <p>
-            ישראמארקט בונה לעסק תוכנית שיווק, מציעה פוסטים ומשימות לכל שבוע ומראה מה הצליח. חלק מהתוכן נכתב בעזרת AI, ולכן הוא
+            isramarket בונה לעסק תוכנית שיווק, מציעה פוסטים ומשימות לכל שבוע ומראה מה הצליח. חלק מהתוכן נכתב בעזרת AI, ולכן הוא
             הצעה. לפני שמפרסמים, קוראים ומאשרים.
           </p>
           <p>

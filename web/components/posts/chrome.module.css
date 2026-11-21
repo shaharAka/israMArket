@@ -31,6 +31,13 @@
       box-shadow 160ms ease;
   }
 
+  /* 16px on phones: below that, iOS zooms the page in when the field takes focus. */
+  @media (max-width: 639px) {
+    .field {
+      font-size: 16px;
+    }
+  }
+
   textarea.field {
     padding-block: 11px;
     line-height: 1.7;

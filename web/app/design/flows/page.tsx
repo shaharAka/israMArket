@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { FlowBoard } from "@/components/design/FlowBoard";
 
-export const metadata: Metadata = { title: "מסע המשתמש — ישראמארקט", robots: { index: false, follow: false } };
+export const metadata: Metadata = { title: "מסע המשתמש — isramarket", robots: { index: false, follow: false } };
 
 export default async function FlowsPage({ searchParams }: { searchParams: Promise<{ persona?: string | string[]; step?: string | string[] }> }) {
   const params = await searchParams;

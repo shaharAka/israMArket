@@ -9,7 +9,6 @@ import { LoadingMark } from "@/components/Doodles";
 import { SectionHeader } from "@/components/SectionHeader";
 import {
   endpoints,
-  isDemo,
   type GooglePromotionPayload,
   type KeywordIntent,
   type KeywordsPayload,
@@ -17,6 +16,7 @@ import {
   type PromotionQuickWin,
   type PublishBrief,
 } from "@/lib/api";
+import { useIsDemo } from "@/lib/useDemo";
 import { IconCheck, IconChevron, IconCopy, IconEye, IconLink } from "@/lib/icons";
 import { copyText } from "@/lib/ui";
 import { GbpConfirm } from "@/components/trial/GbpConfirm";
@@ -381,7 +381,7 @@ export default function PromotionPage() {
 
   const promotionLoading = !promotion && !promotionError;
   const keywordsLoading = !keywords && !keywordsError;
-  const demo = isDemo();
+  const demo = useIsDemo();
 
   const budget = plan?.monthly_budget_ils;
   const budgetFigure = typeof budget === "number" && budget > 0 ? `${whole.format(Math.round(budget))} ₪` : null;

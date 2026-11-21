@@ -160,7 +160,7 @@ export default function AdminPage() {
           <p className="text-[15px] leading-7 text-[color:var(--ink-soft)]">
             {gate === "signin"
               ? "צריך להתחבר. הניהול נפתח רק אחרי כניסה עם Google."
-              : gateMessage || "העמוד הזה פתוח רק למנהלי ישראמארקט, אחרי כניסה עם Google."}
+              : gateMessage || "העמוד הזה פתוח רק למנהלי isramarket, אחרי כניסה עם Google."}
           </p>
           <GoogleButton next="/admin" back="/login" />
           <Link href="/dashboard" className="inline-flex min-h-11 items-center text-[14px] font-semibold text-[color:var(--primary)] hover:underline">

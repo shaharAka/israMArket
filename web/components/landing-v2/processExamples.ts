@@ -16,6 +16,17 @@ export function defaultProcessRole(path?: ExamplePath): ProcessRole | null {
   return path ? ({ products: "online_shop", services: "services", saas: "software", nonprofit: "fundraising" } as const)[path] : null;
 }
 
+/** One illustrative result set for the whole page (hero, results, data), always shown
+ * beside the word "דוגמה". Never a customer's figures or a promised return. */
+export const EXAMPLE_RESULTS = { visits: "1,240", adClicks: "86", outcome: 24, previous: 12, steps: [8, 16, 24] } as const;
+export const EXAMPLE_OUTCOME: Record<ProcessRole, { metric: string; question: string }> = {
+  online_shop: { metric: "הזמנות החודש", question: "כמה הזמנות הושלמו באתר?" },
+  physical_shop: { metric: "הזמנות מראש", question: "כמה הזמנות לאיסוף נשלחו?" },
+  services: { metric: "פניות החודש", question: "כמה פניות נשלחו מהאתר?" },
+  software: { metric: "הרשמות להתנסות", question: "כמה נרשמו להתנסות?" },
+  fundraising: { metric: "תרומות החודש", question: "כמה תרומות הושלמו?" },
+};
+
 /** Public presentation examples, kept separate from real customer records. */
 export const PROCESS_EXAMPLES = {
   services: {
@@ -38,7 +49,7 @@ export const PROCESS_EXAMPLES = {
     audience: "למי שרוצים לקנות בגדים אונליין ולבחור מידה מתאימה.", outcome: "הזמנות שהושלמו באתר", metric: "הזמנות",
     weeks: ["מכירים את הקולקציה", "מראים את הגזרה בתנועה", "עוזרים לבחור מידה", "בודקים מה הוביל להזמנה"],
     draft: "לא רק מידה. גם גזרה ובד.", caption: "לפני ההזמנה, השוו את מידות הפריט לבגד שנוח לכם. בדקו גם את הרכב הבד.",
-    invitation: "המידה שעל התווית היא רק ההתחלה.", action: "למצוא את המידה שלך",
+    invitation: "המידה שעל התווית היא רק ההתחלה.", action: "למצוא את המידה שלכם",
     process: "רואים איך הבד זז. מבינים איך הוא יושב.", processImage: "/showcase/clothing-linen-ai.png",
     recommendation: "להראות את הגזרה בתנועה ולהוסיף קישור לטבלת המידות.",
     next: "בפוסט הבא: הגזרה בתנועה וקישור לטבלת המידות.",

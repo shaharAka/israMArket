@@ -65,14 +65,42 @@ Never pure black. Never more than one accent per component.
 Short and purposeful: 160–240ms for UI, `cubic-bezier(.2,.7,.2,1)`. Things follow the user
 (press, hover, reveal); nothing loops unless it is waiting. Respect reduced motion.
 
-## 6. Checklist per page
+## 6. Text budget (7 November)
+
+No walls of text on internal pages. Labels, numbers and actions carry the page, not prose.
+
+1. **Words:** at most **80 visible words above the fold at 390px**, and at most **120 at 1440**.
+2. **Paragraphs:** none longer than **2 lines at 390px** (about 25 words).
+3. **One short explanatory line per section** at most.
+4. **At most one grey caption per card.** No stacks of small grey text.
+5. **Facts are rows, not sentences:** a list of facts becomes short label/value rows or chips.
+
+Disclosures are not the fix for a wall of text:
+
+1. **Cut first.** Remove or shorten text before folding it. A disclosure is only for optional
+   detail most owners never need (sources, method, the technical "why").
+2. **Never nest collapsibles:** no disclosure inside a disclosure, sheet or panel.
+3. **At most one disclosure per card or section,** and at most 2 per page above the fold. A page
+   is never a list of closed rows: status, the next action and the key number stay visible.
+4. **The label says exactly what is inside** ("המקורות והחישוב"), never "עוד" or "פרטים".
+
+Check with `web/scripts/text-budget.mjs` against a running build (not in CI; it needs a
+server). From `web/`: `npx next build && npx next start -p 3141`, then
+`node scripts/text-budget.mjs --base http://localhost:3141 /campaign /account`. It loads each
+route in the demo at 390 and 1440 and reports words above the fold, paragraphs over two
+lines, disclosures (total, above the fold, nested) and fails over budget or on nesting.
+Customer content (captions, the owner's own answers) can be excluded from the count with
+`data-text-budget="content"`.
+
+## 7. Checklist per page
 
 1. No hex classes, no `font-black` look, no 4px corners.
 2. One title, no duplicate eyebrow; one filled button.
 3. Cards use depth, not frames; lists use hairlines.
 4. Chevrons are icons; arrows point the RTL way.
 5. Desktop 1440 and phone 390: no horizontal scroll, balanced whitespace, tap targets ≥ 44px.
-6. Screenshot both before and after; compare with the landing page side by side.
+6. Within the text budget (§6): run `scripts/text-budget.mjs` on the page.
+7. Screenshot both before and after; compare with the landing page side by side.
 
 ## October 8: shared public/product direction
 

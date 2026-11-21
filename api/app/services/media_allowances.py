@@ -128,7 +128,7 @@ def status(db: Session, user: User, now: datetime | None = None) -> dict:
     minimum_image_cost = min(ceilings) if ceilings else None
     from app.services import campaign_video
     for kind, (limit, attempts, budget) in POLICY[tier].items():
-        minimum_cost = minimum_image_cost if kind == "image" else campaign_video.CEILING
+        minimum_cost = minimum_image_cost if kind == "image" else campaign_video.default_ceiling()
         configured = kind == "image" or campaign_video.available()
         row = _row(db, user.id, kind, start)
         historical = _legacy_images(db, user.id, start, end) if row is None and kind == "image" else (0, 0, 0)

@@ -112,7 +112,7 @@ export const CHANNEL_QUESTION: DiagnosticQuestion = {
 export const LEAD_SOURCE_QUESTION: DiagnosticQuestion = {
   field: "lead_source",
   title: "מאיפה מגיעות אליכם פניות היום?",
-  note: "זה קובע אם נחזק את מה שכבר עובד או נפתח ערוץ חדש.",
+  note: "זה קובע אם נחזק את מה שכבר מצליח או נפתח ערוץ חדש.",
   options: [
     { key: "referrals", title: "המלצות", desc: "לקוחות מרוצים ממליצים עליכם" },
     { key: "social", title: "אינסטגרם / פייסבוק", desc: "פונים אחרי שרואים אתכם שם" },

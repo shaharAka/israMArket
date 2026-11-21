@@ -17,9 +17,18 @@ class Settings(BaseSettings):
     openai_strategy_model: Literal["gpt-6.1-sol"] = "gpt-6.1-sol"
     openai_lite_model: Literal["gpt-6-luna"] = "gpt-6-luna"
     openai_timeout_seconds: float = 180.0
-    # Enable only after a bounded production canary. Fixed model/720p/5s and account
-    # ledger checks live in services/campaign_video.py, not in browser parameters.
+    # Enable only after a bounded production canary. The 720p/9:16 shape, the allowlisted
+    # models with their verified maximum lengths and the account ledger checks live in
+    # services/campaign_video.py, not in browser parameters.
     campaign_video_enabled: bool = False
+    # Campaign video (docs/omni-1.2-benchmark-2026-11-07.md). Omni 1.2 Flash: 3-15 s, $12/M
+    # video output tokens, about $0.07 per 720p second (1.1: 3-10 s, about $0.10/s). A
+    # definitive refusal (4xx, nothing generated) sends the same request once to the
+    # fallback, within its own maximum length and its own reservation; timeouts and
+    # ambiguous output never do. Empty fallback = none. Google routes 1.1 requests to 1.2
+    # from 3 Dec 2026, so clear the fallback then. Unknown model names leave video off.
+    video_model: str = "gemini-omni-1.2-flash"
+    video_fallback_model: str = "gemini-omni-1.1-flash"
     jwt_secret: str = "dev-only-change-me"
     token_encryption_key: str = ""
     environment: str = "development"

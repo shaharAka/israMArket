@@ -3,7 +3,7 @@ import Link from "next/link";
 import { PUBLIC_NOTICE_LINK, PUBLIC_NOTICE_PRIMARY, PublicNotice } from "@/components/landing/PublicNotice";
 
 export const metadata: Metadata = {
-  title: "העמוד לא נמצא · ישראמארקט",
+  title: "העמוד לא נמצא · isramarket",
   robots: { index: false },
 };
 

@@ -17,7 +17,7 @@ import ui from "../chrome.module.css";
 const STAGES = [
   { key: "featured", title: "נושאים", detail: "מה כדאי להבליט" },
   { key: "photos", title: "תמונות", detail: "החומר של העסק" },
-  { key: "voice", title: "סגנון", detail: "איך אתם נשמעים" },
+  { key: "voice", title: "סגנון", detail: "איך אתם מדברים" },
   { key: "start_posts", title: "פוסטים", detail: "טיוטות לבדיקה" },
 ] as const;
 const primary = "drawn-button inline-flex min-h-12 items-center justify-center gap-2 bg-[var(--primary)] px-6 text-[15px] text-white enabled:hover:bg-[var(--primary-dark)]";
@@ -69,16 +69,24 @@ function Workspace({ initial, onReview }: { initial: TrialPayload; onReview?: ()
   return <section ref={root} aria-label={t("הכנת פוסטים לפי התוכנית")} className="mx-auto max-w-[880px] scroll-mt-[calc(4rem+env(safe-area-inset-top))] md:scroll-mt-2">
     <header className="mb-6">
       <Heading className="text-[28px] font-bold tracking-tight text-[var(--ink)]">{t("מהתוכנית לפוסטים שלכם")}</Heading>
-      <p className="mt-2 text-[15px] leading-7 text-[var(--ink-soft)]">{t("בוחרים במה להתמקד, מביאים את הסגנון שלכם ומכינים טיוטות. אתם בודקים ומאשרים לפני הפרסום.")}</p>
+      <p className="mt-2 text-[15px] leading-7 text-[var(--ink-soft)]">{t("שום פוסט לא מתפרסם בלי שתבדקו ותאשרו אותו.")}</p>
     </header>
+    {/* One stepper language: done = a check on green, current = the filled marker on the
+        selected fill, next = an outlined number. Each step is a 64px target. */}
     <nav aria-label={t("שלבי הכנת הפוסטים")} className="sticky top-[calc(4rem+env(safe-area-inset-top))] z-10 mb-8 rounded-[14px] bg-[var(--paper)] p-2 shadow-[var(--shadow-card)] md:top-2">
       <ol className="grid grid-cols-4 gap-1">
         {STAGES.map((item, index) => {
           const done = item.key === "start_posts" ? draftsExist : !pending[index] && journey.steps.find(step => step.key === item.key)?.status === "done";
-          return <li key={item.key}><button type="button" onClick={() => move(index)} aria-current={stage === index ? "step" : undefined}
-            aria-label={`${t(item.title)}${done ? ` — ${t("נשמר")}` : ""}`} className={`flex min-h-16 w-full flex-col items-center justify-center gap-1 rounded-[10px] px-1 text-[14px] transition-colors focus-visible:outline-2 focus-visible:outline-[var(--primary)] sm:items-start sm:px-4 ${stage === index ? "bg-[var(--primary-soft)] text-[var(--primary)]" : "text-[var(--ink-soft)] hover:bg-[var(--soft)]"}`}>
-            <span className="flex items-center gap-2 font-semibold"><span className="text-[12px] tabular-nums">{done ? <IconCheck className="h-3.5 w-3.5" /> : index + 1}</span>{t(item.title)}</span>
-            <span className="hidden text-[12px] text-[var(--ink-muted)] sm:block">{t(item.detail)}</span>
+          const current = stage === index;
+          const marker = current
+            ? "bg-[var(--ink)] text-[var(--paper)]"
+            : done
+              ? "bg-[var(--good-soft)] text-[var(--good)]"
+              : "border border-[var(--rule-dark)] text-[var(--ink-muted)]";
+          return <li key={item.key}><button type="button" onClick={() => move(index)} aria-current={current ? "step" : undefined}
+            aria-label={`${t(item.title)}${done ? ` — ${t("נשמר")}` : ""}`} className={`flex min-h-16 w-full flex-col items-center justify-center gap-1.5 rounded-[10px] px-1 text-[14px] transition-colors focus-visible:outline-2 focus-visible:outline-[var(--primary)] sm:flex-row sm:justify-start sm:gap-2.5 sm:px-3 ${current ? "bg-[var(--primary-soft)] font-semibold text-[var(--ink)]" : "font-medium text-[var(--ink-soft)] hover:bg-[var(--soft)]"}`}>
+            <span aria-hidden className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[12px] font-semibold tabular-nums ${marker}`}>{done ? <IconCheck className="h-3.5 w-3.5" /> : index + 1}</span>
+            <span className="min-w-0 text-center sm:text-start">{t(item.title)}<span className="hidden text-[12px] font-normal text-[var(--ink-muted)] lg:block">{t(item.detail)}</span></span>
           </button></li>;
         })}
       </ol>
@@ -104,7 +112,6 @@ function Workspace({ initial, onReview }: { initial: TrialPayload; onReview?: ()
       </>} />}
     </div>
     {stage > 0 ? <button type="button" onClick={() => move(stage - 1)} className={`${ui.link} mt-6 min-h-11`}>{t("לחזור לשלב הקודם")}</button> : null}
-    <p className={`${ui.help} mt-6 border-t border-[var(--rule)] pt-4`}>{t("השינויים נשמרים כשלוחצים על הכפתור בכל שלב. אפשר לחזור לשלבים כאן בלי לעזוב את המסך.")}</p>
   </section>;
 }
 

@@ -6,6 +6,10 @@ import { foundations } from "@/lib/trial";
 import { CONTENT_LANGUAGES, CONTENT_LANGUAGE_NAMES, DEFAULT_CONTENT_LANGUAGE, type ContentLanguage, type ContentLanguagePreferences } from "@/lib/content-language";
 import ui from "../chrome.module.css";
 
+/** Each choice is a whole 44px row with a 20px box, not a bare 13px checkbox. */
+const ROW = "flex min-h-11 cursor-pointer items-center gap-3 py-1.5 has-[:disabled]:cursor-not-allowed";
+const BOX = "h-5 w-5 shrink-0 cursor-pointer accent-[var(--ink)] disabled:cursor-not-allowed";
+
 /** A choice before writing, not another required onboarding task. */
 export function ContentLanguagePicker({ onPendingChange, onBatchChange, allowBatchChoice = true }: { allowBatchChoice?: boolean; onPendingChange: (pending: boolean) => void; onBatchChange: (language?: ContentLanguage) => void }) {
   const t = useCopy();
@@ -57,8 +61,8 @@ export function ContentLanguagePicker({ onPendingChange, onBatchChange, allowBat
     <details className="mt-2">
       <summary className={`${ui.summary} min-h-11 text-[14px]`}>{t(allowBatchChoice ? "קהל בכמה שפות או בחירה רק לכתיבה הזו" : "לקהל שקורא בכמה שפות")}</summary>
       <div className="max-w-[38em] space-y-3 pt-2 text-[14px] leading-6">
-        <fieldset disabled={!loaded || saving}><legend className="mb-2 font-medium">{t("באילו שפות הלקוחות שלכם קוראים?")}</legend><div className="flex flex-wrap gap-x-5 gap-y-1">{CONTENT_LANGUAGES.map(language => <label key={language} className="inline-flex min-h-11 items-center gap-2"><input type="checkbox" checked={draft.audience_languages.includes(language)} disabled={language === draft.default_language} onChange={event => changeAudience(language, event.target.checked)} />{CONTENT_LANGUAGE_NAMES[language]}</label>)}</div></fieldset>
-        <label className="flex min-h-11 items-start gap-2"><input type="checkbox" className="mt-1.5" checked={draft.allow_language_tests} disabled={!loaded || saving || draft.audience_languages.length < 2} onChange={event => { setConfirmed(false); setDraft(prefs => ({ ...prefs, allow_language_tests: event.target.checked })); }} /><span>{t("להציע מדי פעם פוסט בשפה נוספת שהקהל שלי קורא")}</span></label>
+        <fieldset disabled={!loaded || saving}><legend className="mb-2 font-medium">{t("באילו שפות הלקוחות שלכם קוראים?")}</legend><div className="grid gap-x-2 border-y border-[var(--rule)] sm:grid-cols-2">{CONTENT_LANGUAGES.map(language => <label key={language} className={ROW}><input type="checkbox" className={BOX} checked={draft.audience_languages.includes(language)} disabled={language === draft.default_language} onChange={event => changeAudience(language, event.target.checked)} />{CONTENT_LANGUAGE_NAMES[language]}</label>)}</div></fieldset>
+        <label className={ROW}><input type="checkbox" className={BOX} checked={draft.allow_language_tests} disabled={!loaded || saving || draft.audience_languages.length < 2} onChange={event => { setConfirmed(false); setDraft(prefs => ({ ...prefs, allow_language_tests: event.target.checked })); }} /><span>{t("להציע מדי פעם פוסט בשפה נוספת שהקהל שלי קורא")}</span></label>
         <p className={ui.help}>{t("נציע ניסוי קטן לפי הקהל, ההצעה וסוג העסק, ונראה את הסיבה ליד הטיוטה. לפני שיש תוצאות, לא נציג שפה מסוימת כטובה יותר.")}</p>
         {allowBatchChoice ? <>
           <label htmlFor={`${id}-batch`} className="block font-medium">{t("רק לפוסטים שנכתוב עכשיו")}</label>

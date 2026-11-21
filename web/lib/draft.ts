@@ -1442,7 +1442,7 @@ function mockRevisedPlan(d: OnboardingDraft, brand: PublicBrand | null, feedback
     approach_he: `לבנות את החודש סביב מה שביקשתם: "${words}".`,
     audience: first.audience,
     goal_he: first.goal_he,
-    why_he: "אתם מכירים את העסק הכי טוב. נבנה את זה על מה שגילינו, ונמדוד אם זה עובד.",
+    why_he: "אתם מכירים את העסק הכי טוב. נבנה את זה על מה שגילינו, ונמדוד אם זה מצליח.",
     first_steps: ["לחדד יחד את הרעיון במשפט אחד", "לבחור 3 נושאים שמשרתים אותו", "לבדוק אחרי שבועיים מה הביא תגובות"],
   };
   // The owner's idea first, next to the stronger of the two we had.

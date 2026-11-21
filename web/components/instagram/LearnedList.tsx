@@ -6,9 +6,6 @@ import type { InspirationBrief, InspirationPattern } from "@/lib/api";
 import { IconChevron } from "@/lib/icons";
 import { SourceLink } from "./SourceLink";
 
-/** Enough to read in one pass. The rest waits one tap down, never dropped. */
-const VISIBLE = 4;
-
 /**
  * Strong patterns first, weak after, keeping the model's order inside each group.
  * A weak one is still worth trying — it just rests on one post, or on someone else's
@@ -52,8 +49,9 @@ function PatternRow({ item }: { item: InspirationPattern }) {
               <Copy text="לבדיקה" /></span>
           )}
         </p>
+        {/* One line of sources per finding: the posts it rests on. */}
         <p className="mt-0.5 text-[13px] leading-6 text-[color:var(--ink-muted)]">
-          <Copy text="לפי:" />{" "}
+          <Copy text="מקורות:" />{" "}
           {item.sources.map((source, index) => (
             <span key={source.ref}>
               {index > 0 ? ", " : null}
@@ -68,10 +66,8 @@ function PatternRow({ item }: { item: InspirationPattern }) {
 
 /** "What we learned": the brief's summary, its patterns with their sources, its caveats. */
 export function LearnedList({ brief }: { brief: InspirationBrief }) {
-  const t = useCopy();
+  // Every finding stays visible: they are one line each. The method is the only fold.
   const patterns = ordered(brief.patterns);
-  const shown = patterns.slice(0, VISIBLE);
-  const more = patterns.slice(VISIBLE);
 
   return (
     <div>
@@ -81,24 +77,9 @@ export function LearnedList({ brief }: { brief: InspirationBrief }) {
 
       {patterns.length ? (
         <ul className="paper mt-4 divide-y divide-[var(--rule)] px-5 sm:px-6">
-          {shown.map((item, index) => (
+          {patterns.map((item, index) => (
             <PatternRow key={`${item.pattern}-${index}`} item={item} />
           ))}
-          {more.length ? (
-            <li>
-              <details className="group/more">
-                <summary className="flex min-h-12 cursor-pointer list-none items-center gap-1.5 text-[13px] font-semibold text-[color:var(--ink-soft)] transition-colors hover:text-[color:var(--ink)] [&::-webkit-details-marker]:hidden">
-                  {more.length === 1 ? t("עוד דבר אחד") : t("עוד {arg_0} דברים", { arg_0: more.length })}
-                  <Chevron open="group-open/more:rotate-90" />
-                </summary>
-                <ul className="divide-y divide-[var(--rule)] border-t border-[var(--rule)]">
-                  {more.map((item, index) => (
-                    <PatternRow key={`${item.pattern}-more-${index}`} item={item} />
-                  ))}
-                </ul>
-              </details>
-            </li>
-          ) : null}
         </ul>
       ) : null}
 

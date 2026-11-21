@@ -75,14 +75,14 @@ export function VoiceStep({ embedded = false, onNext, onPendingChange }: { embed
           level={embedded ? 2 : 1}
           eyebrow={embedded ? null : undefined}
           section="business"
-          title={t("זה נשמע כמוכם?")}
+          title={t("ככה אתם מדברים?")}
           subtitle={
             // A preset was never read off a site: say what it is instead.
             !data
               ? t("ככה נכתוב את הפוסטים.")
               : data.from_site === false
-                ? t("עוד לא קראנו אתר שלכם, אז התחלנו מסגנון לפי סוג העסק. ככה נכתוב את הפוסטים.")
-                : t("כך קראנו את הסגנון שלכם מהאתר. ככה נכתוב את הפוסטים.")
+                ? t("עוד לא קראנו את האתר שלכם, אז התחלנו מסגנון לפי סוג העסק.")
+                : t("כך קראנו את הסגנון שלכם מהאתר.")
           }
         />
 

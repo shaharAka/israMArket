@@ -33,7 +33,7 @@ export function LegalPage({
     <div className={styles.page}>
       <header className={styles.nav}>
         <div className={`${styles.wrap} ${styles.navRow}`}>
-          <Link href="/" className={styles.brand} aria-label="ישראמארקט, לעמוד הבית">
+          <Link href="/" className={styles.brand} aria-label="isramarket, לעמוד הבית">
             <ProductWordmark />
           </Link>
           <Link href="/" className={styles.home}>
@@ -65,7 +65,7 @@ export function LegalPage({
 
       <footer className={styles.foot}>
         <div className={`${styles.wrap} ${styles.footRow}`}>
-          <span>ישראמארקט</span>
+          <span>isramarket</span>
           <Link href="/security" aria-current={current === "/security" ? "page" : undefined}>
             אבטחה ופרטיות
           </Link>

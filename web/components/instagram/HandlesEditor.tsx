@@ -60,8 +60,8 @@ export function HandlesEditor({
       <h2 id="handles-heading" className="text-lg font-bold tracking-tight text-[color:var(--ink)]">
         <Copy text="חשבונות להשראה" /></h2>
       <div className="mt-0.5 flex flex-wrap items-center justify-between gap-x-3">
-        <p className="text-[15px] text-[color:var(--ink-soft)]"><Copy text="עסקים שאתם אוהבים, עד" />{max}.</p>
-        <HowToFind topic="competitor_instagram" label={t("איך מוצאים שם משתמש?")} />
+        <p className="text-[15px] text-[color:var(--ink-soft)]"><Copy text="עסקים שאתם אוהבים, עד" /> {max}.</p>
+        <HowToFind topic="competitor_instagram" label={t("לראות איך מוצאים שם משתמש")} />
       </div>
 
       {handles.length ? (
@@ -70,7 +70,7 @@ export function HandlesEditor({
             <li
               key={handle}
               dir="ltr"
-              className={`inline-flex min-h-11 items-center gap-0.5 rounded-full py-1 pl-4 pr-1 text-[14px] font-medium ${
+              className={`inline-flex min-h-11 items-center gap-0.5 rounded-full py-0.5 pl-4 pr-0.5 text-[14px] font-medium ${
                 failures[handle]
                   ? "bg-[var(--danger-soft)] text-[color:var(--danger)] shadow-[inset_0_0_0_1px_var(--danger-rule)]"
                   : "bg-[var(--paper)] text-[color:var(--ink)] shadow-[var(--shadow-card)]"
@@ -84,7 +84,7 @@ export function HandlesEditor({
                 onClick={() => void save(handles.filter((item) => item !== handle))}
                 aria-label={t("להסיר את @{arg_0}", { arg_0: handle })}
                 title={t("להסיר את @{arg_0}", { arg_0: handle })}
-                className="inline-flex h-9 w-9 items-center justify-center rounded-full text-[color:var(--ink-muted)] transition-colors hover:bg-[var(--soft)] hover:text-[color:var(--ink)] disabled:opacity-40"
+                className="inline-flex h-11 w-11 items-center justify-center rounded-full text-[color:var(--ink-muted)] transition-colors hover:bg-[var(--soft)] hover:text-[color:var(--ink)] disabled:opacity-40"
               >
                 <IconPlus className="h-4 w-4 rotate-45" />
               </button>
@@ -119,12 +119,12 @@ export function HandlesEditor({
             spellCheck={false}
             aria-invalid={Boolean(error)}
             aria-describedby={error ? "handle-error" : undefined}
-            className="h-[46px] min-w-0 flex-1 rounded-[10px] border border-[var(--rule-dark)] bg-[var(--paper)] px-3.5 text-[15px] text-[color:var(--ink)] transition-[border-color,box-shadow] duration-200 placeholder:text-[color:var(--ink-faint)] focus:border-[var(--primary)] focus:shadow-[0_0_0_3px_var(--primary-soft)] focus:outline-none aria-[invalid=true]:border-[var(--danger)]"
+            className="h-[46px] min-w-0 flex-1 rounded-[10px] border border-[var(--rule-dark)] bg-[var(--paper)] px-3.5 text-[16px] text-[color:var(--ink)] sm:text-[15px] transition-[border-color,box-shadow] duration-200 placeholder:text-[color:var(--ink-faint)] focus:border-[var(--primary)] focus:shadow-[0_0_0_3px_var(--primary-soft)] focus:outline-none aria-[invalid=true]:border-[var(--danger)]"
           />
           <button
             type="submit"
             disabled={busy || !draft.trim()}
-            className="h-[46px] shrink-0 rounded-[12px] border border-[var(--rule-dark)] bg-[var(--paper)] px-5 text-[14px] font-semibold text-[color:var(--ink)] shadow-[0_1px_2px_rgba(20,32,58,0.05)] transition-colors hover:bg-[var(--soft)] disabled:opacity-45"
+            className="h-[46px] shrink-0 rounded-[12px] border border-[var(--rule-dark)] bg-[var(--paper)] px-5 text-[14px] font-semibold text-[color:var(--ink)] shadow-[0_1px_2px_color-mix(in_srgb,var(--ink)_5%,transparent)] transition-colors hover:bg-[var(--soft)] disabled:text-[color:var(--ink-muted)]"
           >
             {busy ? t("שומרים…") : t("להוסיף")}
           </button>

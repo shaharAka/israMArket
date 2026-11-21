@@ -14,7 +14,11 @@ credit purchase or browser refund endpoint in this release.
   spend per regular period; zero trial videos. **Customer video generation is not
   enabled.** The read endpoint explicitly reports video generation unavailable. Every
   future video generation, regeneration or generative edit must reserve in this ledger
-  before submission, with duration/model bounds and verified settlement.
+  before submission, with duration/model bounds and verified settlement. A video
+  reservation is the allowlisted model's ceiling for the requested length (Omni 1.2:
+  US$0.46 for the default 5 s, US$1.16 for 15 s; the 1.1 fallback at 10 s: US$1.17), all
+  under the US$1.20 per-request bound. A refusal keeps its ceiling, so a refused 15 s
+  request plus its fallback can use most of one period's video budget.
 
 New images and AI image edits each consume one unit. Uploads, selecting an existing
 photo, text/layout editing and exporting existing content do not consume media units.

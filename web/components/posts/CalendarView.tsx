@@ -14,7 +14,7 @@ import { LOCALE_META } from "@/lib/i18n/locales";
 import { calendarDayForKey, initialCalendarDay } from "./calendarNavigation";
 
 const WEEKDAYS = ["ראשון", "שני", "שלישי", "רביעי", "חמישי", "שישי", "שבת"];
-const FILTERS = [{ id: "all", name: "הכל" }, { id: "posts", name: "פוסטים" }, { id: "tasks", name: "משימות" }, { id: "events", name: "מועדים" }];
+const FILTERS = [{ id: "all", name: "הכול" }, { id: "posts", name: "פוסטים" }, { id: "tasks", name: "משימות" }, { id: "events", name: "מועדים" }];
 type Task = { id: string; date: string; title: string; done: boolean };
 type BoardPost = { post: RoadmapPost; index: number | null };
 function isoFor(year: number, month: number, day: number) { return `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`; }

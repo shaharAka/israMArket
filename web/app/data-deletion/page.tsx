@@ -8,8 +8,8 @@ import {
 } from "@/components/landing/LegalPage";
 
 export const metadata: Metadata = {
-  title: "מחיקת מידע · ישראמארקט",
-  description: "איך מוחקים את החשבון והמידע בישראמארקט, ואיך מנתקים את פייסבוק, אינסטגרם וגוגל.",
+  title: "מחיקת מידע · isramarket",
+  description: "איך מוחקים את החשבון והמידע ב-isramarket, ואיך מנתקים את פייסבוק, אינסטגרם וגוגל.",
 };
 
 // Public instructions for Meta's data-deletion URL. This is not a signed-request
@@ -30,7 +30,7 @@ export default function DataDeletionPage() {
     >
       <LegalSection id="account" title="מחיקת החשבון והמידע">
         <ol className="list-decimal space-y-2 ps-5">
-          <li>היכנסו לישראמארקט עם החשבון שאת המידע שלו רוצים למחוק.</li>
+          <li>היכנסו ל-isramarket עם החשבון שאת המידע שלו רוצים למחוק.</li>
           <li>
             פתחו את <Link href="/account" className={LEGAL_LINK}>עמוד החשבון</Link>,
             ובסעיף ״מחיקת החשבון״ לחצו על ״למחוק את החשבון״.
@@ -49,7 +49,7 @@ export default function DataDeletionPage() {
         <p>{BACKUP_NOTE}</p>
         <p>
           פוסטים שכבר פרסמתם ברשתות החברתיות והמידע שנמצא בגוגל, במטא או באתר
-          העסק שלכם נשארים שם. מחיקת החשבון בישראמארקט לא מוחקת אותם.
+          העסק שלכם נשארים שם. מחיקת החשבון ב-isramarket לא מוחקת אותם.
         </p>
       </LegalSection>
 
@@ -64,7 +64,7 @@ export default function DataDeletionPage() {
         <p>
           אפשר להסיר את ההרשאה גם בהגדרות החיבורים של גוגל או בהגדרות
           ״אינטגרציות עסקיות״ של פייסבוק. הסרת ההרשאה שם לא מוחקת את החשבון
-          בישראמארקט. כדי למחוק את המידע אצלנו, השתמשו בשלבים שלמעלה.
+          ב-isramarket. כדי למחוק את המידע אצלנו, השתמשו בשלבים שלמעלה.
         </p>
       </LegalSection>
 
@@ -72,7 +72,7 @@ export default function DataDeletionPage() {
         <p>
           אם אתם לא מצליחים להיכנס, כתבו אל{" "}
           <a href={`mailto:${CONTACT_EMAIL}`} dir="ltr" className={LEGAL_LINK}>{CONTACT_EMAIL}</a>
-          {" "}מהאימייל של החשבון וציינו שזו בקשה למחיקת המידע בישראמארקט.
+          {" "}מהאימייל של החשבון וציינו שזו בקשה למחיקת המידע ב-isramarket.
           נצטרך לוודא שהבקשה באמת מגיעה מכם. אל תשלחו סיסמאות או מפתחות חיבור.
         </p>
         <p>

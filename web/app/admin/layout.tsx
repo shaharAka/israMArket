@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 /** The owner's backoffice: never indexed, never followed, and no referrer leaves it. */
 export const metadata: Metadata = {
-  title: "ניהול · ישראמארקט",
+  title: "ניהול · isramarket",
   robots: { index: false, follow: false, nocache: true, googleBot: { index: false, follow: false } },
   referrer: "no-referrer",
 };

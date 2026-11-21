@@ -64,15 +64,25 @@ function PlayMark({ size = "md" }: { size?: "md" | "lg" }) {
  * A `<video preload="metadata">` paints nothing on iOS until it plays, and a clip whose file
  * cannot be read paints nothing anywhere, so a video tile used to be a blank grey square.
  * The placeholder is always underneath: the frame covers it when there is one, and when
- * there is not the owner still sees a tinted poster with a play mark rather than a hole.
+ * there is not the owner sees a neutral poster with a play mark rather than a hole (no
+ * accent colour: it must not read as artwork of its own).
  */
 function VideoPoster() {
   return (
     <span
       aria-hidden
-      className="absolute inset-0 bg-[linear-gradient(160deg,var(--primary-soft),var(--rule-dark))]"
+      className="absolute inset-0 bg-[var(--soft)]"
     />
   );
+}
+
+/** A source link as words: the site's name, not a raw address that runs off the sheet. */
+function sourceHost(url: string) {
+  try {
+    return new URL(url).hostname.replace(/^www\./, "");
+  } catch {
+    return "";
+  }
 }
 
 /** The thumbnail, shared by the grid tile and the sheet's preview. */
@@ -370,7 +380,7 @@ export function AssetSheet({
             )}
 
             <p className={`${ui.meta} font-normal`}>
-              {SOURCE_LABEL[asset.source]}
+              {t(SOURCE_LABEL[asset.source])}
               {formatDate(asset.created_at) ? ` · ${formatDate(asset.created_at)}` : ""}
               {dimensions ? (
                 <>
@@ -385,11 +395,11 @@ export function AssetSheet({
                 href={asset.source_url}
                 target="_blank"
                 rel="noreferrer"
-                dir="ltr"
-                className="-mt-2 block truncate text-xs text-[var(--ink-muted)] underline-offset-4 hover:text-[var(--ink)] hover:underline"
+                className="-mt-2 inline-flex min-h-11 max-w-full items-center gap-1.5 text-[14px] font-semibold text-[var(--primary)] underline-offset-4 hover:text-[var(--primary-dark)] hover:underline"
                 title={asset.source_url}
               >
-                {asset.source_url}
+                <span className="shrink-0"><Copy text="לפתוח את המקור" /></span>
+                {sourceHost(asset.source_url) ? <bdi className="min-w-0 truncate font-normal text-[var(--ink-muted)]">{sourceHost(asset.source_url)}</bdi> : null}
               </a>
             ) : null}
 

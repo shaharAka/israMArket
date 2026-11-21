@@ -21,6 +21,8 @@ class VideoOptions(BaseModel):
     end: float | None = Field(default=None, gt=0, le=180, allow_inf_nan=False)
     overlay_headline: str | None = Field(default=None, max_length=90)
     overlay_png: str = Field(default="", max_length=4_000_000)
+    # New generated clips only; checked against the configured model's verified maximum.
+    seconds: int | None = Field(default=None, ge=3, le=15)
 
 
 class RevisionIn(BaseModel):

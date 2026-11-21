@@ -210,6 +210,21 @@ class CampaignTest(unittest.TestCase):
         self.assertEqual(self.create(kind="finish", options={"overlay_png": "https://other/photo"}).status_code, 422)
         self.fake.assert_not_called()
 
+    def test_video_length_is_checked_against_the_model_and_reaches_generation(self):
+        from app.services import campaign_video as video
+        allowance = {"videos": {"generation_available": True, "remaining": 2}}
+        self.producer.stop()
+        with mock.patch.object(revisions.media_allowances, "status", return_value=allowance), \
+             mock.patch.object(video, "generate", side_effect=HTTPException(502, "stub")) as paid:
+            self.assertEqual(self.create(kind="video", options={"seconds": 16}).status_code, 422)
+            with mock.patch.object(video.get_settings(), "video_model", "gemini-omni-1.1-flash"):
+                self.assertEqual(self.create(kind="video", options={"seconds": 15}).status_code, 422)
+            paid.assert_not_called()
+            result = self.create(kind="video", options={"seconds": 15})
+            self.assertEqual(result.status_code, 202, result.text)
+        paid.assert_called_once()
+        self.assertEqual(paid.call_args.kwargs["seconds"], 15)
+
     def test_interrupted_request_not_retried_by_reads_or_resubmit(self):
         self.fake.side_effect = RuntimeError("offline"); rid = self.create().json()["id"]
         row = self.db.get(CampaignRevision, rid); row.state = "working"; row.updated_at = datetime.utcnow() - timedelta(hours=1); self.db.commit()

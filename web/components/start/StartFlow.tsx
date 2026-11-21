@@ -439,12 +439,12 @@ export function StartFlow() {
       {/* Desktop: the landing's bar, so this reads as the next page of the same site. */}
       <header className={styles.topbar}>
         <div className={`${styles.wrap} ${styles.topbarRow}`}>
-          <Link href="/" className={styles.brand} aria-label="ישראמארקט, לעמוד הבית">
+          <Link href="/" className={styles.brand} aria-label="isramarket, לעמוד הבית">
             <span className="product-wordmark" dir="ltr"><IdentityMark direction="open" /><span className="sr-only">isramarket</span></span>
           </Link>
           {loggedIn ? null : (
             <p className={styles.signin}>
-              כבר יש לכם חשבון?
+              כבר יש לכם חשבון?{" "}
               <Link href="/login">להיכנס</Link>
             </p>
           )}
