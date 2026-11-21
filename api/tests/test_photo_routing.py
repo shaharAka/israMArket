@@ -115,6 +115,16 @@ class RoutingTest(DnaTestCase, unittest.TestCase):
         self.setUp_dna()
         self.business = self.add_business("Routing")
 
+    def test_automatic_real_photo_candidates_exclude_generated_assets(self):
+        uploaded = Asset(business_id=self.business.id, filename="owner.jpg", mime="image/jpeg",
+                         kind="image", source="upload", description="Actual product")
+        generated = Asset(business_id=self.business.id, filename="generated.jpg", mime="image/jpeg",
+                          kind="image", source="generated", description="Actual product")
+        self.db.add_all([uploaded, generated])
+        self.db.commit()
+        candidates = photo_choice.gather(self.db, self.business, {})
+        self.assertEqual([candidate.asset_id for candidate in candidates], [uploaded.id])
+
     def route(self, task="edit"):
         return image_routing.route(task, muse_prompt="muse prompt", gemini_prompt="gemini prompt", aspect="4:5",
                                    photo=PHOTO if task == "edit" else None, label="REFERENCE PHOTO 1: x",

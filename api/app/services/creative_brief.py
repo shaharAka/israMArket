@@ -2,14 +2,37 @@
 from __future__ import annotations
 
 import json
+import math
 
 from app.models import Audience
+from app.services.connected_posts import metric_observation
 from app.services.jsonutil import loads
 from app.services.hebrew_style import HEBREW_STYLE
 
 
 def _text(value, limit=500):
     return " ".join(value.split())[:limit] if isinstance(value, str) else ""
+
+
+def _has_measured_learning(post: dict) -> bool:
+    results = post.get("results")
+    if not (post.get("published_at") or post.get("published_url")) or not isinstance(results, dict):
+        return False
+    value = results.get("value")
+    matches = results.get("matched_by")
+    if (
+        type(value) not in (int, float) or (type(value) is float and not math.isfinite(value))
+        or not isinstance(matches, list) or not any(_text(match) for match in matches)
+        or not _text(results.get("updated_at"))
+    ):
+        return False
+    # Older records have a matched value and a read date, but no per-metric observations.
+    if not results.get("observations"):
+        return True
+    measure = post.get("measure")
+    metric = _text(results.get("metric") or (measure.get("metric") if isinstance(measure, dict) else None))
+    observation = metric_observation(results, metric) if metric else None
+    return bool(observation and _text(observation.get("source")) and _text(observation.get("read_at")))
 
 
 def for_post(post: dict, business, strategy, db) -> dict:
@@ -25,14 +48,9 @@ def for_post(post: dict, business, strategy, db) -> dict:
         "name": _text(audience.name, 160), "summary": _text(audience.summary, 300),
         "needs": [_text(item, 200) for item in needs[:5]] if isinstance(needs, list) else [],
     }
-    results = post.get("results") or {}
-    measured = bool(results.get("matched_by") and (results.get("observations") or (
-        (post.get("published_at") or post.get("published_url")) and results.get("updated_at")
-        and isinstance(results.get("value"), (int, float)) and not isinstance(results.get("value"), bool)
-    )))
     learning = _text(post.get("informed_by_note"))
     learning_source = "plan_learning" if learning else "first_test"
-    if not learning and measured:
+    if not learning and _has_measured_learning(post):
         learning = _text(post.get("learning"))
         if learning:
             learning_source = "measured_post"

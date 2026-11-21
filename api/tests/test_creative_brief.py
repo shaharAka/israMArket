@@ -51,9 +51,23 @@ class BriefTest(DnaTestCase, unittest.TestCase):
         self.assertEqual(brief["learning_source"], "plan_learning")
         self.assertIn("אינו הוכחה", prompt_context({"creative_brief": brief}))
 
-    def test_verified_post_observation_can_supply_learning(self):
-        brief = self.brief(learning="Consultation inquiries increased", results={
-            "observations": {"site_visits": {"source": "ga4", "read_at": "2026-10-10"}},
-            "matched_by": ["utm"], "value": 14,
-        })
-        self.assertEqual(brief["learning_source"], "measured_post")
+    def test_matching_published_observation_can_supply_learning(self):
+        results = {
+            "observations": {"visits": {"source": "ga4", "read_at": "2026-10-10"}},
+            "matched_by": ["utm"], "metric": "site_visits", "value": 14, "updated_at": "2026-10-10",
+        }
+        for candidate in (results, {**results, "value": 0}, {**results, "observations": {}}):
+            brief = self.brief(learning="The signup page was visited", published_at="2026-10-09", results=candidate)
+            self.assertEqual(brief["learning_source"], "measured_post")
+
+    def test_unpublished_unmatched_and_unrelated_results_do_not_supply_learning(self):
+        results = {
+            "observations": {"visits": {"source": "ga4", "read_at": "2026-10-10"}},
+            "matched_by": ["utm"], "metric": "site_visits", "value": 14, "updated_at": "2026-10-10",
+        }
+        unpublished = self.brief(learning="Owner tried the link", results=results)
+        self.assertIsNone(unpublished["learning"])
+        for candidate in ({**results, "metric": "reach"}, {**results, "value": float("inf")},
+                          {**results, "matched_by": []}, {**results, "updated_at": ""}):
+            brief = self.brief(learning="Existing note", published_at="2026-10-09", results=candidate)
+            self.assertIsNone(brief["learning"])

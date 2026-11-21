@@ -184,7 +184,8 @@ def gather(db, business, scraped: dict, *, site_photos: list[dict] | None = None
             .all()
         )
         for asset in assets:
-            if asset.mime not in MODEL_MIMES:
+            # Library membership is not proof that this is a photograph of the business.
+            if asset.source == "generated" or asset.mime not in MODEL_MIMES:
                 continue
             tags = " ".join(loads(asset.tags_json, []) or [])
             out.append(

@@ -764,7 +764,9 @@ def attach_post_asset(
     for field in ("video_url", "video_source", "video_asset_id"):
         target.pop(field, None)
     target["image_url"] = image_public_url(asset.business_id, asset.filename)
-    target["image_source"] = "asset"
+    target["image_source"] = "generated" if asset.source == "generated" else "asset"
+    if asset.source == "generated":
+        target["image_preference"] = "ai"
     target["image_asset_id"] = asset.id
     target["image_action"] = "asset"
     target["image_source_url"] = asset.source_url or ""

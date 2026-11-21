@@ -470,6 +470,19 @@ class AssetTestCase(unittest.TestCase):
         self.assertEqual(saved["image_asset_id"], asset.id)
         self.assertEqual(response.json()["strategy"]["id"], self.db.query(Strategy).first().id)
 
+    def test_reusing_an_ai_library_image_retains_its_provenance(self):
+        self.add_strategy()
+        generated = self.add_asset()
+        generated.source = "generated"
+        self.db.commit()
+
+        response = self.client.post("/strategy/posts/asset", json={"post_index": 0, "asset_id": generated.id})
+        self.assertEqual(response.status_code, 200, response.text)
+        self.assertEqual(response.json()["post"]["image_source"], "generated")
+
+        stored = json.loads(self.db.query(Strategy).first().roadmap_json)["roadmap"]["posts"][0]
+        self.assertEqual(stored["image_preference"], "ai")
+
     def test_campaign_photo_requires_the_selected_draft(self):
         strategy = self.add_strategy()
         asset = self.add_asset()
