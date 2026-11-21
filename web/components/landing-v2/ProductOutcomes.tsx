@@ -7,9 +7,9 @@ import { ProviderLogo } from "./ProviderLogo";
 import styles from "./product-outcomes.module.css";
 
 const SCHEDULE = [
-  { week: "שבוע ראשון", task: "פוסט היכרות", channel: "Instagram", status: "ממתין לאישור" },
-  { week: "שבוע שני", task: "סיפור של לקוח", channel: "Facebook", status: "בתוכנית" },
-  { week: "שבוע שלישי", task: "הזמנה ליצור קשר", channel: "Instagram", status: "בתוכנית" },
+  { week: "שבוע ראשון", task: "פותחים הרשמה לסדנה", channel: "Instagram" },
+  { week: "שבוע שני", task: "מציגים את ההדפס המוכן", channel: "Facebook" },
+  { week: "שבוע שלישי", task: "מזמינים לערב ההדפס", channel: "Instagram" },
 ] as const;
 
 const SOURCES = [
@@ -21,13 +21,12 @@ const SOURCES = [
 function SchedulePreview() {
   return <figure className={styles.workspace}>
     <figcaption className={styles.workspaceTitle}><IconCalendar /><Copy text="התוכנית לחודש הקרוב" /></figcaption>
-    <p className={styles.scheduleGoal}><IconFlag /><Copy text="לקבל יותר פניות" /></p>
+    <p className={styles.scheduleGoal}><IconFlag /><Copy text="למלא את סדנת ההדפס" /></p>
     <ol className={styles.schedule}>
-      {SCHEDULE.map(({ week, task, channel, status }, index) => (
+      {SCHEDULE.map(({ week, task, channel }) => (
         <li key={week}>
           <p><Copy text={week} /></p>
           <div><strong><Copy text={task} /></strong><bdi lang="en">{channel}</bdi></div>
-          <span data-pending={index === 0 || undefined}><Copy text={status} /></span>
         </li>
       ))}
     </ol>
@@ -40,8 +39,8 @@ function ApprovalPreview() {
   return <div className={styles.approvalComposition}>
     <figure className={styles.phone}>
       <figcaption className={styles.phoneHeading}><IconPhotos /><Copy text="הפוסט הבא שלכם" /></figcaption>
-      <Image src="/showcase/dyo-tari/story-offer.webp" width={720} height={1280}
-        alt={t("סטורי כחול שמציג את ההדפס שאפשר להכין בסדנה")} sizes="188px" />
+      <Image src="/showcase/dyo-tari/feed.webp" width={864} height={1080}
+        alt={t("פוסט כתום עם איור דג וכיתוב ״הדיו עוד רטוב״")} sizes="(max-width: 760px) 84vw, 26vw" />
       <div className={styles.phoneStatus}>
         <bdi lang="en">Instagram</bdi>
         <span role="status" data-approved={approved || undefined}>
@@ -59,7 +58,6 @@ function MeasurementPreview() {
   return <figure className={styles.workspace} id="data">
     <figcaption className={styles.workspaceTitle}>
       <Copy text="מה עבד ומה כדאי לנסות" />
-      <small className={styles.measurementExample}><Copy text="תצוגה לדוגמה" /></small>
     </figcaption>
     <div className={styles.measurement}>
       <dl>
@@ -81,30 +79,31 @@ export function ProductOutcomes() {
         <h2 id="outcome-title"><Copy text="מה מקבלים" /></h2>
         <span><Copy text="תצוגה לדוגמה" /></span>
       </div>
+      <div className={styles.outcomeGrid}>
       <article id="campaign" className={styles.outcome}>
         <div className={styles.outcomeCopy}>
           <span id="plan" className={styles.anchor} aria-hidden="true" />
-          <h3><Copy text="קמפיין" /></h3>
-          <p><Copy text="תוכנית חודשית עם קהל, יעד ולוח פרסום." /></p>
+          <h3><Copy text="יודעים מה לפרסם השבוע" /></h3>
+          <p><Copy text="התוכנית מחלקת את הקמפיין לשבועות ולערוצים." /></p>
         </div>
         <SchedulePreview />
       </article>
       <article id="posts" className={styles.outcome}>
         <div className={styles.outcomeCopy}>
           <span id="mobile" className={styles.anchor} aria-hidden="true" />
-          <h3><Copy text="פוסטים" /></h3>
-          <p><Copy text="תוכן, עיצובים וסרטונים לאישורכם." /></p>
-          <p><Copy text="מהנייד, בדפדפן: מאשרים את הפוסט הבא בין לקוח ללקוח." /></p>
+          <h3><Copy text="מקבלים פוסט מוכן לאישור" /></h3>
+          <p><Copy text="אפשר לערוך את הטקסט והעיצוב לפני הפרסום." /></p>
         </div>
         <ApprovalPreview />
       </article>
       <article id="learning" className={styles.outcome}>
         <div className={styles.outcomeCopy}>
-          <h3><Copy text="מדידה" /></h3>
-          <p><Copy text="בודקים מה הצליח בכל פוסט, ומציעים מה לשנות בקמפיין הבא." /></p>
+          <h3><Copy text="בודקים אם הגיעו פניות" /></h3>
+          <p><Copy text="רואים כמה לחצו וכמה השאירו פרטים, ובוחרים מה לנסות בפעם הבאה." /></p>
         </div>
         <MeasurementPreview />
       </article>
+      </div>
     </div>
   </section>;
 }

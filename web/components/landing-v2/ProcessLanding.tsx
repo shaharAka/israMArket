@@ -42,10 +42,15 @@ export function ProcessLanding({ initialPath, identity }: { initialPath?: Exampl
   }, [initialPath]);
   const selected = PROCESS_ROLES.find(item => item.segment === role);
   // A generic homepage must not silently choose “service provider” for a new owner.
-  const start = `/start?lang=${locale}${selected ? `&model=${selected.path}&segment=${selected.segment}` : ""}`;
+  const start = `/start?entry=signup&lang=${locale}${selected ? `&model=${selected.path}&segment=${selected.segment}` : ""}`;
   return <div className={`lv2 lv2-site ${styles.page} ${siteClean.variable} ${artSerif.variable} ${siteSerif.variable}`} data-business={selected?.path ?? "all"} data-process-role={role ?? "all"} data-hero-type="modern" data-design="signal-punch" data-palette={palette}>
     <header className={`lv2-nav ${styles.header}`}><div className={`lv2-wrap lv2-nav-row ${styles.headerRow}`}>
-      <Link href="/" className="lv2-brand" aria-label="isramarket"><BrandWordmark direction={identity} /></Link>
+      <Link href={`/?lang=${locale}`} className="lv2-brand" aria-label="isramarket"><BrandWordmark direction={identity} /></Link>
+      <nav className={story.siteLinks}>
+        <a href="#story"><Copy text="ככה זה עובד" /></a>
+        <a href="#results"><Copy text="מה מקבלים" /></a>
+        <a href="#trial"><Copy text="מחיר" /></a>
+      </nav>
       <div className={`lv2-nav-end ${styles.headerActions}`}>
         <ProductUtilities inline />
         <Link href={`/login?lang=${locale}`} className="lv2-login"><Copy text="להיכנס" /></Link>

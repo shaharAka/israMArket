@@ -1,62 +1,34 @@
-.hero {
-  color: var(--paper);
-  background: var(--dark-ground);
-  overflow: clip;
-}
+.hero { color: var(--paper); background: var(--dark-ground); overflow: clip; }
 .root {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, .95fr);
-  align-items: center;
-  gap: clamp(36px, 5vw, 75px);
-  max-width: 1500px;
-  margin: auto;
-  padding: clamp(36px, 5vw, 82px) clamp(24px, 5.5vw, 88px);
+  max-width: 1560px; margin: auto; padding: clamp(34px, 4.2vw, 72px) clamp(24px, 5.3vw, 85px) clamp(40px, 5.2vw, 84px);
+  display: grid; grid-template-columns: minmax(0, .88fr) minmax(0, 1.12fr);
+  align-items: center; gap: clamp(32px, 5vw, 85px);
 }
-.copy h1 {
-  max-width: 15ch;
-  font-weight: 700;
-  font-size: clamp(44px, 5.4vw, 88px);
-  line-height: 1.04;
-  letter-spacing: -.035em;
-  text-wrap: balance;
-}
+.copy h1 { max-width: 13.5ch; font-size: clamp(44px, 5.15vw, 84px); font-weight: 700; line-height: 1.04; letter-spacing: -.035em; text-wrap: balance; }
 :global(html[lang=he]) .copy h1 { font-family: SignalHebrew, var(--font-site-clean), sans-serif; font-weight: 400; }
-.copy p { margin-top: 22px; max-width: 43ch; font-size: clamp(17px, 1.5vw, 21px); line-height: 1.55; color: var(--dark-copy); }
-.copy .approval { margin-top: 9px; font-size: 15px; }
-.actions { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 20px; margin-block-start: 25px; }
-.sectionLinks { display: flex; flex-wrap: wrap; gap: 0 15px; align-items: center; }
-.start {
-  display: inline-flex;
-  align-items: center;
-  gap: 18px;
-  min-height: 50px;
-  padding: 10px 21px;
-  background: var(--dark-action);
-  color: var(--dark-ground);
-  border-radius: 10px;
-  font-weight: 650;
-}
+.copy > p { margin-top: 21px; max-width: 42ch; font-size: clamp(17px, 1.33vw, 21px); line-height: 1.58; color: var(--dark-copy); }
+.actions { display: flex; gap: 12px 24px; align-items: center; flex-wrap: wrap; margin-block-start: 25px; }
+.start { display: inline-flex; justify-content: center; align-items: center; gap: 14px; min-height: 50px; padding: 10px 22px; border-radius: 9px; background: var(--dark-action); color: var(--dark-ground); font-weight: 650; }
 .start:hover { background: var(--paper); }
-.start svg { width: 22px; height: 22px; }
-.storyLink {
-  display: inline-flex;
-  align-items: center;
-  min-height: 44px;
-  color: var(--paper);
-  font-size: 14px;
-  text-decoration: underline;
-  text-underline-offset: 4px;
-}
+.start svg { width: 20px; height: 20px; }
+.storyLink { display: inline-flex; align-items: center; min-height: 44px; color: var(--paper); font-size: 15px; text-decoration: underline; text-underline-offset: 5px; }
 .storyLink:hover { color: var(--dark-action); }
-.copy > small { display: block; margin-top: 9px; color: var(--dark-copy); font-size: 12px; }
-:is(.start, .storyLink):focus-visible {
-  outline: 3px solid var(--dark-action);
-  outline-offset: 3px;
-}
+:is(.start, .storyLink):focus-visible { outline: 2px solid var(--dark-action); outline-offset: 4px; }
+.copy > small { display: block; margin-top: 9px; color: var(--dark-copy); font-size: 13px; }
+.proof { min-width: 0; margin: 0; background: #ffedcd; color: #47150e; }
+.proof > button { aspect-ratio: 1.65; border-radius: 0; }
+.proof > button .heroPhoto { width: 100%; height: 100%; object-fit: cover; object-position: center 48%; }
+.artType { position: absolute; z-index: 1; inset-block-end: 8%; left: 5.5%; color: #fff0d0; font: 400 clamp(44px, 5.1vw, 77px)/.84 SignalHebrew, sans-serif; letter-spacing: -.055em; text-align: right; text-shadow: 0 1px 20px rgb(52 12 8 / .65); }
+.proof figcaption { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: clamp(13px, 1.7vw, 24px); }
+.proof figcaption small, .proof figcaption strong { display: block; }
+.proof figcaption small { font-size: 13px; line-height: 1.35; }
+.proof figcaption strong { font-size: clamp(20px, 2.1vw, 30px); font-weight: 600; letter-spacing: -.025em; line-height: 1.3; }
+.proof figcaption > span { font-size: 13px; border-inline-start: 1px solid #a87e64; padding-inline-start: 12px; }
 @media (max-width: 760px) {
-  .root { grid-template-columns: 1fr; gap: 27px; padding: 34px 20px 28px; }
-  .copy h1 { font-size: clamp(41px, 9vw, 62px); }
-  .copy p { margin-top: 15px; }
-  .copy .approval { margin-top: 7px; }
+  .root { grid-template-columns: 1fr; padding: 31px 20px 27px; gap: 27px; }
+  .copy h1 { max-width: 16ch; font-size: clamp(42px, 9.2vw, 62px); }
+  .copy > p { margin-top: 15px; }
   .actions { margin-block-start: 18px; }
+  .proof > button { aspect-ratio: 1.75; }
+  .artType { font-size: clamp(44px, 9.5vw, 65px); }
 }
