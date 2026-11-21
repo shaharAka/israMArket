@@ -44,6 +44,7 @@ from app.models import (
     ServiceReport,
     Strategy,
     Subscription,
+    FeedbackEvidence,
     SupportTicket,
     SupportMessage,
     User,
@@ -104,6 +105,7 @@ class AccountDeletionTest(unittest.TestCase):
         db.add(ticket)
         db.flush()
         db.add(SupportMessage(id=f"{user.id:032d}", ticket_id=ticket.id, user_id=user.id, role="user", body="Synthetic support"))
+        db.add(FeedbackEvidence(ticket_id=ticket.id, user_id=user.id, screenshot=b"synthetic screenshot"))
         ids: list[int] = []
         for index in range(businesses):
             business = Business(user_id=user.id, name=f"עסק {index}")
