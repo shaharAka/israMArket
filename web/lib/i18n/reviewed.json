@@ -1344,6 +1344,41 @@
       "en": "One topic is enough to start preparing posts. If your image allowance runs low, choose a photo you already have in Campaign.",
       "ar": "يكفي موضوع واحد لبدء إعداد المنشورات. إذا لم يكفِ رصيد الصور، اختاروا صورة موجودة من داخل الحملة.",
       "ru": "Чтобы начать готовить публикации, достаточно одной темы. Если лимита на новое изображение не хватает, выберите готовое фото прямо в кампании."
+    },
+    "m_1127651141e398df": {
+      "en": "Play video",
+      "ar": "تشغيل الفيديو",
+      "ru": "Воспроизвести видео"
+    },
+    "m_63eae07763f435f6": {
+      "en": "What we measure",
+      "ar": "ما نقيسه",
+      "ru": "Что измеряем"
+    },
+    "m_6e877cd27b7fa8c5": {
+      "en": "It learns about your work and goals, connects to your marketing channels, builds a monthly plan, creates content and campaigns, and checks what works to improve results month after month.",
+      "ar": "يتعرّف النظام على نشاطكم وأهدافكم، ويرتبط بقنواتكم التسويقية، ويضع خطة شهرية، وينشئ المحتوى والحملات، ويتابع ما ينجح لتحسين النتائج من شهر إلى آخر.",
+      "ru": "Система изучает вашу работу и цели, подключается к вашим каналам продвижения, составляет план на месяц, создаёт контент и кампании, проверяет, что работает, и улучшает результаты из месяца в месяц."
+    },
+    "m_8f838bc5323ca197": {
+      "en": "You approve and publish.",
+      "ar": "أنتم تراجعون المحتوى وتوافقون عليه وتنشرونه.",
+      "ru": "Вы утверждаете и публикуете материалы."
+    },
+    "m_c9343e3d2d64d25b": {
+      "en": "Example campaign",
+      "ar": "مثال على حملة",
+      "ru": "Пример кампании"
+    },
+    "m_dfef1ce900eccdc9": {
+      "en": "The marketing system that does the work for you.",
+      "ar": "نظام التسويق الذي ينجز العمل من أجلكم.",
+      "ru": "Система, которая берёт продвижение на себя."
+    },
+    "m_f87c13497713d1ed": {
+      "en": "Pause video",
+      "ar": "إيقاف الفيديو مؤقتًا",
+      "ru": "Приостановить видео"
     }
   },
   "numberForms": {
