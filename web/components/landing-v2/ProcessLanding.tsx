@@ -27,13 +27,14 @@ import "./showcase.css";
 /** The arrival route informs signup. Hover previews are owned by each section. */
 export function ProcessLanding({ initialPath, identity }: { initialPath?: ExamplePath; identity?: IdentityDirection }) {
   const { locale } = useLanguage();
-  const [palette, setPalette] = useState("punch");
+  const [palette, setPalette] = useState("forest");
   const [role, setRole] = useState<ProcessRole | null>(() => defaultProcessRole(initialPath));
   useEffect(() => {
     const read = () => {
       const params = new URLSearchParams(window.location.search);
       const segment = params.get("segment");
-      setPalette(params.get("palette") === "punch-jade" ? "punch-jade" : "punch");
+      const selectedPalette = params.get("palette");
+      setPalette(selectedPalette === "onyx" || selectedPalette === "punch-jade" ? selectedPalette : "forest");
       setRole(isProcessRole(segment) ? segment : defaultProcessRole(initialPath));
     };
     const timer = window.setTimeout(read, 0);

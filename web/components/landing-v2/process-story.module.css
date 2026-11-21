@@ -599,18 +599,63 @@
 
 /* The dark surfaces are fixed. Colour is an accent for actions and examples. */
 .page.page {
-  --paper: #f7f1e6;
-  --canvas: #f7f1e6;
-  --ink: #30252d;
-  --action: #30252d;
-  --dark-ground: #30252d;
-  --dark-deep: #241c23;
-  --dark-raised: #44363f;
-  --dark-copy: #e7d9ce;
-  --dark-line: #78636e;
-  --dark-action: #f4b28b;
+  --paper: #f7f3e9;
+  --canvas: var(--paper);
+  --ink: #233c31;
+  --ink-soft: #42584b;
+  --ink-muted: #526759;
+  --action: #193d30;
+  --primary-dark: #20533d;
+  --dark-ground: #163b2f;
+  --dark-deep: #102d24;
+  --dark-raised: #26523f;
+  --dark-copy: #e0e6d7;
+  --dark-line: #708e7c;
+  --dark-action: #f4df62;
+  --sheet-heading: #f09257;
+  --sheet-heading-ink: #20372a;
+  --sheet-page: #fbf2e3;
+  --sheet-ink: #223d30;
+  --sheet-muted: #40594a;
+  --sheet-rule: #b5c5aa;
+  --sheet-decision: #20523e;
+  --sheet-light: #fffbea;
+  --report-paper: #e2edda;
+  --calendar-ground: #e9b484;
+  --calendar-shadow: #b58b5d;
   background: var(--paper);
   color: var(--ink);
+}
+.page[data-palette=onyx] {
+  --paper: #f3f1f7;
+  --ink: #242334;
+  --ink-soft: #50505f;
+  --ink-muted: #60606f;
+  --action: #17181e;
+  --primary-dark: #4141a5;
+  --dark-ground: #17181e;
+  --dark-deep: #101116;
+  --dark-raised: #30303e;
+  --dark-copy: #dbdbe4;
+  --dark-line: #747487;
+  --dark-action: #78ecc0;
+  --sheet-heading: #5047cf;
+  --sheet-heading-ink: #faf9ff;
+  --sheet-page: #f0eff7;
+  --sheet-ink: #262638;
+  --sheet-muted: #474658;
+  --sheet-rule: #b8b6ca;
+  --sheet-decision: #29283e;
+  --sheet-light: #fbfaff;
+  --report-paper: #e6e5f4;
+  --calendar-ground: #bcb8ef;
+  --calendar-shadow: #8f8bb3;
+}
+.page[data-palette=punch-jade] {
+  --dark-ground: #242b28;
+  --dark-deep: #1e2422;
+  --dark-action: #f2b792;
+  --sheet-heading: #c9dfca;
 }
 .page:global(.lv2-site) .header {
   background: var(--dark-ground);

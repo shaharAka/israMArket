@@ -5,6 +5,7 @@ import { Copy, useCopy, useLanguage } from "@/components/language/LanguageProvid
 import { IconCheck } from "@/lib/icons";
 import { ProviderLogo } from "./ProviderLogo";
 import { StoryStage } from "./StoryStage";
+import { campaignVisits, campaignWeek, formatNovember } from "./workshopCampaign";
 import styles from "./product-outcomes.module.css";
 import art from "./journey-art.module.css";
 
@@ -15,26 +16,34 @@ const SOURCES = [
 ] as const;
 
 const SCHEDULED: Record<number, string> = {
-  4: "/showcase/campaign-cuts/printmaker.webp",
-  11: "/showcase/dyo-tari/feed.webp",
+  3: "/showcase/campaign-cuts/worktable.webp",
+  ...Object.fromEntries(campaignWeek.map(item => [item.day, item.image])),
   18: "/showcase/dyo-tari/story.webp",
+  23: "/showcase/campaign-cuts/printmaker.webp",
+  29: "/showcase/dyo-tari/feed.webp",
 };
 
 function SchedulePreview() {
-  return <StoryStage className={art.calendar} decorative>
-    <div className={art.planner}>
-      <div className={art.plannerHead}><strong><Copy text="לוח הפרסום" /></strong><i/><i/></div>
+  const { locale } = useLanguage();
+  return <StoryStage className={art.calendar}>
+    <div className={art.planner} aria-hidden="true">
+      <div className={art.plannerHead}><strong><Copy text="לוח הפרסום" /></strong>
+        <time dateTime="2026-11">{formatNovember(locale, 1, { month:"long" })}</time></div>
+      <div className={art.weekdays}>{Array.from({length:7}, (_, i) => <span key={i}>
+        {formatNovember(locale, i+1, { weekday:"narrow" })}
+      </span>)}</div>
       <div className={art.days}>
-        {Array.from({ length: 28 }, (_, i) => {
+        {Array.from({ length: 35 }, (_, i) => {
           const day = i + 1;
           return <span key={day} data-publish={SCHEDULED[day] ? day : undefined}>
-            {day}
+            {day <= 30 && <b>{day}</b>}
             {SCHEDULED[day] && <Image src={SCHEDULED[day]} width={60} height={44} alt="" sizes="46px" />}
           </span>;
         })}
       </div>
     </div>
-    <strong className={art.planNote}><Copy text="פותחים הרשמה לסדנה" /></strong>
+    <strong className={art.planNote}><Copy text="מועדי פרסום מוצעים" /></strong>
+    <span className="sr-only"><Copy text="פריסת הקמפיין בנובמבר: 3, 8, 10, 12, 18, 23 ו־29 בחודש." /></span>
   </StoryStage>;
 }
 
@@ -55,11 +64,19 @@ function ApprovalPreview() {
 
 function MeasurementPreview() {
   return <StoryStage className={art.numbers}>
-    <div className={art.measureTitle}><Copy text="הרשמות לסדנה" /><small><Copy text="תצוגה לדוגמה" /></small></div>
-    <div className={art.filledSeats} aria-hidden="true">
-      {Array.from({ length: 8 }, (_, i) => <div key={i} data-filled={i<3 || undefined}>{i<3 && <IconCheck />}</div>)}
+    <div className={art.measureTitle}>
+      <small><Copy text="נתונים לדוגמה" /></small>
+      <strong><Copy text="מאיפה הגיעו לאתר?" /></strong>
     </div>
-    <strong className={art.count}><Copy text="3 מתוך 8 מקומות" /></strong>
+    <table className={art.report}>
+      <caption className="sr-only"><Copy text="ביקורים באתר מקישורי הקמפיין, לפי שבוע וערוץ." /></caption>
+      <thead><tr><th scope="col"><Copy text="ביקורים" /></th>
+        <th scope="col"><bdi>1–7.11</bdi></th><th scope="col"><bdi>8–14.11</bdi></th></tr></thead>
+      <tbody>{campaignVisits.map(row => <tr key={row.channel}>
+        <th scope="row"><bdi lang="en">{row.channel}</bdi></th><td>{row.earlier}</td><td>{row.later}</td>
+      </tr>)}</tbody>
+    </table>
+    <div className={art.finding}><Copy text="עיקר העלייה הגיעה מאינסטגרם. נבדוק אם סרטון נוסף יביא עוד ביקורים." /></div>
     <small className={art.metricSource}><bdi lang="en">Google Analytics</bdi></small>
   </StoryStage>;
 }
@@ -79,7 +96,7 @@ export function ProductOutcomes() {
         </article>
         <article id="learning" className={styles.outcome}>
           <span id="data" className={styles.anchor} aria-hidden="true" />
-          <MeasurementPreview /><h3><Copy text="רואים כמה נרשמו" /></h3>
+          <MeasurementPreview /><h3><Copy text="מחליטים מה לנסות בשבוע הבא" /></h3>
         </article>
       </div>
     </div>
