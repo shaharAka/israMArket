@@ -148,6 +148,7 @@ export type BrandScan = {
 /** Everything /start needs to resume where the owner left off. */
 export type FlowState = {
   researchOwnerId?: number;
+  researchBusinessId?: number;
   v: 2;
   step: string;
   draft: OnboardingDraft;

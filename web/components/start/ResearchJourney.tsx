@@ -27,7 +27,10 @@ import styles from "./start.module.css";
 import form from "./form.module.css";
 
 const BEFORE = ["name", "offer", "different", "audiences", "links", "discovery", "signup"];
-function sequence(j: Journey) { return j.phase === "before" ? BEFORE : [...(j.segment === "software" ? ["software_offer", "software"] : []), "connections", "metrics", "detail", "build"]; }
+function afterSignup(segment: Segment) {
+  return [...(segment === "software" ? ["software_offer", "software"] : []), "connections", "metrics", "detail", "build"];
+}
+function sequence(j: Journey) { return j.phase === "before" ? BEFORE : afterSignup(j.segment); }
 function initialJourney(segment: Segment): Journey { return { version: 1, segment, phase: "before", step: "name", replies: [], observations: [] }; }
 function selectSegment(flow: FlowState, segment: Segment): FlowState {
   const choice = BUSINESS_SEGMENTS.find(item => item.key === segment)!;
@@ -61,7 +64,8 @@ export function ResearchJourney() {
   async function persist(current: FlowState) {
     const errors = await validateLinks(current.draft.links).catch(() => Object.fromEntries(Object.entries(current.draft.links).filter(([, v]) => v?.trim()).map(([k]) => [k, t("לא הצלחנו לבדוק את הקישור. אפשר לתקן אותו בחיבורים בהמשך.")])));
     const safe = { ...current, deferredLinks: Object.keys(errors) as LinkKey[] };
-    await api("/onboarding/from-draft", { method: "POST", body: JSON.stringify({ draft: draftForApi(safe), deferred_links: Object.fromEntries(Object.keys(errors).map(key => [key, current.draft.links[key as LinkKey] ?? ""])) }) });
+    const { business } = await api<{ business: { id: number } }>("/onboarding/from-draft", { method: "POST", body: JSON.stringify({ draft: draftForApi(safe), deferred_links: Object.fromEntries(Object.keys(errors).map(key => [key, current.draft.links[key as LinkKey] ?? ""])) }) });
+    return business.id;
   }
   async function enterAccount() {
     const current = latest.current; if (!current) return;
@@ -69,7 +73,7 @@ export function ResearchJourney() {
     const j = current.draft.research_journey!;
     const next = { ...current, draft: { ...current.draft, research_journey: { ...j, phase: "after" as const, step: j.segment === "software" ? "software_offer" : "connections" } } };
     try {
-      if (!mock) { const owner = await endpoints.me(); next.researchOwnerId = owner.id; await persist(next); } setSignedIn(true); update(() => next); window.scrollTo({ top: 0 });
+      if (!mock) { const owner = await endpoints.me(); next.researchOwnerId = owner.id; next.researchBusinessId = await persist(next); } setSignedIn(true); update(() => next); window.scrollTo({ top: 0 });
     } catch (err) {
       setError(err instanceof Error ? err.message : t("לא הצלחנו לשמור. התשובות נשמרו במכשיר; נסו שוב."));
     } finally { setBusy(false); }
@@ -80,6 +84,8 @@ export function ResearchJourney() {
     const params = new URLSearchParams(window.location.search); const preview = params.get("mock") === "1";
     mockRef.current = preview; setMock(preview); if (!preview) { exitDraftMock(); if (isDemo()) exitDemo(); }
     const saved = preview ? emptyFlow() : loadFlow() ?? emptyFlow();
+    // Post-signup drafts are usable only after the server confirms the same workspace.
+    const verifyWorkspace = !preview && Boolean(saved.researchOwnerId || saved.draft.research_journey?.phase === "after");
     const requested = params.get("segment") ?? ({ products: "online_shop", saas: "software", services: "services", nonprofit: "fundraising" } as Record<string, string>)[params.get("model") ?? ""];
     const segment = BUSINESS_SEGMENTS.some(x => x.key === requested) ? requested as Segment : saved.draft.research_journey?.segment ?? (saved.draft.business_model === "saas" ? "software" : saved.draft.business_model === "products" ? "online_shop" : "services");
     const loaded = saved.draft.research_journey ? (requested ? selectSegment(saved, segment) : saved) : selectSegment(saved, segment);
@@ -107,28 +113,54 @@ export function ResearchJourney() {
       if (sequence(loaded.draft.research_journey!).includes(reviewStep)) loaded.draft.research_journey!.step = reviewStep;
     }
     if (loaded.draft.research_journey?.step === "sources") loaded.draft.research_journey.step = "connections";
-    latest.current = loaded; setFlow(loaded); if (!preview) saveFlow(loaded);
+    function showFlow(value: FlowState, persistLocally = true) {
+      latest.current = value;
+      setFlow(value);
+      if (!preview && persistLocally) saveFlow(value);
+    }
+    function freshInterview() {
+      const explicit = BUSINESS_SEGMENTS.find(item => item.key === requested);
+      const next = selectSegment(emptyFlow(), explicit?.key ?? "services");
+      next.modelConfirmed = Boolean(explicit);
+      return next;
+    }
+    if (!verifyWorkspace) showFlow(loaded);
     const googleError = googleErrorFromLocation(); if (googleError) setError(googleError);
     if (preview) return;
     endpoints.me().then(async (owner) => {
       const response = await endpoints.business(); if (!live) return;
       if (response.business?.onboarding_complete || response.business?.quarter_plan) { router.replace("/dashboard"); return; }
       setSignedIn(true);
-      const stored = response.business?.owner_context?.research_journey;
-      if (stored) {
-        const local = latest.current!;
-        // Local edits win only for this same incomplete workspace; another account's draft cannot overwrite it.
-        const same = local.researchOwnerId === owner.id && local.draft.research_journey?.phase === "after" && local.draft.business_name === stored.answers.business_name;
-        const recovered = same ? local : { ...emptyFlow(), researchOwnerId: owner.id, modelConfirmed: true, draft: { ...stored.answers, links: { ...stored.answers.links, ...Object.fromEntries(Object.entries(response.business?.owner_context?.pending_links ?? {}).map(([key, pending]) => [key, pending.url])) }, research_journey: { ...stored, answers: undefined } as Journey } };
+      const business = response.business;
+      const stored = business?.owner_context?.research_journey;
+      if (stored && business) {
+        const belongsHere = saved.researchOwnerId === owner.id
+          && (saved.researchBusinessId === undefined
+            ? saved.draft.business_name === stored.answers.business_name
+            : saved.researchBusinessId === business.id);
+        const recovered = belongsHere && saved.draft.research_journey?.phase === "after"
+          ? { ...saved, researchBusinessId: business.id }
+          : { ...emptyFlow(), researchOwnerId: owner.id, researchBusinessId: business.id, modelConfirmed: true,
+              draft: { ...stored.answers,
+                links: { ...stored.answers.links, ...Object.fromEntries(Object.entries(business.owner_context?.pending_links ?? {}).map(([key, pending]) => [key, pending.url])) },
+                research_journey: { ...stored, answers: undefined } as Journey } };
         if (recovered.draft.research_journey?.step === "sources") recovered.draft.research_journey.step = "connections";
-        latest.current = recovered; setFlow(recovered); saveFlow(recovered);
-      } else if (params.get("resume") === "save") { await enterAccount(); }
+        showFlow(recovered);
+      } else if (verifyWorkspace) {
+        await clearSavedFlow();
+        if (!live) return;
+        showFlow(freshInterview());
+      } else if (params.get("resume") === "save" && latest.current?.draft.research_journey?.step === "signup") {
+        await enterAccount();
+      }
       if (params.has("resume")) { params.delete("resume"); window.history.replaceState(null, "", `${window.location.pathname}?${params}`); }
     }).catch((err) => {
       if (!live) return;
       // Only an expired session returns to signup; a server outage must not look like logout.
       if (err instanceof ApiError && err.status === 401) {
-        if (latest.current?.draft.research_journey?.phase === "after") patchJourney({ phase: "before", step: "signup" });
+        // Keep the saved server-linked draft available after sign-in. Never display or
+        // resubmit it as a new anonymous interview while ownership is unverified.
+        if (verifyWorkspace) showFlow(freshInterview(), false);
       } else {
         setError(t("לא הצלחנו לטעון את החשבון כרגע. התשובות נשמרו במכשיר; נסו לרענן."));
       }
@@ -139,8 +171,15 @@ export function ResearchJourney() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]);
 
-  if (!flow) return <p className="p-8"><Copy text="טוענים…" /></p>;
+  if (!flow) return error ? (
+    <div className="p-8" role="alert">
+      <p>{error}</p>
+      <button type="button" className="min-h-11 font-semibold" onClick={() => window.location.reload()}><Copy text="לנסות שוב" /></button>
+    </div>
+  ) : <p className="p-8" role="status"><Copy text="טוענים…" /></p>;
   const journey = flow.draft.research_journey!; const steps = sequence(journey); const index = steps.indexOf(journey.step);
+  const total = BEFORE.length + afterSignup(journey.segment).length;
+  const current = (journey.phase === "after" ? BEFORE.length : 0) + Math.max(index, 0) + 1;
   const stage = journey.phase === "before" ? 0 : journey.step === "build" ? 3 : ["metrics", "detail"].includes(journey.step) ? 2 : 1;
   const common: StepProps = { tip: <OnboardingTip journey={journey} />, flow, update, setDraft, next: () => void advance(), reflection: null, focus: true, direction, nextLabel: ({ name: "לספר על העסק", offer: "לספר מה מייחד אתכם", different: journey.segment === "fundraising" ? "מי יתמוך בעשייה שלכם?" : "מי הלקוחות שלכם?", audiences: "להוסיף אתר ופרופילים", discovery: "להמשיך לפתיחת החשבון", software_offer: "מה המוצר פותר?", software: "איך לקוחות מוצאים אתכם?", sources: "להמשיך לחיבורים", connections: "מה ייחשב הצלחה?", metrics: "עוד שאלה קצרה", detail: "להמשיך לבניית התוכנית" } as Record<string, string>)[journey.step], notice: error ? <p role="alert" className={form.error}>{error}</p> : undefined };
   async function move(step: string, back = false) {
@@ -178,7 +217,7 @@ export function ResearchJourney() {
       <ol className={styles.journeyStages} aria-label={t("מהיכרות לתוכנית")}>
         {["מכירים את העסק", "מחברים מידע", "מגדירים מטרות", "בונים תוכנית"].map((label,i)=><li key={label} aria-current={stage===i?"step":undefined} data-complete={i<stage}><i aria-hidden="true"/><span><Copy text={label}/></span></li>)}
       </ol>
-      <div className={styles.questionProgress} role="progressbar" aria-label={t("התקדמות בהיכרות")} aria-valuenow={Math.max(1,index+1)} aria-valuemin={1} aria-valuemax={steps.length}><span><Copy text="צעד {arg_0} מתוך {arg_1}" args={{arg_0:index+1,arg_1:steps.length}}/></span><i style={{width:`${Math.max(1,index+1)/steps.length*100}%`}}/></div>
+      <div className={styles.questionProgress} role="progressbar" aria-label={t("התקדמות בהיכרות")} aria-valuenow={current} aria-valuemin={1} aria-valuemax={total}><span><Copy text="צעד {arg_0} מתוך {arg_1}" args={{arg_0:current,arg_1:total}}/></span><i style={{width:`${current / total * 100}%`}}/></div>
       <div key={journey.step}>{screen}</div>
       <span className="sr-only" lang={locale}>{t("ישראמארקט")}</span>
     </main></div>;
