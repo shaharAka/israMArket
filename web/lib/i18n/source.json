@@ -2753,7 +2753,12 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingStory.tsx",
-        "line": 83,
+        "line": 77,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/landing-v2/ProductOutcomes.tsx",
+        "line": 10,
         "kind": "literal"
       }
     ]
@@ -3215,6 +3220,17 @@
         "file": "web/app/admin/page.tsx",
         "line": 439,
         "kind": "jsx"
+      }
+    ]
+  },
+  "m_05ebfbf7dfaed7a3": {
+    "source": "שבוע שני",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/ProductOutcomes.tsx",
+        "line": 11,
+        "kind": "literal"
       }
     ]
   },
@@ -5452,7 +5468,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 64,
+        "line": 72,
         "kind": "literal"
       }
     ]
@@ -5794,6 +5810,11 @@
     "source": "מהנייד, בדפדפן: מאשרים את הפוסט הבא בין לקוח ללקוח.",
     "language": "he",
     "references": [
+      {
+        "file": "web/components/landing-v2/ProductOutcomes.tsx",
+        "line": 97,
+        "kind": "literal"
+      },
       {
         "file": "web/components/landing-v2/processStory.ts",
         "line": 49,
@@ -6723,11 +6744,6 @@
     "source": "לראות איך זה עובד",
     "language": "he",
     "references": [
-      {
-        "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 21,
-        "kind": "literal"
-      },
       {
         "file": "web/lib/releases.ts",
         "line": 103,
@@ -8238,6 +8254,17 @@
         "line": 688,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_10841eb4cf7c5cb5": {
+    "source": "מה עבד ומה כדאי לנסות",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/ProductOutcomes.tsx",
+        "line": 61,
+        "kind": "literal"
       }
     ]
   },
@@ -12131,7 +12158,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingStory.tsx",
-        "line": 87,
+        "line": 81,
         "kind": "literal"
       },
       {
@@ -12695,6 +12722,11 @@
         "file": "web/components/landing-v2/ProcessScenes.tsx",
         "line": 91,
         "kind": "literal"
+      },
+      {
+        "file": "web/components/landing-v2/ProductOutcomes.tsx",
+        "line": 23,
+        "kind": "literal"
       }
     ]
   },
@@ -12783,7 +12815,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 67,
+        "line": 75,
         "kind": "literal"
       }
     ]
@@ -15301,6 +15333,17 @@
       }
     ]
   },
+  "m_1e9a9cbcf6a7fd7e": {
+    "source": "לחיצות על מודעות",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/ProductOutcomes.tsx",
+        "line": 18,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_1e9e03d7fdcb9081": {
     "source": "חומרי הקמפיין בעמוד הבית נחשפים בתנועה קצרה כשמגיעים אליהם, ואז נשארים גלויים.",
     "language": "he",
@@ -15709,7 +15752,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 65,
+        "line": 73,
         "kind": "literal"
       }
     ]
@@ -17027,7 +17070,7 @@
       },
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 72,
+        "line": 90,
         "kind": "literal"
       },
       {
@@ -19540,8 +19583,18 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/landing-v2/LandingStory.tsx",
-        "line": 120,
+        "file": "web/components/landing-v2/ProcessLanding.tsx",
+        "line": 85,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/landing-v2/ProductOutcomes.tsx",
+        "line": 81,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/landing-v2/SignalHero.tsx",
+        "line": 22,
         "kind": "literal"
       }
     ]
@@ -21347,6 +21400,11 @@
     "language": "he",
     "references": [
       {
+        "file": "web/components/landing-v2/ProductOutcomes.tsx",
+        "line": 104,
+        "kind": "literal"
+      },
+      {
         "file": "web/components/landing-v2/processStory.ts",
         "line": 39,
         "kind": "literal"
@@ -22094,7 +22152,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingStory.tsx",
-        "line": 93,
+        "line": 87,
         "kind": "literal"
       }
     ]
@@ -23405,7 +23463,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingStory.tsx",
-        "line": 74,
+        "line": 68,
         "kind": "literal"
       },
       {
@@ -24499,6 +24557,16 @@
     "source": "מחיר",
     "language": "he",
     "references": [
+      {
+        "file": "web/components/landing-v2/ProcessLanding.tsx",
+        "line": 86,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/landing-v2/SignalHero.tsx",
+        "line": 23,
+        "kind": "literal"
+      },
       {
         "file": "web/components/landing-v2/processStory.ts",
         "line": 53,
@@ -25607,14 +25675,15 @@
       },
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 47,
+        "line": 48,
         "kind": "literal",
         "purpose": "display"
       },
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 72,
-        "kind": "jsx"
+        "line": 82,
+        "kind": "literal",
+        "purpose": "display"
       },
       {
         "file": "web/components/landing-v2/ProductWordmark.tsx",
@@ -25779,7 +25848,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 67,
+        "line": 75,
         "kind": "literal"
       }
     ]
@@ -31378,12 +31447,12 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingStory.tsx",
-        "line": 55,
+        "line": 49,
         "kind": "literal"
       },
       {
         "file": "web/components/landing-v2/LandingStory.tsx",
-        "line": 76,
+        "line": 70,
         "kind": "literal"
       }
     ]
@@ -39461,6 +39530,11 @@
         "file": "web/components/landing-v2/ProcessScenes.tsx",
         "line": 46,
         "kind": "literal"
+      },
+      {
+        "file": "web/components/landing-v2/ProductOutcomes.tsx",
+        "line": 12,
+        "kind": "literal"
       }
     ]
   },
@@ -39712,7 +39786,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 68,
+        "line": 76,
         "kind": "literal"
       }
     ]
@@ -40309,10 +40383,9 @@
         "kind": "literal"
       },
       {
-        "file": "web/components/landing-v2/LandingStory.tsx",
-        "line": 23,
-        "kind": "literal",
-        "purpose": "display"
+        "file": "web/components/landing-v2/ProductOutcomes.tsx",
+        "line": 95,
+        "kind": "literal"
       },
       {
         "file": "web/components/posts/CalendarView.tsx",
@@ -42397,7 +42470,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 59,
+        "line": 67,
         "kind": "literal"
       }
     ]
@@ -42874,7 +42947,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 67,
+        "line": 75,
         "kind": "literal"
       }
     ]
@@ -48753,6 +48826,11 @@
         "file": "web/components/landing-v2/ProcessScenes.tsx",
         "line": 72,
         "kind": "literal"
+      },
+      {
+        "file": "web/components/landing-v2/ProductOutcomes.tsx",
+        "line": 42,
+        "kind": "literal"
       }
     ]
   },
@@ -50140,7 +50218,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingStory.tsx",
-        "line": 31,
+        "line": 25,
         "kind": "literal"
       }
     ]
@@ -50166,17 +50244,6 @@
         "line": 846,
         "kind": "template",
         "purpose": "copy"
-      }
-    ]
-  },
-  "m_663614f0c0b198c7": {
-    "source": "רואים מה התקדם ומה כדאי לשנות.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/LandingStory.tsx",
-        "line": 24,
-        "kind": "literal"
       }
     ]
   },
@@ -51988,6 +52055,17 @@
       }
     ]
   },
+  "m_69c32f70dc1b6e5f": {
+    "source": "שבוע שלישי",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/ProductOutcomes.tsx",
+        "line": 12,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_69cf44679f2e0d87": {
     "source": "השתנו",
     "language": "he",
@@ -52028,7 +52106,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 63,
+        "line": 71,
         "kind": "literal"
       }
     ]
@@ -52403,7 +52481,17 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingStory.tsx",
-        "line": 70,
+        "line": 64,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/landing-v2/ProductOutcomes.tsx",
+        "line": 62,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/landing-v2/ProductOutcomes.tsx",
+        "line": 82,
         "kind": "literal"
       }
     ]
@@ -53029,6 +53117,11 @@
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
         "line": 72,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/landing-v2/ProductOutcomes.tsx",
+        "line": 52,
         "kind": "literal"
       }
     ]
@@ -56718,7 +56811,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingStory.tsx",
-        "line": 43,
+        "line": 37,
         "kind": "literal"
       }
     ]
@@ -59443,6 +59536,17 @@
       }
     ]
   },
+  "m_79148f2a23bcb9ae": {
+    "source": "הצעה לפוסט הבא",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/ProductOutcomes.tsx",
+        "line": 70,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_7915c1107579d72a": {
     "source": "לבטל את האישור",
     "language": "he",
@@ -59910,7 +60014,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 65,
+        "line": 73,
         "kind": "literal"
       }
     ]
@@ -60050,6 +60154,17 @@
         "file": "web/app/data-deletion/page.tsx",
         "line": 39,
         "kind": "jsx"
+      }
+    ]
+  },
+  "m_7a4e5125dea8f5ab": {
+    "source": "טפסים שנשלחו",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/ProductOutcomes.tsx",
+        "line": 67,
+        "kind": "literal"
       }
     ]
   },
@@ -63432,7 +63547,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 64,
+        "line": 72,
         "kind": "literal"
       }
     ]
@@ -63910,6 +64025,11 @@
       {
         "file": "web/components/landing-v2/CreativeReel.tsx",
         "line": 42,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/landing-v2/ProductOutcomes.tsx",
+        "line": 44,
         "kind": "literal"
       }
     ]
@@ -64831,7 +64951,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingStory.tsx",
-        "line": 82,
+        "line": 76,
         "kind": "literal"
       }
     ]
@@ -69602,6 +69722,17 @@
       }
     ]
   },
+  "m_8dc1ecd6bda9d5d3": {
+    "source": "ביצועי תוכן",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/ProductOutcomes.tsx",
+        "line": 17,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_8dc3585d9041d82c": {
     "source": "שמרו או בטלו את עריכת הנוסח לפני יצירת גרסה נוספת.",
     "language": "he",
@@ -69837,6 +69968,11 @@
     "source": "לחיצות על הקישור",
     "language": "he",
     "references": [
+      {
+        "file": "web/components/landing-v2/ProductOutcomes.tsx",
+        "line": 66,
+        "kind": "literal"
+      },
       {
         "file": "web/lib/api.ts",
         "line": 954,
@@ -74306,6 +74442,17 @@
       }
     ]
   },
+  "m_968b4159383f0cdc": {
+    "source": "שבוע ראשון",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/ProductOutcomes.tsx",
+        "line": 10,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_96a65771d2933f1d": {
     "source": "סגירת הזמנות לחג",
     "language": "he",
@@ -74609,6 +74756,17 @@
       {
         "file": "web/app/decisions/page.tsx",
         "line": 1022,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_975e132e1a103e11": {
+    "source": "מחברים את החשבונות שכבר יש לכם, כדי להבין מה קורה באתר וברשתות.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/ProductOutcomes.tsx",
+        "line": 118,
         "kind": "literal"
       }
     ]
@@ -77716,7 +77874,7 @@
       },
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 72,
+        "line": 89,
         "kind": "literal"
       },
       {
@@ -78441,7 +78599,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingStory.tsx",
-        "line": 79,
+        "line": 73,
         "kind": "literal"
       }
     ]
@@ -78923,7 +79081,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 58,
+        "line": 66,
         "kind": "literal"
       }
     ]
@@ -81737,6 +81895,11 @@
         "file": "web/components/landing-v2/ProcessScenes.tsx",
         "line": 63,
         "kind": "jsx"
+      },
+      {
+        "file": "web/components/landing-v2/ProductOutcomes.tsx",
+        "line": 67,
+        "kind": "jsx"
       }
     ]
   },
@@ -83027,7 +83190,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 66,
+        "line": 74,
         "kind": "literal"
       }
     ]
@@ -83263,6 +83426,11 @@
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
         "line": 72,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/landing-v2/ProductOutcomes.tsx",
+        "line": 48,
         "kind": "literal"
       }
     ]
@@ -83539,6 +83707,17 @@
       }
     ]
   },
+  "m_aa84e6d176b3a1d0": {
+    "source": "להפנות לטופס קצר ולבדוק אם יותר אנשים משאירים פרטים",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/ProductOutcomes.tsx",
+        "line": 71,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_aa8a053a76e6cd56": {
     "source": "קישור WhatsApp",
     "language": "he",
@@ -83641,10 +83820,9 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/landing-v2/LandingStory.tsx",
-        "line": 22,
-        "kind": "literal",
-        "purpose": "display"
+        "file": "web/components/landing-v2/ProductOutcomes.tsx",
+        "line": 87,
+        "kind": "literal"
       },
       {
         "file": "web/components/landing-v2/processStory.ts",
@@ -84039,6 +84217,17 @@
         "line": 134,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_ab7c925de5c49042": {
+    "source": "הכל מתחבר למקום אחד",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/ProductOutcomes.tsx",
+        "line": 117,
+        "kind": "literal"
       }
     ]
   },
@@ -85575,10 +85764,9 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/landing-v2/LandingStory.tsx",
-        "line": 24,
-        "kind": "literal",
-        "purpose": "display"
+        "file": "web/components/landing-v2/ProductOutcomes.tsx",
+        "line": 103,
+        "kind": "literal"
       },
       {
         "file": "web/lib/uxFlows.ts",
@@ -91546,7 +91734,17 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingStory.tsx",
-        "line": 83,
+        "line": 77,
+        "kind": "jsx"
+      },
+      {
+        "file": "web/components/landing-v2/ProductOutcomes.tsx",
+        "line": 46,
+        "kind": "jsx"
+      },
+      {
+        "file": "web/components/landing-v2/ProductOutcomes.tsx",
+        "line": 66,
         "kind": "jsx"
       }
     ]
@@ -95886,7 +96084,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 23,
+        "line": 26,
         "kind": "literal"
       }
     ]
@@ -98562,7 +98760,17 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingStory.tsx",
-        "line": 89,
+        "line": 83,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/landing-v2/ProductOutcomes.tsx",
+        "line": 11,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/landing-v2/ProductOutcomes.tsx",
+        "line": 12,
         "kind": "literal"
       }
     ]
@@ -98588,7 +98796,7 @@
       },
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 48,
+        "line": 51,
         "kind": "literal"
       },
       {
@@ -100175,7 +100383,17 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingStory.tsx",
-        "line": 84,
+        "line": 78,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/landing-v2/ProductOutcomes.tsx",
+        "line": 10,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/landing-v2/ProductOutcomes.tsx",
+        "line": 48,
         "kind": "literal"
       }
     ]
@@ -100970,7 +101188,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingStory.tsx",
-        "line": 30,
+        "line": 24,
         "kind": "literal"
       },
       {
@@ -103085,6 +103303,11 @@
         "kind": "literal"
       },
       {
+        "file": "web/components/landing-v2/ProductOutcomes.tsx",
+        "line": 52,
+        "kind": "literal"
+      },
+      {
         "file": "web/lib/uxFlows.ts",
         "line": 79,
         "kind": "literal"
@@ -103875,7 +104098,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingStory.tsx",
-        "line": 88,
+        "line": 82,
         "kind": "jsx"
       }
     ]
@@ -104432,8 +104655,8 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/landing-v2/LandingStory.tsx",
-        "line": 22,
+        "file": "web/components/landing-v2/ProductOutcomes.tsx",
+        "line": 88,
         "kind": "literal"
       }
     ]
@@ -105092,6 +105315,17 @@
       {
         "file": "web/lib/uxFlows.ts",
         "line": 48,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_d60a878bfb8ccedb": {
+    "source": "תוכנית שיווק חודשית, פוסטים מוכנים לאישור ומעקב אחר התוצאות.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/ProcessLanding.tsx",
+        "line": 65,
         "kind": "literal"
       }
     ]
@@ -106183,7 +106417,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 66,
+        "line": 74,
         "kind": "literal"
       }
     ]
@@ -108228,7 +108462,12 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingStory.tsx",
-        "line": 88,
+        "line": 82,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/landing-v2/ProductOutcomes.tsx",
+        "line": 11,
         "kind": "literal"
       }
     ]
@@ -116356,12 +116595,17 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingStory.tsx",
-        "line": 53,
+        "line": 47,
         "kind": "literal"
       },
       {
         "file": "web/components/landing-v2/LandingStory.tsx",
-        "line": 75,
+        "line": 69,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/landing-v2/ProductOutcomes.tsx",
+        "line": 24,
         "kind": "literal"
       }
     ]
@@ -116778,8 +117022,8 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/landing-v2/LandingStory.tsx",
-        "line": 23,
+        "file": "web/components/landing-v2/ProductOutcomes.tsx",
+        "line": 96,
         "kind": "literal"
       }
     ]
@@ -117547,6 +117791,11 @@
         "line": 720,
         "kind": "literal",
         "purpose": "display"
+      },
+      {
+        "file": "web/components/landing-v2/ProductOutcomes.tsx",
+        "line": 16,
+        "kind": "literal"
       },
       {
         "file": "web/components/landing-v2/content.ts",
@@ -119212,7 +119461,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingStory.tsx",
-        "line": 52,
+        "line": 46,
         "kind": "literal"
       }
     ]
@@ -125105,7 +125354,12 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingStory.tsx",
-        "line": 101,
+        "line": 94,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/landing-v2/ProcessLanding.tsx",
+        "line": 84,
         "kind": "literal"
       }
     ]
@@ -125939,7 +126193,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 69,
+        "line": 77,
         "kind": "literal"
       }
     ]

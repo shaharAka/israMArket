@@ -10,6 +10,7 @@ import { PRICE_ILS, TRIAL_LABEL, VAT_NOTE } from "@/lib/pricing";
 import { BrandWordmark } from "./BrandWordmark";
 import { LandingStory } from "./LandingStory";
 import { CreativeReel } from "./CreativeReel";
+import { ConnectedChannels, ProductOutcomes } from "./ProductOutcomes";
 import { TrialCtaLabel } from "./TrialCtaLabel";
 import { SignalHero } from "./SignalHero";
 import { PROCESS_ROLES, defaultProcessRole, isProcessRole, type ProcessRole } from "./processExamples";
@@ -45,16 +46,23 @@ export function ProcessLanding({ initialPath, identity }: { initialPath?: Exampl
   return <div className={`lv2 lv2-site ${styles.page} ${siteClean.variable} ${artSerif.variable} ${siteSerif.variable}`} data-business={selected?.path ?? "all"} data-process-role={role ?? "all"} data-hero-type="modern" data-design="signal-punch" data-palette={palette}>
     <header className={`lv2-nav ${styles.header}`}><div className={`lv2-wrap lv2-nav-row ${styles.headerRow}`}>
       <Link href="/" className="lv2-brand" aria-label="isramarket"><BrandWordmark direction={identity} /></Link>
-      <div className={`lv2-nav-end ${styles.headerActions}`}><ProductUtilities inline /><Link href={`/login?lang=${locale}`} className="lv2-login"><Copy text="להיכנס" /></Link></div>
+      <div className={`lv2-nav-end ${styles.headerActions}`}>
+        <ProductUtilities inline />
+        <Link href={`/login?lang=${locale}`} className="lv2-login"><Copy text="להיכנס" /></Link>
+        <Link href={start} className={story.headerTrial}><TrialCtaLabel /></Link>
+      </div>
     </div></header>
     <main>
       <SignalHero start={start} />
       <LandingStory />
+      <ProductOutcomes />
+      <ConnectedChannels />
       <CreativeReel />
       <section id="trial" className={`lv2-wrap ${story.trial}`} aria-labelledby="trial-title">
         <span id="price" className={story.anchor} aria-hidden="true" />
         <div>
           <h2 id="trial-title"><Copy text={TRIAL_LABEL} /></h2>
+          <p><Copy text="תוכנית שיווק חודשית, פוסטים מוכנים לאישור ומעקב אחר התוצאות." /></p>
           <p><Copy text="אחר כך: {arg_0} ₪ לחודש" args={{ arg_0: PRICE_ILS }} /> <Copy text={VAT_NOTE} />.</p>
           <p><Copy text="תמונות וסרטונים לפי מכסת המנוי. תקציב הפרסום ברשתות משולם בנפרד." /></p>
         </div>
@@ -62,14 +70,27 @@ export function ProcessLanding({ initialPath, identity }: { initialPath?: Exampl
       </section>
       <section className={`lv2-wrap ${styles.faq} ${rhythm.faq}`} aria-labelledby="process-questions"><h2 id="process-questions"><Copy text="שאלות נפוצות" /></h2><div>
         <Question text="צריך לחבר הכול כדי להתחיל?"><Copy text="לא. מתחילים בשיחה ובמחקר על המידע הציבורי של העסק. אחרי ההרשמה, מוסיפים חיבורים לפי הצורך וממשיכים לבנות את התוכנית." /></Question>
-        <Question id="mobile" text="אפשר לעבוד מהנייד?"><Copy text="כן. התוכנית, הפוסטים והתוצאות זמינים בדפדפן של הטלפון." /></Question>
+        <Question text="אפשר לעבוד מהנייד?"><Copy text="כן. התוכנית, הפוסטים והתוצאות זמינים בדפדפן של הטלפון." /></Question>
         <Question text="מי מפרסם את הפוסטים?"><Copy text="אתם. אנחנו מכינים את הפוסטים, ואתם בודקים את התמונה והפרטים, עורכים אם צריך ומפרסמים. שום דבר לא מתפרסם בלי החלטה שלכם." /></Question>
         <Question text="איך שומרים על המידע שלכם?"><Copy text="מחברים חשבונות במסך הרשאות של השירות עצמו. הסיסמה לא עוברת אלינו. אפשר לנתק את החיבור או למחוק את החשבון." /> <Link href={`/security?lang=${locale}`}><Copy text="עוד על אבטחה ופרטיות" /></Link></Question>
         <Question text="מה קורה אחרי החודש החינמי?"><PriceAnswer /></Question>
         <Question text="אפשר לבטל?"><CancellationAnswer /></Question>
       </div></section>
     </main>
-    <footer className={`lv2-foot ${story.footer}`}><div className="lv2-wrap lv2-foot-row"><span>isramarket</span><Link href={`/security?lang=${locale}`}><Copy text="אבטחה ופרטיות" /></Link><Link href={`/terms?lang=${locale}`}><Copy text="תנאי שימוש" /></Link></div></footer>
+    <footer className={`lv2-foot ${story.footer}`}>
+      <div className={`lv2-wrap ${story.footerInner}`}>
+        <Link href={`/?lang=${locale}`} className={story.footerBrand} aria-label="isramarket"><BrandWordmark direction={identity} /></Link>
+        <ul>
+          <li><a href="#story"><Copy text="ככה זה עובד" /></a></li>
+          <li><a href="#results"><Copy text="מה מקבלים" /></a></li>
+          <li><a href="#trial"><Copy text="מחיר" /></a></li>
+        </ul>
+        <ul>
+          <li><Link href={`/security?lang=${locale}`}><Copy text="אבטחה ופרטיות" /></Link></li>
+          <li><Link href={`/terms?lang=${locale}`}><Copy text="תנאי שימוש" /></Link></li>
+        </ul>
+      </div>
+    </footer>
     <DeletedNotice />
   </div>;
 }

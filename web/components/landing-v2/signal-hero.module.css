@@ -24,6 +24,7 @@
 .copy p { margin-top: 22px; max-width: 43ch; font-size: clamp(17px, 1.5vw, 21px); line-height: 1.55; color: var(--dark-copy); }
 .copy .approval { margin-top: 9px; font-size: 15px; }
 .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 20px; margin-block-start: 25px; }
+.sectionLinks { display: flex; flex-wrap: wrap; gap: 0 15px; align-items: center; }
 .start {
   display: inline-flex;
   align-items: center;

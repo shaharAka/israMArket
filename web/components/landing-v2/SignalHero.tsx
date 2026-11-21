@@ -18,7 +18,10 @@ export function SignalHero({ start }: { start: string }) {
         <p className={styles.approval}><Copy text="האישור והפרסום בידיים שלך." /></p>
         <div className={styles.actions}>
           <Link href={start} className={styles.start}><TrialCtaLabel /><Arrow /></Link>
-          <a href="#story" className={styles.storyLink}><Copy text="לראות איך זה עובד" /></a>
+          <div className={styles.sectionLinks}>
+            <a href="#results" className={styles.storyLink}><Copy text="מה מקבלים" /></a>
+            <a href="#trial" className={styles.storyLink}><Copy text="מחיר" /></a>
+          </div>
         </div>
         <small><TrialOfferNote /><Copy text="בלי כרטיס אשראי. בלי התחייבות." /></small>
       </div>

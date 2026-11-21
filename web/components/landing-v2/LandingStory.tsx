@@ -1,5 +1,5 @@
 import { Copy } from "@/components/language/LanguageProvider";
-import { IconCalendar, IconChart, IconCheck, IconFlag, IconPhotos } from "@/lib/icons";
+import { IconCalendar, IconCheck, IconFlag, IconPhotos } from "@/lib/icons";
 import { ProviderLogo } from "./ProviderLogo";
 import styles from "./landing-story.module.css";
 
@@ -16,12 +16,6 @@ const STEPS = [
     id: "goals", title: "בוחרים יעד לחודש",
     body: "מחליטים מה רוצים להשיג ואיך נדע שהתקדמנו.",
   },
-] as const;
-
-const OUTCOMES = [
-  { id: "campaign", alias: "plan", title: "קמפיין", body: "תוכנית חודשית עם קהל, יעד ולוח פרסום.", icon: IconCalendar },
-  { id: "posts", alias: null, title: "פוסטים", body: "תוכן, עיצובים וסרטונים לאישורכם.", icon: IconPhotos },
-  { id: "learning", alias: "data", title: "מדידה", body: "רואים מה התקדם ומה כדאי לשנות.", icon: IconChart },
 ] as const;
 
 function InterviewVisual() {
@@ -96,8 +90,7 @@ export function LandingProductVisual() {
 }
 
 export function LandingStory() {
-  return <>
-    <section id="story" className={`lv2-wrap ${styles.steps}`} aria-labelledby="story-title">
+  return <section id="story" className={`lv2-wrap ${styles.steps}`} aria-labelledby="story-title">
       <h2 id="story-title"><Copy text="ככה זה עובד" /></h2>
       <ol>
         {STEPS.map((step, index) => {
@@ -114,21 +107,5 @@ export function LandingStory() {
           </li>;
         })}
       </ol>
-    </section>
-    <section id="results" className={styles.outcomes} aria-labelledby="outcome-title">
-      <div className="lv2-wrap">
-        <h2 id="outcome-title"><Copy text="מה מקבלים" /></h2>
-        <div className={styles.outcomeGrid}>
-          {OUTCOMES.map(outcome => (
-            <article id={outcome.id} key={outcome.id}>
-              {outcome.alias && <span id={outcome.alias} className={styles.anchor} aria-hidden="true" />}
-              <outcome.icon className={styles.outcomeIcon} />
-              <h3><Copy text={outcome.title} /></h3>
-              <p><Copy text={outcome.body} /></p>
-            </article>
-          ))}
-        </div>
-      </div>
-    </section>
-  </>;
+  </section>;
 }
