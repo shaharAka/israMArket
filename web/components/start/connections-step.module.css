@@ -1,2 +1,80 @@
-.saved{background:var(--primary-soft);border-radius:12px;padding:16px 20px}.saved h2{font-size:14px;font-weight:600;margin-bottom:8px}.saved p{display:flex;gap:10px;align-items:center;font-size:13px;line-height:1.7;overflow-wrap:anywhere}.saved p span{color:var(--primary)}.how{display:flex;gap:20px;list-style:decimal inside;color:var(--ink-soft);font-size:13px;line-height:1.6}.cards{display:grid;gap:0;border-block:1px solid var(--rule)}.card{display:grid;grid-template-columns:40px 1fr auto;align-items:center;gap:16px;padding-block:24px}.card+.card{border-top:1px solid var(--rule)}.card h2{font-size:17px;font-weight:600}.card p{font-size:14px;line-height:1.6;margin-top:4px}.card div>span{display:block;font-size:12px;color:var(--ink-muted);margin-top:8px}.card a{min-height:44px;display:inline-flex;align-items:center;padding-inline:16px;border-radius:8px;background:var(--ink);color:var(--paper);font-size:14px;font-weight:500}.card a:focus-visible{outline:2px solid var(--primary);outline-offset:4px}.note{font-size:13px;line-height:1.7;color:var(--ink-soft)}@media(max-width:600px){.how{display:grid;gap:6px}.card{grid-template-columns:36px 1fr;gap:12px}.card a{grid-column:2;justify-self:start}.saved{padding:14px}}
-.card a{background:var(--paper);color:var(--primary);border:1px solid var(--rule-dark)}.card a:hover{background:var(--primary-soft)}
+.later {
+  margin-block-start: -0.5rem;
+  color: var(--ink-soft);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.chooser {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.chooser button {
+  min-height: 44px;
+  padding-inline: 0.875rem;
+  border: 1px solid var(--rule-dark);
+  border-radius: 999px;
+  color: var(--ink);
+  font-size: 0.875rem;
+}
+
+.chooser button[aria-pressed="true"] {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+
+.chooser button:focus-visible,
+.card a:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 3px;
+}
+
+.card {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem;
+  border: 1px solid var(--rule-dark);
+  border-radius: 14px;
+  background: var(--paper);
+}
+
+.card h2 {
+  color: var(--ink);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.card p {
+  margin-block-start: 0.25rem;
+  color: var(--ink-soft);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.card a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--primary);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+@media (max-width: 600px) {
+  .card {
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 0.5rem 0.75rem;
+  }
+
+  .card a {
+    grid-column: 2;
+    justify-self: start;
+  }
+}

@@ -1279,6 +1279,56 @@
       "en": "We couldn’t check if your plan is ready.",
       "ar": "تعذّر علينا التحقق مما إذا كانت خطتكم جاهزة.",
       "ru": "Не удалось проверить, готов ли ваш план."
+    },
+    "m_1d9f3876068ecf9c": {
+      "en": "Open connection settings",
+      "ar": "فتح إعدادات الربط",
+      "ru": "Открыть настройки подключения"
+    },
+    "m_3ab6c80700406c68": {
+      "en": "Connect your measurement tools",
+      "ar": "ربط أدوات القياس",
+      "ru": "Подключите инструменты аналитики"
+    },
+    "m_68f83071e19039bc": {
+      "en": "Continue without connecting accounts",
+      "ar": "المتابعة دون ربط الحسابات",
+      "ru": "Продолжить без подключения аккаунтов"
+    },
+    "m_8c6b2eaa24b1b811": {
+      "en": "If the plan stops building, you can try again with all your saved answers.",
+      "ar": "إذا توقف إعداد الخطة، يمكنكم المحاولة مجددًا باستخدام كل إجاباتكم المحفوظة.",
+      "ru": "Если создание плана прервётся, попробуйте снова с теми же сохранёнными ответами."
+    },
+    "m_c3037e94193088bd": {
+      "en": "If you already use a measurement tool, connect it to see its results in your plan.",
+      "ar": "إذا كنتم تستخدمون أداة قياس، يمكنكم ربطها لرؤية نتائجها في خطتكم.",
+      "ru": "Если вы пользуетесь инструментом аналитики, подключите его, чтобы видеть результаты в плане."
+    },
+    "m_c5160b89fa4c81e9": {
+      "en": "Connect one tool at a time, or go straight to setting your goal.",
+      "ar": "اربطوا الأدوات واحدة تلو الأخرى، أو انتقلوا مباشرة إلى تحديد هدفكم.",
+      "ru": "Подключайте инструменты по одному или сразу переходите к выбору цели."
+    },
+    "m_cd35716db178b3c6": {
+      "en": "Build your plan without connecting accounts",
+      "ar": "أعدّوا خطتكم دون ربط الحسابات",
+      "ru": "Создайте план без подключения аккаунтов"
+    },
+    "m_e8518dab0fa4cdaf": {
+      "en": "Your links are saved. Connect a measurement tool to see your results too.",
+      "ar": "حُفظت روابطكم. يمكنكم ربط أداة قياس لرؤية نتائجكم أيضًا.",
+      "ru": "Ваши ссылки сохранены. Подключите инструмент аналитики, чтобы видеть результаты."
+    },
+    "m_ecdd9876d32366d8": {
+      "en": "You can connect tools after your plan is ready.",
+      "ar": "يمكنكم ربط الأدوات بعد إعداد خطتكم.",
+      "ru": "Инструменты можно подключить после создания плана."
+    },
+    "m_efb5363bfbb70d71": {
+      "en": "Continue to set your goal",
+      "ar": "المتابعة لتحديد الهدف",
+      "ru": "Перейти к выбору цели"
     }
   },
   "numberForms": {

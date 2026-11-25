@@ -5,7 +5,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 30,
+        "line": 37,
         "kind": "literal",
         "purpose": "display"
       }
@@ -767,7 +767,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 39,
+        "line": 46,
         "kind": "literal"
       }
     ]
@@ -1378,12 +1378,12 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 198,
+        "line": 207,
         "kind": "literal"
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 366,
+        "line": 380,
         "kind": "literal"
       },
       {
@@ -1605,7 +1605,7 @@
     "references": [
       {
         "file": "web/components/MonthBuildProgress.tsx",
-        "line": 74,
+        "line": 80,
         "kind": "literal"
       }
     ]
@@ -1774,7 +1774,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 370,
+        "line": 384,
         "kind": "literal",
         "purpose": "display"
       }
@@ -2408,7 +2408,7 @@
     "references": [
       {
         "file": "web/components/MonthBuildProgress.tsx",
-        "line": 114,
+        "line": 121,
         "kind": "literal"
       }
     ]
@@ -3066,7 +3066,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 31,
+        "line": 38,
         "kind": "literal"
       }
     ]
@@ -3670,7 +3670,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 240,
+        "line": 254,
         "kind": "literal"
       },
       {
@@ -5014,7 +5014,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 221,
+        "line": 229,
         "kind": "literal"
       }
     ]
@@ -5197,7 +5197,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 316,
+        "line": 330,
         "kind": "literal"
       }
     ]
@@ -5477,7 +5477,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 361,
+        "line": 375,
         "kind": "literal"
       }
     ]
@@ -5510,7 +5510,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 206,
+        "line": 213,
         "kind": "literal"
       }
     ]
@@ -6376,7 +6376,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 80,
+        "line": 87,
         "kind": "literal"
       }
     ]
@@ -6580,12 +6580,12 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 68,
+        "line": 75,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 89,
+        "line": 96,
         "kind": "literal"
       }
     ]
@@ -6989,7 +6989,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 236,
+        "line": 243,
         "kind": "literal"
       }
     ]
@@ -7552,7 +7552,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 269,
+        "line": 276,
         "kind": "literal"
       }
     ]
@@ -8133,7 +8133,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 67,
+        "line": 74,
         "kind": "literal"
       }
     ]
@@ -8351,7 +8351,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 179,
+        "line": 186,
         "kind": "literal"
       }
     ]
@@ -8837,7 +8837,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 371,
+        "line": 385,
         "kind": "literal"
       }
     ]
@@ -9632,17 +9632,6 @@
       }
     ]
   },
-  "m_13da2e2c4c2d758c": {
-    "source": "מהיכרות לתוכנית",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/start/ResearchJourney.tsx",
-        "line": 218,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_13e366a2f54bd82f": {
     "source": "צריכים הרבה דברים, ורוצים לבחור נכון.",
     "language": "he",
@@ -9718,7 +9707,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 234,
+        "line": 241,
         "kind": "literal"
       }
     ]
@@ -10702,7 +10691,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 219,
+        "line": 193,
         "kind": "literal"
       }
     ]
@@ -10913,7 +10902,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 291,
+        "line": 298,
         "kind": "literal"
       }
     ]
@@ -11394,7 +11383,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 318,
+        "line": 332,
         "kind": "literal"
       }
     ]
@@ -11485,7 +11474,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 368,
+        "line": 382,
         "kind": "literal",
         "purpose": "display"
       }
@@ -11649,7 +11638,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 257,
+        "line": 264,
         "kind": "literal"
       }
     ]
@@ -11766,7 +11755,7 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 185,
+        "line": 194,
         "kind": "literal"
       },
       {
@@ -11991,7 +11980,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 65,
+        "line": 72,
         "kind": "literal",
         "purpose": "display"
       }
@@ -13419,7 +13408,7 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 185,
+        "line": 194,
         "kind": "literal"
       },
       {
@@ -14519,6 +14508,17 @@
       }
     ]
   },
+  "m_1d9f3876068ecf9c": {
+    "source": "לפתוח את החיבור",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/start/ConnectionsStep.tsx",
+        "line": 81,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_1d9f70ed3975651b": {
     "source": "- כיוון {arg_0}: {arg_1}: {arg_2}\n",
     "language": "he",
@@ -14641,17 +14641,6 @@
         "line": 61,
         "kind": "literal",
         "purpose": "display"
-      }
-    ]
-  },
-  "m_1dc6931924b052f2": {
-    "source": "לא הצלחנו לבדוק את מצב החיבורים. אפשר לפתוח את מסך החיבור ולנסות שם.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/start/ConnectionsStep.tsx",
-        "line": 28,
-        "kind": "literal"
       }
     ]
   },
@@ -14999,7 +14988,7 @@
       },
       {
         "file": "web/components/start/ConnectionsStep.tsx",
-        "line": 27,
+        "line": 81,
         "kind": "literal"
       }
     ]
@@ -15044,7 +15033,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 341,
+        "line": 355,
         "kind": "literal"
       }
     ]
@@ -15077,7 +15066,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 38,
+        "line": 45,
         "kind": "literal"
       }
     ]
@@ -15096,17 +15085,6 @@
         "line": 89,
         "kind": "literal",
         "purpose": "copy"
-      }
-    ]
-  },
-  "m_1ebfdd2df196644a": {
-    "source": "ממתין לאישור שלכם",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/start/ConnectionsStep.tsx",
-        "line": 27,
-        "kind": "literal"
       }
     ]
   },
@@ -16399,7 +16377,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 178,
+        "line": 185,
         "kind": "literal"
       }
     ]
@@ -16604,7 +16582,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 194,
+        "line": 201,
         "kind": "literal"
       }
     ]
@@ -17154,7 +17132,7 @@
     "references": [
       {
         "file": "web/components/start/ConnectionsStep.tsx",
-        "line": 20,
+        "line": 17,
         "kind": "literal"
       }
     ]
@@ -17326,7 +17304,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 247,
+        "line": 254,
         "kind": "literal",
         "purpose": "display"
       }
@@ -18999,7 +18977,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 107,
+        "line": 114,
         "kind": "literal",
         "purpose": "display"
       }
@@ -19022,7 +19000,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 44,
+        "line": 51,
         "kind": "literal",
         "purpose": "display"
       }
@@ -19306,7 +19284,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 275,
+        "line": 282,
         "kind": "literal",
         "purpose": "display"
       }
@@ -19364,18 +19342,6 @@
         "file": "web/components/landing-v2/PostArtwork.tsx",
         "line": 24,
         "kind": "literal"
-      }
-    ]
-  },
-  "m_27cc1d673b6e1949": {
-    "source": "עכשיו מחברים את החשבונות שלכם",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/start/ConnectionsStep.tsx",
-        "line": 24,
-        "kind": "literal",
-        "purpose": "display"
       }
     ]
   },
@@ -19515,7 +19481,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 109,
+        "line": 116,
         "kind": "literal"
       }
     ]
@@ -19646,7 +19612,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 367,
+        "line": 381,
         "kind": "literal"
       }
     ]
@@ -19736,7 +19702,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 148,
+        "line": 155,
         "kind": "literal"
       }
     ]
@@ -19837,7 +19803,7 @@
     "references": [
       {
         "file": "web/components/MonthBuildProgress.tsx",
-        "line": 72,
+        "line": 78,
         "kind": "literal"
       }
     ]
@@ -19871,12 +19837,12 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 185,
+        "line": 194,
         "kind": "literal"
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 315,
+        "line": 329,
         "kind": "literal"
       }
     ]
@@ -20320,12 +20286,12 @@
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 75,
+        "line": 82,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 117,
+        "line": 124,
         "kind": "literal"
       }
     ]
@@ -20449,17 +20415,6 @@
       {
         "file": "web/app/baseline/page.tsx",
         "line": 78,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_29fc79df08077f4b": {
-    "source": "מאשרים גישה לנתונים בכלי הקידום והמדידה שלכם, כדי לדייק את התוכנית. החיבור נעשה בחשבון של אותו שירות.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/start/ConnectionsStep.tsx",
-        "line": 24,
         "kind": "literal"
       }
     ]
@@ -21303,7 +21258,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 163,
+        "line": 170,
         "kind": "literal",
         "purpose": "display"
       }
@@ -21624,7 +21579,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 290,
+        "line": 297,
         "kind": "literal"
       }
     ]
@@ -22309,7 +22264,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 349,
+        "line": 363,
         "kind": "literal"
       }
     ]
@@ -22661,7 +22616,7 @@
     "references": [
       {
         "file": "web/components/MonthBuildProgress.tsx",
-        "line": 113,
+        "line": 120,
         "kind": "literal"
       }
     ]
@@ -22842,17 +22797,17 @@
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 201,
+        "line": 208,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 229,
+        "line": 236,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 271,
+        "line": 278,
         "kind": "literal"
       }
     ]
@@ -23210,7 +23165,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 204,
+        "line": 213,
         "kind": "literal"
       }
     ]
@@ -23232,7 +23187,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 349,
+        "line": 363,
         "kind": "literal"
       }
     ]
@@ -23327,12 +23282,12 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 185,
+        "line": 194,
         "kind": "literal"
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 315,
+        "line": 329,
         "kind": "literal"
       },
       {
@@ -25214,7 +25169,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 361,
+        "line": 375,
         "kind": "literal"
       }
     ]
@@ -26284,7 +26239,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 185,
+        "line": 194,
         "kind": "literal"
       }
     ]
@@ -26584,7 +26539,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 368,
+        "line": 382,
         "kind": "literal",
         "purpose": "display"
       }
@@ -27571,7 +27526,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 193,
+        "line": 200,
         "kind": "literal"
       }
     ]
@@ -27934,7 +27889,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 322,
+        "line": 336,
         "kind": "literal"
       }
     ]
@@ -28179,7 +28134,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 371,
+        "line": 385,
         "kind": "literal"
       }
     ]
@@ -28409,17 +28364,6 @@
       }
     ]
   },
-  "m_3996b7a99d42eb78": {
-    "source": "הגישה אושרה. ממשיכים לבחירת הנתונים",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/start/ConnectionsStep.tsx",
-        "line": 27,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_39a30ef67c730046": {
     "source": "הקרוסלה '3 לחמים שמחזיקים שבוע' נשמרה 29 פעמים. אצל @kemah_vemelach, רילס עם טיפים קיבל הכי הרבה תגובות.",
     "language": "he",
@@ -28437,7 +28381,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 219,
+        "line": 191,
         "kind": "literal"
       }
     ]
@@ -28715,7 +28659,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 172,
+        "line": 179,
         "kind": "literal"
       }
     ]
@@ -28870,6 +28814,18 @@
         "line": 1937,
         "kind": "literal",
         "purpose": "validation"
+      }
+    ]
+  },
+  "m_3ab6c80700406c68": {
+    "source": "חיבור כלי המדידה",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/start/ConnectionsStep.tsx",
+        "line": 57,
+        "kind": "literal",
+        "purpose": "display"
       }
     ]
   },
@@ -30649,7 +30605,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 205,
+        "line": 212,
         "kind": "literal",
         "purpose": "display"
       }
@@ -30835,7 +30791,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 185,
+        "line": 194,
         "kind": "literal"
       }
     ]
@@ -30890,7 +30846,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 87,
+        "line": 94,
         "kind": "literal"
       }
     ]
@@ -31177,7 +31133,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 369,
+        "line": 383,
         "kind": "literal"
       }
     ]
@@ -31722,7 +31678,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 192,
+        "line": 199,
         "kind": "literal"
       }
     ]
@@ -32142,7 +32098,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 53,
+        "line": 60,
         "kind": "literal"
       }
     ]
@@ -32293,7 +32249,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 185,
+        "line": 194,
         "kind": "literal"
       }
     ]
@@ -32377,7 +32333,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 221,
+        "line": 232,
         "kind": "literal"
       }
     ]
@@ -32885,7 +32841,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 366,
+        "line": 380,
         "kind": "literal",
         "purpose": "display"
       },
@@ -32937,7 +32893,7 @@
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 19,
+        "line": 26,
         "kind": "literal"
       }
     ]
@@ -33769,7 +33725,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 250,
+        "line": 257,
         "kind": "literal"
       }
     ]
@@ -34299,7 +34255,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 186,
+        "line": 193,
         "kind": "literal"
       }
     ]
@@ -34924,7 +34880,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 227,
+        "line": 234,
         "kind": "literal"
       }
     ]
@@ -35245,17 +35201,12 @@
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 103,
-        "kind": "literal"
-      },
-      {
-        "file": "web/lib/releases.ts",
         "line": 110,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 159,
+        "line": 117,
         "kind": "literal"
       },
       {
@@ -35266,6 +35217,11 @@
       {
         "file": "web/lib/releases.ts",
         "line": 173,
+        "kind": "literal"
+      },
+      {
+        "file": "web/lib/releases.ts",
+        "line": 180,
         "kind": "literal"
       },
       {
@@ -35454,17 +35410,17 @@
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 96,
+        "line": 103,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 124,
+        "line": 131,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 150,
+        "line": 157,
         "kind": "literal"
       }
     ]
@@ -36079,7 +36035,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 370,
+        "line": 384,
         "kind": "literal",
         "purpose": "display"
       }
@@ -36815,17 +36771,6 @@
       }
     ]
   },
-  "m_4c10640b0bd1f25b": {
-    "source": "חוזרים לכאן וממשיכים",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/start/ConnectionsStep.tsx",
-        "line": 26,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_4c1b2d15159ebcc9": {
     "source": "לדעת לאיזה חשבון גוגל התחברתם",
     "language": "he",
@@ -36844,7 +36789,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 149,
+        "line": 156,
         "kind": "literal"
       }
     ]
@@ -36927,7 +36872,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 366,
+        "line": 380,
         "kind": "literal"
       }
     ]
@@ -37212,7 +37157,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 361,
+        "line": 375,
         "kind": "literal"
       }
     ]
@@ -37603,7 +37548,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 17,
+        "line": 24,
         "kind": "literal"
       }
     ]
@@ -38042,17 +37987,6 @@
       {
         "file": "web/components/posts/preparation/PhotosStep.tsx",
         "line": 191,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_4e78a1a705ae8bda": {
-    "source": "בוחרים כלי",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/start/ConnectionsStep.tsx",
-        "line": 26,
         "kind": "literal"
       }
     ]
@@ -38686,7 +38620,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 289,
+        "line": 296,
         "kind": "literal",
         "purpose": "display"
       }
@@ -38984,7 +38918,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 32,
+        "line": 39,
         "kind": "literal"
       }
     ]
@@ -39085,7 +39019,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 132,
+        "line": 139,
         "kind": "literal"
       }
     ]
@@ -39159,7 +39093,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 24,
+        "line": 31,
         "kind": "literal"
       }
     ]
@@ -39354,7 +39288,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 213,
+        "line": 220,
         "kind": "literal"
       }
     ]
@@ -39443,7 +39377,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 361,
+        "line": 375,
         "kind": "literal"
       }
     ]
@@ -39521,7 +39455,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 261,
+        "line": 268,
         "kind": "literal",
         "purpose": "display"
       }
@@ -39961,7 +39895,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 166,
+        "line": 172,
         "kind": "literal"
       }
     ]
@@ -41769,7 +41703,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 200,
+        "line": 209,
         "kind": "literal"
       }
     ]
@@ -41832,7 +41766,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 283,
+        "line": 290,
         "kind": "literal"
       }
     ]
@@ -42329,7 +42263,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 52,
+        "line": 59,
         "kind": "literal"
       }
     ]
@@ -43465,7 +43399,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 46,
+        "line": 53,
         "kind": "literal"
       }
     ]
@@ -43742,7 +43676,7 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 322,
+        "line": 336,
         "kind": "literal"
       }
     ]
@@ -43825,7 +43759,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 157,
+        "line": 164,
         "kind": "literal"
       }
     ]
@@ -44333,7 +44267,7 @@
     "references": [
       {
         "file": "web/components/start/ConnectionsStep.tsx",
-        "line": 27,
+        "line": 53,
         "kind": "literal"
       }
     ]
@@ -44570,7 +44504,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 284,
+        "line": 291,
         "kind": "literal"
       }
     ]
@@ -44616,7 +44550,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 131,
+        "line": 138,
         "kind": "literal"
       }
     ]
@@ -44914,6 +44848,11 @@
     "source": "בחירת חיבור",
     "language": "he",
     "references": [
+      {
+        "file": "web/components/start/ConnectionsStep.tsx",
+        "line": 66,
+        "kind": "literal"
+      },
       {
         "file": "web/lib/uxFlows.ts",
         "line": 67,
@@ -46452,7 +46391,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 94,
+        "line": 101,
         "kind": "literal"
       }
     ]
@@ -47001,7 +46940,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 262,
+        "line": 269,
         "kind": "literal"
       }
     ]
@@ -47431,7 +47370,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 264,
+        "line": 271,
         "kind": "literal"
       }
     ]
@@ -47871,7 +47810,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 215,
+        "line": 222,
         "kind": "literal"
       }
     ]
@@ -48139,7 +48078,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 23,
+        "line": 30,
         "kind": "literal",
         "purpose": "display"
       }
@@ -48510,7 +48449,7 @@
     "references": [
       {
         "file": "web/lib/useMonthBuild.ts",
-        "line": 155,
+        "line": 200,
         "kind": "literal"
       }
     ]
@@ -48573,7 +48512,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 59,
+        "line": 66,
         "kind": "literal"
       }
     ]
@@ -48618,7 +48557,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 51,
+        "line": 58,
         "kind": "literal",
         "purpose": "display"
       }
@@ -50495,6 +50434,17 @@
       }
     ]
   },
+  "m_68f83071e19039bc": {
+    "source": "להמשיך בלי לחבר חשבונות",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/start/ConnectionsStep.tsx",
+        "line": 62,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_68fe3acee83d052d": {
     "source": "כדאי לבדוק אם אנשים שמחפשים פתרון ב-ChatGPT מתאימים לקהל שלכם. נבחן התאמה לפני שנמליץ להשקיע.",
     "language": "he",
@@ -51195,7 +51145,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 198,
+        "line": 205,
         "kind": "literal",
         "purpose": "display"
       }
@@ -51328,7 +51278,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 277,
+        "line": 284,
         "kind": "literal"
       }
     ]
@@ -51383,7 +51333,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 276,
+        "line": 283,
         "kind": "literal"
       }
     ]
@@ -51530,7 +51480,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 282,
+        "line": 289,
         "kind": "literal",
         "purpose": "display"
       }
@@ -51855,7 +51805,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 45,
+        "line": 52,
         "kind": "literal"
       }
     ]
@@ -53659,7 +53609,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 370,
+        "line": 384,
         "kind": "literal",
         "purpose": "display"
       }
@@ -53739,7 +53689,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 268,
+        "line": 275,
         "kind": "literal",
         "purpose": "display"
       }
@@ -54065,7 +54015,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 79,
+        "line": 86,
         "kind": "literal",
         "purpose": "display"
       }
@@ -54335,12 +54285,12 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 141,
+        "line": 148,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 187,
+        "line": 194,
         "kind": "literal"
       }
     ]
@@ -54351,7 +54301,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 121,
+        "line": 128,
         "kind": "literal",
         "purpose": "display"
       }
@@ -54396,7 +54346,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 221,
+        "line": 228,
         "kind": "literal"
       }
     ]
@@ -54837,7 +54787,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 130,
+        "line": 137,
         "kind": "literal",
         "purpose": "display"
       }
@@ -56864,7 +56814,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 341,
+        "line": 355,
         "kind": "literal"
       }
     ]
@@ -57063,7 +57013,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 73,
+        "line": 80,
         "kind": "literal"
       }
     ]
@@ -57970,7 +57920,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 240,
+        "line": 247,
         "kind": "literal",
         "purpose": "display"
       }
@@ -58469,12 +58419,12 @@
       },
       {
         "file": "web/lib/api.ts",
-        "line": 5723,
+        "line": 5724,
         "kind": "literal"
       },
       {
         "file": "web/lib/api.ts",
-        "line": 5724,
+        "line": 5725,
         "kind": "literal"
       },
       {
@@ -58765,7 +58715,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 220,
+        "line": 227,
         "kind": "literal"
       }
     ]
@@ -59644,7 +59594,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 200,
+        "line": 209,
         "kind": "literal"
       }
     ]
@@ -60266,7 +60216,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 185,
+        "line": 194,
         "kind": "literal"
       }
     ]
@@ -61311,7 +61261,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 235,
+        "line": 242,
         "kind": "literal"
       }
     ]
@@ -61797,7 +61747,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 371,
+        "line": 385,
         "kind": "literal"
       }
     ]
@@ -62041,6 +61991,11 @@
     "source": "לא הצלחנו לבנות את התוכנית כרגע.",
     "language": "he",
     "references": [
+      {
+        "file": "web/components/MonthBuildProgress.tsx",
+        "line": 76,
+        "kind": "literal"
+      },
       {
         "file": "web/components/start/StepQuarter.tsx",
         "line": 267,
@@ -62781,7 +62736,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 228,
+        "line": 235,
         "kind": "literal"
       }
     ]
@@ -63581,7 +63536,7 @@
     "references": [
       {
         "file": "web/lib/useMonthBuild.ts",
-        "line": 145,
+        "line": 182,
         "kind": "literal"
       }
     ]
@@ -64171,7 +64126,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 326,
+        "line": 340,
         "kind": "literal"
       }
     ]
@@ -64738,15 +64693,21 @@
       }
     ]
   },
+  "m_86b6b85b2d9a775d": {
+    "source": "התשובות שלכם שמורות.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/MonthBuildProgress.tsx",
+        "line": 84,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_86c52357a2c71758": {
     "source": "לצפות בקמפיין",
     "language": "he",
     "references": [
-      {
-        "file": "web/lib/releases.ts",
-        "line": 33,
-        "kind": "literal"
-      },
       {
         "file": "web/lib/releases.ts",
         "line": 40,
@@ -64754,7 +64715,12 @@
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 54,
+        "line": 47,
+        "kind": "literal"
+      },
+      {
+        "file": "web/lib/releases.ts",
+        "line": 61,
         "kind": "literal"
       }
     ]
@@ -65054,7 +65020,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 184,
+        "line": 191,
         "kind": "literal",
         "purpose": "display"
       }
@@ -65242,7 +65208,7 @@
       },
       {
         "file": "web/components/MonthBuildProgress.tsx",
-        "line": 85,
+        "line": 92,
         "kind": "literal"
       },
       {
@@ -65277,7 +65243,7 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 178,
+        "line": 184,
         "kind": "literal"
       },
       {
@@ -66438,7 +66404,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 114,
+        "line": 121,
         "kind": "literal",
         "purpose": "display"
       }
@@ -67281,6 +67247,17 @@
       }
     ]
   },
+  "m_8c6b2eaa24b1b811": {
+    "source": "אם בניית התוכנית נעצרת, אפשר לנסות שוב ולהמשיך עם כל התשובות שכבר שמרתם.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 11,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_8c6ff6cc9522a976": {
     "source": "הצענו {arg_0} קהלים. הקהלים שהגדרתם ידנית ({arg_1}) נשארו כמו שהם.",
     "language": "he",
@@ -67704,7 +67681,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 11,
+        "line": 18,
         "kind": "literal"
       }
     ]
@@ -68571,7 +68548,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 226,
+        "line": 233,
         "kind": "literal",
         "purpose": "display"
       }
@@ -68946,7 +68923,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 219,
+        "line": 226,
         "kind": "literal",
         "purpose": "display"
       }
@@ -69499,7 +69476,7 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 219,
+        "line": 190,
         "kind": "literal"
       }
     ]
@@ -70149,7 +70126,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 256,
+        "line": 270,
         "kind": "literal"
       }
     ]
@@ -71303,7 +71280,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 315,
+        "line": 329,
         "kind": "literal"
       }
     ]
@@ -72249,7 +72226,7 @@
     "references": [
       {
         "file": "web/lib/useMonthBuild.ts",
-        "line": 167,
+        "line": 217,
         "kind": "literal"
       }
     ]
@@ -72792,7 +72769,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 164,
+        "line": 171,
         "kind": "literal"
       }
     ]
@@ -74344,7 +74321,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 270,
+        "line": 277,
         "kind": "literal"
       }
     ]
@@ -74551,7 +74528,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 285,
+        "line": 292,
         "kind": "literal"
       }
     ]
@@ -75103,7 +75080,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 322,
+        "line": 336,
         "kind": "literal",
         "purpose": "display"
       }
@@ -75688,7 +75665,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 205,
+        "line": 214,
         "kind": "literal"
       }
     ]
@@ -75710,7 +75687,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 26,
+        "line": 33,
         "kind": "literal"
       }
     ]
@@ -76086,7 +76063,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 205,
+        "line": 214,
         "kind": "literal"
       }
     ]
@@ -76392,17 +76369,6 @@
       {
         "file": "web/components/design/FlowBoard.tsx",
         "line": 129,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_9fae3eff0d9fe5a2": {
-    "source": "להמשיך להגדרת המטרות",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/start/ConnectionsStep.tsx",
-        "line": 24,
         "kind": "literal"
       }
     ]
@@ -76918,7 +76884,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 185,
+        "line": 192,
         "kind": "literal"
       }
     ]
@@ -77033,17 +76999,6 @@
         "line": 33,
         "kind": "literal",
         "purpose": "copy"
-      }
-    ]
-  },
-  "m_a1027b21c43b9642": {
-    "source": "מאשרים גישה בחשבון שלכם",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/start/ConnectionsStep.tsx",
-        "line": 26,
-        "kind": "literal"
       }
     ]
   },
@@ -77251,13 +77206,13 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 198,
+        "line": 207,
         "kind": "literal",
         "purpose": "display"
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 199,
+        "line": 208,
         "kind": "literal"
       },
       {
@@ -77391,6 +77346,17 @@
       {
         "file": "web/lib/whatsapp.ts",
         "line": 63,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_a18b00a5dcf97109": {
+    "source": "לא הצלחנו לבדוק אם הבנייה הסתיימה.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/MonthBuildProgress.tsx",
+        "line": 75,
         "kind": "literal"
       }
     ]
@@ -77815,7 +77781,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 101,
+        "line": 108,
         "kind": "literal"
       }
     ]
@@ -78239,12 +78205,12 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 12,
+        "line": 19,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 292,
+        "line": 299,
         "kind": "literal"
       }
     ]
@@ -79916,7 +79882,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 205,
+        "line": 214,
         "kind": "literal"
       }
     ]
@@ -81204,7 +81170,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 10,
+        "line": 17,
         "kind": "literal"
       }
     ]
@@ -81584,7 +81550,7 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 217,
+        "line": 230,
         "kind": "literal"
       },
       {
@@ -81656,7 +81622,7 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 191,
+        "line": 200,
         "kind": "literal"
       }
     ]
@@ -82009,7 +81975,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 254,
+        "line": 261,
         "kind": "literal",
         "purpose": "display"
       }
@@ -82418,7 +82384,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 185,
+        "line": 194,
         "kind": "literal"
       }
     ]
@@ -82558,7 +82524,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 95,
+        "line": 102,
         "kind": "literal"
       }
     ]
@@ -82847,7 +82813,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 334,
+        "line": 348,
         "kind": "literal"
       }
     ]
@@ -83013,7 +82979,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 171,
+        "line": 178,
         "kind": "literal"
       }
     ]
@@ -83326,7 +83292,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 371,
+        "line": 385,
         "kind": "literal"
       }
     ]
@@ -83349,7 +83315,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 25,
+        "line": 32,
         "kind": "literal"
       }
     ]
@@ -84066,7 +84032,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 361,
+        "line": 375,
         "kind": "literal"
       }
     ]
@@ -84247,7 +84213,7 @@
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 278,
+        "line": 285,
         "kind": "literal"
       }
     ]
@@ -84409,7 +84375,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 158,
+        "line": 165,
         "kind": "literal"
       }
     ]
@@ -85205,7 +85171,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 185,
+        "line": 194,
         "kind": "literal"
       }
     ]
@@ -85273,7 +85239,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 170,
+        "line": 177,
         "kind": "literal",
         "purpose": "display"
       }
@@ -85890,7 +85856,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 147,
+        "line": 154,
         "kind": "literal",
         "purpose": "display"
       }
@@ -86591,7 +86557,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 341,
+        "line": 355,
         "kind": "literal"
       }
     ]
@@ -86772,7 +86738,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 204,
+        "line": 213,
         "kind": "literal"
       }
     ]
@@ -86817,7 +86783,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 204,
+        "line": 213,
         "kind": "literal",
         "purpose": "display"
       }
@@ -87195,7 +87161,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 240,
+        "line": 254,
         "kind": "literal"
       }
     ]
@@ -89264,7 +89230,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 122,
+        "line": 129,
         "kind": "literal"
       }
     ]
@@ -89383,7 +89349,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 361,
+        "line": 375,
         "kind": "literal"
       }
     ]
@@ -90247,7 +90213,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 177,
+        "line": 184,
         "kind": "literal",
         "purpose": "display"
       }
@@ -90653,6 +90619,11 @@
       {
         "file": "web/app/strategy/edit/page.tsx",
         "line": 123,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/MonthBuildProgress.tsx",
+        "line": 92,
         "kind": "literal"
       }
     ]
@@ -91282,7 +91253,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 255,
+        "line": 262,
         "kind": "literal"
       }
     ]
@@ -91412,7 +91383,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 242,
+        "line": 249,
         "kind": "literal"
       }
     ]
@@ -92297,7 +92268,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 72,
+        "line": 79,
         "kind": "literal",
         "purpose": "display"
       }
@@ -92570,7 +92541,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 47,
+        "line": 54,
         "kind": "literal"
       }
     ]
@@ -93071,6 +93042,17 @@
         "line": 167,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_c3037e94193088bd": {
+    "source": "אם יש לכם כלי מדידה, אפשר לחבר אותו ולראות את התוצאות בתוכנית.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/start/ConnectionsStep.tsx",
+        "line": 58,
+        "kind": "literal"
       }
     ]
   },
@@ -94180,6 +94162,17 @@
       }
     ]
   },
+  "m_c5160b89fa4c81e9": {
+    "source": "בשלב החיבורים בוחרים כלי אחד בכל פעם, או ממשיכים ישר להגדרת היעד.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 10,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_c5185827fb2c9a5a": {
     "source": "גוגל אנליטיקס",
     "language": "he",
@@ -94513,7 +94506,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 361,
+        "line": 375,
         "kind": "literal"
       }
     ]
@@ -94557,7 +94550,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 240,
+        "line": 254,
         "kind": "literal"
       },
       {
@@ -96163,7 +96156,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 102,
+        "line": 109,
         "kind": "literal"
       }
     ]
@@ -96303,7 +96296,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 185,
+        "line": 194,
         "kind": "literal"
       }
     ]
@@ -96337,7 +96330,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 58,
+        "line": 65,
         "kind": "literal",
         "purpose": "display"
       }
@@ -96440,7 +96433,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 82,
+        "line": 89,
         "kind": "literal"
       }
     ]
@@ -96931,7 +96924,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 241,
+        "line": 248,
         "kind": "literal"
       }
     ]
@@ -97058,7 +97051,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 93,
+        "line": 100,
         "kind": "literal",
         "purpose": "display"
       }
@@ -97152,7 +97145,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 341,
+        "line": 355,
         "kind": "literal"
       }
     ]
@@ -97634,7 +97627,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 222,
+        "line": 229,
         "kind": "literal"
       }
     ]
@@ -97689,7 +97682,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 115,
+        "line": 122,
         "kind": "literal"
       }
     ]
@@ -98025,6 +98018,18 @@
       }
     ]
   },
+  "m_cd35716db178b3c6": {
+    "source": "אפשר לבנות תוכנית גם בלי חיבורים",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 9,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
   "m_cd38b69cb965bdad": {
     "source": "לחיצה עם אופי",
     "language": "he",
@@ -98043,7 +98048,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 9,
+        "line": 16,
         "kind": "literal",
         "purpose": "display"
       }
@@ -98140,7 +98145,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 88,
+        "line": 95,
         "kind": "literal"
       }
     ]
@@ -98162,7 +98167,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 66,
+        "line": 73,
         "kind": "literal"
       }
     ]
@@ -98671,7 +98676,7 @@
     "references": [
       {
         "file": "web/components/MonthBuildProgress.tsx",
-        "line": 75,
+        "line": 81,
         "kind": "literal"
       }
     ]
@@ -99865,17 +99870,6 @@
       }
     ]
   },
-  "m_d1bf052c0247da40": {
-    "source": "אין לכם חשבון בכלי הזה? אפשר להמשיך ולהוסיף אותו בהמשך.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/start/ConnectionsStep.tsx",
-        "line": 29,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_d1c0ddb7d98fa1f6": {
     "source": "נמחק את החשבון של {arg_0}, את העסק, את כל המידע ואת כל הקבצים. מנוי בפייפאל מתבטל. אי אפשר לבטל את זה.",
     "language": "he",
@@ -100248,7 +100242,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 219,
+        "line": 192,
         "kind": "literal"
       }
     ]
@@ -100512,7 +100506,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 256,
+        "line": 263,
         "kind": "literal"
       }
     ]
@@ -100618,7 +100612,7 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 180,
+        "line": 186,
         "kind": "literal"
       },
       {
@@ -101119,7 +101113,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 100,
+        "line": 107,
         "kind": "literal",
         "purpose": "display"
       }
@@ -101325,7 +101319,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 81,
+        "line": 88,
         "kind": "literal"
       }
     ]
@@ -101972,7 +101966,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 204,
+        "line": 213,
         "kind": "literal"
       }
     ]
@@ -102033,7 +102027,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 207,
+        "line": 214,
         "kind": "literal"
       }
     ]
@@ -102801,7 +102795,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 191,
+        "line": 198,
         "kind": "literal",
         "purpose": "display"
       }
@@ -103236,7 +103230,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 361,
+        "line": 375,
         "kind": "literal"
       }
     ]
@@ -104583,7 +104577,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 133,
+        "line": 140,
         "kind": "literal"
       }
     ]
@@ -106197,7 +106191,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 156,
+        "line": 163,
         "kind": "literal",
         "purpose": "display"
       }
@@ -106231,7 +106225,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 214,
+        "line": 221,
         "kind": "literal"
       }
     ]
@@ -106513,7 +106507,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 199,
+        "line": 206,
         "kind": "literal"
       }
     ]
@@ -107267,7 +107261,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 263,
+        "line": 270,
         "kind": "literal"
       }
     ]
@@ -107302,7 +107296,7 @@
     "references": [
       {
         "file": "web/components/start/ConnectionsStep.tsx",
-        "line": 21,
+        "line": 22,
         "kind": "literal"
       }
     ]
@@ -108244,7 +108238,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 139,
+        "line": 146,
         "kind": "literal"
       }
     ]
@@ -108559,12 +108553,12 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 216,
+        "line": 225,
         "kind": "literal"
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 223,
+        "line": 237,
         "kind": "literal"
       }
     ]
@@ -109072,7 +109066,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 116,
+        "line": 123,
         "kind": "literal"
       }
     ]
@@ -109244,7 +109238,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 361,
+        "line": 375,
         "kind": "literal"
       }
     ]
@@ -110058,7 +110052,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 74,
+        "line": 81,
         "kind": "literal"
       }
     ]
@@ -110235,7 +110229,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 315,
+        "line": 329,
         "kind": "literal"
       },
       {
@@ -110494,7 +110488,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 165,
+        "line": 172,
         "kind": "literal"
       }
     ]
@@ -110516,12 +110510,17 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 61,
+        "line": 12,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 208,
+        "line": 68,
+        "kind": "literal"
+      },
+      {
+        "file": "web/lib/releases.ts",
+        "line": 215,
         "kind": "literal"
       }
     ]
@@ -110566,7 +110565,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 60,
+        "line": 67,
         "kind": "literal"
       }
     ]
@@ -110844,17 +110843,6 @@
       {
         "file": "web/components/posts/preparation/PostPreparation.tsx",
         "line": 101,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_e72b9b3f000d8e1c": {
-    "source": "הנתונים נקראו",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/start/ConnectionsStep.tsx",
-        "line": 27,
         "kind": "literal"
       }
     ]
@@ -111425,6 +111413,17 @@
       }
     ]
   },
+  "m_e8518dab0fa4cdaf": {
+    "source": "הקישורים ששיתפתם כבר שמורים. חיבור כלי מדידה מאפשר לראות גם את התוצאות.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/start/ConnectionsStep.tsx",
+        "line": 58,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_e851f49f2c4e2670": {
     "source": "אתר: לא קראנו אתר. אל תכתוב שום דבר בשם האתר ואל תפנה לאתר.",
     "language": "he",
@@ -111472,7 +111471,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 138,
+        "line": 145,
         "kind": "literal",
         "purpose": "display"
       }
@@ -112607,17 +112606,6 @@
       }
     ]
   },
-  "m_eaaa4c308f99a82d": {
-    "source": "להמשיך לחיבור",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/start/ConnectionsStep.tsx",
-        "line": 27,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_eaabd0bdaccd9ad0": {
     "source": "היעד: {arg_0}. נבדוק מולו כל חודש.",
     "language": "he",
@@ -112932,7 +112920,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 249,
+        "line": 256,
         "kind": "literal"
       }
     ]
@@ -113089,7 +113077,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 16,
+        "line": 23,
         "kind": "literal",
         "purpose": "display"
       }
@@ -113210,7 +113198,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 108,
+        "line": 115,
         "kind": "literal"
       }
     ]
@@ -113920,6 +113908,17 @@
       }
     ]
   },
+  "m_ecdd9876d32366d8": {
+    "source": "אפשר לחבר כלים גם אחרי שהתוכנית מוכנה.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/start/ConnectionsStep.tsx",
+        "line": 64,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_ececc0a061fe831a": {
     "source": "from your account email. Do not send passwords or access tokens.",
     "language": "en",
@@ -114018,7 +114017,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 123,
+        "line": 130,
         "kind": "literal"
       }
     ]
@@ -114315,17 +114314,6 @@
       }
     ]
   },
-  "m_ed8c90de7fcb89d4": {
-    "source": "כבר שיתפתם איתנו",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/start/ConnectionsStep.tsx",
-        "line": 25,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_ed92bfc816fe218f": {
     "source": "מזון, מתנות, אירוח, ביגוד חגיגי.",
     "language": "he",
@@ -114557,7 +114545,7 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 199,
+        "line": 208,
         "kind": "literal"
       }
     ]
@@ -115640,6 +115628,22 @@
         "line": 44,
         "kind": "literal",
         "purpose": "validation"
+      }
+    ]
+  },
+  "m_efb5363bfbb70d71": {
+    "source": "להמשיך להגדרת היעד",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/start/ConnectionsStep.tsx",
+        "line": 59,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/start/ConnectionsStep.tsx",
+        "line": 62,
+        "kind": "literal"
       }
     ]
   },
@@ -117052,7 +117056,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 185,
+        "line": 194,
         "kind": "literal"
       }
     ]
@@ -117929,7 +117933,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 18,
+        "line": 25,
         "kind": "literal"
       }
     ]
@@ -118428,7 +118432,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 248,
+        "line": 255,
         "kind": "literal"
       }
     ]
@@ -118999,7 +119003,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 212,
+        "line": 219,
         "kind": "literal",
         "purpose": "display"
       }
@@ -119278,7 +119282,7 @@
     "references": [
       {
         "file": "web/components/MonthBuildProgress.tsx",
-        "line": 78,
+        "line": 85,
         "kind": "literal"
       }
     ]
@@ -120816,7 +120820,7 @@
     "references": [
       {
         "file": "web/components/MonthBuildProgress.tsx",
-        "line": 92,
+        "line": 99,
         "kind": "literal"
       }
     ]
@@ -120984,7 +120988,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 243,
+        "line": 250,
         "kind": "literal"
       }
     ]
@@ -121449,7 +121453,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 37,
+        "line": 44,
         "kind": "literal",
         "purpose": "display"
       }
@@ -121544,7 +121548,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 200,
+        "line": 207,
         "kind": "literal"
       }
     ]
@@ -121828,7 +121832,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 86,
+        "line": 93,
         "kind": "literal",
         "purpose": "display"
       }
@@ -122207,7 +122211,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 233,
+        "line": 240,
         "kind": "literal",
         "purpose": "display"
       }
@@ -122546,7 +122550,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 180,
+        "line": 187,
         "kind": "literal"
       }
     ]
@@ -122736,7 +122740,7 @@
     "references": [
       {
         "file": "web/components/MonthBuildProgress.tsx",
-        "line": 92,
+        "line": 99,
         "kind": "literal"
       }
     ]

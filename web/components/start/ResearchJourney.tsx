@@ -187,7 +187,10 @@ export function ResearchJourney() {
   const journey = flow.draft.research_journey!; const steps = sequence(journey); const index = steps.indexOf(journey.step);
   const total = BEFORE.length + afterSignup(journey.segment).length;
   const current = (journey.phase === "after" ? BEFORE.length : 0) + Math.max(index, 0) + 1;
-  const stage = journey.phase === "before" ? 0 : journey.step === "build" ? 3 : ["metrics", "detail"].includes(journey.step) ? 2 : 1;
+  const stage = journey.phase === "before" ? "מכירים את העסק"
+    : journey.step === "build" ? "בונים תוכנית"
+    : ["metrics", "detail"].includes(journey.step) ? "מגדירים מטרות"
+    : "מחברים מידע";
   const common: StepProps = { tip: <OnboardingTip journey={journey} />, flow, update, setDraft, next: () => void advance(), reflection: null, focus: true, direction, nextLabel: ({ name: "לספר על העסק", offer: "לספר מה מייחד אתכם", different: journey.segment === "fundraising" ? "מי יתמוך בעשייה שלכם?" : "מי הלקוחות שלכם?", audiences: "להוסיף אתר ופרופילים", discovery: "להמשיך לפתיחת החשבון", software_offer: "מה המוצר פותר?", software: "איך לקוחות מוצאים אתכם?", sources: "להמשיך לחיבורים", connections: "מה ייחשב הצלחה?", metrics: "עוד שאלה קצרה", detail: "להמשיך לבניית התוכנית" } as Record<string, string>)[journey.step], notice: error ? <p role="alert" className={form.error}>{error}</p> : undefined };
   async function move(step: string, back = false) {
     const current = latest.current!; const j = current.draft.research_journey!;
@@ -220,11 +223,16 @@ export function ResearchJourney() {
       onDone={() => { void clearSavedFlow(); router.replace("/strategy"); }} />; break;
   }
   return <div className={`start-blue ${styles.flow}`}><header className="border-b border-[var(--rule)]"><div className="mx-auto flex max-w-[1100px] flex-wrap items-center justify-between gap-3 px-5 py-4"><Link href="/" aria-label={t("ישראמארקט")} className="product-wordmark !text-[22px]" dir="ltr"><IdentityMark /></Link><div className="flex items-center gap-2">{signedIn && !mock ? <ReportFeedback iconOnly /> : null}<ProductUtilities inline /></div></div></header>
-    <main className="mx-auto w-full max-w-[760px] px-5 py-6 sm:py-10" aria-busy={busy}>{index > 0 ? <button type="button" disabled={busy} onClick={() => void move(steps[index - 1], true)} className="mb-4 min-h-11 text-sm"><Copy text="חזרה" /></button> : null}
-      <ol className={styles.journeyStages} aria-label={t("מהיכרות לתוכנית")}>
-        {["מכירים את העסק", "מחברים מידע", "מגדירים מטרות", "בונים תוכנית"].map((label,i)=><li key={label} aria-current={stage===i?"step":undefined} data-complete={i<stage}><i aria-hidden="true"/><span><Copy text={label}/></span></li>)}
-      </ol>
-      <div className={styles.questionProgress} role="progressbar" aria-label={t("התקדמות בהיכרות")} aria-valuenow={current} aria-valuemin={1} aria-valuemax={total}><span><Copy text="צעד {arg_0} מתוך {arg_1}" args={{arg_0:current,arg_1:total}}/></span><i style={{width:`${current / total * 100}%`}}/></div>
+    <main className="mx-auto w-full max-w-[760px] px-5 py-6 sm:py-10" aria-busy={busy}>
+      <div className={styles.questionProgress}>
+        <div className={styles.progressRow}>
+          <p><Copy text={stage} /> <bdi>· <Copy text="צעד {arg_0} מתוך {arg_1}" args={{ arg_0: current, arg_1: total }} /></bdi></p>
+          {index > 0 ? <button type="button" disabled={busy} onClick={() => void move(steps[index - 1], true)} className="min-h-11 shrink-0 text-sm font-semibold text-[var(--primary)] hover:underline"><Copy text="חזרה" /></button> : null}
+        </div>
+        <div className={styles.progressTrack} role="progressbar" aria-label={t("התקדמות בהיכרות")} aria-valuenow={current} aria-valuemin={1} aria-valuemax={total}>
+          <span style={{ width: `${current / total * 100}%` }} />
+        </div>
+      </div>
       <div key={journey.step}>{screen}</div>
       <span className="sr-only" lang={locale}>{t("ישראמארקט")}</span>
     </main></div>;
