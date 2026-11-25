@@ -657,6 +657,81 @@
   --dark-action: #f2b792;
   --sheet-heading: #c9dfca;
 }
+.page[data-palette=ink] {
+  --paper: #f6f6f1;
+  --ink: #222f40;
+  --ink-soft: #465568;
+  --ink-muted: #4f5d71;
+  --action: #192739;
+  --primary-dark: #334f72;
+  --dark-ground: #192739;
+  --dark-deep: #111c2a;
+  --dark-raised: #30435c;
+  --dark-copy: #dce5ee;
+  --dark-line: #7c8da1;
+  --dark-action: #ffc092;
+  --sheet-heading: #c9dcf2;
+  --sheet-heading-ink: #22364c;
+  --sheet-page: #f3f6f9;
+  --sheet-ink: #23364a;
+  --sheet-muted: #4a5e72;
+  --sheet-rule: #b8c9da;
+  --sheet-decision: #304b69;
+  --sheet-light: #f4f8fd;
+  --report-paper: #e2eaf4;
+  --calendar-ground: #c1cfdc;
+  --calendar-shadow: #889bae;
+}
+.page[data-palette=merlot] {
+  --paper: #f9f3ef;
+  --ink: #43282d;
+  --ink-soft: #61454a;
+  --ink-muted: #6d4f55;
+  --action: #49242e;
+  --primary-dark: #723c4a;
+  --dark-ground: #49242e;
+  --dark-deep: #351923;
+  --dark-raised: #653944;
+  --dark-copy: #f1dede;
+  --dark-line: #a88088;
+  --dark-action: #c4daf6;
+  --sheet-heading: #e9bfc6;
+  --sheet-heading-ink: #4e2a34;
+  --sheet-page: #fff6f4;
+  --sheet-ink: #4b3039;
+  --sheet-muted: #6c4c57;
+  --sheet-rule: #d9bbc1;
+  --sheet-decision: #623343;
+  --sheet-light: #fff5f7;
+  --report-paper: #ebe0e4;
+  --calendar-ground: #d5acb8;
+  --calendar-shadow: #a47482;
+}
+.page[data-palette=espresso] {
+  --paper: #f7f2e6;
+  --ink: #352c22;
+  --ink-soft: #554c37;
+  --ink-muted: #60553e;
+  --action: #302820;
+  --primary-dark: #66552e;
+  --dark-ground: #302820;
+  --dark-deep: #231c17;
+  --dark-raised: #4a3c2d;
+  --dark-copy: #eee2cc;
+  --dark-line: #95836b;
+  --dark-action: #e4ed9a;
+  --sheet-heading: #dbc69f;
+  --sheet-heading-ink: #3e3123;
+  --sheet-page: #fbf6e8;
+  --sheet-ink: #403729;
+  --sheet-muted: #62523c;
+  --sheet-rule: #d0c2a8;
+  --sheet-decision: #514331;
+  --sheet-light: #fcf3e0;
+  --report-paper: #e8e5d1;
+  --calendar-ground: #cbb899;
+  --calendar-shadow: #9c8766;
+}
 .page:global(.lv2-site) .header {
   background: var(--dark-ground);
   color: var(--paper);

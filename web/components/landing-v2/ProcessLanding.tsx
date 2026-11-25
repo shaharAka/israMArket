@@ -24,17 +24,19 @@ import { IconChevron } from "@/lib/icons";
 import "./lv2.css";
 import "./showcase.css";
 
+const PALETTES = ["ink", "merlot", "espresso", "forest", "onyx", "punch-jade"] as const;
+
 /** The arrival route informs signup. Hover previews are owned by each section. */
 export function ProcessLanding({ initialPath, identity }: { initialPath?: ExamplePath; identity?: IdentityDirection }) {
   const { locale } = useLanguage();
-  const [palette, setPalette] = useState("forest");
+  const [palette, setPalette] = useState<(typeof PALETTES)[number]>(PALETTES[0]);
   const [role, setRole] = useState<ProcessRole | null>(() => defaultProcessRole(initialPath));
   useEffect(() => {
     const read = () => {
       const params = new URLSearchParams(window.location.search);
       const segment = params.get("segment");
       const selectedPalette = params.get("palette");
-      setPalette(selectedPalette === "onyx" || selectedPalette === "punch-jade" ? selectedPalette : "forest");
+      setPalette(PALETTES.find(option => option === selectedPalette) ?? PALETTES[0]);
       setRole(isProcessRole(segment) ? segment : defaultProcessRole(initialPath));
     };
     const timer = window.setTimeout(read, 0);
