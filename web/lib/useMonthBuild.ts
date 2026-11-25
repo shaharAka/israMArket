@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { endpoints, type GenerateResult, type GenerationStatus } from "@/lib/api";
+import { ApiError, endpoints, type GenerateResult, type GenerationStatus } from "@/lib/api";
 
 /**
  * The month build, from a page's side: start it, then poll until it is done or stopped.
@@ -17,11 +17,13 @@ import { endpoints, type GenerateResult, type GenerationStatus } from "@/lib/api
  */
 
 export const GENERATION_POLL_MS = 4000;
+const STATUS_TIMEOUT_MS = 12000;
+const START_TIMEOUT_MS = 20000;
 
 type Options = {
   kind?: GenerationStatus["kind"];
   /** What starting means: `endpoints.generate` (default) or `endpoints.generateNextMonth`. */
-  startCall?: () => Promise<GenerateResult>;
+  startCall?: (signal?: AbortSignal) => Promise<GenerateResult>;
   /** Called once when a build this page started or watched finishes. */
   onDone?: (result: GenerateResult | null) => void;
   /** Called while the build runs, each time another week's posts are saved, so a page can
@@ -44,6 +46,8 @@ export type MonthBuild = {
   running: boolean;
   /** The build stopped (`status.error_he`) or could not be started (a 400, the network). */
   error: string;
+  statusCheckFailed: boolean;
+  checkStatus: () => Promise<void>;
   start: () => Promise<void>;
 };
 
@@ -52,6 +56,9 @@ export function useMonthBuild({ kind, startCall, onDone, onProgress }: Options =
   const [loaded, setLoaded] = useState(false);
   const [starting, setStarting] = useState(false);
   const [startError, setStartError] = useState("");
+  const [statusCheckFailed, setStatusCheckFailed] = useState(false);
+  const pollRequest = useRef<AbortController | null>(null);
+  const startRequest = useRef<AbortController | null>(null);
   const timer = useRef<number | undefined>(undefined);
   const mounted = useRef(false);
   // True while a build this page cares about is running: its end calls onDone once.
@@ -105,16 +112,32 @@ export function useMonthBuild({ kind, startCall, onDone, onProgress }: Options =
   }, [stopTimer]);
 
   const poll = useCallback(async () => {
+    if (startRequest.current) return;
     stopTimer();
-    let again = watching.current;
+    pollRequest.current?.abort();
+    const request = new AbortController();
+    pollRequest.current = request;
+    const deadline = window.setTimeout(() => request.abort(), STATUS_TIMEOUT_MS);
+    let again = false;
     try {
-      again = apply(await endpoints.generationStatus());
-    } catch {
-      // A network blip while a build runs: keep polling; nothing to watch otherwise.
+      const next = await endpoints.generationStatus(request.signal);
+      if (pollRequest.current !== request) return;
+      request.signal.throwIfAborted();
+      setStatusCheckFailed(false);
+      again = apply(next);
+    } catch (err) {
+      if (pollRequest.current !== request) return;
+      const missing = err instanceof ApiError && err.status === 404 && !watching.current;
+      setStatusCheckFailed(!missing);
+      again = watching.current;
     } finally {
-      if (mounted.current) setLoaded(true);
+      window.clearTimeout(deadline);
+      if (pollRequest.current === request) {
+        pollRequest.current = null;
+        setLoaded(true);
+        if (again) schedule();
+      }
     }
-    if (mounted.current && again) schedule();
   }, [apply, schedule, stopTimer]);
   useEffect(() => {
     pollRef.current = poll;
@@ -122,18 +145,32 @@ export function useMonthBuild({ kind, startCall, onDone, onProgress }: Options =
 
   useEffect(() => {
     mounted.current = true;
-    void poll();
+    timer.current = window.setTimeout(() => void poll(), 0);
     return () => {
       mounted.current = false;
       stopTimer();
+      pollRequest.current?.abort();
+      pollRequest.current = null;
+      startRequest.current?.abort();
+      startRequest.current = null;
     };
   }, [poll, stopTimer]);
 
   const start = useCallback(async () => {
+    if (startRequest.current) return;
+    stopTimer();
+    pollRequest.current?.abort();
+    pollRequest.current = null;
+    const request = new AbortController();
+    startRequest.current = request;
+    const deadline = window.setTimeout(() => request.abort(), START_TIMEOUT_MS);
     setStartError("");
+    setStatusCheckFailed(false);
     setStarting(true);
     try {
-      const result = await (startCall ?? endpoints.generate)();
+      const result = await (startCall ?? endpoints.generate)(request.signal);
+      if (startRequest.current !== request) return;
+      request.signal.throwIfAborted();
       watching.current = true;
       if (result.job) {
         if (apply(result.job, result)) {
@@ -151,12 +188,25 @@ export function useMonthBuild({ kind, startCall, onDone, onProgress }: Options =
         onDoneRef.current?.(result);
       }
     } catch (err) {
-      watching.current = false;
-      setStartError(err instanceof Error && err.message ? err.message : "לא הצלחנו להתחיל לבנות את החודש. נסו שוב.");
+      if (startRequest.current !== request) return;
+      // The server may have accepted a POST even if its response never arrived.
+      // Check for that job before offering to start a new one.
+      const responseLost = request.signal.aborted || err instanceof ApiError && (err.status === 0 || err.status >= 500);
+      watching.current = responseLost;
+      if (responseLost) {
+        setStatusCheckFailed(true);
+        schedule();
+      } else {
+        setStartError(err instanceof Error && err.message ? err.message : "לא הצלחנו להתחיל לבנות את החודש. נסו שוב.");
+      }
     } finally {
-      if (mounted.current) setStarting(false);
+      window.clearTimeout(deadline);
+      if (startRequest.current === request) {
+        startRequest.current = null;
+        setStarting(false);
+      }
     }
-  }, [apply, kind, schedule, startCall]);
+  }, [apply, kind, schedule, startCall, stopTimer]);
 
   const failed = status?.status === "failed";
   return {
@@ -165,6 +215,8 @@ export function useMonthBuild({ kind, startCall, onDone, onProgress }: Options =
     starting,
     running: Boolean(status?.running),
     error: startError || (failed ? status?.error_he || "הבנייה נעצרה. נסו שוב." : ""),
+    statusCheckFailed,
+    checkStatus: poll,
     start,
   };
 }

@@ -50,7 +50,7 @@ export function BuildReview(props: StepProps & {
       </dl>
       <div className={styles.action}>
         {props.mock ? <PrimaryButton type="button" onClick={() => setPreview(true)}><Copy text="לראות את התוכנית" /></PrimaryButton>
-          : <MonthBuildProgress canStart={props.canStart} onDone={props.onDone}
+          : <MonthBuildProgress canStart={props.canStart} onDone={props.onDone} interviewSaved
             idle={build => <PrimaryButton type="button" disabled={build.starting || props.busy}
               onClick={() => void build.start()}><Copy text="לבנות את התוכנית שלי" /></PrimaryButton>} />}
       </div>

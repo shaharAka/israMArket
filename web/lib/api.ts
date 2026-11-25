@@ -4040,16 +4040,17 @@ export const endpoints = {
     api<{ long_horizon_plan: LongHorizonPlan }>("/onboarding/plan", { method: "POST" }),
   /** Starts (or joins) the first month's background build and answers at once; poll
    *  `generationStatus` for its progress. See lib/useMonthBuild.ts. */
-  generate: () => api<GenerateResult>("/onboarding/generate", { method: "POST" }),
+  generate: (signal?: AbortSignal) => api<GenerateResult>("/onboarding/generate", { method: "POST", signal }),
   /** Same, for the month after the active one. `done` at once when it already exists. */
-  generateNextMonth: () => api<GenerateResult>("/strategy/next-month", { method: "POST" }),
+  generateNextMonth: (signal?: AbortSignal) => api<GenerateResult>("/strategy/next-month", { method: "POST", signal }),
   /** The business's month build (first month, its posts, or next month): stage, label, error. */
-  generationStatus: () => api<GenerationStatus>("/onboarding/generate/status"),
+  generationStatus: (signal?: AbortSignal) => api<GenerationStatus>("/onboarding/generate/status", { signal }),
   /** Write the month's posts in the background: one week, or every week still pending
    *  (Revision 8: once the owner chose what to feature). Answers with the status. */
-  startPosts: (week?: 1 | 2 | 3 | 4, content_language?: ContentLanguage) =>
+  startPosts: (week?: 1 | 2 | 3 | 4, content_language?: ContentLanguage, signal?: AbortSignal) =>
     api<GenerationStatus>("/onboarding/posts/start", {
       method: "POST",
+      signal,
       body: JSON.stringify({ ...(week ? { week } : {}), ...(content_language ? { content_language } : {}) }),
     }),
   strategy: () => api<StrategyPayload>("/strategy/current"),

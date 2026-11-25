@@ -130,15 +130,21 @@ export function ResearchJourney() {
     if (preview) return;
     endpoints.me().then(async (owner) => {
       const response = await endpoints.business(); if (!live) return;
-      if (response.business?.onboarding_complete || response.business?.quarter_plan) { router.replace("/dashboard"); return; }
-      setSignedIn(true);
       const business = response.business;
       const stored = business?.owner_context?.research_journey;
+      const belongsHere = Boolean(business && stored && saved.researchOwnerId === owner.id
+        && (saved.researchBusinessId === undefined
+          ? saved.draft.business_name === stored.answers.business_name
+          : saved.researchBusinessId === business.id));
+      if (business?.onboarding_complete || business?.quarter_plan) {
+        const finishedInterview = business.onboarding_complete && belongsHere && stored?.step === "build"
+          && saved.draft.research_journey?.step === "build";
+        if (finishedInterview) void clearSavedFlow();
+        router.replace(finishedInterview ? "/strategy" : "/dashboard");
+        return;
+      }
+      setSignedIn(true);
       if (stored && business) {
-        const belongsHere = saved.researchOwnerId === owner.id
-          && (saved.researchBusinessId === undefined
-            ? saved.draft.business_name === stored.answers.business_name
-            : saved.researchBusinessId === business.id);
         const recovered = belongsHere && saved.draft.research_journey?.phase === "after"
           ? { ...saved, researchBusinessId: business.id }
           : { ...emptyFlow(), researchOwnerId: owner.id, researchBusinessId: business.id, modelConfirmed: true,
