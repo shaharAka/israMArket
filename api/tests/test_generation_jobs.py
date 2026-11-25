@@ -507,6 +507,51 @@ class ResumeTest(JobTestCase):
 
 
 class FailureTest(JobTestCase):
+    def test_retry_uses_the_saved_interview_without_connected_accounts(self):
+        # Use the real intake endpoint with no website and no account connections.
+        saved = self.client.post("/onboarding/from-draft", json={"draft": {
+            "business_name": "מאפיית תום",
+            "business_type": "other",
+            "business_model": "products",
+            "offerings": "לחם שאור להזמנה מראש",
+            "differentiator": "התפחה איטית במקום שמרים",
+            "audiences": [{"name": "משפחות בשכונה", "description": ""}],
+            "research_journey": {
+                "version": 1, "segment": "online_shop", "phase": "after", "step": "build",
+                "metric": "purchases",
+                "observations": [
+                    {"key": "outcomes", "status": "exact", "lower": 7, "period": "last_30_days", "unit": "count"},
+                    {"key": "marketing_budget", "status": "exact", "lower": 600, "period": "per_month", "unit": "ILS"},
+                ],
+                "replies": [{"question": "מה כדאי לקדם קודם?", "answer": "הזמנה מראש של חלות לשישי"}],
+            },
+        }})
+        self.assertEqual(saved.status_code, 200, saved.text)
+        interview = saved.json()["business"]["owner_context"]["research_journey"]
+
+        def assert_interview_saved():
+            business = self.client.get("/onboarding/me").json()["business"]
+            self.assertEqual(business["owner_context"]["research_journey"], interview)
+            self.assertFalse(business["website_url"])
+            self.db.expire_all()
+            self.assertEqual(self.db.get(Business, self.business_id).integrations, [])
+            return business
+
+        model = FakeModel(plan=_raise("provider unavailable"))
+        with mock.patch.object(strategy_service, "strategy_json", side_effect=model):
+            failed = self.client.post("/onboarding/generate").json()["job"]
+        self.assertEqual(failed["status"], "failed")
+        self.assertTrue(failed["resumable"])
+        self.assertFalse(assert_interview_saved()["onboarding_complete"])
+
+        model = FakeModel()
+        with mock.patch.object(strategy_service, "strategy_json", side_effect=model):
+            retry = self.client.post("/onboarding/generate").json()
+        self.assertTrue(retry["done"])
+        self.assertEqual(model.calls, ["MonthlyPlanCore"])
+        self.assertIn("הזמנה מראש של חלות לשישי", model.prompts[0])
+        self.assertTrue(assert_interview_saved()["onboarding_complete"])
+
     def test_a_stage_that_fails_twice_stops_with_a_hebrew_error(self):
         model = FakeModel(plan=_raise("לא קיבלנו תוכנית חודשית מלאה. נסו שוב."))
         with mock.patch.object(strategy_service, "strategy_json", side_effect=model):

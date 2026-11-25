@@ -51,3 +51,13 @@ export function mergeResearchReplies(previous: ResearchJourney["replies"], next:
   }
   return merged;
 }
+
+export function sameResearchSource(left: string, right: string) {
+  if (!left || !right) return false;
+  const host = (value: string) => {
+    try {
+      return new URL(value.includes("://") ? value : `https://${value}`).hostname.replace(/^www\./, "");
+    } catch { return ""; }
+  };
+  return left === right || Boolean(host(left) && host(left) === host(right));
+}

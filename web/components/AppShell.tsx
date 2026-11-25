@@ -3,6 +3,7 @@
 import { IdentityMark } from "@/components/landing-v2/IdentityMark";
 import { Copy, useCopy } from "@/components/language/LanguageProvider";
 import { WhatsNewLink } from "@/components/language/WhatsNewLink";
+import { ReportFeedback } from "@/components/support/ReportFeedback";
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -214,6 +215,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         )}
         <div className="flex shrink-0 items-center gap-2">
           <WhatsNewLink iconOnly />
+          {!demo && <ReportFeedback iconOnly />}
           {inSetup && businessName ? <Link href="/posts" className="inline-flex min-h-11 items-center px-2 text-sm text-[var(--ink-soft)]"><Copy text="הפוסטים" /></Link> : null}
           {demo ? (
             <span
@@ -268,6 +270,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </div>
           )}
         </nav>
+        {!demo && <div className="px-4 pb-2"><ReportFeedback /></div>}
 
         {!inSetup && <div className="px-3 pb-1"><BrandLink /></div>}
 

@@ -187,6 +187,9 @@ class Settings(BaseSettings):
 
     # One bounded, grounded suggestion per support report. Failure keeps a human ticket.
     support_ai_enabled: bool = True
+    feedback_github_token: str = ""
+    feedback_github_project_id: str = ""
+    feedback_reviewer_emails: str = ""
     support_ai_model: str = "gemini-3.8-flash"
 
     def admin_email_set(self) -> set[str]:

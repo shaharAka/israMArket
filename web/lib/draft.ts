@@ -148,6 +148,7 @@ export type BrandScan = {
 /** Everything /start needs to resume where the owner left off. */
 export type FlowState = {
   researchOwnerId?: number;
+  researchBusinessId?: number;
   v: 2;
   step: string;
   draft: OnboardingDraft;
@@ -497,10 +498,10 @@ export function draftForApi(flow: FlowState): OnboardingDraft {
     audiences: d.audiences
       .filter((a) => a.name.trim().length >= 2)
       .slice(0, 3)
-      .map((a) => ({ name: a.name.trim().slice(0, 60), description: a.description.trim().slice(0, 240) })),
+      .map((a) => ({ name: a.name.trim().slice(0, 80), description: a.description.trim().slice(0, 500) })),
     links,
   };
-  if (d.differentiator?.trim()) out.differentiator = d.differentiator.trim().slice(0, 300);
+  if (d.differentiator?.trim()) out.differentiator = d.differentiator.trim().slice(0, 500);
   if (d.seasons && (d.seasons.busy.length || d.seasons.slow.length)) out.seasons = d.seasons;
   if (d.has_none) out.has_none = true;
   if (Object.keys(activity).length) out.activity = activity;

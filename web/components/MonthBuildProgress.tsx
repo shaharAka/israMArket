@@ -11,10 +11,10 @@ import { useMonthBuild, type MonthBuild } from "@/lib/useMonthBuild";
 const TONE = SECTIONS.strategy;
 
 // What "לנסות שוב" (and autoStart) asks for, per kind. Posts: every week not written yet.
-const START: Record<GenerationStatus["kind"], () => Promise<GenerateResult>> = {
+const START: Record<GenerationStatus["kind"], (signal?: AbortSignal) => Promise<GenerateResult>> = {
   first_month: endpoints.generate,
   next_month: endpoints.generateNextMonth,
-  posts: () => endpoints.startPosts().then((job) => ({ job, done: job.done })),
+  posts: (signal) => endpoints.startPosts(undefined, undefined, signal).then((job) => ({ job, done: job.done })),
 };
 
 /**
@@ -38,6 +38,7 @@ export function MonthBuildProgress({
   onProgress,
   idle,
   contentLanguage,
+  interviewSaved = false,
 }: {
   kind?: GenerationStatus["kind"];
   /** Optional choice for this writing batch, never a UI-language setting. */
@@ -50,39 +51,45 @@ export function MonthBuildProgress({
   onProgress?: (status: GenerationStatus) => void;
   /** An explicit next action when no build is running; never starts work on mount. */
   idle?: (build: MonthBuild) => ReactNode;
+  /** The onboarding review is reached after its answers have been saved. */
+  interviewSaved?: boolean;
 }) {
   const t = useCopy();
-  const startPosts = useCallback(() => endpoints.startPosts(undefined, contentLanguage).then(job => ({ job, done: job.done })), [contentLanguage]);
+  const startPosts = useCallback((signal?: AbortSignal) => endpoints.startPosts(undefined, contentLanguage, signal).then(job => ({ job, done: job.done })), [contentLanguage]);
   const build = useMonthBuild({ kind, onDone, onProgress, startCall: kind === "posts" ? startPosts : START[kind] });
-  const { status, loaded, starting, running, error, start } = build;
+  const { status, loaded, starting, running, error, start, statusCheckFailed, checkStatus } = build;
   const autoStarted = useRef(false);
 
   useEffect(() => {
     if (!canStart || !autoStart || !loaded || autoStarted.current) return;
-    if (running || starting || status?.status === "failed" || status?.done) return;
+    if (running || starting || statusCheckFailed || status?.status === "failed" || status?.done) return;
     autoStarted.current = true;
     void start();
-  }, [canStart, autoStart, loaded, running, starting, status, start]);
+  }, [canStart, autoStart, loaded, running, starting, status, start, statusCheckFailed]);
 
-  if (error && !running && !starting) {
+  if (!starting && (statusCheckFailed || error && !running)) {
+    const canRetry = statusCheckFailed || canStart;
     return (
       <div role="alert" className="rounded-[14px] bg-[var(--danger-soft)] px-5 py-4 text-sm leading-6 text-[var(--danger)]">
         <p className="text-[15px] font-semibold">
-          {kind === "posts"
+          {statusCheckFailed ? t("לא הצלחנו לבדוק אם הבנייה הסתיימה.")
+            : interviewSaved ? t("לא הצלחנו לבנות את התוכנית כרגע.")
+            : kind === "posts"
             ? t("לא הצלחנו לסיים את הפוסטים.")
             : status?.month_name_he
               ? t("לא הצלחנו לסיים את {arg_0}.", { arg_0: status.month_name_he })
               : t("לא הצלחנו לסיים את החודש.")}
         </p>
-        <p>{error}</p>
-        {!canStart ? <p><Copy text="בדקו ושמרו את הנושאים, התמונות והסגנון לפני שמנסים שוב." /></p> : null}
+        {!statusCheckFailed && !interviewSaved && <p>{error}</p>}
+        {interviewSaved && <p><Copy text="התשובות שלכם שמורות." /></p>}
+        {!canRetry ? <p><Copy text="בדקו ושמרו את הנושאים, התמונות והסגנון לפני שמנסים שוב." /></p> : null}
         <button
           type="button"
-          disabled={!canStart}
-          onClick={() => { if (canStart) void start(); }}
+          disabled={!canRetry}
+          onClick={() => { if (canRetry) void (statusCheckFailed ? checkStatus() : start()); }}
           className="mt-3 inline-flex min-h-11 cursor-pointer items-center rounded-md border border-[var(--rule-dark)] bg-[var(--paper)] px-4 text-sm font-semibold text-[color:var(--ink)] transition-colors hover:border-[var(--ink-faint)]"
         >
-          <Copy text="לנסות שוב" /></button>
+          <Copy text={statusCheckFailed ? "לבדוק שוב" : "לנסות שוב"} /></button>
       </div>
     );
   }

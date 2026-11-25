@@ -5,6 +5,20 @@
 // Message: connect Instagram, paste the Story link, and see the count with its read date.
 export const RELEASES = [
   {
+    id: "2026-11-25-onboarding-plan-retry", date: "2026-11-25",
+    title: "אפשר לבנות תוכנית גם בלי חיבורים",
+    summary: "בשלב החיבורים בוחרים כלי אחד בכל פעם, או ממשיכים ישר להגדרת היעד.",
+    detail: "אם בניית התוכנית נעצרת, אפשר לנסות שוב ולהמשיך עם כל התשובות שכבר שמרתם.",
+    href: "/start", action: "להיכרות עם העסק",
+  },
+  {
+    id: "2026-11-21-report-from-the-app", date: "2026-11-21",
+    title: "מדווחים על תקלה מתוך המסך",
+    summary: "אפשר לשלוח לצוות תקלה או הצעה לשיפור ולבחור אם לצרף צילום מסך.",
+    detail: "בהיכרות יש יותר מקום לתשובות, ואפשר להחזיר מקור שהסרתם בלי להזין את הקישור מחדש.",
+    href: "/support", action: "לעזרה ולדיווח על תקלה",
+  },
+  {
     id: "2026-11-07-homepage-clearer-shorter", date: "2026-11-07",
     title: "עמוד הבית קצר וברור יותר",
     summary: "עסק אחד לדוגמה לאורך כל העמוד, וכל מספר לדוגמה מסומן.",

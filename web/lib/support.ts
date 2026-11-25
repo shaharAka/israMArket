@@ -13,7 +13,7 @@ export type Ticket = {
   messages: { id: string; role: "user" | "assistant" | "support"; body: string; created_at: string }[];
 };
 export const SUPPORT_STATUS = { open: "מחכה לצוות", suggested: "יש הצעה בשבילכם", waiting: "הצוות ענה", resolved: "נסגרה" };
-export const SUPPORT_CATEGORIES = { other: "שאלה או משהו אחר", plan: "התוכנית", posts: "פוסטים", connections: "חיבורים", results: "תוצאות", bug: "משהו לא עובד", login: "החשבון", billing: "חיוב" };
+export const SUPPORT_CATEGORIES = { other: "שאלה או משהו אחר", plan: "התוכנית", posts: "פוסטים", connections: "חיבורים", results: "תוצאות", bug: "משהו לא עובד", suggestion: "הצעה לשיפור", login: "החשבון", billing: "חיוב" };
 
 // Support is real, account-private data. Callers explicitly guard demo mode first.
 export const support = {

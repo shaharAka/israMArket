@@ -106,6 +106,7 @@ trap 'rm -f "$tmp"' EXIT
 
   line GEMINI_API_KEY "$(secret gemini-api-key required)"
   line OPENAI_API_KEY "$(secret openai-api-key optional)"
+  line FEEDBACK_GITHUB_TOKEN "$(secret feedback-github-token optional)"
   line JWT_SECRET "$(secret jwt-secret required)"
   line TOKEN_ENCRYPTION_KEY "$(secret token-encryption-key required)"
   line META_MODEL_API_KEY "$(secret meta-model-api-key optional)"
