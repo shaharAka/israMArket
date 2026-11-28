@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>IsraMarket · מבנה עמוד הבית</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: "Arial Hebrew", Arial, sans-serif;
+      --ink: #211d2f;
+      --muted: #625870;
+      --paper: #fdfaf8;
+      --white: #fff;
+      --plum: #35264c;
+      --violet: #66507d;
+      --lilac: #e9e1f4;
+      --peach: #f3d2ce;
+      --mint: #dcebdd;
+      --butter: #f4e6be;
+      --rule: #ded5e1;
+      --accent: #f2bbaf;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    body { margin: 0; background: var(--paper); color: var(--ink); }
+    h1, h2, h3, p, figure, ol, ul, fieldset { margin: 0; }
+    ol, ul { list-style: none; padding: 0; }
+    h1, h2, h3 { text-wrap: balance; }
+    h1 { font-size: clamp(2.2rem, 5.6vw, 5rem); line-height: 1.02; letter-spacing: -.035em; }
+    h2 { font-size: clamp(1.7rem, 3.3vw, 3rem); line-height: 1.08; letter-spacing: -.027em; }
+    h3 { font-size: 1.18rem; line-height: 1.2; }
+    a { color: inherit; text-underline-offset: .24em; }
+    a:focus-visible, summary:focus-visible, input:focus-visible, [tabindex]:focus-visible {
+      outline: 2px solid currentColor; outline-offset: 4px;
+    }
+    ::selection { color: var(--ink); background: var(--accent); }
+    .wrap { width: min(100% - 2.5rem, 72rem); margin-inline: auto; }
+    .review { position: sticky; z-index: 3; inset-block-start: 0; border-block-end: 1px solid var(--rule); background: var(--white); }
+    .review-inner { display: flex; align-items: center; justify-content: space-between; gap: .65rem 1.5rem; min-block-size: 54px; }
+    .review-title { font-weight: 700; white-space: nowrap; }
+    .overlay-toggle { color: var(--muted); display: flex; align-items: center; gap: .35rem; min-block-size: 44px; cursor: pointer; white-space: nowrap; }
+    .overlay-toggle input { accent-color: var(--violet); width: 1rem; height: 1rem; }
+    .index { display: flex; align-items: center; flex-wrap: wrap; gap: 0 .95rem; padding-block-end: .28rem; }
+    .index a { display: inline-grid; place-items: center; min-block-size: 32px; min-inline-size: 30px; text-decoration: none; font-size: .78rem; color: var(--muted); }
+    .index a:hover { text-decoration: underline; }
+    .site-head { border-block-end: 1px solid #5a476f; background: var(--plum); color: var(--white); }
+    .site-head .wrap { min-block-size: 54px; display: flex; gap: 1rem; align-items: center; justify-content: space-between; }
+    .wordmark { font-size: 1.35rem; font-weight: 750; letter-spacing: -.03em; }
+    .head-parts { display: flex; gap: 1rem; align-items: center; font-size: .8rem; }
+    section { padding-block: clamp(2.65rem, 6.3vw, 5rem); scroll-margin-block-start: 86px; }
+    .split { display: grid; grid-template-columns: minmax(0, .84fr) minmax(0, 1.16fr); align-items: center; gap: clamp(1.5rem, 5.5vw, 5rem); }
+    .tag { display: inline-flex; min-inline-size: 2rem; min-block-size: 1.8rem; align-items: center; justify-content: center; padding-inline: .35rem; margin-block-end: .78rem; border: 1px solid currentColor; border-radius: 4px; font-size: .76rem; font-variant-numeric: tabular-nums; color: var(--muted); }
+    .hero .tag, .trial .tag { color: var(--lilac); }
+    .caption { display: block; margin-block-start: .72rem; font-size: .97rem; line-height: 1.52; color: var(--muted); }
+    .hero .caption, .trial .caption { color: var(--lilac); }
+    .placeholder-text { display: grid; gap: .44rem; width: min(100%, 17rem); margin-block: .95rem; }
+    .placeholder-text i, .sheet-lines i { display: block; height: .38rem; border-radius: 2px; background: currentColor; opacity: .29; }
+    .placeholder-text i:last-child, .sheet-lines i:last-child { width: 62%; }
+    .action { display: inline-grid; place-items: center; padding: .45rem .92rem; margin-block-start: .45rem; min-block-size: 42px; border-radius: 6px; background: var(--violet); color: var(--white); font-size: .86rem; font-weight: 700; }
+    .hero .action, .trial .action { color: var(--ink); background: var(--accent); }
+    .hero { background: var(--plum); color: var(--white); }
+    .scene { position: relative; display: grid; place-items: center; isolation: isolate; min-inline-size: 0; min-block-size: 8rem; overflow: clip; border-radius: 12px; padding: 1.45rem 1rem 2rem; color: var(--ink); background: var(--lilac); }
+    .scene > .callout { position: absolute; z-index: 1; inset: auto .64rem .56rem auto; padding: .24rem .46rem; border-radius: 4px; background: var(--white); color: var(--plum); font-size: .74rem; box-shadow: 0 5px 15px -8px #211d2f70; }
+    body:has(#overlay:not(:checked)) .callout, body:has(#overlay:not(:checked)) .tag { visibility: hidden; }
+    .hero-scene { min-block-size: clamp(225px, 29vw, 390px); background: var(--peach); }
+    .hero-sheet { width: 79%; padding: clamp(.65rem, 2vw, 1.1rem); border-radius: 9px; background: var(--white); box-shadow: 0 18px 40px -24px #42304d96; }
+    .hero-sequence { margin-block-start: .75rem; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: end; gap: clamp(.32rem, 1.4vw, .75rem); }
+    .hero-sequence > div { min-inline-size: 0; }
+    .hero-sequence b { font-size: .78rem; display: block; margin-block-start: .4rem; }
+    .hero-sequence .mock:nth-child(2) { background: var(--mint); }
+    .mock { min-block-size: 52px; aspect-ratio: 1.25; display: grid; align-content: end; gap: .24rem; padding: .46rem; border-radius: 4px; background: var(--lilac); color: var(--violet); }
+    .mock[data-tone=peach] { background: var(--peach); }
+    .mock[data-tone=mint] { background: var(--mint); }
+    .mock[data-tone=butter] { background: var(--butter); }
+    .mock i { inline-size: 78%; block-size: .24rem; border-radius: 2px; background: currentColor; opacity: .38; }
+    .mock i:last-child { inline-size: 42%; }
+    .benefit { background: var(--white); }
+    .benefit .scene { background: var(--mint); min-block-size: 205px; }
+    .calendar { width: 84%; padding: .55rem; background: var(--white); border-radius: 6px; }
+    .calendar-days { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 2px; margin-block-start: .55rem; }
+    .calendar-days i { display: block; min-block-size: 12px; aspect-ratio: 1.45; background: var(--paper); }
+    .calendar-days i:nth-child(2n + 1) { background: var(--lilac); }
+    .calendar-days i:nth-child(4n) { background: var(--peach); }
+    .chapter { margin-block-end: 1.5rem; }
+    .story { background: #eeebf3; }
+    .steps { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 5px; }
+    .step { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, .95fr); background: var(--plum); color: var(--white); min-inline-size: 0; }
+    .step:nth-child(2), .step:nth-child(3) { grid-template-columns: minmax(0, .95fr) minmax(0, 1fr); }
+    .step:nth-child(2) .step-copy, .step:nth-child(3) .step-copy { grid-column: 2; grid-row: 1; }
+    .step:nth-child(2) .scene, .step:nth-child(3) .scene { grid-column: 1; grid-row: 1; }
+    .step-copy { display: grid; align-content: center; gap: .55rem; padding: clamp(.65rem, 2vw, 1.45rem); }
+    .step small { color: var(--lilac); }
+    .step .scene { border-radius: 0; min-block-size: 122px; }
+    .step:nth-child(2) .scene { background: var(--mint); }
+    .step:nth-child(3) .scene { background: var(--butter); }
+    .step:nth-child(4) .scene { background: var(--peach); }
+    .sheet-lines { display: grid; gap: .45rem; padding: .66rem; border-radius: 5px; width: 90%; color: var(--violet); background: var(--white); }
+    .sources { display: flex; gap: .44rem; }
+    .sources i { inline-size: clamp(1rem, 2.6vw, 2rem); aspect-ratio: 1; border-radius: 4px; background: var(--white); border-block-end: 3px solid #8471a3; }
+    .goal-placeholder { padding: .45rem .65rem; font-size: .86rem; font-weight: 700; border-radius: 5px; background: var(--white); transform: rotate(-5deg); }
+    .step .mock { width: 37%; min-block-size: 3rem; background: var(--white); }
+    .outcomes { background: var(--white); }
+    .outcome-head { display: flex; align-items: end; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-block-end: 1.5rem; }
+    .variant { display: flex; flex-wrap: wrap; gap: .36rem; border: 0; padding: 0; }
+    .variant legend { color: var(--muted); font-size: .78rem; padding: 0 0 .3rem; }
+    .variant label { position: relative; cursor: pointer; }
+    .variant input { position: absolute; opacity: 0; }
+    .variant span { display: inline-flex; align-items: center; min-block-size: 42px; padding-inline: .72rem; border-radius: 5px; background: var(--paper); border: 1px solid var(--rule); color: var(--ink); font-size: .85rem; }
+    .variant input:checked + span { color: var(--white); background: var(--plum); border-color: var(--plum); }
+    .variant input:focus-visible + span { outline: 2px solid var(--violet); outline-offset: 3px; }
+    .outcome-layout { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+    .outcome { min-inline-size: 0; }
+    .outcome h3 { margin-block-start: .62rem; }
+    .outcome:nth-child(1) .scene { background: var(--peach); }
+    .outcome:nth-child(2) .scene { background: var(--lilac); }
+    .outcome:nth-child(3) .scene { background: var(--mint); }
+    .outcome .mock { background: var(--white); width: 45%; }
+    .report { display: flex; align-items: end; padding: .55rem; gap: .36rem; inline-size: 70%; min-block-size: 74px; background: var(--white); border-radius: 5px; }
+    .report i { flex: 1; height: 28px; background: #c1aace; border-radius: 2px; }
+    .report i:nth-child(2) { height: 36px; background: #dfb1aa; }
+    .report i:nth-child(3) { height: 48px; background: #9c84b1; }
+    .outcomes:has(#stacked:checked) .outcome-layout { grid-template-columns: 1fr; }
+    .outcomes:has(#stacked:checked) .outcome { display: grid; grid-template-columns: minmax(0, .7fr) minmax(0, 1.3fr); align-items: center; gap: 1rem; padding-block: .42rem; border-block-start: 1px solid var(--rule); }
+    .outcomes:has(#stacked:checked) .outcome .scene { grid-column: 2; grid-row: 1; min-block-size: 146px; }
+    .outcomes:has(#stacked:checked) .outcome h3 { grid-column: 1; grid-row: 1; margin-block-start: 0; padding-inline: .6rem; }
+    .outcomes:has(#stacked:checked) :is(.calendar, .report) { max-inline-size: 260px; }
+    .outcomes:has(#stacked:checked) .mock { max-inline-size: 108px; }
+    .gallery { background: var(--plum); color: var(--white); overflow: clip; }
+    .gallery .tag { color: var(--lilac); }
+    .reel { display: flex; gap: .65rem; margin-inline: -1rem; margin-block: 1.3rem -.7rem; padding: .9rem 0; transform: rotate(-4deg); }
+    .reel .mock { flex: 1 0 16%; min-block-size: 74px; max-block-size: 150px; aspect-ratio: 1.23; border-radius: 6px; }
+    .reel .mock:nth-child(2n) { transform: translateY(.6rem); }
+    .audience .scene { background: var(--butter); min-block-size: 171px; }
+    .audience-rows { margin-block-start: .8rem; }
+    .audience-rows li { padding-block: .52rem; border-block-start: 1px solid var(--rule); font-size: .88rem; }
+    .audience .scene .mock { width: 57%; max-inline-size: 170px; background: var(--white); }
+    .mobile { background: #eeebf3; }
+    .mobile .scene { background: var(--mint); min-block-size: 195px; }
+    .phone { width: 91px; aspect-ratio: 9 / 17; border: 4px solid var(--ink); border-radius: 13px; padding: .46rem; background: var(--white); display: grid; align-content: center; gap: .45rem; }
+    .phone .mock { min-block-size: 49px; }
+    .phone i:last-child { display: block; width: 100%; height: .32rem; background: var(--violet); border-radius: 4px; }
+    .trial { background: var(--plum); color: var(--white); text-align: center; }
+    .trial .action { margin-block-start: .9rem; }
+    .faq { background: var(--white); padding-block-end: 2.3rem; }
+    details { border-block-start: 1px solid var(--rule); padding: .25rem 0; }
+    summary { min-block-size: 44px; padding-block: .67rem; cursor: pointer; }
+    details p { color: var(--muted); padding: .25rem 1rem .65rem; }
+    footer { background: var(--ink); color: var(--lilac); }
+    footer .wrap { display: grid; grid-template-columns: 1.1fr 1fr 1fr; gap: 1rem; align-items: start; padding-block: 1.55rem; }
+    footer p { font-size: .84rem; }
+    @media (max-width: 690px) {
+      .wrap { width: min(100% - 2rem, 72rem); }
+      .index { display: none; }
+      section { scroll-margin-block-start: 56px; }
+      .split { grid-template-columns: 1fr; }
+      .head-parts { gap: .65rem; }
+      .steps { grid-template-columns: 1fr; }
+      .step { min-block-size: 105px; }
+      .step .scene { min-block-size: 105px; }
+      .outcome-layout { grid-template-columns: repeat(3, minmax(78%, 1fr)); overflow-x: auto; scroll-snap-type: x proximity; padding: .35rem 0 .65rem; }
+      .outcome { scroll-snap-align: start; }
+      .outcomes:has(#stacked:checked) .outcome { grid-template-columns: 1fr; gap: .6rem; }
+      .outcomes:has(#stacked:checked) .outcome .scene, .outcomes:has(#stacked:checked) .outcome h3 { grid-column: auto; grid-row: auto; }
+      .reel .mock { flex-basis: 29%; }
+    }
+  </style>
+</head>
+<body>
+  <aside class="review" aria-label="בקרת התצוגה">
+    <div class="wrap review-inner">
+      <strong class="review-title">מבנה עמוד הבית</strong>
+      <nav class="index" aria-label="חלקי העמוד">
+        <a href="#hero" aria-label="1. פתיחה">01</a><a href="#benefit" aria-label="2. הערך לעסק">02</a><a href="#story" aria-label="3. איך זה עובד">03</a>
+        <a href="#outcomes" aria-label="4. התוצרים">04</a><a href="#gallery" aria-label="5. גלריית פוסטים">05</a><a href="#audience" aria-label="6. למי זה מתאים">06</a>
+        <a href="#mobile" aria-label="7. בנייד">07</a><a href="#trial" aria-label="8. חודש ניסיון">08</a><a href="#faq" aria-label="9. שאלות ותחתית העמוד">09</a>
+      </nav>
+      <label class="overlay-toggle"><input type="checkbox" id="overlay" checked> סימוני מבנה</label>
+    </div>
+  </aside>
+  <header class="site-head"><div class="wrap">
+    <span class="wordmark" dir="ltr">isramarket</span>
+    <div class="head-parts"><span>ניווט</span><span>כניסה</span><span>פעולה ראשית</span></div>
+  </div></header>
+  <main>
+    <section class="hero" id="hero" aria-labelledby="hero-title"><div class="wrap split">
+      <div><span class="tag" aria-hidden="true">01</span><h1 id="hero-title">פתיחת העמוד</h1><p class="caption">הבטחת המוצר ופעולה ראשית.</p><div class="placeholder-text" aria-hidden="true"><i></i><i></i></div><span class="action">פעולה ראשית</span></div>
+      <figure class="scene hero-scene">
+        <div class="hero-sheet">
+          <span class="sheet-lines" aria-hidden="true"><i></i><i></i></span>
+          <div class="hero-sequence">
+            <div><div class="mock" data-tone="butter" aria-hidden="true"><i></i><i></i></div><b>יעד</b></div>
+            <div><div class="mock" data-tone="mint" aria-hidden="true"><i></i><i></i></div><b>תוכנית</b></div>
+            <div><div class="mock" data-tone="peach" aria-hidden="true"><i></i><i></i></div><b>תוצאות</b></div>
+          </div>
+        </div>
+        <figcaption class="callout">המחשה של המוצר</figcaption>
+      </figure>
+    </div></section>
+    <section class="benefit" id="benefit" aria-labelledby="benefit-title"><div class="wrap split">
+      <div><span class="tag" aria-hidden="true">02</span><h2 id="benefit-title">מה מקבלים</h2><p class="caption">תועלת אחת ברורה לבעל העסק.</p></div>
+      <figure class="scene"><div class="calendar" aria-hidden="true"><span class="sheet-lines"><i></i></span><div class="calendar-days"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div><figcaption class="callout">לוח שבועי עם תצוגות מקדימות</figcaption></figure>
+    </div></section>
+    <section class="story" id="story" aria-labelledby="story-title"><div class="wrap">
+      <div class="chapter"><span class="tag" aria-hidden="true">03</span><h2 id="story-title">איך זה עובד</h2></div>
+      <ol class="steps">
+        <li class="step"><div class="step-copy"><small>שלב 1</small><h3>היכרות</h3></div><figure class="scene"><div class="sheet-lines" aria-hidden="true"><i></i><i></i><i></i></div><figcaption class="callout">שאלה ותשובה</figcaption></figure></li>
+        <li class="step"><div class="step-copy"><small>שלב 2</small><h3>חיבורים</h3></div><figure class="scene"><div class="sources" aria-hidden="true"><i></i><i></i><i></i></div><figcaption class="callout">ערוצים שמתחברים</figcaption></figure></li>
+        <li class="step"><div class="step-copy"><small>שלב 3</small><h3>בחירת יעד</h3></div><figure class="scene"><div class="goal-placeholder" aria-hidden="true">יעד לחודש</div><figcaption class="callout">יעד אחד לדוגמה</figcaption></figure></li>
+        <li class="step"><div class="step-copy"><small>שלב 4</small><h3>תוכנית ופוסטים</h3></div><figure class="scene"><div class="mock" aria-hidden="true"><i></i><i></i></div><figcaption class="callout">תוכנית ופרסום ראשון</figcaption></figure></li>
+      </ol>
+    </div></section>
+    <section class="outcomes" id="outcomes" aria-labelledby="outcomes-title"><div class="wrap">
+      <div class="outcome-head">
+        <div><span class="tag" aria-hidden="true">04</span><h2 id="outcomes-title">מה יוצא מזה</h2></div>
+        <fieldset class="variant"><legend>השוואת פריסות</legend>
+          <label><input type="radio" name="layout" id="grid" checked aria-controls="outcomes-layout"><span>א׳ · שלושה בשורה</span></label>
+          <label><input type="radio" name="layout" id="stacked" aria-controls="outcomes-layout"><span>ב׳ · שלושה בטור</span></label>
+        </fieldset>
+      </div>
+      <div class="outcome-layout" id="outcomes-layout" tabindex="0" role="region" aria-label="התוכנית, הפוסטים והתוצאות">
+        <article class="outcome"><figure class="scene"><div class="calendar" aria-hidden="true"><span class="sheet-lines"><i></i></span><div class="calendar-days"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div><figcaption class="callout">לוח פרסום</figcaption></figure><h3>תוכנית</h3></article>
+        <article class="outcome"><figure class="scene"><div class="mock" aria-hidden="true"><i></i><i></i></div><figcaption class="callout">תצוגה מקדימה של פוסט</figcaption></figure><h3>פוסטים</h3></article>
+        <article class="outcome"><figure class="scene"><div class="report" aria-hidden="true"><i></i><i></i><i></i></div><figcaption class="callout">תוצאה והמלצה להמשך</figcaption></figure><h3>מדידה</h3></article>
+      </div>
+    </div></section>
+    <section class="gallery" id="gallery" aria-labelledby="gallery-title"><div class="wrap">
+      <span class="tag" aria-hidden="true">05</span><h2 id="gallery-title">גלריית פוסטים</h2>
+      <div class="reel" aria-hidden="true"><div class="mock" data-tone="peach"><i></i><i></i></div><div class="mock"><i></i><i></i></div><div class="mock" data-tone="mint"><i></i><i></i></div><div class="mock" data-tone="butter"><i></i><i></i></div><div class="mock" data-tone="peach"><i></i><i></i></div><div class="mock" data-tone="mint"><i></i><i></i></div></div>
+    </div></section>
+    <section class="audience" id="audience" aria-labelledby="audience-title"><div class="wrap split">
+      <div><span class="tag" aria-hidden="true">06</span><h2 id="audience-title">למי זה מתאים</h2><ul class="audience-rows"><li>חנויות</li><li>נותני שירות</li><li>חברות תוכנה</li><li>עמותות</li></ul></div>
+      <figure class="scene"><div class="mock" aria-hidden="true"><i></i><i></i></div><figcaption class="callout">המחשה לפי סוג עסק</figcaption></figure>
+    </div></section>
+    <section class="mobile" id="mobile" aria-labelledby="mobile-title"><div class="wrap split">
+      <div><span class="tag" aria-hidden="true">07</span><h2 id="mobile-title">גם מהנייד</h2><p class="caption">פעולה אחת ברורה מהטלפון.</p></div>
+      <figure class="scene"><div class="phone" aria-hidden="true"><div class="mock" data-tone="peach"><i></i><i></i></div><i></i></div><figcaption class="callout">מסך הטלפון</figcaption></figure>
+    </div></section>
+    <section class="trial" id="trial" aria-labelledby="trial-title"><div class="wrap">
+      <span class="tag" aria-hidden="true">08</span><h2 id="trial-title">חודש ניסיון חינם</h2><p class="caption">פרטי ההצעה ופעולה אחת.</p><span class="action">פעולה ראשית</span>
+    </div></section>
+    <section class="faq" id="faq" aria-labelledby="faq-title"><div class="wrap">
+      <div class="chapter"><span class="tag" aria-hidden="true">09</span><h2 id="faq-title">שאלות נפוצות</h2></div>
+      <details><summary>התחלה</summary><p>מקום לתשובה קצרה.</p></details>
+      <details><summary>חיבורים ופרסום</summary><p>מקום לתשובה קצרה.</p></details>
+      <details><summary>הניסיון והמנוי</summary><p>מקום לתשובה קצרה.</p></details>
+    </div></section>
+  </main>
+  <footer><div class="wrap"><span class="wordmark" dir="ltr">isramarket</span><p>קישורים שימושיים</p><p>תמיכה ופרטיות</p></div></footer>
+  <script>
+    const layout = new URLSearchParams(location.search).get("layout");
+    if (layout === "stacked") document.querySelector("#stacked").checked = true;
+  </script>
+</body>
+</html>
