@@ -113,6 +113,10 @@ def migrate_db():
         conn.exec_driver_sql(
             "CREATE UNIQUE INDEX IF NOT EXISTS ix_users_google_sub ON users (google_sub)"
         )
+        audit_cols = {row[1] for row in conn.exec_driver_sql("PRAGMA table_info(admin_audit)").fetchall()}
+        if audit_cols and "retired_business_id" not in audit_cols:
+            conn.exec_driver_sql("ALTER TABLE admin_audit ADD COLUMN retired_business_id INTEGER")
+            conn.exec_driver_sql("CREATE INDEX IF NOT EXISTS ix_admin_audit_retired_business_id ON admin_audit (retired_business_id)")
         ig_cols = {row[1] for row in conn.exec_driver_sql("PRAGMA table_info(instagram_posts)").fetchall()}
         if ig_cols:
             for col, sql_type in (("instagram_id", "VARCHAR(64) DEFAULT ''"), ("insights_json", "TEXT DEFAULT '{}'")):

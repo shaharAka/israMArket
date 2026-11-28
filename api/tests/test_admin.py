@@ -38,6 +38,7 @@ from app.main import app
 from app.models import (
     AdminAudit,
     Business,
+    GenerationJob,
     ImageUsage,
     Integration,
     ModelUsage,
@@ -220,6 +221,7 @@ def admin_requests(target_id: int, email: str = "") -> list[tuple[str, str, dict
         ("POST", f"/admin/users/{target_id}/suspend", {"reason": "בדיקה"}),
         ("POST", f"/admin/users/{target_id}/reactivate", None),
         ("POST", f"/admin/users/{target_id}/billing-exempt", {"exempt": True}),
+        ("DELETE", f"/admin/users/{target_id}/workspaces/1", {"confirm_email": email, "created_at": None}),
         ("DELETE", f"/admin/users/{target_id}", {"confirm_email": email}),
         ("GET", "/admin/audit", None),
         ("GET", "/admin/support", None),
@@ -718,6 +720,96 @@ class DeletionTest(AdminTestCase):
         self.assertIsNotNone(self.user(self.owner_id))
 
 
+class WorkspaceDeletionTest(AdminTestCase):
+    def setUp(self):
+        super().setUp()
+        self.email = "noa@bakery.example"
+        self.owner_id = self.make_user(self.email)
+        self.as_admin()
+
+    def remove_workspace(self, business_id, **overrides):
+        account = self.client.get(f"/admin/users/{self.owner_id}").json()
+        workspace = next((item for item in account["businesses"] if item["id"] == business_id), None)
+        body = {"confirm_email": self.email, "created_at": workspace["created_at"] if workspace else None}
+        return self.client.request("DELETE", f"/admin/users/{self.owner_id}/workspaces/{business_id}",
+                                   json={**body, **overrides})
+
+    def test_remove_one_workspace_keeps_the_other_and_removes_its_files(self):
+        other_id = self.make_business(self.owner_id, "Keep this workspace")
+        delete_id = self.make_business(self.owner_id, "Remove this workspace")
+        with self.Session.begin() as db:
+            db.add_all([
+                Strategy(business_id=other_id, year=2026, month=11),
+                Strategy(business_id=delete_id, year=2026, month=11),
+                GenerationJob(business_id=delete_id, status="done"),
+            ])
+        for business_id in (other_id, delete_id):
+            folder = self.media / str(business_id)
+            folder.mkdir()
+            (folder / "card.png").write_bytes(b"sample image")
+
+        response = self.remove_workspace(delete_id, confirm_email="  NOA@bakery.example ")
+        self.assertEqual(response.status_code, 200, response.text)
+        self.assertEqual([item["id"] for item in response.json()["businesses"]], [other_id])
+        with self.Session() as db:
+            self.assertEqual([row.business_id for row in db.query(Strategy).all()], [other_id])
+            self.assertEqual(db.query(GenerationJob).count(), 0)
+        self.assertFalse((self.media / str(delete_id)).exists())
+        self.assertTrue((self.media / str(other_id) / "card.png").exists())
+        entry, = self.audit()
+        self.assertEqual((entry.action, entry.retired_business_id), ("delete_workspace", delete_id))
+
+    def test_last_workspace_restarts_onboarding_with_the_same_login(self):
+        old = self.make_business(self.owner_id, onboarding_complete=1, scraped_profile_json='{"owner_context":{}}')
+        account = self.user(self.owner_id)
+        with self.Session.begin() as db:
+            user = db.get(User, self.owner_id)
+            user.welcomed_at = datetime.utcnow()
+            user.trial_events_json = '{"plan_seen_at":"2026-11-01"}'
+        with TestClient(app) as owner:
+            self.as_user(self.owner_id, client=owner)
+            response = self.remove_workspace(old)
+            self.assertEqual(response.status_code, 200, response.text)
+            self.assertEqual(response.json()["stage"]["key"], "signup")
+            self.assertEqual(owner.get("/onboarding/me").status_code, 401)
+            self.assertEqual(self.login(self.email, PASSWORD, client=owner).status_code, 200)
+            self.assertIsNone(owner.get("/onboarding/me").json()["business"])
+            draft = {
+                "business_name": "Fresh interview", "business_type": "other", "offerings": "Bread",
+                "research_journey": {"version": 1, "segment": "online_shop", "phase": "after", "step": "connections"},
+            }
+            stale = owner.post("/onboarding/from-draft", json={"draft": draft, "expected_business_id": old})
+            self.assertEqual(stale.status_code, 409)
+            self.assertIsNone(owner.get("/onboarding/me").json()["business"])
+            saved = owner.post("/onboarding/from-draft", json={"draft": draft})
+            self.assertEqual(saved.status_code, 200, saved.text)
+            self.assertGreater(saved.json()["business"]["id"], old)
+        self.assertIsNone(self.user(self.owner_id).welcomed_at)
+        self.assertEqual(self.user(self.owner_id).trial_events_json, "{}")
+        self.assertEqual(self.user(self.owner_id).trial_started_at, account.trial_started_at)
+        self.assertEqual(self.remove_workspace(old).status_code, 404)
+
+    def test_wrong_confirmation_and_foreign_workspace_leave_data_intact(self):
+        original = self.make_business(self.owner_id)
+        another = self.make_business(self.make_user("other@bakery.example"))
+        self.assertEqual(self.remove_workspace(original, confirm_email="wrong@example.com").status_code, 403)
+        self.assertEqual(self.remove_workspace(original, created_at="2001-01-01T00:00:00Z").status_code, 409)
+        self.assertEqual(self.remove_workspace(another).status_code, 404)
+        with self.Session() as db:
+            self.assertEqual(db.query(Business).count(), 2)
+        self.assertEqual(self.audit(), [])
+
+    def test_running_plan_is_protected_while_a_stalled_plan_can_be_removed(self):
+        original = self.make_business(self.owner_id)
+        with self.Session.begin() as db:
+            db.add(GenerationJob(business_id=original))
+        self.assertEqual(self.remove_workspace(original).status_code, 409)
+        self.assertEqual(self.audit(), [])
+        with self.Session.begin() as db:
+            db.query(GenerationJob).filter_by(business_id=original).one().updated_at = datetime.utcnow() - timedelta(minutes=30)
+        self.assertEqual(self.remove_workspace(original).status_code, 200)
+
+
 # --- billing ------------------------------------------------------------------------------------
 
 
@@ -1039,6 +1131,8 @@ class MigrationTest(unittest.TestCase):
             conn.execute(text("CREATE TABLE users (id INTEGER PRIMARY KEY, email VARCHAR(255), password_hash VARCHAR(255) NOT NULL, full_name VARCHAR(255), created_at DATETIME)"))
             conn.execute(text("CREATE TABLE businesses (id INTEGER PRIMARY KEY, user_id INTEGER, name VARCHAR(255), "
                               "business_type VARCHAR(120), offerings TEXT)"))
+            conn.execute(text("CREATE TABLE admin_audit (id INTEGER PRIMARY KEY, action VARCHAR(40))"))
+            conn.execute(text("INSERT INTO admin_audit (action) VALUES ('sign_out_everywhere')"))
             conn.execute(text("INSERT INTO users (email, password_hash, full_name) VALUES ('a@b.example', 'x', 'A')"))
         with mock.patch.object(db_module, "engine", engine), \
                 mock.patch.object(db_module.settings, "database_url", f"sqlite:///{tmp / 'old.db'}"):
@@ -1046,6 +1140,8 @@ class MigrationTest(unittest.TestCase):
         with engine.connect() as conn:
             columns = {row[1] for row in conn.exec_driver_sql("PRAGMA table_info(users)").fetchall()}
             row = conn.exec_driver_sql("SELECT billing_exempt, suspended_reason, suspended_at, last_seen_at FROM users").one()
+            audit = conn.exec_driver_sql("SELECT action, retired_business_id FROM admin_audit").one()
+        self.assertEqual(tuple(audit), ("sign_out_everywhere", None))
         self.assertTrue({"last_seen_at", "suspended_at", "suspended_reason", "billing_exempt"} <= columns)
         self.assertEqual(tuple(row), (0, "", None, None))
 

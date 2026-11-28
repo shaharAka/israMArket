@@ -102,6 +102,11 @@ export const admin = {
     live<AccountDetail>(`/admin/users/${id}/billing-exempt`, { method: "POST", body: JSON.stringify({ exempt }) }),
   remove: (id: number, confirm_email: string) =>
     live<{ ok: boolean }>(`/admin/users/${id}`, { method: "DELETE", body: JSON.stringify({ confirm_email }) }),
+  removeWorkspace: (id: number, workspace: AccountDetail["businesses"][number], confirm_email: string) =>
+    live<AccountDetail>(`/admin/users/${id}/workspaces/${workspace.id}`, {
+      method: "DELETE",
+      body: JSON.stringify({ confirm_email, created_at: workspace.created_at }),
+    }),
   audit: (beforeId?: number) =>
     live<{ entries: AuditEntry[] }>(`/admin/audit${beforeId ? `?before_id=${beforeId}` : ""}`),
 };
@@ -141,6 +146,7 @@ export const ACTION_LABEL: Record<string, string> = {
   suspend: "השהיה",
   reactivate: "החזרה לפעילות",
   delete: "מחיקת החשבון",
+  delete_workspace: "מחיקת סביבת עבודה",
   billing_exempt: "חשבון חינם",
 };
 

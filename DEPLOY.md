@@ -121,7 +121,12 @@ Nothing in the app generates an image while browsing — only an explicit click 
 
 `/admin` lists every account (stage, last active, connections, billing, this month's AI
 cost) and lets the owner make a one-time password link, sign an account out everywhere,
-suspend or reactivate it, mark it free, or delete it. Every action is in the audit log
+suspend or reactivate it, mark it free, or delete it. In the account's workspace list,
+an admin can also delete one workspace after entering the account email. This removes
+the saved interview, plans, integrations and media for that workspace and signs the
+owner out. The account, billing and other workspaces are retained. After removing the
+last workspace, the owner can sign back in and start a fresh interview at `/start`.
+Every action is in the audit log
 (the backoffice's second tab, `admin_audit` table). Code: `api/app/routers/admin.py`,
 `api/app/services/admin_access.py`, `api/app/services/backoffice.py`; tests:
 `api/tests/test_admin.py`.

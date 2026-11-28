@@ -65,7 +65,11 @@ export function ResearchJourney() {
   async function persist(current: FlowState) {
     const errors = await validateLinks(current.draft.links).catch(() => Object.fromEntries(Object.entries(current.draft.links).filter(([, v]) => v?.trim()).map(([k]) => [k, t("לא הצלחנו לבדוק את הקישור. אפשר לתקן אותו בחיבורים בהמשך.")])));
     const safe = { ...current, deferredLinks: Object.keys(errors) as LinkKey[] };
-    const { business } = await api<{ business: { id: number } }>("/onboarding/from-draft", { method: "POST", body: JSON.stringify({ draft: draftForApi(safe), deferred_links: Object.fromEntries(Object.keys(errors).map(key => [key, current.draft.links[key as LinkKey] ?? ""])) }) });
+    const { business } = await api<{ business: { id: number } }>("/onboarding/from-draft", { method: "POST", body: JSON.stringify({
+      draft: draftForApi(safe),
+      expected_business_id: current.researchBusinessId,
+      deferred_links: Object.fromEntries(Object.keys(errors).map(key => [key, current.draft.links[key as LinkKey] ?? ""])),
+    }) });
     return business.id;
   }
   async function enterAccount() {

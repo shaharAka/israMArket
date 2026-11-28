@@ -146,11 +146,23 @@ def delete_account(db: Session, user: User) -> dict:
     db.commit()
     db.expunge_all()
 
+    clean_workspace_files(business_ids)
+    return counts
+
+
+def delete_workspace(db: Session, business: Business) -> None:
+    """Remove one workspace and its data. The caller commits with its audit entry."""
+    purge_business_rows(db.connection(), [business.id])
+    db.execute(delete(Business).where(Business.id == business.id))
+
+
+def clean_workspace_files(business_ids: list[int]) -> None:
+    """Clean files and caches after the owning rows have been removed and committed."""
     root = images.media_root().resolve()
     for business_id in business_ids:
-        folder = (root / str(business_id)).resolve()
-        # Never follow a path out of the media root, whatever the id looks like.
-        if folder.parent == root and folder.is_dir():
+        folder = root / str(business_id)
+        # A workspace path must never point to another workspace's files.
+        if not folder.is_symlink() and folder.is_dir():
             shutil.rmtree(folder, ignore_errors=True)
 
     # In-memory caches keyed by business id (the Google keyword payload).
@@ -161,5 +173,3 @@ def delete_account(db: Session, user: User) -> dict:
             promotion.cache_clear(business_id)
     except Exception:  # pragma: no cover - a cache must never block a deletion
         pass
-
-    return counts

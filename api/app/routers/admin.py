@@ -14,6 +14,8 @@ Actions, each written to `admin_audit` in the same commit as the change itself:
   answer 403 `account_suspended`; suspending also ends every session. The data stays.
 * `DELETE /admin/users/{id}`: the account-deletion pipeline the owner's own "delete my
   account" uses (services/account_deletion.py), confirmed by typing the account's email.
+* `DELETE /admin/users/{id}/workspaces/{business_id}`: removes that workspace and signs
+  the owner out. Their login and billing survive. Confirmed with the account's email.
 * `POST /admin/users/{id}/billing-exempt`: a free account (services/billing.py).
 
 The owner cannot suspend or delete their own account here (the way back in would be gone).
@@ -27,11 +29,12 @@ from datetime import datetime
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel, Field
+from sqlalchemy import func, update
 from sqlalchemy.orm import Session
 
 from app.db import get_db
-from app.models import AdminAudit, Business, User
-from app.services import account_deletion, backoffice, password_reset
+from app.models import AdminAudit, AnalysisJob, Business, ImageJob, User
+from app.services import account_deletion, backoffice, generation_jobs, password_reset
 from app.services.admin_access import require_admin
 from app.services.jsonutil import dumps
 
@@ -47,6 +50,10 @@ class SuspendIn(BaseModel):
 
 class DeleteIn(BaseModel):
     confirm_email: str = Field(default="", max_length=255)
+
+
+class DeleteWorkspaceIn(DeleteIn):
+    created_at: str | None = Field(max_length=40)
 
 
 class ExemptIn(BaseModel):
@@ -137,6 +144,43 @@ def billing_exempt(user_id: int, body: ExemptIn, admin: User = Depends(require_a
     user.billing_exempt = bool(body.exempt)
     _audit(db, admin, "billing_exempt", user.id, exempt=bool(body.exempt))
     db.commit()
+    return _detail(db, user_id)
+
+
+@router.delete("/users/{user_id}/workspaces/{business_id}")
+def delete_workspace(
+    user_id: int, business_id: int, body: DeleteWorkspaceIn,
+    admin: User = Depends(require_admin), db: Session = Depends(get_db),
+) -> dict:
+    if db.get_bind().dialect.name == "sqlite":
+        # Hold the writer lock from the final ownership check through the purge.
+        db.connection().exec_driver_sql("BEGIN IMMEDIATE")
+    user = _target(db, user_id)
+    if body.confirm_email.strip().lower() != user.email.strip().lower():
+        raise HTTPException(status_code=403, detail="האימייל לא תואם לחשבון.")
+    business = db.query(Business).filter_by(id=business_id, user_id=user.id).with_for_update().first()
+    if business is None:
+        raise HTTPException(status_code=404, detail="לא מצאנו את סביבת העבודה בחשבון הזה.")
+    if body.created_at != backoffice.iso(business.created_at, precise=True):
+        raise HTTPException(status_code=409, detail="פרטי סביבת העבודה השתנו. רעננו את פרטי החשבון ונסו שוב.")
+    now = datetime.utcnow()
+    if generation_jobs.busy(db, business) or any(
+        db.query(job.id).filter(job.business_id == business_id, job.status == "running", job.lease_until > now).first()
+        for job in (ImageJob, AnalysisJob)
+    ):
+        raise HTTPException(status_code=409, detail="עדיין מתבצעת עבודה בסביבה הזאת. נסו שוב אחרי שהיא תסתיים.")
+
+    account_deletion.delete_workspace(db, business)
+    last_workspace = db.query(Business.id).filter_by(user_id=user.id).first() is None
+    changes = {"welcomed_at": None, "trial_events_json": "{}"} if last_workspace else {}
+    # Invalidate older sessions so a tab with the old interview can't keep saving it.
+    db.execute(update(User).where(User.id == user.id).values(
+        session_epoch=func.coalesce(User.session_epoch, 0) + 1, **changes
+    ))
+    db.add(AdminAudit(admin_user_id=admin.id, action="delete_workspace", target_user_id=user.id,
+                      retired_business_id=business_id, details_json=dumps({"business_id": business_id})))
+    db.commit()
+    account_deletion.clean_workspace_files([business_id])
     return _detail(db, user_id)
 
 

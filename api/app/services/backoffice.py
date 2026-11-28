@@ -61,8 +61,10 @@ CONNECTED_NO_DATA = {"unchecked", "reading", "empty"}
 COST_MONTHS = 4  # this month and the 3 before it
 
 
-def iso(value: datetime | None) -> str | None:
-    return value.replace(microsecond=0).isoformat() + "Z" if value else None
+def iso(value: datetime | None, *, precise: bool = False) -> str | None:
+    if value is None:
+        return None
+    return (value if precise else value.replace(microsecond=0)).isoformat() + "Z"
 
 
 def _time(value) -> datetime | None:
@@ -341,7 +343,7 @@ class Snapshot:
                     "id": b.id,
                     "name": b.name or "",
                     "website_url": b.website_url or "",
-                    "created_at": iso(b.created_at),
+                    "created_at": iso(b.created_at, precise=True),
                 }
                 for b in businesses
             ],
