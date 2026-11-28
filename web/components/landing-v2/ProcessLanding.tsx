@@ -13,6 +13,7 @@ import { CreativeReel } from "./CreativeReel";
 import { ConnectedChannels, ProductOutcomes } from "./ProductOutcomes";
 import { TrialCtaLabel } from "./TrialCtaLabel";
 import { SignalHero } from "./SignalHero";
+import { EditorialLanding } from "./EditorialLanding";
 import { PROCESS_ROLES, defaultProcessRole, isProcessRole, type ProcessRole } from "./processExamples";
 import type { ExamplePath } from "./businessExamples";
 import type { IdentityDirection } from "./IdentityMark";
@@ -27,7 +28,11 @@ import "./showcase.css";
 const PALETTES = ["ink", "merlot", "espresso", "forest", "onyx", "punch-jade"] as const;
 
 /** The arrival route informs signup. Hover previews are owned by each section. */
-export function ProcessLanding({ initialPath, identity }: { initialPath?: ExamplePath; identity?: IdentityDirection }) {
+export function ProcessLanding({ initialPath, identity, editorial }: {
+  initialPath?: ExamplePath;
+  identity?: IdentityDirection;
+  editorial?: { outcomes: "grid" | "stacked" };
+}) {
   const { locale } = useLanguage();
   const [palette, setPalette] = useState<(typeof PALETTES)[number]>(PALETTES[0]);
   const [role, setRole] = useState<ProcessRole | null>(() => defaultProcessRole(initialPath));
@@ -46,26 +51,10 @@ export function ProcessLanding({ initialPath, identity }: { initialPath?: Exampl
   const selected = PROCESS_ROLES.find(item => item.segment === role);
   // A generic homepage must not silently choose “service provider” for a new owner.
   const start = `/start?entry=signup&lang=${locale}${selected ? `&model=${selected.path}&segment=${selected.segment}` : ""}`;
-  return <div className={`lv2 lv2-site ${styles.page} ${siteClean.variable} ${artSerif.variable} ${siteSerif.variable}`} data-business={selected?.path ?? "all"} data-process-role={role ?? "all"} data-hero-type="modern" data-design="signal-punch" data-palette={palette}>
-    <header className={`lv2-nav ${styles.header}`}><div className={`lv2-wrap lv2-nav-row ${styles.headerRow}`}>
-      <Link href={`/?lang=${locale}`} className="lv2-brand" aria-label="isramarket"><BrandWordmark direction={identity} /></Link>
-      <nav className={story.siteLinks}>
-        <a href="#story"><Copy text="ככה זה עובד" /></a>
-        <a href="#results"><Copy text="מה מקבלים" /></a>
-        <a href="#trial"><Copy text="מחיר" /></a>
-      </nav>
-      <div className={`lv2-nav-end ${styles.headerActions}`}>
-        <ProductUtilities inline />
-        <Link href={`/login?lang=${locale}`} className="lv2-login"><Copy text="להיכנס" /></Link>
-        <Link href={start} className={story.headerTrial}><TrialCtaLabel /></Link>
-      </div>
-    </div></header>
-    <main>
-      <SignalHero start={start} />
-      <LandingStory />
-      <ProductOutcomes />
-      <ConnectedChannels />
-      <CreativeReel />
+  const home = editorial
+    ? `/design/editorial?lang=${locale}&outcomes=${editorial.outcomes}`
+    : `/?lang=${locale}`;
+  const trialAndQuestions = <>
       <section id="trial" className={`lv2-wrap ${story.trial}`} aria-labelledby="trial-title">
         <span id="price" className={story.anchor} aria-hidden="true" />
         <div>
@@ -84,10 +73,34 @@ export function ProcessLanding({ initialPath, identity }: { initialPath?: Exampl
         <Question text="מה קורה אחרי החודש החינמי?"><PriceAnswer /></Question>
         <Question text="אפשר לבטל?"><CancellationAnswer /></Question>
       </div></section>
+  </>;
+  return <div className={`lv2 lv2-site ${styles.page} ${siteClean.variable} ${artSerif.variable} ${siteSerif.variable}`} data-business={selected?.path ?? "all"} data-process-role={role ?? "all"} data-hero-type="modern" data-design="signal-punch" data-palette={palette} data-landing-edition={editorial ? "editorial" : undefined}>
+    <header className={`lv2-nav ${styles.header}`}><div className={`lv2-wrap lv2-nav-row ${styles.headerRow}`}>
+      <Link href={home} className="lv2-brand" aria-label="isramarket"><BrandWordmark direction={identity} /></Link>
+      <nav className={story.siteLinks}>
+        <a href="#story"><Copy text="ככה זה עובד" /></a>
+        <a href="#results"><Copy text="מה מקבלים" /></a>
+        <a href="#trial"><Copy text="מחיר" /></a>
+      </nav>
+      <div className={`lv2-nav-end ${styles.headerActions}`}>
+        <ProductUtilities inline />
+        <Link href={`/login?lang=${locale}`} className="lv2-login"><Copy text="להיכנס" /></Link>
+        <Link href={start} className={story.headerTrial}><TrialCtaLabel /></Link>
+      </div>
+    </div></header>
+    <main>
+      {editorial ? <EditorialLanding start={start} outcomes={editorial.outcomes}>{trialAndQuestions}</EditorialLanding> : <>
+        <SignalHero start={start} />
+        <LandingStory />
+        <ProductOutcomes />
+        <ConnectedChannels />
+        <CreativeReel />
+        {trialAndQuestions}
+      </>}
     </main>
     <footer className={`lv2-foot ${story.footer}`}>
       <div className={`lv2-wrap ${story.footerInner}`}>
-        <Link href={`/?lang=${locale}`} className={story.footerBrand} aria-label="isramarket"><BrandWordmark direction={identity} /></Link>
+        <Link href={home} className={story.footerBrand} aria-label="isramarket"><BrandWordmark direction={identity} /></Link>
         <ul>
           <li><a href="#story"><Copy text="ככה זה עובד" /></a></li>
           <li><a href="#results"><Copy text="מה מקבלים" /></a></li>

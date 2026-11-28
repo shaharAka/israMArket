@@ -47,7 +47,7 @@ function SchedulePreview() {
   </StoryStage>;
 }
 
-function ApprovalPreview() {
+export function ApprovalPreview() {
   const [approved, setApproved] = useState(false);
   const t = useCopy();
   return <StoryStage className={art.edition}>
@@ -62,7 +62,7 @@ function ApprovalPreview() {
   </StoryStage>;
 }
 
-function MeasurementPreview() {
+export function MeasurementPreview() {
   return <StoryStage className={art.numbers}>
     <div className={art.measureTitle}>
       <small><Copy text="נתונים לדוגמה" /></small>

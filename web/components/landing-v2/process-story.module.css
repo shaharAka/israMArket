@@ -760,6 +760,25 @@
 .page .header :global(.lv2-login:focus-visible),
 .page .header :global(select:focus-visible) { outline-color: var(--dark-action); }
 .page .headerRow { min-height: 70px; }
+.page[data-landing-edition=editorial] {
+  --paper: #f8f2e9;
+  --ink: #211f1c;
+  --ink-soft: #504940;
+  --ink-muted: #645a4f;
+  --rule: #d8cfc3;
+  --dark-ground: #211f1c;
+  --dark-raised: #342f29;
+  --dark-copy: #c7c0b6;
+  --dark-line: #49453e;
+  --dark-action: #ff835e;
+}
+.page[data-landing-edition=editorial] .header {
+  border-color: var(--dark-line);
+}
+.page[data-landing-edition=editorial] ::selection {
+  color: var(--ink);
+  background: var(--dark-action);
+}
 @media (max-width: 700px) {
   .page .headerRow { min-height: 64px; }
   .page .header .headerActions { gap: 9px; }
