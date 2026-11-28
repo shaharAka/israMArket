@@ -2,7 +2,7 @@
 
 28 November 2026
 
-The next review is about page structure. Start with the calendar-first wireframe, then use the animated preview as a source of components and media once the structure is agreed. The two previews are on the same GitHub branch. [Landing preview branch](https://github.com/shaharAka/israMArket/tree/codex/landing-editorial-preview)
+The next review is about page structure. Start with the calendar-first wireframe, then use the animated preview as a source of components and media once the structure is agreed. The two previews are on the same GitHub branch. [Repository](https://github.com/shaharAka/israMArket) · [Landing preview branch](https://github.com/shaharAka/israMArket/tree/codex/landing-editorial-preview) · [Git and deployment](#git-and-deployment)
 
 ## Continue on another computer
 
@@ -75,6 +75,97 @@ The revised wireframe uses a light shell, concentrated pastel color around the p
 4. Check the landing at desktop and phone widths. Confirm both text directions, the trial entry, muted playback, reduced motion, and the final mobile interaction. Follow the repository's translation and review workflow for the real page.
 
 The standalone wireframe was checked on desktop and at a 390 px phone width. The earlier animated preview passed type checking, focused lint, and all four translation checks. Its final mobile swipe check timed out in the browser, so repeat that check on the new computer.
+
+## Git and deployment
+
+### Access on the new computer
+
+- Install Git. Node.js 22 and Python 3.13 match the web and API versions used in CI. The HTML wireframe opens directly in a browser.
+- You can clone the public repository immediately. Pushing to it requires repository write access on your own GitHub account. The private Project board has separate access.
+- Production updates require an authorized Google Cloud account with SSH access through Identity-Aware Proxy to the IsraMarket VM and permission to run the update command with `sudo`. GitHub access and application Backoffice access are separate. Use your own authorized Google Cloud sign-in. [Install Google Cloud CLI](https://docs.cloud.google.com/sdk/docs/install-sdk) · [Google Cloud IAP SSH](https://cloud.google.com/compute/docs/connect/ssh-using-iap)
+
+If you use GitHub CLI for HTTPS authentication, sign in interactively.
+
+```sh
+gh auth login --hostname github.com --git-protocol https --web
+gh auth setup-git
+```
+
+You can also use GitHub Desktop or your existing Git credential manager. Set your own Git commit identity if Git prompts for a name or email. Use development configuration for local app testing and keep production configuration in the existing Secret Manager and VM setup. [GitHub CLI authentication](https://cli.github.com/manual/gh_auth_login) · [Local app setup](https://github.com/shaharAka/israMArket/blob/main/README.md#run-locally)
+
+### Continue the previews or start a release branch
+
+For an existing checkout, first check for local changes with `git status`. Fetch the latest refs. To open the preview branch for the first time in that checkout, run the following.
+
+```sh
+git fetch origin
+git switch --track origin/codex/landing-editorial-preview
+```
+
+If the local preview branch already exists, switch to it with `git switch codex/landing-editorial-preview` and use `git pull --ff-only`. Keep the preview branch for design review. For the real landing change, start from current `origin/main` and bring across the specific files and behavior you intend to ship.
+
+```sh
+git fetch origin
+git switch -c codex/landing-release-review origin/main
+```
+
+Before committing, review `git diff` and stage only the files for that change. Update the dated release note in `web/lib/releases.ts` for customer-facing work. For web changes, run these commands from the repo root.
+
+```sh
+npm --prefix web ci
+npm --prefix web run i18n:sync
+npm --prefix web run i18n:check
+npm --prefix web run verify
+```
+
+The translation sync uses the repository's configured translation credentials if catalogs need new entries. For API changes, install `api/requirements.txt` in a local virtual environment, then run `python -m unittest discover -s tests -v` from `api/`. [CI checks](https://github.com/shaharAka/israMArket/blob/main/.github/workflows/ci.yml)
+
+After committing, publish the branch and open a PR against `main`. Use the PR description to link the related issue and record what you tested. Review the changes and wait for CI before merging the release.
+
+```sh
+git push -u origin HEAD
+gh pr create --base main --fill
+gh pr checks
+```
+
+GitHub runs CI on PRs and on `main`. Updating production is a separate manual step. [Project workflow](https://github.com/shaharAka/israMArket/blob/main/docs/project-workflow.md)
+
+### Deploy a reviewed release to the existing production VM
+
+Production serves [www.isramarket.co.il](https://www.isramarket.co.il/) from an existing Google Compute Engine VM running Docker Compose. The API database and generated files live on a persistent disk. Use the existing updater for a normal code release. The infrastructure creation steps in the cloud setup guide are for new installations.
+
+1. After review and merge, copy the full merge commit SHA from GitHub. This is the revision to deploy. As a cross-check, `git fetch origin` followed by `git log -1 --oneline origin/main` shows the current tip of `main`.
+2. From the new computer, sign in with `gcloud auth login` if needed. Record the current production checkout and container status over IAP before making any changes.
+
+```sh
+gcloud compute ssh isramarket-vm --project=isramarket --zone=me-west1-a --tunnel-through-iap --command 'sudo git -C /srv/isramarket rev-parse HEAD && sudo isramarket-compose ps'
+```
+
+3. Replace `APPROVED_COMMIT_SHA` with the reviewed SHA and run this command.
+
+```sh
+gcloud compute ssh isramarket-vm --project=isramarket --zone=me-west1-a --tunnel-through-iap --command 'sudo /srv/isramarket/deploy/gcp/update.sh APPROVED_COMMIT_SHA'
+```
+
+The updater fetches the Git commit, builds the images, takes a pre-update SQLite backup, replaces changed containers, and checks health. Keep the pre-update backup enabled. The script prints the previous SHA and a rollback command. [Existing VM runbook](https://github.com/shaharAka/israMArket/blob/main/deploy/gcp/README.md#day-2) · [Update script](https://github.com/shaharAka/israMArket/blob/main/deploy/gcp/update.sh)
+
+4. Check the public health endpoint. Then open the affected customer flow in a clean browser session and verify what the PR changed. For a landing release, check the hero, entry button, and layout on desktop and phone. Record the deployed SHA and the results in the PR and issue.
+
+```sh
+curl -fsS https://www.isramarket.co.il/backend/health
+```
+
+### If the release fails
+
+Read the updater's output and inspect the affected services.
+
+```sh
+gcloud compute ssh isramarket-vm --project=isramarket --zone=me-west1-a --tunnel-through-iap --command 'sudo isramarket-compose logs --tail=200 api web caddy'
+```
+
+For a code rollback, rerun the updater with the previous known-good SHA and repeat the health and flow checks. Code rollback leaves the database on the persistent disk. For a release that ran a migration, check compatibility first and use the separate backup-restore procedure only if needed. [Backup and restore runbook](https://github.com/shaharAka/israMArket/blob/main/deploy/gcp/README.md#restore-from-a-backup)
+
+Verified on 28 November 2026. The production checkout was `21c49b67ccc3f58a357ddfbe6152b339129ab46c`, which matched GitHub's `main`. The API, web, and Caddy containers were healthy, and the public health endpoint returned `"ok": true`.
 
 ## Related product work
 
