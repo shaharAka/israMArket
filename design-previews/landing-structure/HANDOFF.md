@@ -60,6 +60,8 @@ The editorial route supports Hebrew, English, Arabic, and Russian through its la
 
 The revised wireframe uses a light shell, concentrated pastel color around the product, and artwork inside individual calendar cells. The earlier dark editorial version and the revised wireframe are different review surfaces on this branch. Review the light wireframe for structure first. [Planable](https://planable.io/) · [Storyworth](https://welcome.storyworth.com/) · [Breef](https://www.breef.com/) · [Blend AI](https://blend-ai.com/) · [Plai](https://www.plai.io/)
 
+Use the approved Hebrew reference when adding copy to the agreed structure. It includes the landing and onboarding wording, later copy corrections, and links to the current implementations. [Approved Hebrew copy and code locations](APPROVED-HEBREW-COPY.md)
+
 ## Files and commits
 
 - `design-previews/landing-structure/index.html` is the standalone wireframe. `afd5416` added it and `b9382af` made it calendar-first.
