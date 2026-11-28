@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import Boolean, DateTime, Float, ForeignKey, Integer, LargeBinary, String, Text, UniqueConstraint, delete, event, select
+from sqlalchemy import Boolean, DateTime, Float, ForeignKey, Integer, LargeBinary, String, Text, UniqueConstraint, delete, event, func, select
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db import Base
@@ -784,9 +784,10 @@ class AdminAudit(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     admin_user_id: Mapped[int] = mapped_column(Integer, index=True)
-    # reset_link | sign_out_everywhere | suspend | reactivate | delete | billing_exempt
     action: Mapped[str] = mapped_column(String(40))
     target_user_id: Mapped[int | None] = mapped_column(Integer, nullable=True, index=True)
+    # Keep deleted workspace ids reserved so late work cannot reach the next workspace.
+    retired_business_id: Mapped[int | None] = mapped_column(Integer, nullable=True, index=True)
     details_json: Mapped[str] = mapped_column(Text, default="{}")
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, index=True)
 
@@ -830,6 +831,16 @@ def purge_business_rows(connection, business_ids) -> dict[str, int]:
         result = connection.execute(delete(table).where(table.c.business_id.in_(ids)))
         counts[table.name] = result.rowcount or 0
     return counts
+
+
+@event.listens_for(Business, "before_insert")
+def _allocate_business_id(mapper, connection, target) -> None:  # noqa: ARG001
+    if connection.dialect.name != "sqlite" or target.id is not None:
+        return
+    live = select(func.coalesce(func.max(Business.id), 0)).scalar_subquery()
+    retired = select(func.coalesce(func.max(AdminAudit.retired_business_id), 0)).scalar_subquery()
+    # Evaluate inside INSERT, so simultaneous workspace creation takes distinct ids.
+    target.id = func.max(live, retired) + 1
 
 
 @event.listens_for(Business, "after_insert")

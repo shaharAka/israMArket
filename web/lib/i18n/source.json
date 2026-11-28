@@ -143,7 +143,7 @@
     "references": [
       {
         "file": "web/lib/admin.ts",
-        "line": 207,
+        "line": 213,
         "kind": "template"
       }
     ]
@@ -1202,7 +1202,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 730,
+        "line": 752,
         "kind": "literal"
       }
     ]
@@ -1378,12 +1378,12 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 207,
+        "line": 211,
         "kind": "literal"
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 380,
+        "line": 384,
         "kind": "literal"
       },
       {
@@ -1774,7 +1774,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 384,
+        "line": 388,
         "kind": "literal",
         "purpose": "display"
       }
@@ -1856,7 +1856,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 537,
+        "line": 548,
         "kind": "jsx"
       }
     ]
@@ -2720,7 +2720,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 527,
+        "line": 538,
         "kind": "template"
       }
     ]
@@ -3050,12 +3050,12 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 361,
+        "line": 363,
         "kind": "jsx"
       },
       {
         "file": "web/app/admin/page.tsx",
-        "line": 439,
+        "line": 443,
         "kind": "jsx"
       }
     ]
@@ -3670,7 +3670,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 254,
+        "line": 258,
         "kind": "literal"
       },
       {
@@ -4199,7 +4199,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 500,
+        "line": 511,
         "kind": "literal"
       }
     ]
@@ -4377,13 +4377,13 @@
     "references": [
       {
         "file": "api/app/routers/onboarding.py",
-        "line": 256,
+        "line": 259,
         "kind": "literal",
         "purpose": "validation"
       },
       {
         "file": "api/app/routers/onboarding.py",
-        "line": 476,
+        "line": 479,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -4627,7 +4627,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 167,
+        "line": 169,
         "kind": "jsx"
       }
     ]
@@ -4886,7 +4886,7 @@
       },
       {
         "file": "web/lib/admin.ts",
-        "line": 121,
+        "line": 126,
         "kind": "literal"
       }
     ]
@@ -5014,7 +5014,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 229,
+        "line": 233,
         "kind": "literal"
       }
     ]
@@ -5197,7 +5197,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 330,
+        "line": 334,
         "kind": "literal"
       }
     ]
@@ -5330,7 +5330,7 @@
     "references": [
       {
         "file": "api/app/routers/onboarding.py",
-        "line": 928,
+        "line": 931,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -5477,7 +5477,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 375,
+        "line": 379,
         "kind": "literal"
       }
     ]
@@ -5965,7 +5965,7 @@
     "references": [
       {
         "file": "api/app/routers/admin.py",
-        "line": 40,
+        "line": 43,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -6688,7 +6688,7 @@
     "references": [
       {
         "file": "web/lib/admin.ts",
-        "line": 155,
+        "line": 161,
         "kind": "literal",
         "purpose": "display"
       }
@@ -7619,7 +7619,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 527,
+        "line": 538,
         "kind": "literal"
       }
     ]
@@ -8837,7 +8837,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 385,
+        "line": 389,
         "kind": "literal"
       }
     ]
@@ -9146,7 +9146,7 @@
       },
       {
         "file": "web/lib/admin.ts",
-        "line": 170,
+        "line": 176,
         "kind": "literal"
       }
     ]
@@ -9225,7 +9225,7 @@
     "references": [
       {
         "file": "web/lib/admin.ts",
-        "line": 141,
+        "line": 146,
         "kind": "literal"
       }
     ]
@@ -9236,7 +9236,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 698,
+        "line": 713,
         "kind": "literal",
         "purpose": "display"
       }
@@ -9345,12 +9345,12 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 592,
+        "line": 603,
         "kind": "jsx"
       },
       {
         "file": "web/app/admin/page.tsx",
-        "line": 703,
+        "line": 718,
         "kind": "literal",
         "purpose": "display"
       },
@@ -9385,13 +9385,13 @@
     "references": [
       {
         "file": "api/app/routers/onboarding.py",
-        "line": 894,
+        "line": 897,
         "kind": "literal",
         "purpose": "validation"
       },
       {
         "file": "api/app/routers/onboarding.py",
-        "line": 920,
+        "line": 923,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -9673,7 +9673,7 @@
     "references": [
       {
         "file": "web/lib/admin.ts",
-        "line": 213,
+        "line": 219,
         "kind": "template"
       }
     ]
@@ -10565,7 +10565,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 104,
+        "line": 108,
         "kind": "literal"
       }
     ]
@@ -10599,7 +10599,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 775,
+        "line": 804,
         "kind": "jsx"
       },
       {
@@ -10691,7 +10691,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 193,
+        "line": 197,
         "kind": "literal"
       }
     ]
@@ -11383,7 +11383,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 332,
+        "line": 336,
         "kind": "literal"
       }
     ]
@@ -11405,7 +11405,7 @@
     "references": [
       {
         "file": "web/lib/admin.ts",
-        "line": 162,
+        "line": 168,
         "kind": "template"
       }
     ]
@@ -11428,7 +11428,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 527,
+        "line": 538,
         "kind": "template",
         "purpose": "display"
       }
@@ -11474,7 +11474,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 382,
+        "line": 386,
         "kind": "literal",
         "purpose": "display"
       }
@@ -11549,7 +11549,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 188,
+        "line": 190,
         "kind": "literal",
         "purpose": "display"
       },
@@ -11755,7 +11755,7 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 194,
+        "line": 198,
         "kind": "literal"
       },
       {
@@ -12983,7 +12983,7 @@
       },
       {
         "file": "web/lib/admin.ts",
-        "line": 131,
+        "line": 136,
         "kind": "literal"
       },
       {
@@ -13054,7 +13054,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 743,
+        "line": 765,
         "kind": "literal"
       }
     ]
@@ -13359,7 +13359,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 181,
+        "line": 183,
         "kind": "template"
       }
     ]
@@ -13408,7 +13408,7 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 194,
+        "line": 198,
         "kind": "literal"
       },
       {
@@ -13919,7 +13919,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 570,
+        "line": 581,
         "kind": "literal",
         "purpose": "display"
       },
@@ -14421,7 +14421,7 @@
     "references": [
       {
         "file": "web/lib/admin.ts",
-        "line": 115,
+        "line": 120,
         "kind": "literal"
       }
     ]
@@ -14454,8 +14454,8 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 789,
-        "kind": "jsx"
+        "line": 818,
+        "kind": "literal"
       },
       {
         "file": "web/components/account/DeleteAccount.tsx",
@@ -14598,7 +14598,7 @@
       },
       {
         "file": "web/app/admin/page.tsx",
-        "line": 179,
+        "line": 181,
         "kind": "jsx"
       }
     ]
@@ -15033,7 +15033,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 355,
+        "line": 359,
         "kind": "literal"
       }
     ]
@@ -15287,7 +15287,7 @@
     "references": [
       {
         "file": "web/lib/admin.ts",
-        "line": 162,
+        "line": 168,
         "kind": "literal"
       }
     ]
@@ -15921,7 +15921,7 @@
     "references": [
       {
         "file": "web/lib/admin.ts",
-        "line": 226,
+        "line": 232,
         "kind": "literal"
       }
     ]
@@ -16235,7 +16235,7 @@
     "references": [
       {
         "file": "web/lib/admin.ts",
-        "line": 209,
+        "line": 215,
         "kind": "template"
       }
     ]
@@ -17068,7 +17068,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 872,
+        "line": 901,
         "kind": "jsx"
       }
     ]
@@ -17411,12 +17411,12 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 573,
+        "line": 584,
         "kind": "jsx"
       },
       {
         "file": "web/app/admin/page.tsx",
-        "line": 665,
+        "line": 680,
         "kind": "literal",
         "purpose": "display"
       }
@@ -19273,7 +19273,7 @@
     "references": [
       {
         "file": "web/lib/admin.ts",
-        "line": 137,
+        "line": 142,
         "kind": "literal"
       }
     ]
@@ -19612,7 +19612,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 381,
+        "line": 385,
         "kind": "literal"
       }
     ]
@@ -19837,12 +19837,12 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 194,
+        "line": 198,
         "kind": "literal"
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 329,
+        "line": 333,
         "kind": "literal"
       }
     ]
@@ -20110,6 +20110,17 @@
         "line": 203,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_2962a5583ea4fabe": {
+    "source": "אין סביבות עבודה. אפשר להתחיל את ההיכרות מההתחלה.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/admin/page.tsx",
+        "line": 490,
+        "kind": "literal"
       }
     ]
   },
@@ -20504,6 +20515,17 @@
       {
         "file": "web/lib/api.ts",
         "line": 1075,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_2a2e811a4cb2a8b0": {
+    "source": "סביבת העבודה נמחקה. אפשר להתחיל את ההיכרות מחדש.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/admin/page.tsx",
+        "line": 771,
         "kind": "literal"
       }
     ]
@@ -22058,12 +22080,12 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 583,
+        "line": 594,
         "kind": "jsx"
       },
       {
         "file": "web/app/admin/page.tsx",
-        "line": 687,
+        "line": 702,
         "kind": "literal"
       }
     ]
@@ -22264,7 +22286,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 363,
+        "line": 367,
         "kind": "literal"
       }
     ]
@@ -23165,7 +23187,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 213,
+        "line": 217,
         "kind": "literal"
       }
     ]
@@ -23187,7 +23209,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 363,
+        "line": 367,
         "kind": "literal"
       }
     ]
@@ -23282,12 +23304,12 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 194,
+        "line": 198,
         "kind": "literal"
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 329,
+        "line": 333,
         "kind": "literal"
       },
       {
@@ -24813,7 +24835,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 321,
+        "line": 323,
         "kind": "jsx"
       }
     ]
@@ -25169,7 +25191,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 375,
+        "line": 379,
         "kind": "literal"
       }
     ]
@@ -25839,7 +25861,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 429,
+        "line": 433,
         "kind": "literal"
       },
       {
@@ -25900,7 +25922,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 548,
+        "line": 559,
         "kind": "jsx"
       }
     ]
@@ -26239,7 +26261,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 194,
+        "line": 198,
         "kind": "literal"
       }
     ]
@@ -26539,7 +26561,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 382,
+        "line": 386,
         "kind": "literal",
         "purpose": "display"
       }
@@ -26793,7 +26815,7 @@
     "references": [
       {
         "file": "api/app/routers/onboarding.py",
-        "line": 559,
+        "line": 562,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -27676,7 +27698,7 @@
     "references": [
       {
         "file": "web/lib/admin.ts",
-        "line": 151,
+        "line": 157,
         "kind": "literal",
         "purpose": "display"
       }
@@ -27699,7 +27721,7 @@
     "references": [
       {
         "file": "api/app/routers/onboarding.py",
-        "line": 226,
+        "line": 229,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -27789,7 +27811,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 455,
+        "line": 459,
         "kind": "literal",
         "purpose": "display"
       }
@@ -27889,7 +27911,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 336,
+        "line": 340,
         "kind": "literal"
       }
     ]
@@ -28134,7 +28156,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 385,
+        "line": 389,
         "kind": "literal"
       }
     ]
@@ -28381,7 +28403,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 191,
+        "line": 195,
         "kind": "literal"
       }
     ]
@@ -28507,6 +28529,18 @@
         "line": 96,
         "kind": "literal",
         "purpose": "display"
+      }
+    ]
+  },
+  "m_3a013774c0d417fa": {
+    "source": "האימייל לא תואם לחשבון.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/routers/admin.py",
+        "line": 160,
+        "kind": "literal",
+        "purpose": "validation"
       }
     ]
   },
@@ -29152,7 +29186,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 885,
+        "line": 914,
         "kind": "template"
       }
     ]
@@ -29527,7 +29561,7 @@
       },
       {
         "file": "web/app/admin/page.tsx",
-        "line": 209,
+        "line": 211,
         "kind": "literal",
         "purpose": "display"
       }
@@ -29805,7 +29839,7 @@
     "references": [
       {
         "file": "api/app/routers/admin.py",
-        "line": 41,
+        "line": 44,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -30791,7 +30825,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 194,
+        "line": 198,
         "kind": "literal"
       }
     ]
@@ -31133,7 +31167,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 383,
+        "line": 387,
         "kind": "literal"
       }
     ]
@@ -31487,7 +31521,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 773,
+        "line": 802,
         "kind": "literal"
       },
       {
@@ -32086,7 +32120,7 @@
     "references": [
       {
         "file": "api/app/routers/onboarding.py",
-        "line": 170,
+        "line": 173,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -32249,7 +32283,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 194,
+        "line": 198,
         "kind": "literal"
       }
     ]
@@ -32294,12 +32328,17 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 437,
+        "line": 441,
         "kind": "literal"
       },
       {
         "file": "web/app/admin/page.tsx",
-        "line": 462,
+        "line": 469,
+        "kind": "literal"
+      },
+      {
+        "file": "web/app/admin/page.tsx",
+        "line": 724,
         "kind": "literal"
       }
     ]
@@ -32333,7 +32372,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 232,
+        "line": 236,
         "kind": "literal"
       }
     ]
@@ -32841,7 +32880,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 380,
+        "line": 384,
         "kind": "literal",
         "purpose": "display"
       },
@@ -33146,7 +33185,7 @@
       },
       {
         "file": "web/lib/admin.ts",
-        "line": 130,
+        "line": 135,
         "kind": "literal"
       },
       {
@@ -33529,7 +33568,7 @@
       },
       {
         "file": "web/lib/admin.ts",
-        "line": 204,
+        "line": 210,
         "kind": "literal"
       }
     ]
@@ -34330,7 +34369,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 757,
+        "line": 786,
         "kind": "literal",
         "purpose": "display"
       }
@@ -35145,7 +35184,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 546,
+        "line": 557,
         "kind": "jsx"
       },
       {
@@ -35330,6 +35369,22 @@
         "line": 1242,
         "kind": "template",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_48c013cd89e5f121": {
+    "source": "למחוק סביבת עבודה",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/admin/page.tsx",
+        "line": 484,
+        "kind": "literal"
+      },
+      {
+        "file": "web/app/admin/page.tsx",
+        "line": 726,
+        "kind": "literal"
       }
     ]
   },
@@ -35858,6 +35913,17 @@
       }
     ]
   },
+  "m_49bd3479a16b5c16": {
+    "source": "התוכנית, התשובות, החיבורים והקבצים של הסביבה יימחקו לצמיתות. הכניסה לחשבון והמנוי יישמרו. אחרי המחיקה מתחברים מחדש.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/admin/page.tsx",
+        "line": 725,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_49c9c58bd963631d": {
     "source": "סיבה לבוא דווקא עכשיו.",
     "language": "he",
@@ -36002,7 +36068,7 @@
     "references": [
       {
         "file": "web/lib/admin.ts",
-        "line": 209,
+        "line": 215,
         "kind": "literal"
       }
     ]
@@ -36035,7 +36101,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 384,
+        "line": 388,
         "kind": "literal",
         "purpose": "display"
       }
@@ -36707,7 +36773,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 749,
+        "line": 778,
         "kind": "literal"
       }
     ]
@@ -36872,7 +36938,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 380,
+        "line": 384,
         "kind": "literal"
       }
     ]
@@ -37157,7 +37223,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 375,
+        "line": 379,
         "kind": "literal"
       }
     ]
@@ -37792,7 +37858,7 @@
     "references": [
       {
         "file": "api/app/routers/onboarding.py",
-        "line": 193,
+        "line": 196,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -39267,7 +39333,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 675,
+        "line": 690,
         "kind": "literal"
       },
       {
@@ -39377,7 +39443,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 375,
+        "line": 379,
         "kind": "literal"
       }
     ]
@@ -39631,7 +39697,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 726,
+        "line": 748,
         "kind": "literal"
       }
     ]
@@ -39895,7 +39961,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 172,
+        "line": 176,
         "kind": "literal"
       }
     ]
@@ -40383,7 +40449,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 770,
+        "line": 799,
         "kind": "jsx"
       }
     ]
@@ -40618,7 +40684,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 323,
+        "line": 325,
         "kind": "jsx"
       }
     ]
@@ -40629,7 +40695,7 @@
     "references": [
       {
         "file": "web/lib/admin.ts",
-        "line": 116,
+        "line": 121,
         "kind": "literal"
       }
     ]
@@ -40916,7 +40982,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 831,
+        "line": 860,
         "kind": "literal"
       }
     ]
@@ -41703,7 +41769,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 209,
+        "line": 213,
         "kind": "literal"
       }
     ]
@@ -42241,7 +42307,7 @@
     "references": [
       {
         "file": "web/lib/admin.ts",
-        "line": 124,
+        "line": 129,
         "kind": "literal"
       }
     ]
@@ -42302,7 +42368,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 674,
+        "line": 689,
         "kind": "template"
       }
     ]
@@ -43676,7 +43742,7 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 336,
+        "line": 340,
         "kind": "literal"
       }
     ]
@@ -43737,7 +43803,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 666,
+        "line": 681,
         "kind": "template"
       }
     ]
@@ -44877,7 +44943,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 456,
+        "line": 460,
         "kind": "literal",
         "purpose": "display"
       }
@@ -46049,7 +46115,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 693,
+        "line": 708,
         "kind": "literal",
         "purpose": "display"
       }
@@ -46061,7 +46127,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 482,
+        "line": 493,
         "kind": "literal",
         "purpose": "display"
       }
@@ -46227,7 +46293,7 @@
     "references": [
       {
         "file": "web/lib/admin.ts",
-        "line": 228,
+        "line": 234,
         "kind": "template"
       }
     ]
@@ -46458,7 +46524,7 @@
     "references": [
       {
         "file": "web/lib/admin.ts",
-        "line": 112,
+        "line": 117,
         "kind": "literal"
       }
     ]
@@ -46607,7 +46673,7 @@
     "references": [
       {
         "file": "web/lib/admin.ts",
-        "line": 122,
+        "line": 127,
         "kind": "literal"
       }
     ]
@@ -47530,7 +47596,7 @@
       },
       {
         "file": "web/lib/admin.ts",
-        "line": 225,
+        "line": 231,
         "kind": "literal"
       },
       {
@@ -47976,7 +48042,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 194,
+        "line": 196,
         "kind": "literal",
         "purpose": "display"
       }
@@ -48163,7 +48229,7 @@
     "references": [
       {
         "file": "web/lib/admin.ts",
-        "line": 129,
+        "line": 134,
         "kind": "literal"
       },
       {
@@ -50633,7 +50699,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 681,
+        "line": 696,
         "kind": "literal"
       }
     ]
@@ -51771,7 +51837,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 773,
+        "line": 802,
         "kind": "literal"
       }
     ]
@@ -51828,7 +51894,7 @@
     "references": [
       {
         "file": "web/lib/admin.ts",
-        "line": 150,
+        "line": 156,
         "kind": "literal",
         "purpose": "display"
       }
@@ -52652,7 +52718,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 813,
+        "line": 842,
         "kind": "literal"
       },
       {
@@ -52908,17 +52974,17 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 440,
+        "line": 444,
         "kind": "jsx"
       },
       {
         "file": "web/lib/admin.ts",
-        "line": 144,
+        "line": 150,
         "kind": "literal"
       },
       {
         "file": "web/lib/admin.ts",
-        "line": 159,
+        "line": 165,
         "kind": "literal"
       }
     ]
@@ -53609,7 +53675,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 384,
+        "line": 388,
         "kind": "literal",
         "purpose": "display"
       }
@@ -54051,7 +54117,7 @@
     "references": [
       {
         "file": "web/lib/admin.ts",
-        "line": 114,
+        "line": 119,
         "kind": "literal"
       }
     ]
@@ -54402,12 +54468,12 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 159,
+        "line": 161,
         "kind": "jsx"
       },
       {
         "file": "web/app/admin/page.tsx",
-        "line": 246,
+        "line": 248,
         "kind": "jsx"
       }
     ]
@@ -54550,7 +54616,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 758,
+        "line": 787,
         "kind": "jsx"
       }
     ]
@@ -55802,7 +55868,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 108,
+        "line": 112,
         "kind": "literal"
       }
     ]
@@ -55950,7 +56016,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 497,
+        "line": 508,
         "kind": "jsx"
       }
     ]
@@ -56135,7 +56201,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 107,
+        "line": 111,
         "kind": "literal"
       }
     ]
@@ -56264,7 +56330,7 @@
       },
       {
         "file": "web/lib/admin.ts",
-        "line": 123,
+        "line": 128,
         "kind": "literal"
       }
     ]
@@ -56397,7 +56463,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 738,
+        "line": 760,
         "kind": "literal"
       }
     ]
@@ -56442,7 +56508,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 833,
+        "line": 862,
         "kind": "template"
       }
     ]
@@ -56453,7 +56519,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 457,
+        "line": 461,
         "kind": "literal"
       }
     ]
@@ -56555,7 +56621,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 192,
+        "line": 194,
         "kind": "literal",
         "purpose": "display"
       }
@@ -56690,12 +56756,12 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 576,
+        "line": 587,
         "kind": "jsx"
       },
       {
         "file": "web/app/admin/page.tsx",
-        "line": 673,
+        "line": 688,
         "kind": "literal",
         "purpose": "display"
       }
@@ -56814,7 +56880,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 355,
+        "line": 359,
         "kind": "literal"
       }
     ]
@@ -56877,7 +56943,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 738,
+        "line": 760,
         "kind": "literal"
       }
     ]
@@ -56899,7 +56965,7 @@
     "references": [
       {
         "file": "api/app/routers/onboarding.py",
-        "line": 382,
+        "line": 385,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -56962,12 +57028,12 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 587,
+        "line": 598,
         "kind": "jsx"
       },
       {
         "file": "web/app/admin/page.tsx",
-        "line": 679,
+        "line": 694,
         "kind": "literal",
         "purpose": "display"
       }
@@ -57624,12 +57690,12 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 579,
+        "line": 590,
         "kind": "literal"
       },
       {
         "file": "web/app/admin/page.tsx",
-        "line": 697,
+        "line": 712,
         "kind": "literal",
         "purpose": "display"
       }
@@ -57641,7 +57707,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 541,
+        "line": 552,
         "kind": "literal",
         "purpose": "display"
       }
@@ -58538,7 +58604,7 @@
     "references": [
       {
         "file": "api/app/routers/onboarding.py",
-        "line": 580,
+        "line": 583,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -58838,7 +58904,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 193,
+        "line": 195,
         "kind": "literal",
         "purpose": "display"
       }
@@ -59129,7 +59195,7 @@
     "references": [
       {
         "file": "web/lib/admin.ts",
-        "line": 142,
+        "line": 147,
         "kind": "literal"
       }
     ]
@@ -59549,7 +59615,7 @@
     "references": [
       {
         "file": "web/lib/admin.ts",
-        "line": 140,
+        "line": 145,
         "kind": "literal"
       }
     ]
@@ -59594,7 +59660,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 209,
+        "line": 213,
         "kind": "literal"
       }
     ]
@@ -60216,7 +60282,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 194,
+        "line": 198,
         "kind": "literal"
       }
     ]
@@ -60483,7 +60549,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 106,
+        "line": 110,
         "kind": "literal"
       }
     ]
@@ -60561,7 +60627,7 @@
     "references": [
       {
         "file": "web/lib/admin.ts",
-        "line": 132,
+        "line": 137,
         "kind": "literal"
       },
       {
@@ -61098,7 +61164,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 547,
+        "line": 558,
         "kind": "jsx"
       },
       {
@@ -61747,7 +61813,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 385,
+        "line": 389,
         "kind": "literal"
       }
     ]
@@ -62142,7 +62208,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 511,
+        "line": 522,
         "kind": "literal"
       }
     ]
@@ -62219,7 +62285,7 @@
     "references": [
       {
         "file": "web/lib/admin.ts",
-        "line": 166,
+        "line": 172,
         "kind": "literal"
       }
     ]
@@ -62429,7 +62495,7 @@
       },
       {
         "file": "web/lib/admin.ts",
-        "line": 152,
+        "line": 158,
         "kind": "literal",
         "purpose": "display"
       }
@@ -64126,7 +64192,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 340,
+        "line": 344,
         "kind": "literal"
       }
     ]
@@ -64272,7 +64338,7 @@
     "references": [
       {
         "file": "web/lib/admin.ts",
-        "line": 168,
+        "line": 174,
         "kind": "literal"
       }
     ]
@@ -64294,7 +64360,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 105,
+        "line": 109,
         "kind": "literal"
       }
     ]
@@ -65243,7 +65309,7 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 184,
+        "line": 188,
         "kind": "literal"
       },
       {
@@ -65956,7 +66022,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 163,
+        "line": 165,
         "kind": "literal"
       }
     ]
@@ -66596,7 +66662,7 @@
     "references": [
       {
         "file": "web/lib/admin.ts",
-        "line": 211,
+        "line": 217,
         "kind": "literal"
       }
     ]
@@ -66935,7 +67001,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 270,
+        "line": 272,
         "kind": "jsx"
       }
     ]
@@ -67889,7 +67955,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 214,
+        "line": 216,
         "kind": "jsx"
       }
     ]
@@ -68070,7 +68136,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 761,
+        "line": 790,
         "kind": "jsx"
       },
       {
@@ -69252,12 +69318,6 @@
     "language": "he",
     "references": [
       {
-        "file": "web/app/admin/page.tsx",
-        "line": 459,
-        "kind": "literal",
-        "purpose": "display"
-      },
-      {
         "file": "web/app/onboarding/page.tsx",
         "line": 50,
         "kind": "literal"
@@ -69430,17 +69490,6 @@
       }
     ]
   },
-  "m_90cd063140fc4c72": {
-    "source": "ועוד",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/admin/page.tsx",
-        "line": 474,
-        "kind": "jsx"
-      }
-    ]
-  },
   "m_90d6dac40a081ea7": {
     "source": "לקנות",
     "language": "he",
@@ -69476,7 +69525,7 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 190,
+        "line": 194,
         "kind": "literal"
       }
     ]
@@ -69706,7 +69755,7 @@
     "references": [
       {
         "file": "api/app/routers/onboarding.py",
-        "line": 936,
+        "line": 939,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -69875,7 +69924,7 @@
     "references": [
       {
         "file": "api/app/routers/onboarding.py",
-        "line": 591,
+        "line": 594,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -70126,7 +70175,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 270,
+        "line": 274,
         "kind": "literal"
       }
     ]
@@ -70280,7 +70329,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 685,
+        "line": 700,
         "kind": "literal",
         "purpose": "display"
       }
@@ -70342,7 +70391,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 832,
+        "line": 861,
         "kind": "template"
       }
     ]
@@ -71280,7 +71329,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 329,
+        "line": 333,
         "kind": "literal"
       }
     ]
@@ -71651,7 +71700,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 223,
+        "line": 225,
         "kind": "jsx"
       }
     ]
@@ -73706,7 +73755,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 512,
+        "line": 523,
         "kind": "literal"
       },
       {
@@ -74366,7 +74415,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 121,
+        "line": 123,
         "kind": "literal"
       }
     ]
@@ -74674,6 +74723,17 @@
         "line": 824,
         "kind": "template",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_9bcd5c6c27f97434": {
+    "source": "מחיקת סביבת עבודה",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/admin.ts",
+        "line": 149,
+        "kind": "literal"
       }
     ]
   },
@@ -75080,7 +75140,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 336,
+        "line": 340,
         "kind": "literal",
         "purpose": "display"
       }
@@ -75444,7 +75504,7 @@
     "references": [
       {
         "file": "web/lib/admin.ts",
-        "line": 206,
+        "line": 212,
         "kind": "literal"
       }
     ]
@@ -75665,7 +75725,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 214,
+        "line": 218,
         "kind": "literal"
       }
     ]
@@ -76063,7 +76123,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 214,
+        "line": 218,
         "kind": "literal"
       }
     ]
@@ -76097,7 +76157,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 344,
+        "line": 346,
         "kind": "jsx"
       }
     ]
@@ -76142,7 +76202,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 253,
+        "line": 255,
         "kind": "jsx"
       },
       {
@@ -76180,7 +76240,7 @@
     "references": [
       {
         "file": "web/lib/admin.ts",
-        "line": 133,
+        "line": 138,
         "kind": "literal"
       },
       {
@@ -77162,7 +77222,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 891,
+        "line": 920,
         "kind": "jsx"
       }
     ]
@@ -77206,13 +77266,13 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 207,
+        "line": 211,
         "kind": "literal",
         "purpose": "display"
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 208,
+        "line": 212,
         "kind": "literal"
       },
       {
@@ -79312,7 +79372,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 899,
+        "line": 928,
         "kind": "jsx"
       }
     ]
@@ -79457,7 +79517,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 699,
+        "line": 714,
         "kind": "literal"
       }
     ]
@@ -79882,7 +79942,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 214,
+        "line": 218,
         "kind": "literal"
       }
     ]
@@ -80013,7 +80073,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 831,
+        "line": 860,
         "kind": "literal"
       }
     ]
@@ -80720,7 +80780,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 376,
+        "line": 378,
         "kind": "literal"
       },
       {
@@ -80815,7 +80875,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 457,
+        "line": 461,
         "kind": "literal"
       },
       {
@@ -81550,7 +81610,7 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 230,
+        "line": 234,
         "kind": "literal"
       },
       {
@@ -81622,7 +81682,7 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 200,
+        "line": 204,
         "kind": "literal"
       }
     ]
@@ -81758,7 +81818,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 300,
+        "line": 302,
         "kind": "jsx"
       }
     ]
@@ -82384,7 +82444,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 194,
+        "line": 198,
         "kind": "literal"
       }
     ]
@@ -82813,7 +82873,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 348,
+        "line": 352,
         "kind": "literal"
       }
     ]
@@ -83292,7 +83352,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 385,
+        "line": 389,
         "kind": "literal"
       }
     ]
@@ -83418,7 +83478,7 @@
     "references": [
       {
         "file": "web/lib/admin.ts",
-        "line": 139,
+        "line": 144,
         "kind": "literal"
       }
     ]
@@ -83584,7 +83644,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 667,
+        "line": 682,
         "kind": "literal"
       }
     ]
@@ -83617,7 +83677,7 @@
     "references": [
       {
         "file": "api/app/routers/onboarding.py",
-        "line": 175,
+        "line": 178,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -83924,7 +83984,7 @@
     "references": [
       {
         "file": "api/app/routers/onboarding.py",
-        "line": 565,
+        "line": 568,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -84032,7 +84092,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 375,
+        "line": 379,
         "kind": "literal"
       }
     ]
@@ -84302,7 +84362,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 555,
+        "line": 566,
         "kind": "template",
         "purpose": "display"
       },
@@ -85171,7 +85231,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 194,
+        "line": 198,
         "kind": "literal"
       }
     ]
@@ -85182,7 +85242,7 @@
     "references": [
       {
         "file": "web/lib/admin.ts",
-        "line": 154,
+        "line": 160,
         "kind": "literal",
         "purpose": "display"
       }
@@ -86498,7 +86558,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 205,
+        "line": 207,
         "kind": "literal",
         "purpose": "display"
       }
@@ -86557,7 +86617,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 355,
+        "line": 359,
         "kind": "literal"
       }
     ]
@@ -86738,7 +86798,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 213,
+        "line": 217,
         "kind": "literal"
       }
     ]
@@ -86783,7 +86843,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 213,
+        "line": 217,
         "kind": "literal",
         "purpose": "display"
       }
@@ -87161,7 +87221,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 254,
+        "line": 258,
         "kind": "literal"
       }
     ]
@@ -87206,7 +87266,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 669,
+        "line": 684,
         "kind": "literal"
       }
     ]
@@ -87275,12 +87335,12 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 579,
+        "line": 590,
         "kind": "literal"
       },
       {
         "file": "web/app/admin/page.tsx",
-        "line": 692,
+        "line": 707,
         "kind": "literal",
         "purpose": "display"
       }
@@ -87981,13 +88041,13 @@
     "references": [
       {
         "file": "api/app/routers/onboarding.py",
-        "line": 780,
+        "line": 783,
         "kind": "literal",
         "purpose": "validation"
       },
       {
         "file": "api/app/routers/onboarding.py",
-        "line": 923,
+        "line": 926,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -88148,7 +88208,7 @@
     "references": [
       {
         "file": "web/lib/admin.ts",
-        "line": 149,
+        "line": 155,
         "kind": "literal",
         "purpose": "display"
       }
@@ -89349,7 +89409,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 375,
+        "line": 379,
         "kind": "literal"
       }
     ]
@@ -89586,7 +89646,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 375,
+        "line": 377,
         "kind": "jsx"
       }
     ]
@@ -90225,12 +90285,12 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 851,
+        "line": 880,
         "kind": "literal"
       },
       {
         "file": "web/app/admin/page.tsx",
-        "line": 865,
+        "line": 894,
         "kind": "literal"
       }
     ]
@@ -91549,7 +91609,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 507,
+        "line": 518,
         "kind": "literal",
         "purpose": "display"
       },
@@ -92042,6 +92102,18 @@
       }
     ]
   },
+  "m_c1174cb9efcb4047": {
+    "source": "פרטי סביבת העבודה השתנו. רעננו את פרטי החשבון ונסו שוב.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/routers/admin.py",
+        "line": 165,
+        "kind": "literal",
+        "purpose": "validation"
+      }
+    ]
+  },
   "m_c11aae0cb77493db": {
     "source": "סכום",
     "language": "he",
@@ -92124,7 +92196,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 79,
+        "line": 83,
         "kind": "literal"
       }
     ]
@@ -92805,7 +92877,7 @@
     "references": [
       {
         "file": "web/lib/admin.ts",
-        "line": 138,
+        "line": 143,
         "kind": "literal"
       }
     ]
@@ -94378,7 +94450,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 558,
+        "line": 569,
         "kind": "template",
         "purpose": "display"
       }
@@ -94506,7 +94578,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 375,
+        "line": 379,
         "kind": "literal"
       }
     ]
@@ -94550,7 +94622,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 254,
+        "line": 258,
         "kind": "literal"
       },
       {
@@ -96296,7 +96368,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 194,
+        "line": 198,
         "kind": "literal"
       }
     ]
@@ -97040,7 +97112,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 734,
+        "line": 756,
         "kind": "literal"
       }
     ]
@@ -97145,7 +97217,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 355,
+        "line": 359,
         "kind": "literal"
       }
     ]
@@ -97358,7 +97430,7 @@
     "references": [
       {
         "file": "web/lib/admin.ts",
-        "line": 113,
+        "line": 118,
         "kind": "literal"
       },
       {
@@ -97960,6 +98032,18 @@
       }
     ]
   },
+  "m_cd1cae12a1907161": {
+    "source": "עדיין מתבצעת עבודה בסביבה הזאת. נסו שוב אחרי שהיא תסתיים.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/routers/admin.py",
+        "line": 171,
+        "kind": "literal",
+        "purpose": "validation"
+      }
+    ]
+  },
   "m_cd248353dfcf83b4": {
     "source": "הכתובת שזוהתה",
     "language": "he",
@@ -98098,7 +98182,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 290,
+        "line": 292,
         "kind": "jsx"
       }
     ]
@@ -99702,6 +99786,17 @@
       }
     ]
   },
+  "m_d14dcdfc957e5692": {
+    "source": "סביבת העבודה נמחקה.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/admin/page.tsx",
+        "line": 771,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_d14f7e5a26246797": {
     "source": "צריך לפחות 100 עוקבים כדי לראות את המספר הזה.",
     "language": "he",
@@ -99741,17 +99836,6 @@
         "line": 146,
         "kind": "literal",
         "purpose": "copy"
-      }
-    ]
-  },
-  "m_d16289a141044733": {
-    "source": "עסקים",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/admin/page.tsx",
-        "line": 474,
-        "kind": "jsx"
       }
     ]
   },
@@ -99876,7 +99960,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 704,
+        "line": 719,
         "kind": "template"
       }
     ]
@@ -99938,7 +100022,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 162,
+        "line": 164,
         "kind": "literal"
       }
     ]
@@ -100149,7 +100233,7 @@
     "references": [
       {
         "file": "api/app/routers/onboarding.py",
-        "line": 569,
+        "line": 572,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -100242,7 +100326,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 192,
+        "line": 196,
         "kind": "literal"
       }
     ]
@@ -100331,7 +100415,7 @@
     "references": [
       {
         "file": "web/lib/admin.ts",
-        "line": 117,
+        "line": 122,
         "kind": "literal"
       }
     ]
@@ -100557,17 +100641,17 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 149,
+        "line": 151,
         "kind": "jsx"
       },
       {
         "file": "web/app/admin/page.tsx",
-        "line": 342,
+        "line": 344,
         "kind": "jsx"
       },
       {
         "file": "web/app/admin/page.tsx",
-        "line": 870,
+        "line": 899,
         "kind": "jsx"
       },
       {
@@ -100612,7 +100696,7 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 186,
+        "line": 190,
         "kind": "literal"
       },
       {
@@ -101966,7 +102050,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 213,
+        "line": 217,
         "kind": "literal"
       }
     ]
@@ -102016,7 +102100,7 @@
       },
       {
         "file": "web/lib/admin.ts",
-        "line": 143,
+        "line": 148,
         "kind": "literal"
       }
     ]
@@ -102688,7 +102772,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 602,
+        "line": 613,
         "kind": "literal",
         "purpose": "display"
       }
@@ -103230,7 +103314,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 375,
+        "line": 379,
         "kind": "literal"
       }
     ]
@@ -103474,7 +103558,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 770,
+        "line": 799,
         "kind": "jsx"
       }
     ]
@@ -104521,12 +104605,12 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 362,
+        "line": 364,
         "kind": "jsx"
       },
       {
         "file": "web/app/admin/page.tsx",
-        "line": 441,
+        "line": 445,
         "kind": "jsx"
       }
     ]
@@ -104588,7 +104672,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 295,
+        "line": 297,
         "kind": "literal",
         "purpose": "display"
       }
@@ -105302,7 +105386,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 377,
+        "line": 379,
         "kind": "literal"
       },
       {
@@ -105584,7 +105668,7 @@
       },
       {
         "file": "api/app/routers/admin.py",
-        "line": 149,
+        "line": 193,
         "kind": "literal",
         "purpose": "validation"
       },
@@ -106203,7 +106287,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 783,
+        "line": 812,
         "kind": "jsx"
       }
     ]
@@ -106642,7 +106726,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 804,
+        "line": 833,
         "kind": "jsx"
       },
       {
@@ -107066,7 +107150,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 182,
+        "line": 184,
         "kind": "literal"
       }
     ]
@@ -107535,7 +107619,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 705,
+        "line": 720,
         "kind": "literal"
       },
       {
@@ -107782,7 +107866,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 302,
+        "line": 304,
         "kind": "jsx"
       }
     ]
@@ -108018,7 +108102,7 @@
     "references": [
       {
         "file": "web/lib/admin.ts",
-        "line": 148,
+        "line": 154,
         "kind": "literal",
         "purpose": "display"
       }
@@ -108368,7 +108452,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 311,
+        "line": 313,
         "kind": "jsx"
       }
     ]
@@ -108442,13 +108526,13 @@
       },
       {
         "file": "web/lib/admin.ts",
-        "line": 153,
+        "line": 159,
         "kind": "literal",
         "purpose": "display"
       },
       {
         "file": "web/lib/admin.ts",
-        "line": 164,
+        "line": 170,
         "kind": "literal"
       }
     ]
@@ -108553,12 +108637,12 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 225,
+        "line": 229,
         "kind": "literal"
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 237,
+        "line": 241,
         "kind": "literal"
       }
     ]
@@ -109238,7 +109322,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 375,
+        "line": 379,
         "kind": "literal"
       }
     ]
@@ -109249,7 +109333,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 448,
+        "line": 452,
         "kind": "jsx"
       }
     ]
@@ -109589,17 +109673,6 @@
       }
     ]
   },
-  "m_e4dc2768563c2c9a": {
-    "source": "עוד אין עסק",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/admin/page.tsx",
-        "line": 477,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_e4df10e67ad777b5": {
     "source": "התמונה גדולה מ-10MB. נסו תמונה אחרת, או צלמו מחדש.",
     "language": "he",
@@ -109766,6 +109839,22 @@
         "line": 66,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_e53e7d71ae7f73a8": {
+    "source": "למחוק את סביבת העבודה של {arg_0}",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/admin/page.tsx",
+        "line": 482,
+        "kind": "literal"
+      },
+      {
+        "file": "web/app/admin/page.tsx",
+        "line": 724,
+        "kind": "literal"
       }
     ]
   },
@@ -110229,7 +110318,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 329,
+        "line": 333,
         "kind": "literal"
       },
       {
@@ -110353,7 +110442,7 @@
     "references": [
       {
         "file": "api/app/routers/onboarding.py",
-        "line": 535,
+        "line": 538,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -111003,7 +111092,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 457,
+        "line": 461,
         "kind": "literal",
         "purpose": "display"
       },
@@ -111160,7 +111249,7 @@
     "references": [
       {
         "file": "api/app/routers/onboarding.py",
-        "line": 342,
+        "line": 345,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -112432,6 +112521,17 @@
       }
     ]
   },
+  "m_ea436f7a4f71de3f": {
+    "source": "סביבות עבודה",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/admin/page.tsx",
+        "line": 465,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_ea48116ca420bfd7": {
     "source": "ולכן אין כאן נתונים להעביר למי שמפרסם בשבילכם.",
     "language": "he",
@@ -112704,7 +112804,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 597,
+        "line": 608,
         "kind": "jsx"
       }
     ]
@@ -113959,7 +114059,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 458,
+        "line": 462,
         "kind": "literal",
         "purpose": "display"
       }
@@ -114545,7 +114645,7 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 208,
+        "line": 212,
         "kind": "literal"
       }
     ]
@@ -114927,6 +115027,23 @@
         "file": "web/app/performance/page.tsx",
         "line": 37,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_ee814acc86f18ad3": {
+    "source": "לא מצאנו את סביבת העבודה בחשבון הזה.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/admin/page.tsx",
+        "line": 768,
+        "kind": "literal"
+      },
+      {
+        "file": "api/app/routers/admin.py",
+        "line": 163,
+        "kind": "literal",
+        "purpose": "validation"
       }
     ]
   },
@@ -116646,7 +116763,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 694,
+        "line": 709,
         "kind": "literal"
       },
       {
@@ -117056,7 +117173,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 194,
+        "line": 198,
         "kind": "literal"
       }
     ]
@@ -117067,7 +117184,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 324,
+        "line": 326,
         "kind": "jsx"
       }
     ]
@@ -117265,7 +117382,7 @@
     "references": [
       {
         "file": "web/lib/admin.ts",
-        "line": 227,
+        "line": 233,
         "kind": "literal"
       }
     ]
@@ -117715,7 +117832,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 680,
+        "line": 695,
         "kind": "template"
       }
     ]
@@ -117816,7 +117933,7 @@
     "references": [
       {
         "file": "web/lib/admin.ts",
-        "line": 212,
+        "line": 218,
         "kind": "literal"
       }
     ]
@@ -119437,6 +119554,18 @@
       }
     ]
   },
+  "m_f7db900f19ce035f": {
+    "source": "סביבת העבודה השתנתה. רעננו את העמוד כדי להמשיך.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/routers/onboarding.py",
+        "line": 171,
+        "kind": "literal",
+        "purpose": "validation"
+      }
+    ]
+  },
   "m_f7de860a46e82905": {
     "source": "בערך 2 דקות",
     "language": "he",
@@ -119619,7 +119748,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 521,
+        "line": 532,
         "kind": "jsx"
       },
       {
@@ -121697,7 +121826,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 686,
+        "line": 701,
         "kind": "template"
       }
     ]
@@ -122900,7 +123029,7 @@
     "references": [
       {
         "file": "web/lib/admin.ts",
-        "line": 209,
+        "line": 215,
         "kind": "literal"
       }
     ]
@@ -122911,7 +123040,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 545,
+        "line": 556,
         "kind": "jsx"
       },
       {

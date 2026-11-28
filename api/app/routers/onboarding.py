@@ -129,6 +129,7 @@ def current_business(user: User = Depends(get_current_user), db: Session = Depen
 class FromDraftIn(BaseModel):
     locale: Literal["he", "en", "ar", "ru"] = "he"
     draft: OnboardingDraft
+    expected_business_id: int | None = Field(default=None, ge=1)
     # Expected from the web flow; optional so a signup never fails because the plan
     # preview could not be shown. Without it the first month is planned as before.
     chosen_direction: DirectionIn | None = None
@@ -166,6 +167,8 @@ def from_draft(
     style preset) and the chosen direction/idea (see onboarding_draft.apply_draft).
     """
     business = db.query(Business).filter(Business.user_id == user.id).order_by(Business.id.desc()).first()
+    if body.expected_business_id is not None and (business is None or business.id != body.expected_business_id):
+        raise HTTPException(status_code=409, detail="סביבת העבודה השתנתה. רעננו את העמוד כדי להמשיך.")
     if business and (business.onboarding_complete or loads(business.scraped_profile_json, {}).get("quarter_plan")) and body.draft.research_journey:
         raise HTTPException(status_code=409, detail="כבר יש עסק בחשבון הזה. הפרטים הקיימים נשמרו; אפשר להיכנס אליו.")
     if not business:

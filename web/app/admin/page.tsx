@@ -8,6 +8,7 @@ import { CARD, FIELD, LABEL } from "@/components/account/setupStyles";
 import { SetupNotice } from "@/components/account/SetupNotice";
 import { SegmentedControl, UIAction, UIDialog } from "@/components/design/Controls";
 import { GoogleButton } from "@/components/GoogleButton";
+import { Copy, useCopy } from "@/components/language/LanguageProvider";
 import {
   ACTION_LABEL,
   CONNECTION_LABEL,
@@ -37,7 +38,8 @@ import { ToastHost, copyText, toast } from "@/lib/ui";
 import { SupportQueue } from "@/components/support/SupportQueue";
 
 type Gate = "loading" | "ok" | "signin" | "forbidden";
-type Action = "reset" | "signout" | "suspend" | "reactivate" | "exempt" | "delete";
+type Action = "reset" | "signout" | "suspend" | "reactivate" | "exempt" | "delete" | "delete_workspace";
+type Workspace = AccountDetail["businesses"][number];
 
 const STAGES: Stage[] = ["signup", "business", "plan", "approved", "published", "measured"];
 const LIFECYCLES: Lifecycle[] = ["needs_owner", "ready", "approved", "published", "measured"];
@@ -423,7 +425,9 @@ function AccountPanel({
   onBack: () => void;
   onChanged: (next: AccountDetail | null) => void;
 }) {
+  const t = useCopy();
   const [action, setAction] = useState<Action | null>(null);
+  const [workspaceToDelete, setWorkspaceToDelete] = useState<Workspace>();
   const business = detail.businesses[0];
   const googleOnly = detail.google_linked && !detail.has_password;
   const signIn = [detail.google_linked ? "Google" : "", detail.has_password ? "סיסמה" : ""].filter(Boolean).join(" + ");
@@ -456,28 +460,35 @@ function AccountPanel({
         <Fact label="פעילות אחרונה">{timeAgo(detail.last_seen_at, now)}</Fact>
         <Fact label="כניסה">{googleOnly ? "רק Google" : signIn || "אין"}</Fact>
         <Fact label="מנוי">{billingLabel(detail.billing)}</Fact>
-        <Fact label="העסק" wide>
-          {business ? (
-            <>
-              <span className="font-semibold">{business.name || "בלי שם"}</span>
-              {business.website_url ? (
-                <a
-                  href={business.website_url}
-                  target="_blank"
-                  rel="noreferrer noopener"
-                  dir="ltr"
-                  className="block truncate text-end text-[13px] text-[color:var(--primary)] hover:underline"
-                >
-                  {business.website_url.replace(/^https?:\/\//, "")}
-                </a>
-              ) : null}
-              {detail.businesses.length > 1 ? <span className={META}> ועוד {detail.businesses.length - 1} עסקים</span> : null}
-            </>
-          ) : (
-            "עוד אין עסק"
-          )}
-        </Fact>
       </dl>
+
+      <Section title={t("סביבות עבודה")}>
+        {detail.businesses.length ? (
+          <ul className="divide-y divide-[var(--rule)]">
+            {detail.businesses.map(workspace => {
+              const name = workspace.name || t("בלי שם");
+              return (
+                <li key={workspace.id} className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 py-1">
+                  <div className="min-w-0 max-w-full">
+                    <p dir="auto" className="break-words text-[14px] font-semibold">{name}</p>
+                    {workspace.website_url ? (
+                      <a href={workspace.website_url} target="_blank" rel="noreferrer noopener" dir="ltr"
+                        className="block truncate text-[13px] text-[color:var(--primary)] hover:underline">
+                        {workspace.website_url.replace(/^https?:\/\//, "")}
+                      </a>
+                    ) : null}
+                  </div>
+                  <UIAction variant="text"
+                    aria-label={t("למחוק את סביבת העבודה של {arg_0}", { arg_0: name })}
+                    onClick={() => { setWorkspaceToDelete(workspace); setAction("delete_workspace"); }}>
+                    <Copy text="למחוק סביבת עבודה" />
+                  </UIAction>
+                </li>
+              );
+            })}
+          </ul>
+        ) : <p className={META}><Copy text="אין סביבות עבודה. אפשר להתחיל את ההיכרות מההתחלה." /></p>}
+      </Section>
 
       <Section title="איפה הם בדרך">
         <ol className="space-y-2.5">
@@ -603,7 +614,7 @@ function AccountPanel({
           <ul className="space-y-2">
             {detail.audit.map((entry) => (
               <li key={entry.id} className="flex flex-wrap justify-between gap-x-3 text-[13.5px]">
-                <span className="text-[color:var(--ink)]">{actionText(entry)}</span>
+                <span className="text-[color:var(--ink)]"><Copy text={actionText(entry)} /></span>
                 <span className={META}>{formatDateTime(entry.created_at)}</span>
               </li>
             ))}
@@ -612,7 +623,8 @@ function AccountPanel({
       ) : null}
 
       {action ? (
-        <ActionDialog action={action} detail={detail} googleOnly={googleOnly} onClose={() => setAction(null)} onChanged={onChanged} />
+        <ActionDialog action={action} detail={detail} googleOnly={googleOnly} workspace={workspaceToDelete}
+          onClose={() => { setAction(null); setWorkspaceToDelete(undefined); }} onChanged={onChanged} />
       ) : null}
     </article>
   );
@@ -642,15 +654,18 @@ function ActionDialog({
   action,
   detail,
   googleOnly,
+  workspace,
   onClose,
   onChanged,
 }: {
   action: Action;
   detail: AccountDetail;
   googleOnly: boolean;
+  workspace?: Workspace;
   onClose: () => void;
   onChanged: (next: AccountDetail | null) => void;
 }) {
+  const t = useCopy();
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
   const [reason, setReason] = useState("");
@@ -704,10 +719,17 @@ function ActionDialog({
           description: `נמחק את החשבון של ${email}, את העסק, את כל המידע ואת כל הקבצים. מנוי בפייפאל מתבטל. אי אפשר לבטל את זה.`,
           confirm: "למחוק לתמיד",
         };
+      case "delete_workspace":
+        return {
+          title: t("למחוק את סביבת העבודה של {arg_0}", { arg_0: workspace?.name || t("בלי שם") }),
+          description: t("התוכנית, התשובות, החיבורים והקבצים של הסביבה יימחקו לצמיתות. הכניסה לחשבון והמנוי יישמרו. אחרי המחיקה מתחברים מחדש."),
+          confirm: t("למחוק סביבת עבודה"),
+        };
     }
-  }, [action, email, googleOnly, detail.billing.exempt]);
+  }, [action, email, googleOnly, detail.billing.exempt, t, workspace]);
 
   const deleteReady = typed.trim().toLowerCase() === email.toLowerCase();
+  const requiresEmail = action === "delete" || action === "delete_workspace";
 
   async function run() {
     setPending(true);
@@ -742,11 +764,18 @@ function ActionDialog({
           onChanged(null);
           toast("החשבון נמחק");
           break;
+        case "delete_workspace": {
+          if (!workspace) throw new Error(t("לא מצאנו את סביבת העבודה בחשבון הזה."));
+          const next = await admin.removeWorkspace(detail.id, workspace, typed);
+          onChanged(next);
+          toast(next.businesses.length ? t("סביבת העבודה נמחקה.") : t("סביבת העבודה נמחקה. אפשר להתחיל את ההיכרות מחדש."));
+          break;
+        }
       }
       onClose();
     } catch (err) {
       setPending(false);
-      setError(err instanceof Error ? err.message : "לא הצלחנו. נסו שוב.");
+      setError(err instanceof Error ? t(err.message) : t("לא הצלחנו. נסו שוב."));
     }
   }
 
@@ -784,9 +813,9 @@ function ActionDialog({
               <input value={reason} maxLength={300} onChange={(event) => setReason(event.target.value)} className={FIELD} />
             </label>
           ) : null}
-          {action === "delete" ? (
+          {requiresEmail ? (
             <label className="block">
-              <span className={LABEL}>כדי לאשר, הקלידו את האימייל של החשבון</span>
+              <span className={LABEL}><Copy text="כדי לאשר, הקלידו את האימייל של החשבון" /></span>
               <input
                 type="email"
                 dir="ltr"
@@ -803,11 +832,11 @@ function ActionDialog({
             <UIAction variant="text" onClick={onClose} disabled={pending}>
               לא עכשיו
             </UIAction>
-            {action === "delete" || action === "suspend" ? (
+            {requiresEmail || action === "suspend" ? (
               <button
                 type="button"
                 onClick={run}
-                disabled={pending || (action === "delete" && !deleteReady)}
+                disabled={pending || (requiresEmail && !deleteReady)}
                 className="inline-flex min-h-[46px] items-center justify-center rounded-[12px] bg-[var(--danger)] px-5 text-[14.5px] font-semibold text-[color:var(--paper)] transition-[filter,opacity] hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-45"
               >
                 {pending ? "רגע…" : copy.confirm}
@@ -876,7 +905,7 @@ function AuditLog() {
       <ul className={`${CARD} divide-y divide-[var(--rule)] overflow-hidden`}>
         {entries.map((entry) => (
           <li key={entry.id} className="grid gap-x-4 gap-y-1 px-4 py-3.5 sm:grid-cols-[minmax(0,1fr)_auto] sm:px-5">
-            <span className="text-[15px] font-semibold text-[color:var(--ink)]">{actionText(entry)}</span>
+            <span className="text-[15px] font-semibold text-[color:var(--ink)]"><Copy text={actionText(entry)} /></span>
             <span className={`${META} sm:text-end`}>{formatDateTime(entry.created_at)}</span>
             <span className="min-w-0 text-[13.5px] text-[color:var(--ink-soft)]">
               {entry.target_email ? (
